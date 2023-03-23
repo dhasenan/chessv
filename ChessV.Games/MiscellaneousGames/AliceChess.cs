@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -18,8 +18,6 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
 using ChessV.Games.Rules.Alice;
 
 namespace ChessV.Games
@@ -61,7 +59,7 @@ namespace ChessV.Games
 		//	type TwoBoards instead of Board.  This is enough to trigger the 
 		//	two boards architecture and proper rendering to the display.
 		public override Board CreateBoard( int nPlayers, int nFiles, int nRanks, Symmetry symmetry )
-		{ return new ChessV.Boards.TwoBoards( nFiles, nRanks ); }
+		{ return new Boards.TwoBoards( nFiles, nRanks ); }
 		#endregion
 
 		#region AddRules
@@ -98,6 +96,14 @@ namespace ChessV.Games
 			Rule enPassantRule = FindRule( typeof(Rules.EnPassantRule) );
 			if( enPassantRule != null )
 				ReplaceRule( enPassantRule, new AliceEnPassantRule( (Rules.EnPassantRule) enPassantRule ) );
+		}
+		#endregion
+
+		#region AddEvaluations
+		public override void AddEvaluations()
+		{
+			//	most, if not all, evaluations probably won't do the "right" thing 
+			//	in this game, so we'll override this function and do nothing
 		}
 		#endregion
 	}

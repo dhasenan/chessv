@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -20,7 +20,6 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace ChessV
 {
@@ -30,13 +29,20 @@ namespace ChessV
 
 		public Board Board { get; private set; }
 
+		public Game Game { get; private set; }
+
 		public const int MAX_MOVES = 256;
 
 		public bool LegalMovesOnly { get; set; }
 
+		public int Count { get { return moveCursor; } }
+
+		public MoveInfo CurrentMove	{ get { return moves[currentMoveIndex]; } }
+
 
 		// *** CONSTRUCTION *** //
 
+		#region Constructor
 		public MoveList
 			( Board board, 
 			  SearchStack[] searchStack, 
@@ -56,6 +62,7 @@ namespace ChessV
 			}
 			
 			Board = board;
+			Game = board.Game;
 			LegalMovesOnly = false;
 			moves = new MoveInfo[MAX_MOVES];
 			pickups = new Pickup[MAX_MOVES];
@@ -69,7 +76,12 @@ namespace ChessV
 			this.ply = ply;
 			Reset();
 		}
+		#endregion
 
+
+		// *** OPERATIONS *** //
+
+		#region Reset
 		public void Reset( UInt32 hashtableMoveHash = 0, UInt32 countermove = 0 )
 		{
 			moveCursor = 0;
@@ -79,7 +91,9 @@ namespace ChessV
 			this.hashtableMoveHash = hashtableMoveHash;
 			this.countermove = countermove;
 		}
+		#endregion
 
+		#region Restart
 		public void Restart( UInt32 pvMove )
 		{
 			triedMovesCursor = -1;
@@ -92,16 +106,22 @@ namespace ChessV
 						moves[x].Evaluation = 99999;
 			}
 		}
+		#endregion
 
+		#region ReorderMoves
 		public void ReorderMoves( Dictionary<UInt32, int> moveScores )
 		{
 			for( int x = 0; x < moveCursor; x++ )
 				moves[x].Evaluation = moveScores[moves[x].Hash];
 		}
+		#endregion
 
+		#region GetMoves
 		public int GetMoves( out MoveInfo[] moves )
 		{ moves = this.moves; return moveCursor; }
+		#endregion
 
+		#region FindMove
 		public MoveInfo FindMove( Int32 movehash )
 		{
 			for( int x = 0; x < moveCursor; x++ )
@@ -109,7 +129,9 @@ namespace ChessV
 					return moves[x];
 			throw new Exception( "Move not found" );
 		}
+		#endregion
 
+		#region MakeNextMove
 		public bool MakeNextMove( int minCaptureValue = 0 )
 		{
 			if( triedMovesCursor == -1 )
@@ -133,7 +155,8 @@ namespace ChessV
 						moves[moveOrder[bestMoveIndex]].PieceMoved.PieceType.GetMidgamePST( Board.PlayerSquare( moves[moveOrder[bestMoveIndex]].PieceMoved.Player, moves[moveOrder[bestMoveIndex]].ToSquare ) ) +
 						moves[moveOrder[bestMoveIndex]].PieceCaptured.PieceType.GetMidgamePST( Board.PlayerSquare( moves[moveOrder[bestMoveIndex]].PieceCaptured.Player, moves[moveOrder[bestMoveIndex]].PieceCaptured.Square ) );
 					if( (moves[moveOrder[bestMoveIndex]].MoveType & MoveType.PromotionProperty) != 0 )
-						captureVal += Board.Game.GetPieceType( moves[moveOrder[bestMoveIndex]].PromotionType ).MidgameValue;
+						captureVal += Board.Game.GetPieceType( moves[moveOrder[bestMoveIndex]].PromotionType ).MidgameValue -
+							moves[moveOrder[bestMoveIndex]].PieceMoved.PieceType.MidgameValue;
 					if( moves[moveOrder[bestMoveIndex]].MoveType == MoveType.ExtraCapture )
 						captureVal += Board[moves[moveOrder[bestMoveIndex]].Tag].MidgameValue;
 				}
@@ -143,7 +166,7 @@ namespace ChessV
 					bool tryMove = true;
 					if( minCaptureValue != 0 && moves[moveOrder[bestMoveIndex]].MoveType == MoveType.StandardCapture )
 						//	check the SEE score and skip if this is a losing capture
-						tryMove = Board.Game.SEE( moves[moveOrder[bestMoveIndex]].FromSquare, moves[moveOrder[bestMoveIndex]].ToSquare, 0 );
+						tryMove = !Board.Game.StaticExchangeEvaluation || Board.Game.SEE_GE( moves[moveOrder[bestMoveIndex]].FromSquare, moves[moveOrder[bestMoveIndex]].ToSquare, 0 );
 					if( tryMove )
 					{
 						succeeded = MakeMove( moveOrder[bestMoveIndex] );
@@ -159,12 +182,16 @@ namespace ChessV
 			}
 			return succeeded;
 		}
+		#endregion
 
+		#region PerformPickup
 		protected void PerformPickup( int index )
 		{
 			pickups[index].Piece = Board.ClearSquare( pickups[index].Square );
 		}
+		#endregion
 
+		#region PerformDrop
 		protected void PerformDrop( int index )
 		{
 			Piece piece = drops[index].Piece;
@@ -179,12 +206,16 @@ namespace ChessV
 			piece.MoveCount++;
 			Board.SetSquare( piece, square );
 		}
+		#endregion
 
+		#region UndoPickup
 		protected void UndoPickup( int index )
 		{
 			Board.SetSquare( pickups[index].Piece, pickups[index].Square );
 		}
+		#endregion
 
+		#region UndoDrop
 		protected void UndoDrop( int index )
 		{
 			Board.ClearSquare( drops[index].Square );
@@ -198,14 +229,23 @@ namespace ChessV
 				drops[index].NewType = newType;
 			}
 		}
+		#endregion
 
-		public int Count
-		{ get { return moveCursor; } }
-
+		#region AddMove
 		public void AddMove( int fromSquare, int toSquare, bool direct = false )
 		{
 			if( !direct && Board.Game.MoveBeingGenerated( this, fromSquare, toSquare, MoveType.StandardMove ) )
 				return;
+
+			if( Game.DeduplicateMoves )
+				//	Game requires move deduplication, so we must check to 
+				//	ensure that we don't have this move already
+				for( int x = 0; x < moveCursor; x++ )
+					if( moves[x].MoveType == MoveType.StandardMove &&
+						moves[x].FromSquare == fromSquare &&
+						moves[x].ToSquare == toSquare )
+						//	we have this move already so don't add it again
+						return;
 
 			Piece pieceBeingMoved = Board[fromSquare];
 
@@ -230,19 +270,26 @@ namespace ChessV
 			moves[moveCursor].PieceCaptured = null;
 			moves[moveCursor].Tag = 0;
 			moves[moveCursor].OriginalType = pieceBeingMoved.PieceType.TypeNumber;
-			moves[moveCursor].Evaluation =
-				pieceBeingMoved.PieceType.GetMidgamePST( toSquare ) -
-				pieceBeingMoved.PieceType.GetMidgamePST( fromSquare ) +
-				(int) historyCounters[pieceBeingMoved.Player, pieceBeingMoved.TypeNumber, toSquare];
-				// -butterflyCounters[pieceBeingMoved.Player, pieceBeingMoved.TypeNumber, toSquare];
+
+			//	determine the move evaluation (for move ordering)
 			if( moves[moveCursor].Hash == searchStack[1].PV[ply] )
 				moves[moveCursor].Evaluation = 50000;
 			else if( moves[moveCursor].Hash == hashtableMoveHash )
 				moves[moveCursor].Evaluation = 40000;
 			else if( moves[moveCursor].Hash == killers1[ply] || moves[moveCursor].Hash == killers2[ply] )
 				moves[moveCursor].Evaluation = 2000;
-			else if( moves[moveCursor].Hash == countermove )
-				moves[moveCursor].Evaluation += 100;
+			else
+			{
+				ulong history = (ulong) historyCounters[pieceBeingMoved.Player, pieceBeingMoved.TypeNumber, toSquare];
+				if( history > 0 )
+					moves[moveCursor].Evaluation = (int) (history * 500ul / Board.Game.CurrentMaxHistoryScore /
+						butterflyCounters[pieceBeingMoved.Player, pieceBeingMoved.TypeNumber, toSquare]);
+				else
+					moves[moveCursor].Evaluation = pieceBeingMoved.PieceType.GetMidgamePST( toSquare ) -
+						pieceBeingMoved.PieceType.GetMidgamePST( fromSquare ) - 25;
+			}
+			if( moves[moveCursor].Hash == countermove )
+				moves[moveCursor].Evaluation += 150;
 			moveCursor++;
 
 			if( LegalMovesOnly )
@@ -262,11 +309,23 @@ namespace ChessV
 		{
 			AddMove( Board.Game.NotationToSquare( fromSquareNotation ), Board.Game.NotationToSquare( toSquareNotation ), direct );
 		}
+		#endregion
 
+		#region AddCapture
 		public void AddCapture( int fromSquare, int toSquare, bool direct = false )
 		{
 			if( !direct && Board.Game.MoveBeingGenerated( this, fromSquare, toSquare, MoveType.StandardCapture ) )
 				return;
+
+			if( Game.DeduplicateMoves )
+				//	Game requires move deduplication, so we must check to 
+				//	ensure that we don't have this move already
+				for( int x = 0; x < moveCursor; x++ )
+					if( moves[x].MoveType == MoveType.StandardCapture &&
+						moves[x].FromSquare == fromSquare &&
+						moves[x].ToSquare == toSquare )
+						//	we have this move already so don't add it again
+						return;
 
 			Piece pieceBeingMoved = Board[fromSquare];
 			Piece pieceBeingCaptured = Board[toSquare];
@@ -294,15 +353,17 @@ namespace ChessV
 			moves[moveCursor].PieceCaptured = pieceBeingCaptured; 
 			moves[moveCursor].Tag = 0;
 			moves[moveCursor].OriginalType = pieceBeingMoved.PieceType.TypeNumber;
-			moves[moveCursor].Evaluation = (pieceBeingCaptured.PieceType.MidgameValue > pieceBeingMoved.PieceType.MidgameValue ? 3000 : 
-				(Board.Game.SEE( fromSquare, toSquare, 0 ) ? 3000: 1000)) +
-				pieceBeingCaptured.PieceType.MidgameValue -	(pieceBeingMoved.PieceType.MidgameValue / 16);
+
+			//	determine the move evaluation (for move ordering)
+			moves[moveCursor].Evaluation = (pieceBeingCaptured.PieceType.MidgameValue >= pieceBeingMoved.PieceType.MidgameValue ? 3000 : 
+				(!Board.Game.SimpleMoveGeneration || Board.Game.SEE_GE( fromSquare, toSquare, 0 ) ? 3000 : 100)) +
+				(pieceBeingCaptured.PieceType.MidgameValue / 2) - (pieceBeingMoved.PieceType.MidgameValue / 32);
 			if( moves[moveCursor].Hash == searchStack[1].PV[ply] )
 				moves[moveCursor].Evaluation = 50000;
 			else if( moves[moveCursor].Hash == hashtableMoveHash )
 				moves[moveCursor].Evaluation = 40000;
 			else if( moves[moveCursor].Hash == countermove )
-				moves[moveCursor].Evaluation += 100;
+				moves[moveCursor].Evaluation += 250;
 			moveCursor++;
 
 			if( LegalMovesOnly )
@@ -318,6 +379,13 @@ namespace ChessV
 			}
 		}
 
+		public void AddCapture( string fromSquareNotation, string toSquareNotation, bool direct = false )
+		{
+			AddCapture( Board.Game.NotationToSquare( fromSquareNotation ), Board.Game.NotationToSquare( toSquareNotation ), direct );
+		}
+		#endregion
+
+		#region AddRifleCapture
 		public void AddRifleCapture( int fromSquare, int toSquare, bool direct = false )
 		{
 			if( !direct && Board.Game.MoveBeingGenerated( this, fromSquare, toSquare, MoveType.BaroqueCapture ) )
@@ -363,12 +431,9 @@ namespace ChessV
 				}
 			}
 		}
+		#endregion
 
-		public void AddCapture( string fromSquareNotation, string toSquareNotation, bool direct = false )
-		{
-			AddCapture( Board.Game.NotationToSquare( fromSquareNotation ), Board.Game.NotationToSquare( toSquareNotation ), direct );
-		}
-
+		#region BeginMoveAdd
 		public void BeginMoveAdd
 			( MoveType moveType,
 			  int fromSquare, 
@@ -403,12 +468,16 @@ namespace ChessV
 			tempPickupCursor = pickupCursor;
 			tempDropCursor = dropCursor;
 		}
+		#endregion
 
+		#region SetMoveTag
 		public void SetMoveTag( int tag )
 		{
 			moves[moveCursor].Tag = tag;
 		}
+		#endregion
 
+		#region AddPickup
 		public Piece AddPickup( int square )
 		{
 			pickups[pickupCursor].Piece = null;
@@ -419,7 +488,9 @@ namespace ChessV
 				moves[moveCursor].PieceCaptured = pieceOnSquare;
 			return pieceOnSquare;
 		}
+		#endregion
 
+		#region AddDrop
 		public void AddDrop
 			( Piece piece,
 			  int square,
@@ -440,12 +511,20 @@ namespace ChessV
 		{
 			AddDrop( piece, square, null );
 		}
+		#endregion
 
+		#region EndMoveAdd
 		public void EndMoveAdd( int evaluation )
 		{
 			moves[moveCursor].PickupCursor = pickupCursor;
 			moves[moveCursor].DropCursor = dropCursor;
 			moves[moveCursor].Evaluation = evaluation;
+			if( moves[moveCursor].Hash == searchStack[1].PV[ply] )
+				moves[moveCursor].Evaluation = 50000;
+			else if( moves[moveCursor].Hash == hashtableMoveHash )
+				moves[moveCursor].Evaluation = 40000;
+			else if( moves[moveCursor].Hash == countermove )
+				moves[moveCursor].Evaluation += 250;
 			moveCursor++;
 
 			if( LegalMovesOnly )
@@ -460,12 +539,9 @@ namespace ChessV
 				}
 			}
 		}
+		#endregion
 
-		public void MakeNullMove()
-		{
-			Board.Game.MoveBeingMade( nullMoves[Board.Game.CurrentSide] );
-		}
-
+		#region MakeMove
 		public bool MakeMove( int index )
 		{
 			int firstPickup = 0;
@@ -503,36 +579,9 @@ namespace ChessV
 					return MakeMove( x );
 			return false;
 		}
+		#endregion 
 
-		public void UnmakeNullMove()
-		{
-			Board.Game.MoveBeingUnmade( nullMoves[Board.Game.CurrentSide ^ 1] );
-		}
-
-		public void CopyMoveToGameHistory( List<Pickup> gamePickups, List<Drop> gameDrops, MoveInfo move )
-		{
-			for( int index = 0; index < moveCursor; index++ )
-				if( moves[index] == move )
-				{
-					int firstPickup = 0;
-					int firstDrop = 0;
-					if( index > 0 )
-					{
-						firstPickup = moves[index - 1].PickupCursor;
-						firstDrop = moves[index - 1].DropCursor;
-					}
-					for( int pickup = firstPickup; pickup < moves[index].PickupCursor; pickup++ )
-						gamePickups.Add( pickups[pickup] );
-					for( int drop = firstDrop; drop < moves[index].DropCursor; drop++ )
-						gameDrops.Add( drops[drop] );
-					return;
-				}
-			throw new Exception( "fatal error in MoveList::CopyMoveToGameHistory" );
-		}
-
-		public MoveInfo CurrentMove
-		{ get { return moves[currentMoveIndex]; } }
-
+		#region UnmakeMove
 		protected void UnmakeMove( int index )
 		{
 			Board.Game.MoveBeingUnmade( moves[index] );
@@ -558,7 +607,46 @@ namespace ChessV
 		{
 			UnmakeMove( currentMoveIndex );
 		}
+		#endregion
 
+		#region MakeNullMove
+		public void MakeNullMove()
+		{
+			Board.Game.MoveBeingMade( nullMoves[Board.Game.CurrentSide] );
+		}
+		#endregion
+
+		#region UnmakeNullMove
+		public void UnmakeNullMove()
+		{
+			Board.Game.MoveBeingUnmade( nullMoves[Board.Game.CurrentSide ^ 1] );
+		}
+		#endregion
+
+		#region CopyMoveToGameHistory
+		public void CopyMoveToGameHistory( List<Pickup> gamePickups, List<Drop> gameDrops, MoveInfo move )
+		{
+			for( int index = 0; index < moveCursor; index++ )
+				if( moves[index] == move )
+				{
+					int firstPickup = 0;
+					int firstDrop = 0;
+					if( index > 0 )
+					{
+						firstPickup = moves[index - 1].PickupCursor;
+						firstDrop = moves[index - 1].DropCursor;
+					}
+					for( int pickup = firstPickup; pickup < moves[index].PickupCursor; pickup++ )
+						gamePickups.Add( pickups[pickup] );
+					for( int drop = firstDrop; drop < moves[index].DropCursor; drop++ )
+						gameDrops.Add( drops[drop] );
+					return;
+				}
+			throw new Exception( "fatal error in MoveList::CopyMoveToGameHistory" );
+		}
+		#endregion
+
+		#region Validate
 		public void Validate()
 		{
 			//	make sure each move is unique
@@ -567,6 +655,7 @@ namespace ChessV
 					if( x != y && moves[x] == moves[y] )
 						throw new Exception( "Invalid move list." );
 		}
+		#endregion
 
 
 		// *** PROTECTED DATA MEMBERS *** //

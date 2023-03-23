@@ -1,0 +1,22 @@
+
+Game 'Frog Chess' : 'Generic 10x8'
+{
+	Invented = "2017";
+	InventedBy = "Kevin Pacey";
+	Symmetry = MirrorSymmetry;
+
+	SetGameVariables
+	{
+		Array = "rnbfqkfbnr/pppppppppp/10/10/10/10/PPPPPPPPPP/RNBFQKFBNR";
+		Castling = "Standard";
+		PawnDoubleMove = true;
+		EnPassant = true;
+		PromotionTypes = "QRBNF";
+	}
+
+	AddPieceTypes
+	{
+		AddChessPieceTypes();
+		AddPieceType( Frog, "Frog", "F", 275, 275 );
+	}
+}

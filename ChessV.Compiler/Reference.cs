@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -72,6 +72,14 @@ namespace ChessV.Compiler
 			IsStatic = false;
 		}
 
+		public bool IsFunction
+		{
+			get
+			{
+				return FunctionMember != null || FunctionOverloads != null;
+			}
+		}
+
 		public Type EffectiveType
 		{
 			get
@@ -86,6 +94,15 @@ namespace ChessV.Compiler
 					return FunctionOverloads[0].ReturnType;
 				return ReferencedObject.GetType();
 			}
+		}
+
+		public bool IsNull()
+		{
+			if( FieldMember != null )
+				return FieldMember.GetValue( ReferencedObject ) == null;
+			else if( PropertyMember != null )
+				return PropertyMember.GetValue( ReferencedObject, null ) == null;
+			return false;
 		}
 
 		public object GetValue( object[] args = null )

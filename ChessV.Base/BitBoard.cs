@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -94,6 +94,50 @@ namespace ChessV
 					}
 				}
 				return bitCount;
+			}
+		}
+		#endregion
+
+		#region LSB
+		public int LSB
+		{
+			get
+			//	returns least significant bit
+			{
+				switch( capacity )
+				{
+				case 2:
+					if( bits0 != 0 )
+						return index64[((bits0 & (UInt64) (-((Int64) bits0))) * debruijn64) >> 58];
+					if( bits1 != 0 )
+						return index64[((bits1 & (UInt64) (-((Int64) bits1))) * debruijn64) >> 58] + 64;
+					if( bits2 != 0 )
+						return index64[((bits2 & (UInt64) (-((Int64) bits2))) * debruijn64) >> 58] + 128;
+					return -1;
+
+				case 1:
+					if( bits0 != 0 )
+						return index64[((bits0 & (UInt64) (-((Int64) bits0))) * debruijn64) >> 58];
+					if( bits1 != 0 )
+						return index64[((bits1 & (UInt64) (-((Int64) bits1))) * debruijn64) >> 58] + 64;
+					return -1;
+
+				case 0:
+					if( bits0 != 0 )
+						return index64[((bits0 & (UInt64) (-((Int64) bits0))) * debruijn64) >> 58];
+					return -1;
+				}
+				throw new Exception( "Unsupported bitboard capacity" );
+			}
+		}
+		#endregion
+
+		#region IsEmpty
+		public bool IsEmpty
+		{
+			get
+			{
+				return bits0 == 0 && bits1 == 0 && bits2 == 0;
 			}
 		}
 		#endregion
@@ -209,37 +253,6 @@ namespace ChessV
 		}
 		#endregion
 
-		#region GetLSB
-		public int GetLSB() 
-		//	returns least significant bit
-		{
-			switch( capacity )
-			{
-				case 2:
-					if( bits0 != 0 )
-						return index64[((bits0 & (UInt64) (-((Int64) bits0))) * debruijn64) >> 58];
-					if( bits1 != 0 )
-						return index64[((bits1 & (UInt64) (-((Int64) bits1))) * debruijn64) >> 58] + 64;
-					if( bits2 != 0 )
-						return index64[((bits2 & (UInt64) (-((Int64) bits2))) * debruijn64) >> 58] + 128;
-					return -1;
-
-				case 1:
-					if( bits0 != 0 )
-						return index64[((bits0 & (UInt64) (-((Int64) bits0))) * debruijn64) >> 58];
-					if( bits1 != 0 )
-						return index64[((bits1 & (UInt64) (-((Int64) bits1))) * debruijn64) >> 58] + 64;
-					return -1;
-
-				case 0:
-					if( bits0 != 0 )
-						return index64[((bits0 & (UInt64) (-((Int64) bits0))) * debruijn64) >> 58];
-					return -1;
-			}
-			throw new Exception( "Unsupported bitboard capacity" );
-		}
-		#endregion
-
 		#region ExtractLSB
 		public int ExtractLSB()
 		//	returns and clears the least significant bit
@@ -301,10 +314,45 @@ namespace ChessV
 		}
 		#endregion
 
+		#region GetData
+		public UInt64 GetData( int bitGroup )
+		{
+			switch( bitGroup )
+			{
+			case 0:
+				return bits0;
+
+			case 1:
+				return bits1;
+
+			case 2:
+				return bits2;
+			}
+			//	we should never get here
+			return 0;
+		}
+		#endregion
+
+		#region SetData
+		public void SetData( UInt64 b0, UInt64 b1, UInt64 b2, int bitct = -1 )
+		{
+			bits0 = b0;
+			bits1 = b1;
+			bits2 = b2;
+			bitCount = bitct;
+		}
+		#endregion
+
 
 		// *** OVERLOADED OPERATORS *** //
 
 		#region Overloaded Operators
+		public bool this[int bitnumber]
+		{
+			get
+			{ return IsBitSet( bitnumber ); }
+		}
+
 		public static implicit operator bool( BitBoard bb )
 		{
 			return bb.bitCount >= 0
@@ -347,10 +395,9 @@ namespace ChessV
 			throw new Exception( "Unsupported bitboard capacity" );
 		}
 
-		public bool this[int bitnumber]
+		public static BitBoard operator &( BitBoard b1, BitBoard b2 )
 		{
-			get
-			{ return IsBitSet( bitnumber ); }
+			return new BitBoard( b1.capacity, b1.bits0 & b2.bits0, b1.bits1 & b2.bits1, b1.bits2 & b2.bits2 );
 		}
 		#endregion
 

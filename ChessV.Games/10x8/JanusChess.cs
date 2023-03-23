@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -17,9 +17,6 @@ more details; the file 'COPYING' contains the License text, but if for
 some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
-
-using System;
-using System.Collections.Generic;
 
 namespace ChessV.Games
 {
@@ -61,14 +58,9 @@ namespace ChessV.Games
 			base.AddPieceTypes();
 			//	The Chancellor is not used in this game
 			Chancellor.Enabled = false;
-		}
-		#endregion
-
-		#region ChangePieceNames
-		public override void ChangePieceNames()
-		{
+			//	The Archbishop is called the Janus
 			Archbishop.Name = "Janus";
-			Archbishop.Notation = "J";
+			Archbishop.SetNotation( "J" );
 		}
 		#endregion
 	}

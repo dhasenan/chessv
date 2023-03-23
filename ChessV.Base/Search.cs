@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -41,17 +41,28 @@ namespace ChessV
 		// ***                             *** //
 		// *********************************** //
 
-		int[] razorMargin;
 
+		// *** PUBLIC PROPERTIES *** //
+
+		public int TTSizeInMB { get; set; }
+		public int Weakening { get; set; }
+		public ulong CurrentMaxHistoryScore { get; protected set; }
+
+		#region Think
 		public List<Movement> Think( TimeControl timeControl, int multiPV = 1 )
 		{
 			List<Movement> moves;
 			thinkStartTime = DateTime.Now;
 			this.timeControl = timeControl;
-			abortSearch = false;
+            IsThinking = true;
+            abortSearch = false;
 
+
+			// *** INITIALIZATION *** //
+
+			#region Initialization
 			//	clear killer moves
-			for( int x = 0; x < MAX_DEPTH; x++ )
+			for( int x = 0; x < MAX_PLY; x++ )
 			{
 				killers1[x] = 0;
 				killers2[x] = 0;
@@ -80,8 +91,30 @@ namespace ChessV
 			if( hashtable == null )
 			{
 				hashtable = new Hashtable();
-				hashtable.SetSize( 128 );
+				hashtable.SetSize( TTSizeInMB );
+				if( Variation == 0 )
+					weakeningHashShift = 12;
+				else
+					weakeningHashShift = 13 + Program.Random.Next( 12 );
 			}
+
+			//	Initialize arrays for collecting PV(s)
+			PV[] PVs = new PV[multiPV];
+			for( int x = 0; x < multiPV; x++ )
+			{
+				PVs[x] = new PV();
+				PVs[x].Initialize();
+			}
+			int[] pvScores = new int[multiPV];
+			Dictionary<UInt32, PV> lookupPVbyExcludedMoves = new Dictionary<uint, PV>();
+			searchStack[1].Eval = Evaluate();
+
+			//	If we are in multi-pv mode, we will use this movesToExclude list to 
+			//	accumulate the moves selected from previous PVs and exclude them from 
+			//	consideration in later PVs.
+			List<UInt32> movesToExclude = multiPV > 1 ? new List<UInt32>() : null;
+			#endregion
+
 
 			// *** DETERMINE TIME ALLOCATION *** //
 
@@ -118,13 +151,17 @@ namespace ChessV
 
 						if( timeControl.TimeIncrement > 0 )
 						{
-							maxSearchTime = timeControl.ActiveTimeLeft / (StartingPieceCount[0] + StartingPieceCount[1] - 2) + timeControl.TimeIncrement;
+							maxSearchTime = timeControl.TimeIncrement + timeControl.ActiveTimeLeft / 
+								Math.Min( StartingPieceCount[0] + StartingPieceCount[1] - 24, 
+								          Board.GetPlayerPieceBitboard( 0 ).BitCount + Board.GetPlayerPieceBitboard( 1 ).BitCount + 2 );
 							absoluteMaxSearchTime = Math.Max( timeControl.ActiveTimeLeft / 6, timeControl.TimeIncrement - 100 );
 						}
 						else
 						{
-							maxSearchTime = timeControl.ActiveTimeLeft / (StartingPieceCount[0] + StartingPieceCount[1] - 2);
-							absoluteMaxSearchTime = timeControl.ActiveTimeLeft / 8;
+							maxSearchTime = timeControl.ActiveTimeLeft /
+								Math.Min( StartingPieceCount[0] + StartingPieceCount[1] - 10,
+										  Board.GetPlayerPieceBitboard( 0 ).BitCount + Board.GetPlayerPieceBitboard( 1 ).BitCount + 6 );
+							absoluteMaxSearchTime = timeControl.ActiveTimeLeft / 6;
 						}
 					}
 				}
@@ -133,47 +170,25 @@ namespace ChessV
 
 			try
 			{
-				//	Initialize arrays for collecting PV(s)
-				PV[] PVs = new PV[multiPV];
-				for( int x = 0; x < multiPV; x++ )
-				{
-					PVs[x] = new PV();
-					PVs[x].Initialize();
-				}
-				int[] pvScores = new int[multiPV];
-				Dictionary<UInt32, PV> lookupPVbyExcludedMoves = new Dictionary<uint, PV>();
-
-				//	If we are in multi-pv mode, we will use this movesToExclude list to 
-				//	accumulate the moves selected from previous PVs and exclude them from 
-				//	consideration in later PVs.
-				List<UInt32> movesToExclude = multiPV > 1 ? new List<UInt32>() : null;
-
 				int alpha = -INFINITY;
 				int beta = INFINITY;
 				int score = -INFINITY;
 				int delta = -INFINITY;
+				int scorePreviousIteration = -INFINITY;
+				CurrentMaxHistoryScore = 1;
 
 				// *** ITERATIVE DEEPENING LOOP *** //
+
+				#region Iterative Deepening Loop
 				bool deepen = true;
 				for( idepth = ONEPLY; deepen && !abortSearch; idepth += ONEPLY )
 				{
 					if( movesToExclude != null )
 						movesToExclude.Clear();
 
-					lmrHistoryCutoff = 0;
-					if( idepth >= 4 * ONEPLY )
-					{
-						for( int p = 0; p < NumPlayers; p++ )
-							for( int x = 0; x < NPieceTypes; x++ )
-								for( int y = 0; y < Board.NumSquaresExtended; y++ )
-								{
-									if( historyCounters[p, x, y] / butterflyCounters[p, x, y] > lmrHistoryCutoff )
-										lmrHistoryCutoff = historyCounters[p, x, y] / butterflyCounters[p, x, y];
-								}
-						lmrHistoryCutoff = lmrHistoryCutoff * 5 / 4;
-					}
-
 					// *** MULTI-PV LOOP *** //
+
+					#region Multi-PV Loop
 					for( int pvIndex = 0; pvIndex < multiPV && !abortSearch; pvIndex++ )
 					{
 						//	Reset aspiration window size
@@ -240,17 +255,22 @@ namespace ChessV
 								Int64 nodesUsed = Statistics.Nodes;
 								TimeSpan timeUsed = DateTime.Now - thinkStartTime;
 								StringBuilder pv = new StringBuilder( 80 );
-								pv.Append( DescribeMove( searchStack[1].PV[1], MoveNotation.StandardAlbegraic ) );
+								pv.Append( DescribeMove( searchStack[1].PV[1], MoveNotation.StandardAlgebraic ) );
 								for( int x = 2; searchStack[1].PV[x] != 0; x++ )
 								{
 									pv.Append( " " );
-									pv.Append( DescribeMove( searchStack[1].PV[x], MoveNotation.StandardAlbegraic ) );
+									pv.Append( DescribeMove( searchStack[1].PV[x], MoveNotation.StandardAlgebraic ) );
 								}
 								Dictionary<string, string> searchinfo = new Dictionary<string, string>();
 								searchinfo["Depth"] = (idepth / ONEPLY).ToString();
-								searchinfo["Score"] = ((double) score / 100.0).ToString();
-								searchinfo["Time"] = timeUsed.Minutes.ToString() + ":" + timeUsed.Seconds.ToString( "D2" );
-								searchinfo["Nodes"] = nodesUsed.ToString();
+								searchinfo["Score"] = FormatScoreForDisplay( score );
+								searchinfo["Time"] = 
+									  timeUsed.Hours > 0
+									? timeUsed.Hours.ToString() + ":" + timeUsed.Minutes.ToString( "D2" ) + ":" + timeUsed.Seconds.ToString( "D2" )
+									: timeUsed.Minutes.ToString() + ":" + timeUsed.Seconds.ToString( "D2" );
+								searchinfo["TimeXB"] = Convert.ToInt32( timeUsed.TotalMilliseconds * 10.0 ).ToString(); // time in centiseconds for xboard
+								searchinfo["Nodes"] = nodesUsed.ToString( "N0" );
+								searchinfo["NodesXB"] = nodesUsed.ToString(); // nodes with no , separators for xboard
 								searchinfo["PV"] = pv.ToString();
 								ThinkingCallback( searchinfo );
 							}
@@ -260,6 +280,18 @@ namespace ChessV
 							//	search aborted due to timeout or node limit reached
 							deepen = false;
 					}
+					#endregion
+
+					#region Track recent best move history
+					if( idepth / ONEPLY <= 5 )
+						previousBestMoves[idepth/ONEPLY - 1] = PVs[0][1];
+					else
+					{
+						for( int x = 0; x < 4; x++ )
+							previousBestMoves[x] = previousBestMoves[x + 1];
+						previousBestMoves[4] = PVs[0][1];
+					}
+					#endregion
 
 					#region Determine whether to perform another iteration
 					//	handle "Quick Hint" - timeControl is NULL, we search to 4 ply
@@ -267,7 +299,7 @@ namespace ChessV
 						deepen = idepth <= 3 * ONEPLY;
 					else
 					{
-						deepen = true;
+						deepen = (idepth / ONEPLY) < MAX_PLY - 1;
 						if( !timeControl.Infinite )
 						{
 							long timeUsed = (long) (DateTime.Now - thinkStartTime).TotalMilliseconds;
@@ -278,7 +310,24 @@ namespace ChessV
 							}
 							else
 							{
-								if( timeUsed > maxSearchTime / 3 || timeUsed > absoluteMaxSearchTime )
+								int timeUseAgressiveness = (timeControl.TimeIncrement > 0 ? 36 : 34);
+								//	if the score has dropped a lot since last iteration, use time more agressively
+								if( score < scorePreviousIteration - 150 )
+									timeUseAgressiveness += 8;
+								//	if we are ahead of our opponent (in an absolute sense) use time less agressively
+								else if( score > 150 )
+									timeUseAgressiveness -= Math.Min( (score - 150) / 10, 8 );
+								//	use time more agressively if the best move has been changing over recent iterations
+								uint bestMove = PVs[0][1];
+								for( int x = Math.Min( idepth/ONEPLY - 2, 3 ); x >= 0; x-- )
+									if( previousBestMoves[x] != bestMove )
+									{
+										timeUseAgressiveness = timeUseAgressiveness * 6 / 5;
+										bestMove = previousBestMoves[x];
+									}
+								//	now that we have decided how agressively to use time, 
+								//	decide if we should perform another iteration
+								if( timeUsed > maxSearchTime*timeUseAgressiveness / 120 || timeUsed > absoluteMaxSearchTime )
 									deepen = false;
 							}
 						}
@@ -290,7 +339,10 @@ namespace ChessV
 							deepen = Statistics.Nodes * 2 < timeControl.NodeLimit;
 					}
 					#endregion
+
+					scorePreviousIteration = score;
 				}
+				#endregion
 
 				hashtable.NextGeneration();
 
@@ -303,11 +355,15 @@ namespace ChessV
 			}
 			catch( Exception ex )
 			{
+                IsThinking = false;
 				throw new Exceptions.ChessVException( this, ex );
 			}
-			return moves;
+            IsThinking = false;
+            return moves;
 		}
+		#endregion
 
+		#region SearchRoot
 		public int SearchRoot( int alpha, int beta, int depth, List<UInt32> movesToExclude = null )
 		{
 			//	track counts of moves executed:
@@ -344,7 +400,7 @@ namespace ChessV
 				//	nodes were used during consideration of this move.  We will 
 				//	use the info for better move ordering on the next iteration.
 				long startNodeCount = Statistics.Nodes;
-				searchPath[1] = currentMove;
+				SearchPath[1] = currentMove;
 				if( (currentMove.MoveType & MoveType.CaptureProperty) == 0 )
 					normalMoveCount++;
 				int score;
@@ -358,8 +414,11 @@ namespace ChessV
 				else
 				{
 					//	Late Move Reductions
-					int reduction = depth >= 2*ONEPLY && moveNumber > 5 && normalMoveCount > 1 && extension == 0 ?
-						(Math.Min( depth/2, moveNumber ) /* * 2 / 3 */ + (moveNumber / 10) + 1) : 0;
+					int reduction = depth >= 2*ONEPLY && moveNumber > 4 && normalMoveCount > 1 && currentMove.MoveType == MoveType.StandardMove && extension == 0 ?
+						(Math.Min( Math.Max(depth-2, 0) / 4, Math.Max(moveNumber-4, 0) / 3 ) + Math.Min( Math.Max(depth-2, 0) / 5, Math.Max(moveNumber-2, 0) * 2/3 ) + (moveNumber/16) + 0) : 0;
+
+					if( reduction > 0 && Weakening > 0 )
+						reduction += Math.Min( (moveNumber - 3) / 4, Weakening / 4 + 1 );
 					if( CurrentSide != movingSide )
 						score = -Search( -alpha, depth - ONEPLY - reduction, 2, true, NodeType.Cut );
 					else
@@ -402,7 +461,9 @@ namespace ChessV
 			
 			return alpha;
 		}
+		#endregion
 
+		#region SearchPV
 		public int SearchPV( int alpha, int beta, int depth, int ply )
 		{
 			//	test for end-of-game
@@ -460,6 +521,20 @@ namespace ChessV
 				}
 			}
 
+			int eval = Evaluate();
+			searchStack[ply].Eval = eval;
+
+			//	at max depth?
+			if( depth == MAX_PLY - 1 )
+				return eval;
+
+			// *** FUTILITY PRUNING - CHILD NODE *** //
+			bool improving = ply < 3 || searchStack[ply].Eval > searchStack[ply - 2].Eval;
+			if( depth < 4 * ONEPLY &&
+				eval < INFINITY - MAX_PLY &&
+				eval - futilityMargin( depth, improving ) >= beta )
+				return eval;
+
 			// *** INTERNAL ITERATIVE DEEPENING *** //
 			bool useIID =
 				/* we have no move from the hashtable ... */ Movement.GetMoveTypeFromHash( hashtableMove ) == MoveType.Invalid &&
@@ -485,7 +560,16 @@ namespace ChessV
 			{
 				Statistics.Nodes++;
 				MoveInfo currentMove = moveLists[ply].CurrentMove;
-				searchPath[ply] = currentMove;
+
+				//	Weakening - if enabled, handle moves we are "blind" to
+				if( Weakening > 0 )
+					if( (int) ((Board.HashCode & (0xFFUL << weakeningHashShift)) >> weakeningHashShift) < Weakening * 2 )
+					{
+						moveLists[ply].UnmakeMove();
+						continue;
+					}
+
+				SearchPath[ply] = currentMove;
 				if( currentMove.MoveType == MoveType.StandardMove )
 					normalMoveCount++;
 
@@ -509,18 +593,37 @@ namespace ChessV
 						/* leave at least 1 full ply and ... */ depth >= 2 * ONEPLY &&
 						/* ... we have searched at least 5 moves */ moveNumber > 5 &&
 						/* ... we have searched at least 1 normal move */ normalMoveCount > 1 &&
+						/* ... is a normal move (not capture or promotion) */ currentMove.MoveType == MoveType.StandardMove && 
 						/* ... we are not in check (or other extension) */ extension == 0 &&
-						/* ... this is not a killer move */ currentMove != killers1[ply] && currentMove != killers2[ply] &&
-						/* ... this is not the recorded counter-move */ currentMove != countermoves[searchPath[ply - 1].FromSquare, searchPath[ply - 1].ToSquare] &&
-						/* ... move is not too successful historically: */
-						historyCounters[currentMove.Player, currentMove.PieceMoved.TypeNumber, currentMove.ToSquare] /
-							Math.Max((int) butterflyCounters[currentMove.Player, currentMove.PieceMoved.TypeNumber, currentMove.ToSquare], 1) < lmrHistoryCutoff;
-
+						/* ... this is not a killer move */ //currentMove != killers1[ply] && currentMove != killers2[ply] &&
+						/* ... this is not the recorded counter-move */ currentMove != countermoves[SearchPath[ply - 1].FromSquare, SearchPath[ply - 1].ToSquare];
 					int reduction = reduce
-						? (Math.Min( depth / 2, moveNumber ) * 2 / 3 + (moveNumber / 10) + 1)
+						? (Math.Min( Math.Max(depth-2, 0) / 4, Math.Max(moveNumber-4, 0) / 3 ) + 
+						   Math.Min( Math.Max(depth-2, 0) / 5, Math.Max(moveNumber-2, 0) * 2/3 ) + (moveNumber/16))
 						: 0;
+					//	decrease reduction for moves that escape a capture
+//					if( currentMove.MoveType == MoveType.StandardMove && reduction >= 2 &&
+//						SEE( currentMove.ToSquare, currentMove.FromSquare, 80 ) )
+//						reduction -= 2;
+
+					//	less or no reduction for historically successful moves
+					if( reduction > 0 )
+					{
+						ulong x = historyCounters[currentMove.Player, currentMove.PieceMoved.TypeNumber, currentMove.ToSquare] /
+							Math.Max( butterflyCounters[currentMove.Player, currentMove.PieceMoved.TypeNumber, currentMove.ToSquare], 1 );
+						if( x > 0 )
+						{
+							reduction--;
+							if( x > CurrentMaxHistoryScore / (uint) (idepth/ONEPLY) )
+								reduction = 0;
+						}
+					}
+
+					if( reduction > 0 && Weakening > 0 )
+						reduction += Math.Min( (moveNumber - 3) / 4, Weakening / 4 + 1 );
 
 					int reducedDepth = reduction > 0 ? Math.Max( depth - ONEPLY - reduction, ONEPLY ) : depth - ONEPLY;
+					int actualReduction = depth - ONEPLY - reducedDepth;
 					//	After the first, all moves are searched with zero-width.  The idea 
 					//	here is that we only need to prove that they are worse than the move 
 					//	we already searched.  If we are incorrect about this, we'll need 
@@ -530,7 +633,7 @@ namespace ChessV
 					else
 						score = Search( beta, reducedDepth, ply + 1, true, NodeType.Cut );
 
-					if( reduction > 0 && score > alpha )
+					if( actualReduction > 0 && score > alpha )
 						//	The move appears to be better than the one we already searched, but 
 						//	we're not sure becuase we reduced.  Re-search without reduction.
 						if( CurrentSide != movingSide )
@@ -539,16 +642,16 @@ namespace ChessV
 							score = Search( beta, depth - ONEPLY, ply + 1, true, NodeType.Cut );
 
 					if( score > alpha && score < beta )
-						//	fail high!  Our zero-window search was incorrect - the fact that the 
-						//	value of alpha has increased means the first move was not the best, 
+						//	Our zero-window search was incorrect - the fact that the value 
+						//	of alpha has increased means the first move was not the best, 
 						//	we have a new PV, and need to re-search the move with full alpha-beta.
 						if( CurrentSide != movingSide )
 							score = -SearchPV( -beta, -alpha, depth - ONEPLY, ply + 1 );
 						else
 							score = SearchPV( alpha, beta, depth - ONEPLY, ply + 1 );
 
-					if( currentMove.MoveType == MoveType.StandardMove && depth > 2*ONEPLY && score < beta )
-						butterflyCounters[currentMove.Player, currentMove.PieceMoved.TypeNumber, currentMove.ToSquare] += (ushort) (depth / ONEPLY);
+//					if( currentMove.MoveType == MoveType.StandardMove && depth > 2*ONEPLY && score < beta )
+//						butterflyCounters[currentMove.Player, currentMove.PieceMoved.TypeNumber, currentMove.ToSquare] += (ushort) (depth / ONEPLY);
 
 					//	undo the move
 					moveLists[ply].UnmakeMove();
@@ -575,7 +678,7 @@ namespace ChessV
 								updateHistoryCounters( depth, ref currentMove );
 							//	update countermove
 							if( ply > 1 )
-								countermoves[searchPath[ply - 1].FromSquare, searchPath[ply - 1].ToSquare] = currentMove.Hash;
+								countermoves[SearchPath[ply - 1].FromSquare, SearchPath[ply - 1].ToSquare] = currentMove.Hash;
 						}
 					}
 				}
@@ -585,10 +688,18 @@ namespace ChessV
 
 			if( moveNumber == 0 )
 			{
-				return -INFINITY + ply;
-				//	TODO: checkmate or stalemate
+				//	If we found no legal moves, call NoMovesResult which will 
+				//	in turn call the NoMovesResult for each rule object until 
+				//	one of them returns a result (typically the CheckmateRule.)
+				MoveEventResponse result = NoMovesResult( CurrentSide );
+				if( result == MoveEventResponse.GameWon )
+					return INFINITY - ply;
+				if( result == MoveEventResponse.GameLost )
+					return -INFINITY + ply;
+				return 0;
 			}
 
+			//	Update the Transposition Table
 			if( bestScore < originalAlpha )
 				hashtable.Store( GetPositionHashCode( ply ), scoreToHashtable( bestScore, ply ), depth, 0, TTHashEntry.HashType.UpperBound );
 			else if( bestScore >= beta )
@@ -598,7 +709,9 @@ namespace ChessV
 
 			return bestScore;
 		}
+		#endregion
 
+		#region Search
 		public int Search( int beta, int depth, int ply, bool tryNullMove, NodeType nodeType )
 		{
 			//	test for end-of-game
@@ -646,21 +759,38 @@ namespace ChessV
 					 hash.Score >= Math.Max( INFINITY - 100, beta ) ||
 					 hash.Score < Math.Min( -INFINITY + 100, beta )) &&
 					((hash.Type == TTHashEntry.HashType.LowerBound && hash.Score >= beta) ||
-					 (hash.Type == TTHashEntry.HashType.UpperBound && hash.Score < beta)) )
+					 (hash.Type == TTHashEntry.HashType.UpperBound && hash.Score <  beta) ||
+					  hash.Type == TTHashEntry.HashType.Exact) )
 				{
 					if( hash.Score >= beta )
+					{
+						//	update killer moves
 						saveKiller( ply, hash.MoveHash );
+						//	update history counters
+						if( depth > 2 * ONEPLY )
+							updateHistoryCounters( depth, hash.MoveHash );
+						//	update countermove
+						if( ply > 1 )
+							countermoves[SearchPath[ply - 1].FromSquare, SearchPath[ply - 1].ToSquare] = hash.MoveHash;
+						//	update PV
+						updatePV( ply );
+					}
 					return scoreFromHashtable( hash.Score, ply );
 				}
 			}
 
 			int eval = Evaluate();
+			searchStack[ply].Eval = eval;
+
+			//	at max depth?
+			if( depth == MAX_PLY - 1 )
+				return eval;
 
 			// *** RAZORING *** //
-			if( depth < 4*ONEPLY && 
-				hashtableMove == 0 && 
+			if( depth < 3*ONEPLY + Weakening/5 && 
+				// hashtableMove == 0 && 
 				extension == 0 && 
-				eval + razorMargin[depth/ONEPLY] <= beta - 1 )
+				eval + razorMargin[depth/ONEPLY] - ((Weakening/3) * (24 - (depth * 2))) <= beta - 1 )
 			{
 				if( depth <= ONEPLY )
 					return QSearch( beta - 1, beta, 0, ply );
@@ -671,28 +801,34 @@ namespace ChessV
 					return val;
 			}
 
+			// *** FUTILITY PRUNING - CHILD NODE *** //
+			bool improving = ply < 3 || searchStack[ply].Eval > searchStack[ply-2].Eval;
+			if( depth < 4*ONEPLY &&
+				eval < INFINITY - MAX_PLY &&
+				eval - futilityMargin( depth, improving ) >= beta )
+				return eval;
+
 			// *** NULL MOVE *** //
-			
+
+			bool nullMoveMatesUs = false;
 			//	we will disable the null move if we are too close to the end 
 			//	to prevent serious mistakes in zugzuang positions, or if we 
 			//	are extending (meaning we're probably in check)
 			tryNullMove &= extension == 0 &&
-				Board.GetPlayerPieceBitboard( 0 ).BitCount >= 3 &&
-				Board.GetPlayerPieceBitboard( 1 ).BitCount >= 3 &&
-				Board.GetPlayerPieceBitboard( 0 ).BitCount + Board.GetPlayerPieceBitboard( 1 ).BitCount >= 8 &&
-				Board.GetEndgameMaterialEval( 0 ) >= 400 &&
-				Board.GetEndgameMaterialEval( 1 ) >= 400 &&
-				Board.GetEndgameMaterialEval( 0 ) + Board.GetEndgameMaterialEval( 1 ) >= 1200;
+				Board.GetPlayerPieceBitboard( 0 ).BitCount >= 2 &&
+				Board.GetPlayerPieceBitboard( 1 ).BitCount >= 2 &&
+				Board.GetPlayerPieceBitboard( 0 ).BitCount + Board.GetPlayerPieceBitboard( 1 ).BitCount >= 5 &&
+				beta < INFINITY - 100 && beta > -INFINITY + 100;
 			//	determine size of reduction depending on remaining depth
-			int nullReduction = (depth/ONEPLY >= 6 ? 3 : 2) * ONEPLY;
+			int nullReduction = (depth/ONEPLY >= 7 ? 3 : 2) * ONEPLY;
 			//	if we have the depth remaining and are close enough to beta, make the null move
-			if( tryNullMove && depth >= nullReduction + ONEPLY && 
-				Board.GetMidgameMaterialEval() + (nodeType == NodeType.All ? 350 : 450) > beta )
+			if( tryNullMove && depth >= nullReduction + ONEPLY + ONEPLY && 
+				Board.GetMidgameMaterialEval() + (nodeType == NodeType.All ? 350 : 500) > beta )
 			{
 				int nullMoveSide = CurrentSide;
 				//	make the null move
 				moveLists[ply].MakeNullMove();
-				searchPath[ply] = new Movement( 0, 0, 0, MoveType.NullMove );
+				SearchPath[ply] = new Movement( 0, 0, 0, MoveType.NullMove );
 				//	search with reduced depth
 				int nullScore;
 				if( CurrentSide != nullMoveSide )
@@ -709,8 +845,32 @@ namespace ChessV
 				//	some move that is better than doing nothing which would also generate 
 				//	beta cut-off.  In zugzuang positions, this assumption is incorrect!
 				if( nullScore >= beta )
-					return beta;
+				{
+					//	do not return unproven mate scores
+					if( nullScore > INFINITY - MAX_PLY )
+						nullScore = beta;
+					return nullScore;
+				}
+
+				if( nullScore < -INFINITY + MAX_PLY )
+					nullMoveMatesUs = true;
 			}
+
+
+			// *** INTERNAL ITERATIVE DEEPENING (deactivated - seems not useful at non-pv node) *** //
+			bool useIID = false &&
+				/* we have no move from the hashtable and ... */ Movement.GetMoveTypeFromHash( hashtableMove ) == MoveType.Invalid &&
+				/* ... we have at least 7 ply remaining */ depth >= 7 * ONEPLY &&
+				/* ... we are not in check */ extension == 0 &&
+				/* ... we're at a likely CUT node */ nodeType == NodeType.Cut &&
+				/* ... evaluation is close enough to beta */ eval + (depth * 4) + 100 >= beta;
+			if( useIID )
+			{
+				Search( beta, depth - 4 * ONEPLY, ply, false, NodeType.Cut );
+				if( hashtable.Lookup( GetPositionHashCode( ply ), ref hash ) )
+					hashtableMove = hash.MoveHash;
+			}
+
 
 			int score = -INFINITY;
 			int bestScore = -INFINITY;
@@ -720,10 +880,11 @@ namespace ChessV
 			//	Generate moves
 			generateMoves( CurrentSide, ply, hashtableMove );
 
-			//	Futilty Pruning
-			bool tryFutility = 
+			//	Eligible for Pruning
+			bool pruningEligible = 
 				/* at a frontier or pre-frontier node and */ depth - ONEPLY < 3*ONEPLY && 
-				/* not in check (or other extension) */ extension == 0;
+				/* ... not already in the endgame and */ Board.GetEndgameMaterialEval( CurrentSide ) >= 375 && 
+				/* ... not in check (or other extension) */ extension == 0;
 
 			// *** MOVE LOOP *** //
 			int movingSide = CurrentSide;
@@ -731,52 +892,99 @@ namespace ChessV
 			{
 				Statistics.Nodes++;
 				MoveInfo currentMove = moveLists[ply].CurrentMove;
-				searchPath[ply] = currentMove;
+
+				//	Weakening - if enabled, handle moves we are "blind" to
+				if( Weakening > 0 )
+					if( (int) ((Board.HashCode & (0xFFUL << weakeningHashShift)) >> weakeningHashShift) < Weakening * 2 )
+					{
+						moveLists[ply].UnmakeMove();
+						continue;
+					}
+
+				SearchPath[ply] = currentMove;
 				if( currentMove.MoveType == MoveType.StandardMove )
 					normalMoveCount++;
 
-				// *** REDUCTIONS *** //
+				// *** PRUNING *** //
 
-				//	Fuility Pruning
-				if( /* our pre-conditions are satisified and ... */ tryFutility && 
-					/* ... we've searched at least one move */ moveNumber > 1 && 
-					/* ... this is a 'normal' move (not capture or promotion) */ currentMove.MoveType == MoveType.StandardMove && 
-					/* ... move leaves us far enough below beta */
-					eval + Board.CalculateStandardMovePST( currentMove.FromSquare, currentMove.ToSquare ) + 
-					(depth < 2*ONEPLY ? (currentMove.PieceMoved.PieceType is Pawn ? 40 : 20) : 300) < beta )
+				if( pruningEligible )
 				{
-					//	If we are at a frontier node, we'll go ahead and do an actual eval on the new position
-					//	to ensure it is below beta.  (Our evaluation function is remarkably fast, since it doesn't
-					//	consider very much.)  At a pre-frontier node, we are happy since we are so far below beta.
-					int newEval = (depth < 2 * ONEPLY ? Evaluate() : beta-1);
-					if( /* we are still far enough below beta... */ newEval < beta && 
-						/* and this move doesn't give check (or other extension) */ getExtension( ply + 1 ) == 0 )
+					bool prune = false;
+
+					//	Fuility Pruning
+					if( /* ... we've searched at least one move */ moveNumber > 1 &&
+						/* ... this is a not capture or promotion */ currentMove.MoveType == MoveType.StandardMove &&
+						/* ... move leaves us far enough below beta */
+						eval + Board.CalculateStandardMovePST( currentMove.FromSquare, currentMove.ToSquare ) +
+						(depth < 2 * ONEPLY ? (currentMove.PieceMoved.PieceType.IsPawn ? 50 : 30) : 200) < beta )
 					{
-						//	this node is pruned
+						//	If we are at a frontier node, we'll go ahead and do an actual eval on the new position
+						//	to ensure it is below beta.  (Our evaluation function is remarkably fast since it doesn't
+						//	consider very much.)  At a pre-frontier node, we are happy since we are so far below beta.
+						int newEval = (depth < 2 * ONEPLY ? Evaluate() : beta - 1);
+						if( /* we are still far enough below beta and ... */ newEval < beta && 
+							/* ... not passed pawn push or other restriction */ CanPruneMove( currentMove ) )
+							prune = true;
+						
+					}
+					//	Late Move Pruning
+					if( !prune && depth < 3 * ONEPLY &&
+						/* ... we've searched enough moves */ moveNumber > (depth < 2 * ONEPLY ? 14 : 18) + (improving ? 3 : 0) &&
+						/* ... this is a not capture or promotion */ currentMove.MoveType == MoveType.StandardMove )
+						prune = true;
+
+					//	Perform pruning
+					if( /* if we are eligible for pruning and ... */ prune && 
+						/* ... not a passed pawn move or other restriction and */ CanPruneMove( currentMove ) &&
+						/* ... and make sure this move doesn't give check */ getExtension( ply + 1 ) == 0 )
+					{
 						moveLists[ply].UnmakeMove();
 						continue;
 					}
 				}
 
-				//	Late Move Reductions
-				bool reduce = 
-					/* leave at least 1 full ply and ... */ depth >= 2*ONEPLY && 
-					/* ... we have searched at least 5 moves */ moveNumber > 5 && 
+				// *** LATE MOVE REDUCTIONS *** //
+
+				bool reduce =
+					/* leave at least 1 full ply and ... */ depth >= 2 * ONEPLY &&
+					/* ... we have searched at least 4 moves */ moveNumber > 4 &&
 					/* ... we have searched at least 1 normal (non-capture) move */ normalMoveCount > 1 &&
-					/* ... we are not in check (or other extension) */ extension == 0 && 
-					/* ... this is not a killer move */ currentMove != killers1[ply] && currentMove != killers2[ply] && 
-					/* ... this is not the recorded counter-move */ currentMove != countermoves[searchPath[ply-1].FromSquare, searchPath[ply-1].ToSquare] && 
-					/* ... this move is not too successful historically ... */
-					historyCounters[currentMove.Player, currentMove.PieceMoved.TypeNumber, currentMove.ToSquare] /
-						Math.Max((int) butterflyCounters[currentMove.Player, currentMove.PieceMoved.TypeNumber, currentMove.ToSquare], 1) < lmrHistoryCutoff;
-				
-				int reduction = !reduce ? 0 : 
+					/* ... is a normal move (not capture or promotion) */ currentMove.MoveType == MoveType.StandardMove &&
+					/* ... null move doesn't mate us */ !nullMoveMatesUs &&
+					/* ... we are not in check (or other extension) */ extension == 0 &&
+					/* ... this is not a killer move */ //currentMove != killers1[ply] && currentMove != killers2[ply] &&
+					/* ... this is not the recorded counter-move */ currentMove != countermoves[SearchPath[ply - 1].FromSquare, SearchPath[ply - 1].ToSquare];
+
+				int reduction = !reduce ? 0 :
 					//	calculate size of reduction
-					(Math.Min( depth/2, moveNumber ) * 2/3 + (moveNumber / 10) + (nodeType == NodeType.Cut ? 3 : 1));
+					(Math.Min( Math.Max(depth-2, 0) / 3, Math.Max(moveNumber-2, 0) / 3 ) + 
+					 Math.Min( Math.Max(depth-2, 0) / 5, Math.Max(moveNumber-2, 0) * 2/3 ) + 
+					 (moveNumber/16) + (nodeType == NodeType.Cut ? 2 : 0) + (improving ? 0 : 1));
+				//	decrease reduction for moves that escape a capture
+//				if( nodeType != NodeType.Cut && currentMove.MoveType == MoveType.StandardMove && reduction >= 2 && 
+//					SEE( currentMove.ToSquare, currentMove.FromSquare, 80 ) )
+//					reduction -= 2;
 
-				//	calculate new depth (making sure we never reduce so much that we don't leave on full ply
+				//	less or no reduction for historically successful moves
+				if( reduction > 0 )
+				{
+					ulong x = historyCounters[currentMove.Player, currentMove.PieceMoved.TypeNumber, currentMove.ToSquare] /
+						Math.Max( butterflyCounters[currentMove.Player, currentMove.PieceMoved.TypeNumber, currentMove.ToSquare], 1 );
+					if( x > 0 )
+					{
+						reduction--;
+						if( x > CurrentMaxHistoryScore / (uint) (idepth/ONEPLY) )
+							reduction = 0;
+					}
+				}
+
+				//	potentially increase reduction if Weakening is in effect
+				if( reduction > 0 && Weakening > 0 )
+					reduction += Math.Min( (moveNumber - 3) / 4, Weakening / 4 + 1 );
+
+				//	calculate new depth (making sure we never reduce so much that we don't leave one full ply
 				int reducedDepth = reduction > 0 ? Math.Max( depth - ONEPLY - reduction, ONEPLY ) : depth - ONEPLY;
-
+				int actualReduction = depth - ONEPLY - reducedDepth;
 
 				// *** DEEPEN SEARCH RECURSIVELY *** //
 
@@ -787,14 +995,14 @@ namespace ChessV
 					score = Search( beta, reducedDepth, ply + 1, true, nodeType == NodeType.Cut ? NodeType.All : NodeType.Cut );
 
 				//	if we reduced and failed high ...
-				if( reduction > 0 && score >= beta )
+				if( actualReduction > 0 && score >= beta )
 					//	re-search without reduction
 					if( CurrentSide != movingSide )
 						score = -Search( -(beta - 1), depth - ONEPLY, ply + 1, true, nodeType == NodeType.Cut ? NodeType.All : NodeType.Cut );
 					else
 						score = Search( beta, depth - ONEPLY, ply + 1, true, nodeType == NodeType.Cut ? NodeType.All : NodeType.Cut );
 
-				if( currentMove.MoveType == MoveType.StandardMove && depth > 2*ONEPLY && score < beta )
+				if( currentMove.MoveType == MoveType.StandardMove && depth > 2*ONEPLY && score < beta && nodeType == NodeType.Cut )
 					//	update butterfly counter of unsuccessful moves
 					butterflyCounters[currentMove.Player, currentMove.PieceMoved.TypeNumber, currentMove.ToSquare] += (ushort) (depth / ONEPLY);
 
@@ -817,7 +1025,7 @@ namespace ChessV
 							updateHistoryCounters( depth, ref currentMove );
 						//	update countermove
 						if( ply > 1 )
-							countermoves[searchPath[ply-1].FromSquare, searchPath[ply-1].ToSquare] = currentMove.Hash;
+							countermoves[SearchPath[ply-1].FromSquare, SearchPath[ply-1].ToSquare] = currentMove.Hash;
 						//	update PV
 						updatePV( ply );
 						//	store lower bound in hash table
@@ -837,21 +1045,19 @@ namespace ChessV
 				//	in turn call the NoMovesResult for each rule object until 
 				//	one of them returns a result (typically the CheckmateRule.)
 				MoveEventResponse result = NoMovesResult( CurrentSide );
-				if( result != MoveEventResponse.NotHandled )
-				{
-					if( result == MoveEventResponse.GameDrawn )
-						return 0;
-					if( result == MoveEventResponse.GameWon )
-						return INFINITY - ply;
-					if( result == MoveEventResponse.GameLost )
-						return -INFINITY + ply;
-				}
+				if( result == MoveEventResponse.GameWon )
+					return INFINITY - ply;
+				if( result == MoveEventResponse.GameLost )
+					return -INFINITY + ply;
+				return 0;
 			}
 
 			return bestScore;
 		}
+		#endregion
 
-		public int QSearch( int alpha, int beta, int depth, int ply )
+		#region QSearch
+		public int QSearch( int alpha, int beta, int depth, int ply, int recaptureSquare = -1 )
 		{
 			//	test for end-of-game
 			MoveEventResponse response = TestForWinLossDraw( CurrentSide );
@@ -881,16 +1087,28 @@ namespace ChessV
 				}
 			}
 
-			//	bookkeeping, time check, etc., every 1024 nodes
-			if( Statistics.Nodes % 1024 == 0 )
+			//	bookkeeping, time check, etc., every 4096 nodes
+			if( Statistics.Nodes % 4096 == 0 )
 			{
 				doBookkeeping();
 				if( abortSearch )
 					return 0;
 			}
-
+			bool pvNode = alpha != beta - 1;
+			bool inCheck = getExtension( ply ) > 0;
+			int oldAlpha = alpha;
 			int eval = Evaluate();
+			//	after 8 plies of QSearch, allow stand pat even if we are 
+			//	in check to prevent search explosion in some variants where 
+			//	this can be a real problem (like Gross Chess)
+			if( inCheck && depth < -8 * ONEPLY )
+				eval = -INFINITY;
 			int score = eval;
+
+
+			//	max depth?
+			if( depth == MAX_PLY - 1 )
+				return score;
 
 			//	stand pat?
 			if( score >= beta )
@@ -901,21 +1119,37 @@ namespace ChessV
 				alpha = bestScore;
 
 			//	Generate moves
-			generateMoves( CurrentSide, ply, 0, true );
+			generateMoves( CurrentSide, ply, 0, !inCheck );
 
 			// *** MOVE LOOP *** //
 			int movingSide = CurrentSide;
-			while( alpha < beta && moveLists[ply].MakeNextMove( /* delta pruning threshold: */ alpha - eval - 50 ) )
+			while( alpha < beta && moveLists[ply].MakeNextMove( inCheck ? 0 : /* delta pruning threshold: */ alpha - eval - 50 ) )
 			{
 				Statistics.Nodes++;
 				Statistics.QNodes++;
 				MoveInfo currentMove = moveLists[ply].CurrentMove;
-				searchPath[ply] = currentMove;
+
+				//	After 4 plies of QSearch, consider re-captures only
+				if( !inCheck && depth < -4 * ONEPLY && currentMove.ToSquare != recaptureSquare )
+				{
+					moveLists[ply].UnmakeMove();
+					continue;
+				}
+
+				//	Weakening - if enabled, handle moves we are "blind" to
+				if( Weakening > 0 )
+					if( (int) ((Board.HashCode & (0xFFUL << weakeningHashShift)) >> weakeningHashShift) < Weakening * 2 )
+					{
+						moveLists[ply].UnmakeMove();
+						continue;
+					}
+
+				SearchPath[ply] = currentMove;
 
 				if( CurrentSide != movingSide )
-					score = -QSearch( -beta, -alpha, depth - ONEPLY, ply + 1 );
+					score = -QSearch( -beta, -alpha, depth - ONEPLY, ply + 1, currentMove.ToSquare );
 				else
-					score = QSearch( alpha, beta, depth - ONEPLY, ply + 1 );
+					score = QSearch( alpha, beta, depth - ONEPLY, ply + 1, currentMove.ToSquare );
 				moveLists[ply].UnmakeMove();
 
 				if( abortSearch )
@@ -928,10 +1162,15 @@ namespace ChessV
 					if( score > alpha )
 					{
 						alpha = score;
-						updatePV( ply );
+						if( pvNode )
+							updatePV( ply );
 					}
 				}
 			}
+
+			//	return checkmate score if we are in check and found no escape
+			if( inCheck && bestScore == -INFINITY )
+				return -INFINITY + ply;
 
 			//	Update Transposition Table
 			if( alpha - beta != 1 )
@@ -939,7 +1178,8 @@ namespace ChessV
 				if( bestScore < beta )
 				{
 					if( bestScore > eval )
-						hashtable.Store( GetPositionHashCode( ply ), scoreToHashtable( score, ply ), 0, 0, TTHashEntry.HashType.UpperBound );
+						hashtable.Store( GetPositionHashCode( ply ), scoreToHashtable( score, ply ), 0, 0, 
+							pvNode && bestScore > oldAlpha ? TTHashEntry.HashType.Exact : TTHashEntry.HashType.UpperBound );
 				}
 				else
 					hashtable.Store( GetPositionHashCode( ply ), scoreToHashtable( score, ply ), 0, 0, TTHashEntry.HashType.LowerBound );
@@ -947,21 +1187,22 @@ namespace ChessV
 
 			return bestScore;
 		}
+		#endregion
 
 		protected int scoreFromHashtable( int score, int ply )
 		{
-			if( score >= INFINITY - 100 )
+			if( score >= INFINITY - MAX_PLY )
 				return score - ply;
-			if( score <= -INFINITY + 100 )
+			if( score <= -INFINITY + MAX_PLY )
 				return score + ply;
 			return score;
 		}
 
 		protected int scoreToHashtable( int score, int ply )
 		{
-			if( score >= INFINITY - 100 )
+			if( score >= INFINITY - MAX_PLY )
 				return score + ply;
-			if( score <= -INFINITY + 100 )
+			if( score <= -INFINITY + MAX_PLY )
 				return score - ply;
 			return score;
 		}
@@ -1001,8 +1242,36 @@ namespace ChessV
 		protected void updateHistoryCounters( int depth, ref MoveInfo move )
 		{
 			if( move.MoveType == MoveType.StandardMove )
-				historyCounters[move.PieceMoved.Player, move.PieceMoved.TypeNumber, move.ToSquare] += 
+			{
+				historyCounters[move.PieceMoved.Player, move.PieceMoved.TypeNumber, move.ToSquare] +=
 					(UInt32) (((depth / ONEPLY) + 2) * ((depth / ONEPLY) + 1));
+				CurrentMaxHistoryScore = Math.Max( CurrentMaxHistoryScore, historyCounters[move.PieceMoved.Player, move.PieceMoved.TypeNumber, move.ToSquare] /
+					butterflyCounters[move.PieceMoved.Player, move.PieceMoved.TypeNumber, move.ToSquare] );
+			}
+		}
+
+		protected void updateHistoryCounters( int depth, UInt32 movehash )
+		{
+			if( Movement.GetMoveTypeFromHash( movehash ) != MoveType.StandardMove )
+				return;
+			int player = Movement.GetPlayerFromHash( movehash );
+			Piece piece = Board[Movement.GetFromSquareFromHash( movehash )];
+			if( piece == null )
+				//	this could happen if the hashtable move isn't valid becase of hash collision
+				return;
+			int pieceTypeNumber = piece.TypeNumber;
+			int toSquare = Movement.GetToSquareFromHash( movehash );
+			historyCounters[player, pieceTypeNumber, toSquare] +=
+				(UInt32) (((depth / ONEPLY) + 2) * ((depth / ONEPLY) + 1));
+			CurrentMaxHistoryScore = Math.Max( CurrentMaxHistoryScore, historyCounters[player, pieceTypeNumber, toSquare] /
+				butterflyCounters[player, pieceTypeNumber, toSquare] );
+		}
+
+		protected int futilityMargin( int depth, bool improving )
+		{
+			return improving
+				? 75 * depth / ONEPLY
+				: 125 * depth / ONEPLY;
 		}
 
 		protected void perft( int ply, int depth, PerftResults results, StreamWriter log )
@@ -1014,11 +1283,11 @@ namespace ChessV
 				if( log != null )
 				{
 					StringBuilder sbr = new StringBuilder( 64 );
-					sbr.Append( DescribeMove( moveLists[1].CurrentMove, MoveNotation.StandardAlbegraic ) );
+					sbr.Append( DescribeMove( moveLists[1].CurrentMove, MoveNotation.StandardAlgebraic ) );
 					for( int p = 2; p < ply; p++ )
 					{
 						sbr.Append( ' ' );
-						sbr.Append( DescribeMove( moveLists[p].CurrentMove, MoveNotation.StandardAlbegraic ) );
+						sbr.Append( DescribeMove( moveLists[p].CurrentMove, MoveNotation.StandardAlgebraic ) );
 					}
 					log.WriteLine( sbr );
 				}
@@ -1088,30 +1357,26 @@ namespace ChessV
 			return results;
 		}
 
-		// *** EVAULATION *** //
-
-		public int Evaluate()
+		public void Cleanup()
 		{
-			//  basic material + piece-square-tables
-			int midgameEval = Board.GetMidgameMaterialEval( 0 ) - Board.GetMidgameMaterialEval( 1 );
-			int endgameEval = Board.GetEndgameMaterialEval( 0 ) - Board.GetEndgameMaterialEval( 1 );
-
-			//  call all game-specific evaluation functions
-			foreach( Evaluation evaluation in evaluations )
-				evaluation.AdjustEvaluation( ref midgameEval, ref endgameEval );
-
-			//  scale result based on midgame -> endgame progress and return result
-			int materialEval = Board.GetPlayerMaterial( 0 ) + Board.GetPlayerMaterial( 1 );
-			int phase =
-                materialEval >= MidgameMaterialThreshold ? 128 :
-				(materialEval <= EndgameMaterialThreshold ? 0 :
-				(((materialEval - EndgameMaterialThreshold) * 128) / (MidgameMaterialThreshold - EndgameMaterialThreshold)));
-			int eval = sign[CurrentSide] * ((midgameEval * phase) + (endgameEval * (128 - phase))) / 128;
-
-			//	round the eval to the nearest 4 (essentially reducing the resolution from a 
-			//	hundredth of a pawn to a quarter of a pawn.)
-			eval = ((eval & 2) << 1) + (eval & ~3);
-			return eval;
+			hashtable = null;
 		}
+
+		public string FormatScoreForDisplay( int score )
+		{
+			if( score > INFINITY - MAX_PLY )
+			{
+				if( score == INFINITY - 2 )
+					return "Mate";
+				return "M" + ((INFINITY - (score + 2)) / 2);
+			}
+			if( score < -INFINITY + MAX_PLY )
+				return "-M" + ((INFINITY + (score - 1)) / 2);
+			return ((double)score / 100.0).ToString( "F2" );
+		}
+
+		protected int[] razorMargin;
+		protected int weakeningHashShift;
+		protected uint[] previousBestMoves = new uint[5];
 	}
 }

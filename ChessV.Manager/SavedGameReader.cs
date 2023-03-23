@@ -99,7 +99,15 @@ namespace ChessV.Manager
 					if( cursor == lineBuffer.Length )
 						throw new Exception( "Unexpected end-of-line encountered" );
 					//	value of the variable extend to end of (previously trimmed) line
-					string value = lineBuffer.Substring( cursor );
+					string value;
+					if( lineBuffer[cursor] == '"' )
+					{
+						if( lineBuffer[lineBuffer.Length - 1] != '"' )
+							throw new Exception( "Unmatched quote in variable definition loading saved game file" );
+						value = lineBuffer.Substring( cursor + 1, lineBuffer.Length - cursor - 2 );
+					}
+					else
+						value = lineBuffer.Substring( cursor );
 					VariableDefinitions.Add( variable, value );
 					return true;
 				}

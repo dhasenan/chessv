@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -18,7 +18,6 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
 using System.Collections.Generic;
 
 namespace ChessV.Games
@@ -31,10 +30,6 @@ namespace ChessV.Games
 	{
 		// *** PIECE TYPES *** //
 
-		public PieceType Queen;
-		public PieceType Rook;
-		public PieceType Bishop;
-		public PieceType Knight;
 		public PieceType Guard;
 		public PieceType Cat;
 		public PieceType StarCat;
@@ -71,13 +66,10 @@ namespace ChessV.Games
 			base.AddPieceTypes();
 
 			//	basic types:
-			AddPieceType( Rook = new Rook( "Rook", "R", 750, 850 ) );
-			AddPieceType( Bishop = new Bishop( "Bishop", "B", 375, 450 ) );
-			AddPieceType( Knight = new Knight( "Knight", "N", 300, 300 ) );
-			AddPieceType( Queen = new Queen( "Queen", "Q", 1300, 1400 ) );
+			AddChessPieceTypes();
 			AddPieceType( Guard = new General( "Guard", "G", 300, 325 ) );
 			AddPieceType( Cat = new JumpingGeneral( "Cat", "C", 600, 600, "Cat" ) );
-			AddPieceType( SpeedyKnight = new Knightrider( "Speedy Knight", "SN", 550, 550, "Knightrider" ) );
+			AddPieceType( SpeedyKnight = new Nightrider( "Speedy Knight", "SN", 550, 550, "Knightrider" ) );
 			AddPieceType( EquesRex = new Centaur( "Eques Rex", "E", 650, 750 ) );
 
 			//	Star Cat (augmented Jumping General)

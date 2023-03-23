@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -20,7 +20,6 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace ChessV
 {
@@ -76,7 +75,12 @@ namespace ChessV
 		//	NOT_CONNECTED (-1) if the next step takes us off the board.)  This architecture 
 		//	is fundamental to how this universal engine handles move generation with 
 		//	arbitrary pieces, so it is important to understand.
-		public int NumberOfDirections { get; private set; }
+		public int NumberOfDirections { get; protected set; }
+
+		//	Allow the Board class to disable Simple Move Generation.  This is because 
+		//	cylindrical and circular boards, for example, would mess up SEE.  This should 
+		//	be improved some day.
+		public bool DisableSimpleMoveGeneration { get; protected set; }
 
 		//	The Zobrist Hash Code that identifies this position for repetition detection, 
 		//	transposition table lookup, etc.
@@ -88,7 +92,14 @@ namespace ChessV
 		//	the evaluation features of this pawn structure.  Since the pawns are slow-moving 
 		//	pieces, this table is very helpful because even a small table has a very high 
 		//	hit ratio and saves a lot of work.
-		public UInt64 PawnHashCode { get; private set; }
+		public UInt64 PawnHashCode { get; protected set; }
+
+		//	The material hash code identifies the amount of material on the board (the 
+		//	number of pieces of each type per player.)  It does not matter which squares 
+		//	the pieces occupy except for colorbound ("sliced") pieces.  A light-squared 
+		//	bishop is considered a different piece type form a dark-squared one.  This is 
+		//	also true for pieces with more than two slices, such as a dababbah.
+		public UInt64 MaterialHashCode { get; protected set; }
 
         //  indexer that returns or updates the contents of a square by number
         public Piece this[int square]
@@ -224,17 +235,32 @@ namespace ChessV
 		//  (this information is updated incrementally so it is always available)
 		public BitBoard GetPlayerPieceBitboard( int player )
 		{ return playerPieceBitboards[player]; }
+		//	same but optimized for boards with 64 squares or less
+		public BitBoard64 GetPlayerPieceBitboard64( int player )
+		{ return playerPieceBitboards64[player]; }
 
         //  returns the BitBoard containing all the pieces of the given player and type
         //  (this information is updated incrementally so it is always available)
 		public BitBoard GetPieceTypeBitboard( int player, int pieceType )
 		{ return pieceTypeBitboards[player, pieceType]; }
+		//	same but optimized for boards with 64 squares or less
+		public BitBoard64 GetPieceTypeBitboard64( int player, int pieceType )
+		{ return pieceTypeBitboards64[player, pieceType]; }
+
+		//  returns the BitBoard containing all the pieces of the given player, type, 
+		//  and "slice" so that colorbound pieces are stored separately based on binding
+		public BitBoard GetPieceTypeBitboardSliced( int player, int pieceType, int slice )
+		{ return pieceTypeBitboardsSliced[player, pieceType, slice]; }
 
         //  returns the total midgame material value for the player (without PST)
 		public int GetPlayerMaterial( int player )
 		{ return playerMaterial[player]; }
 
-        //  returns the total midgame material value for the player including midgame PST
+		//  returns the total endgame material value for the player (without PST)
+		public int GetPlayerEndgameMaterial( int player )
+		{ return playerEndgameMaterial[player]; }
+
+		//  returns the total midgame material value for the player including midgame PST
 		public int GetMidgameMaterialEval( int player )
 		{ return midgameMaterialEval[player]; }
 
@@ -261,8 +287,10 @@ namespace ChessV
 			int nSquares = nFiles * nRanks;
 			NumSquares = nSquares;
 			NumSquaresExtended = nSquaresExtended;
+			DisableSimpleMoveGeneration = false;
 			hashcode = 0;
 			PawnHashCode = 0;
+			MaterialHashCode = 0;
 			squares = new Piece[nSquaresExtended];
 			fileBySquare = new int[nSquaresExtended];
 			rankBySquare = new int[nSquaresExtended];
@@ -288,7 +316,8 @@ namespace ChessV
 			int[] maxDistanceFromEdgeByBoardSize = { 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7 };
 			int maxDistanceFromEdge = nFiles < nRanks ? maxDistanceFromEdgeByBoardSize[nFiles] : maxDistanceFromEdgeByBoardSize[nRanks];
 			int[] forwardness8Ranks = { -2, -1, 0, 1, 2, 3, 4, 5 };
-			int[] forwardness10Ranks = { -3, -2, -1, 0, 1, 2, 3, 4, 4, 5 };
+			int[] forwardness9Ranks = { -2, -1, 0, 1, 1, 2, 3, 4, 5 };
+			int[] forwardness10Ranks = { -3, -2, -2, 0, 1, 2, 3, 4, 4, 5 };
 			int[] forwardness12Ranks = { -3, -3, -2, -1, 0, 1, 2, 3, 3, 4, 4, 5 };
 			int sq1;
 			for( sq1 = 0; sq1 < nRanks * nFiles; sq1++ )
@@ -302,11 +331,21 @@ namespace ChessV
 				int rank1 = GetRank( sq1 );
 				int fileFromEdge = file1 < nFiles - file1 - 1 ? file1 : nFiles - file1 - 1;
 				int rankFromEdge = rank1 < nRanks - rank1 - 1 ? rank1 : nRanks - rank1 - 1;
-				distanceFromEdge[sq1] = fileFromEdge < rankFromEdge ? fileFromEdge : rankFromEdge;
-				pstInSmallCenter[sq1] = distanceFromEdge[sq1] == maxDistanceFromEdge ? 1 : 0;
-				pstInLargeCenter[sq1] = distanceFromEdge[sq1] >= maxDistanceFromEdge - 1 ? 1 : 0;
+				distanceFromEdge[sq1] = Math.Min( fileFromEdge, rankFromEdge );
+				if( nFiles >= 9 && nRanks >= 9 )
+				{
+					pstInSmallCenter[sq1] = distanceFromEdge[sq1] >= maxDistanceFromEdge - 1 ? 1 : 0;
+					pstInLargeCenter[sq1] = distanceFromEdge[sq1] >= maxDistanceFromEdge - 2 ? 1 : 0;
+				}
+				else
+				{
+					pstInSmallCenter[sq1] = distanceFromEdge[sq1] == maxDistanceFromEdge ? 1 : 0;
+					pstInLargeCenter[sq1] = distanceFromEdge[sq1] >= maxDistanceFromEdge - 1 ? 1 : 0;
+				}
 				if( nRanks <= 8 )
 					pstForwardness[sq1] = forwardness8Ranks[rank1 + (8-nRanks)];
+				else if( nRanks == 9 )
+					pstForwardness[sq1] = forwardness9Ranks[rank1];
 				else if( nRanks == 10 )
 					pstForwardness[sq1] = forwardness10Ranks[rank1];
 				else if( nRanks == 12 )
@@ -346,6 +385,50 @@ namespace ChessV
 		#region Initializaiton
 		public virtual void Initialize()
 		{
+			//	build "nextStep" matrix for next square number in any direction from each square
+			buildNextStepMatrix();
+
+			//	build "flipSquare" matrix that translates square numbers for a player based on symmetry (mirror/rotational/etc.)
+			buildFlipSquareMatrix();
+
+			//	build the "directionLookup" matrix that determines what direction of travel to 
+			buildDirectionLookupMatrix();
+
+			//	arrays to store material and quick-eval information that is updated incrementally
+			playerMaterial = new int[Game.NumPlayers];
+			playerEndgameMaterial = new int[Game.NumPlayers];
+			midgameMaterialEval = new int[Game.NumPlayers];
+			endgameMaterialEval = new int[Game.NumPlayers];
+			pieceCountByType = new int[Game.NumPlayers, Game.NPieceTypes];
+			playerPieceBitboards = new BitBoard[Game.NumPlayers];
+			playerPieceBitboards64 = new BitBoard64[Game.NumPlayers];
+			pieceTypeBitboards = new BitBoard[Game.NumPlayers, Game.NPieceTypes];
+			pieceTypeBitboards64 = new BitBoard64[Game.NumPlayers, Game.NPieceTypes];
+			pieceTypeBitboardsSliced = new BitBoard[Game.NumPlayers, Game.NPieceTypes, 8];
+			for( int player = 0; player < Game.NumPlayers; player++ )
+			{
+				playerMaterial[player] = 0;
+				playerEndgameMaterial[player] = 0;
+				midgameMaterialEval[player] = 0;
+				endgameMaterialEval[player] = 0;
+				playerPieceBitboards[player] = new BitBoard( NumSquares );
+				for( int x = 0; x < Game.NPieceTypes; x++ )
+				{
+					pieceCountByType[player, x] = 0;
+					pieceTypeBitboards[player, x] = new BitBoard( NumSquares );
+					for( int y = 0; y < 8; y++ )
+						pieceTypeBitboardsSliced[player, x, y] = new BitBoard( NumSquares );
+				}
+			}
+		}
+		#endregion
+
+
+		// *** OVERRIDABLE INITIALIZATION FUNCTIONS *** //
+
+		#region buildNextStepMatrix
+		protected virtual void buildNextStepMatrix()
+		{
 			//	get "directions" used from the Game class
 			Direction[] directions;
 			int nDirections = Game.GetDirections( out directions );
@@ -372,7 +455,12 @@ namespace ChessV
 						nextStep[x, y] = -1;
 				}
 			}
+		}
+		#endregion
 
+		#region buildFlipSquareMatrix
+		protected virtual void buildFlipSquareMatrix()
+		{
 			//	build "flipSquare" matrix that translates square numbers for a player based on symmetry (mirror/rotational/etc.)
 			flipSquare = new int[Game.NumPlayers, NumSquaresExtended];
 			for( int player = 0; player < Game.NumPlayers; player++ )
@@ -386,6 +474,16 @@ namespace ChessV
 				for( int square = NumSquares; square < NumSquaresExtended; square++ )
 					flipSquare[player, square] = square;
 			}
+		}
+		#endregion
+
+		#region buildDirectionLookupMatrix
+		protected virtual void buildDirectionLookupMatrix()
+		{
+			//	get "directions" used from the Game class
+			Direction[] directions;
+			int nDirections = Game.GetDirections( out directions );
+			NumberOfDirections = nDirections;
 
 			//	build the "directionLookup" matrix that determines what direction of travel to 
 			//	get from one square to another
@@ -405,31 +503,14 @@ namespace ChessV
 							//	only record first direction found to give preference 
 							//	to the eight primary directions (in case of Dababbah moves, etc.)
 							directionLookup[from, current] = direction;
+						else if( current == from )
+							//	we have wrapped all the way around a circular or cylindrical board
+							break;
 						current = nextStep[direction, current];
 					}
 				}
-
-			//	arrays to store material and quick-eval information that is updated incrementally
-			playerMaterial = new int[Game.NumPlayers];
-			midgameMaterialEval = new int[Game.NumPlayers];
-			endgameMaterialEval = new int[Game.NumPlayers];
-			pieceCountByType = new int[Game.NumPlayers, Game.NPieceTypes];
-			playerPieceBitboards = new BitBoard[Game.NumPlayers];
-			pieceTypeBitboards = new BitBoard[Game.NumPlayers, Game.NPieceTypes];
-			for( int player = 0; player < Game.NumPlayers; player++ )
-			{
-				playerMaterial[player] = 0;
-				midgameMaterialEval[player] = 0;
-				endgameMaterialEval[player] = 0;
-				playerPieceBitboards[player] = new BitBoard( NumSquares );
-				for( int x = 0; x < Game.NPieceTypes; x++ )
-				{
-					pieceCountByType[player, x] = 0;
-					pieceTypeBitboards[player, x] = new BitBoard( NumSquares );
-				}
-			}
 		}
-        #endregion
+		#endregion
 
 
 		// *** CONFIGURATION *** //
@@ -449,7 +530,7 @@ namespace ChessV
 
 		#region ArrayToPieceMap
 		public Dictionary<int, GenericPiece> ArrayToPieceMap
-			( Dictionary<string, PieceType> typesByNotation,
+			( Dictionary<string, PieceType>[] typesByNotation,
 			  string array )
 		{
 			Dictionary<int, GenericPiece> map;   //  the map we're building
@@ -524,13 +605,18 @@ namespace ChessV
 			squares[square] = null;
 			piece.Square = -1;
 			playerMaterial[piece.Player] -= piece.PieceType.MidgameValue;
+			playerEndgameMaterial[piece.Player] -= piece.PieceType.EndgameValue;
 			midgameMaterialEval[piece.Player] -= piece.PieceType.MidgameValue + piece.PieceType.GetMidgamePST( flipSquare[piece.Player, square] );
 			endgameMaterialEval[piece.Player] -= piece.PieceType.EndgameValue + piece.PieceType.GetEndgamePST( flipSquare[piece.Player, square] );
 			playerPieceBitboards[piece.Player].ClearBit( square );
+			playerPieceBitboards64[piece.Player].ClearBit( square );
 			pieceTypeBitboards[piece.Player, piece.TypeNumber].ClearBit( square );
-			pieceCountByType[piece.Player, piece.TypeNumber] -= 1;
+			pieceTypeBitboards64[piece.Player, piece.TypeNumber].ClearBit( square );
+			pieceTypeBitboardsSliced[piece.Player, piece.TypeNumber, piece.PieceType.SliceLookup[square]].ClearBit( square );
 			hashcode = hashcode ^ piece.PieceType.GetHashKey( piece.Player, square );
 			PawnHashCode = PawnHashCode ^ piece.PieceType.GetPawnHashKey( piece.Player, square );
+			MaterialHashCode = MaterialHashCode ^ piece.PieceType.GetMaterialHashKey( piece.Player, piece.PieceType.SliceLookup[square], pieceCountByType[piece.Player, piece.TypeNumber] );
+			pieceCountByType[piece.Player, piece.TypeNumber] -= 1;
 			return piece;
 		}
 		#endregion
@@ -539,17 +625,40 @@ namespace ChessV
 		public void SetSquare( Piece piece, int square )
 		{
 			if( squares[square] != null )
-				throw new Exception( "!" );
+				throw new Exception( "Error in SetSquare - square is already occupied" );
 			squares[square] = piece;
 			piece.Square = square;
 			playerMaterial[piece.Player] += piece.PieceType.MidgameValue;
+			playerEndgameMaterial[piece.Player] += piece.PieceType.EndgameValue;
 			midgameMaterialEval[piece.Player] += piece.PieceType.MidgameValue + piece.PieceType.GetMidgamePST( flipSquare[piece.Player, square] );
 			endgameMaterialEval[piece.Player] += piece.PieceType.EndgameValue + piece.PieceType.GetEndgamePST( flipSquare[piece.Player, square] );
 			playerPieceBitboards[piece.Player].SetBit( square );
+			playerPieceBitboards64[piece.Player].SetBit( square );
 			pieceTypeBitboards[piece.Player, piece.TypeNumber].SetBit( square );
+			pieceTypeBitboards64[piece.Player, piece.TypeNumber].SetBit( square );
+			pieceTypeBitboardsSliced[piece.Player, piece.TypeNumber, piece.PieceType.SliceLookup[square]].SetBit( square );
 			pieceCountByType[piece.Player, piece.TypeNumber] += 1;
 			hashcode = hashcode ^ piece.PieceType.GetHashKey( piece.Player, square );
 			PawnHashCode = PawnHashCode ^ piece.PieceType.GetPawnHashKey( piece.Player, square );
+			MaterialHashCode = MaterialHashCode ^ piece.PieceType.GetMaterialHashKey( piece.Player, piece.PieceType.SliceLookup[square], pieceCountByType[piece.Player, piece.TypeNumber] );
+		}
+		#endregion
+
+		#region RecalculateMaterialEvaluations
+		public void RecalculateMaterialEvaluations()
+		{
+			midgameMaterialEval[0] = midgameMaterialEval[1] = 0;
+			endgameMaterialEval[0] = endgameMaterialEval[1] = 0;
+
+			for( int x = 0; x < NumSquaresExtended; x++ )
+			{
+				if( squares[x] != null )
+				{
+					Piece piece = squares[x];
+					midgameMaterialEval[piece.Player] += piece.PieceType.MidgameValue + piece.PieceType.GetMidgamePST( flipSquare[piece.Player, x] );
+					endgameMaterialEval[piece.Player] += piece.PieceType.EndgameValue + piece.PieceType.GetEndgamePST( flipSquare[piece.Player, x] );
+				}
+			}
 		}
 		#endregion
 
@@ -557,7 +666,7 @@ namespace ChessV
 		public int CalculateStandardMovePST( int from, int to )
 		{
 			Piece piece = squares[to];
-			if( piece == null || squares[from] != null )
+			if( piece == null )
 				throw new Exception( "!" );
 			return piece.PieceType.GetMidgamePST( flipSquare[piece.Player, to] ) - piece.PieceType.GetMidgamePST( flipSquare[piece.Player, from] );
 		}
@@ -589,7 +698,13 @@ namespace ChessV
 					throw new Exception( "Board fails to validate - piece on square" );
 				if( pieceOnSquare != null && playerPieceBitboards[pieceOnSquare.Player].GetBit( square ) != 1 )
 					throw new Exception( "Board fails to validate - BitBoard" );
+				if( NumSquaresExtended <= 64 && pieceOnSquare != null && playerPieceBitboards64[pieceOnSquare.Player].GetBit( square ) != 1 )
+					throw new Exception( "Board fails to validate - BitBoard64" );
 				if( pieceOnSquare != null && pieceTypeBitboards[pieceOnSquare.Player, pieceOnSquare.TypeNumber].GetBit( square ) != 1 )
+					throw new Exception( "Board fails to validate - BitBoard" );
+				if( NumSquaresExtended <= 64 && pieceOnSquare != null && pieceTypeBitboards64[pieceOnSquare.Player, pieceOnSquare.TypeNumber].GetBit( square ) != 1 )
+					throw new Exception( "Board fails to validate - BitBoard64" );
+				if( pieceOnSquare != null && pieceTypeBitboardsSliced[pieceOnSquare.Player, pieceOnSquare.TypeNumber, pieceOnSquare.PieceType.SliceLookup[square]].GetBit( square ) != 1 )
 					throw new Exception( "Board fails to validate - BitBoard" );
 			}
 		}
@@ -636,8 +751,11 @@ namespace ChessV
 		//	this is combined with the side to move, etc.
 		protected UInt64 hashcode; 
 
-		//	total material value of pieces remaining for player (midgame values, no PST)
+		//	total midgame material value of pieces remaining for player (midgame values, no PST)
 		protected int[] playerMaterial;
+
+		//	total endgame material value of pieces remaining for player (midgame values, no PST)
+		protected int[] playerEndgameMaterial;
 
 		//	total midgame value of all remaining pieces for given player plus PST values
 		protected int[] midgameMaterialEval;
@@ -650,9 +768,14 @@ namespace ChessV
 
 		//	bitboards marking all the pieces of the given player
 		protected BitBoard[] playerPieceBitboards;
+		protected BitBoard64[] playerPieceBitboards64;
 
 		//	bitboards marking all the squares containing pieces of the given type and player
 		protected BitBoard[,] pieceTypeBitboards;
+		protected BitBoard64[,] pieceTypeBitboards64;
+
+		//	bitboards marking all the squares containing pieces of the given type, player, and slice
+		protected BitBoard[,,] pieceTypeBitboardsSliced;
 
 		//	1 if the given square is in the "small center" (used for generating piece-square-tables)
 		protected int[] pstInSmallCenter;

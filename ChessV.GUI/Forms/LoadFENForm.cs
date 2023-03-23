@@ -1,10 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
+﻿
+/***************************************************************************
+
+                                 ChessV
+
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
+
+This file is part of ChessV.  ChessV is free software; you can redistribute
+it and/or modify it under the terms of the GNU General Public License as 
+published by the Free Software Foundation, either version 3 of the License, 
+or (at your option) any later version.
+
+ChessV is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for 
+more details; the file 'COPYING' contains the License text, but if for
+some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
+
+****************************************************************************/
+
+using System;
 using System.Windows.Forms;
 
 namespace ChessV.GUI
@@ -35,16 +49,16 @@ namespace ChessV.GUI
 				PieceType type = pieceTypes[x];
 				//	determine if notation requires _ prefix
 				bool requiresPrefix = false;
-				if( type.Notation.Length == 2 &&
-					type.Notation[1] >= 'A' && type.Notation[1] <= 'Z' )
+				if( type.Notation[0].Length == 2 &&
+					type.Notation[0][0] >= 'A' && type.Notation[0][0] <= 'Z' )
 				{
 					//	see if the first character of this two-character notation
 					//	conflicts with a single-character notation
 					for( int y = 0; y < nPieceTypes; y++ )
-						if( pieceTypes[y].Notation == type.Notation[0].ToString() )
+						if( pieceTypes[y].Notation[0] == type.Notation[0][0].ToString() )
 							requiresPrefix = true;
 				}
-				ListViewItem lvi = new ListViewItem( (requiresPrefix ? "_" : "") + type.Notation );
+				ListViewItem lvi = new ListViewItem( (requiresPrefix ? "_" : "") + type.Notation[0] );
 				lvi.SubItems.Add( type.Name );
 				lvi.SubItems.Add( type.InternalName );
 				listPieceTypes.Items.Add( lvi );
@@ -57,6 +71,7 @@ namespace ChessV.GUI
 			{
 				Game.ClearGameState();
 				Game.LoadFEN( txtCurrentFEN.Text );
+				Game.FENStart = txtCurrentFEN.Text;
 			}
 			DialogResult = DialogResult.OK;
 			Close();

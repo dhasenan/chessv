@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -49,6 +49,24 @@ namespace ChessV
 		public Attribute[] GetCustomAttributes()
 		{
 			return customAttributes.ToArray();
+		}
+
+		public List<Attribute> FindCustomAttributes( Type attributeType )
+		{
+			List<Attribute> attributes = new List<Attribute>();
+			foreach( Attribute attr in customAttributes )
+				if( attr.GetType() == attributeType || attr.GetType().IsSubclassOf( attributeType ) )
+					attributes.Add( attr );
+			return attributes;
+		}
+
+		public void RemoveCustomAttributes( Type typeToRemove )
+		{
+			List<Attribute> newAttributeList = new List<Attribute>();
+			foreach( Attribute attr in customAttributes )
+				if( attr.GetType() != typeToRemove && attr.GetType().IsSubclassOf( typeToRemove ) )
+					newAttributeList.Add( attr );
+			customAttributes = newAttributeList;
 		}
 
 		public Attribute[] GetCustomAttributes( Type attributeType )

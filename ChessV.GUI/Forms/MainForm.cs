@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -22,14 +22,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Drawing;
-using System.Threading;
-using System.Reflection;
 using System.Windows.Forms;
 using System.Text;
 using Microsoft.Win32;
-using ChessV;
-using ChessV.Manager;
-using ChessV.Exceptions;
 
 namespace ChessV.GUI
 {
@@ -86,6 +81,10 @@ namespace ChessV.GUI
 
 			// *** POPULATE TAB CONTROL WITH GAME BUTTONS *** //
 
+			//	Determine scaling in case the tab page size has been changed
+			//	(by operating system hiDPI settings for example.)
+			double xScale = (double) tabIndexPage.Width / 1086;
+			double yScale = (double) tabIndexPage.Height / 546;
 			mainTabControl.SuspendLayout();
 			int pageNumber = 0;
 			//	Iterate through the GameCatalog makeing a tab for each top-level category
@@ -124,36 +123,36 @@ namespace ChessV.GUI
 							try
 							{
 								//	calculate basic button position based on number of columns/rows
-								int xoffset = nColumns == 3 ? 48 : (nColumns == 2 ? 218 : 388);
-								int yoffset = nRows == 2 ? 32 : 162;
+								int xoffset = (int) ((nColumns == 3 ? 48 : (nColumns == 2 ? 218 : 388)) * xScale);
+								int yoffset = (int) ((nRows == 2 ? 32 : 162) * yScale);
 								//	additional adjustments to compensate for auto-scaling based on font size
-								xoffset += (ClientSize.Width - 1118) / 2;
-								yoffset += (ClientSize.Height - 648) / 2;
+								//xoffset += (ClientSize.Width - 1118) / 2;
+								//yoffset += (ClientSize.Height - 648) / 2;
 								//	create an actual Game object of this type so we can ask it to 
 								//	draw a presentation of itself which we will draw on the button
 								Game game = createGame( gamenode.IsAbstract ? gamenode.SampleGameName : gamenode.Name );
 								//	create the button and configure it
 								Button newbutton = new Button();
-								newbutton.BackgroundImage = createBitmapRenderingOfGame( game );
-								newbutton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-								newbutton.Location = new System.Drawing.Point( 340 * (placed % nColumns) + xoffset, 260 * (placed / nColumns) + yoffset );
+								newbutton.BackgroundImage = createBitmapRenderingOfGame( game, xScale, yScale );
+								newbutton.BackgroundImageLayout = ImageLayout.Center;
+								newbutton.Location = new Point( (int) ((340 * (placed % nColumns) + xoffset) * xScale), (int) ((260 * (placed / nColumns) + yoffset) * yScale) );
 								newbutton.Name = "btnChess";
-								newbutton.Size = new System.Drawing.Size( 293, 206 );
+								newbutton.Size = new Size( (int) (293 * xScale), (int) (206 * yScale) );
 								newbutton.TabIndex = 0;
-								newbutton.BackColor = System.Drawing.SystemColors.ControlLight;
+								newbutton.BackColor = SystemColors.ControlLight;
 								newbutton.UseVisualStyleBackColor = true;
 								newbutton.Tag = gamenode;
-								newbutton.Click += new System.EventHandler( this.btnSelectorButtons_Click );
+								newbutton.Click += new EventHandler( btnSelectorButtons_Click );
 								//	add this button to the controls on the tab page
 								page.Controls.Add( newbutton );
 								//	now create a label to go underneath the button
 								Label newlabel = new Label();
 								newlabel.AutoSize = false;
-								newlabel.Size = new System.Drawing.Size( 293, 24 );
-								newlabel.Location = new System.Drawing.Point( 340 * (placed % nColumns) + xoffset, 260 * (placed / nColumns) + yoffset + 208 );
+								newlabel.Size = new Size( (int) (293 * xScale), (int) (24 * yScale) );
+								newlabel.Location = new Point( (int) ((340 * (placed % nColumns) + xoffset) * xScale), (int) ((260 * (placed / nColumns) + yoffset + 208) * yScale) );
 								newlabel.TextAlign = ContentAlignment.MiddleCenter;
 								newlabel.Text = gamenode.Name;
-								newlabel.Font = new System.Drawing.Font( "Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)) );
+								newlabel.Font = new Font( "Microsoft Sans Serif", 10F, FontStyle.Regular, GraphicsUnit.Point, ((byte) (0)) );
 								//	add the label to the controls on the tab page
 								page.Controls.Add( newlabel );
 								//	keep track of how many we've placed so the 
@@ -378,6 +377,14 @@ namespace ChessV.GUI
 			}
 		}
 		#endregion
+
+		#region Tools Button Click Event
+		private void btnTools_Click( object sender, EventArgs e )
+		{
+			ToolsForm form = new ToolsForm();
+			form.Show();
+		}
+		#endregion
 		#endregion
 
 
@@ -431,7 +438,7 @@ namespace ChessV.GUI
 		{
 			lvMasterIndex.Items.Clear();
 			foreach( KeyValuePair<string, GameAttribute> pair in Program.Manager.GameAttributes )
-				if( !pair.Value.Template )
+				if( !pair.Value.Template && !pair.Value.Hidden )
 				{
 					bool showGame = true;
 					if( gameListIsFiltered )
@@ -474,7 +481,7 @@ namespace ChessV.GUI
 		#endregion
 
 		#region createBitmapRenderingOfGame
-		private Bitmap createBitmapRenderingOfGame( Game game )
+		private Bitmap createBitmapRenderingOfGame( Game game, double xScale, double yScale )
         {
 			try
 			{
@@ -484,16 +491,16 @@ namespace ChessV.GUI
 				if( b.Height < 550 )
 				{
 					if( b.Width < 625 )
-						scaled = new Bitmap( b, (int) (b.Width * 0.365), (int) (b.Height * 0.365) );
+						scaled = new Bitmap( b, (int) (b.Width * 0.365 * xScale), (int) (b.Height * 0.365 * yScale) );
 					else
-						scaled = new Bitmap( b, (int) (b.Width * 0.275), (int) (b.Height * 0.275) );
+						scaled = new Bitmap( b, (int) (b.Width * 0.275 * xScale), (int) (b.Height * 0.275 * yScale) );
 				}
 				else
 				{
 					if( b.Height > 675 )
-						scaled = new Bitmap( b, (int) (b.Width * 0.25), (int) (b.Height * 0.25) );
+						scaled = new Bitmap( b, (int) (b.Width * 0.25 * xScale), (int) (b.Height * 0.25 * yScale) );
 					else
-						scaled = new Bitmap( b, (int) (b.Width * 0.3), (int) (b.Height * 0.3) );
+						scaled = new Bitmap( b, (int) (b.Width * 0.3 * xScale), (int) (b.Height * 0.3 * yScale) );
 				}
 				return scaled;
 			}
@@ -518,6 +525,20 @@ namespace ChessV.GUI
 
 			if( result == DialogResult.OK )
 			{
+				EngineSettingsForm engineSettingsForm = new EngineSettingsForm();
+				engineSettingsForm.TTSizeInMB = game.TTSizeInMB;
+				engineSettingsForm.Variation = game.Variation;
+				engineSettingsForm.Weakening = game.Weakening;
+				if( engineSettingsForm.ShowDialog() == DialogResult.OK )
+				{
+					if( engineSettingsForm.Variation != game.Variation )
+					{
+						game.Variation = engineSettingsForm.Variation;
+						game.VariationChanged();
+					}
+					game.TTSizeInMB = engineSettingsForm.TTSizeInMB;
+					game.Weakening = engineSettingsForm.Weakening;
+				}
 				if( gameSettingsForm.ComputerPlayerCount == 0 )
 				{
 					//	Two humans ...
@@ -533,9 +554,17 @@ namespace ChessV.GUI
 					game.ComputerControlled[1] = (gameSettingsForm.ComputerSide == 1);
 					//	Add engine (the interal engine or external XBoard engine)
 					if( gameSettingsForm.EngineConfigurations[0].Configuration == Manager.InternalEngine )
+					{
 						game.AddInternalEngine( gameSettingsForm.ComputerSide );
+					}
 					else
+					{
+						if( gameSettingsForm.EngineConfigurations[0].Configuration.SupportedFeatures.Contains( "memory" ) )
+							gameSettingsForm.EngineConfigurations[0].Configuration.AddOption( new EngineOptions.EngineTextOption( "memory", engineSettingsForm.XBoardMemory ) );
+						if( gameSettingsForm.EngineConfigurations[0].Configuration.SupportedFeatures.Contains( "cores" ) )
+							gameSettingsForm.EngineConfigurations[0].Configuration.AddOption( new EngineOptions.EngineTextOption( "cores", engineSettingsForm.XBoardCores ) );
 						game.AddEngine( gameSettingsForm.EngineConfigurations[0], gameSettingsForm.ComputerSide );
+					}
 					//	Add the human
 					game.AddHuman( gameSettingsForm.ComputerSide ^ 1 );
 				}
@@ -546,14 +575,30 @@ namespace ChessV.GUI
 					game.ComputerControlled[1] = true;
 					//	Add first engine (the interal engine or external XBoard engine)
 					if( gameSettingsForm.EngineConfigurations[0].Configuration == Manager.InternalEngine )
+					{
 						game.AddInternalEngine( 0 );
+					}
 					else
+					{
+						if( gameSettingsForm.EngineConfigurations[0].Configuration.SupportedFeatures.Contains( "memory" ) )
+							gameSettingsForm.EngineConfigurations[0].Configuration.AddOption( new EngineOptions.EngineTextOption( "memory", engineSettingsForm.XBoardMemory ) );
+						if( gameSettingsForm.EngineConfigurations[0].Configuration.SupportedFeatures.Contains( "cores" ) )
+							gameSettingsForm.EngineConfigurations[0].Configuration.AddOption( new EngineOptions.EngineTextOption( "cores", engineSettingsForm.XBoardCores ) );
 						game.AddEngine( gameSettingsForm.EngineConfigurations[0], 0 );
+					}
 					//	Add second engine (the interal engine or external XBoard engine)
 					if( gameSettingsForm.EngineConfigurations[1].Configuration == Manager.InternalEngine )
+					{
 						game.AddInternalEngine( 1 );
+					}
 					else
+					{
+						if( gameSettingsForm.EngineConfigurations[1].Configuration.SupportedFeatures.Contains( "memory" ) )
+							gameSettingsForm.EngineConfigurations[1].Configuration.AddOption( new EngineOptions.EngineTextOption( "memory", engineSettingsForm.XBoardMemory ) );
+						if( gameSettingsForm.EngineConfigurations[1].Configuration.SupportedFeatures.Contains( "cores" ) )
+							gameSettingsForm.EngineConfigurations[1].Configuration.AddOption( new EngineOptions.EngineTextOption( "cores", engineSettingsForm.XBoardCores ) );
 						game.AddEngine( gameSettingsForm.EngineConfigurations[1], 1 );
+					}
 				}
 				//	Configure the "Match" object with the time control
 				game.Match.SetTimeControl( timeControl );

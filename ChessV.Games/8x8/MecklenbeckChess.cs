@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -18,8 +18,8 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
 using System.Collections.Generic;
+using ChessV.Evaluations;
 
 namespace ChessV.Games
 {
@@ -56,6 +56,20 @@ namespace ChessV.Games
 						(loc.Rank >= Board.NumRanks - 3 ? Rules.PromotionOption.CanPromote : Rules.PromotionOption.CannotPromote) );
 				AddRule( promotionRule );
 			}
+		}
+		#endregion
+
+		#region AddEvaluations
+		public override void AddEvaluations()
+		{
+			base.AddEvaluations();
+
+			//	We need to update the pawn structure evaluation to inform it 
+			//	that pawns promote on the 5th rank.  This is important for 
+			//	proper evaluation of passed pawns.
+			PawnStructureEvaluation eval = (PawnStructureEvaluation) FindEvaluation( typeof(PawnStructureEvaluation) );
+			eval.PassedPawnEvaluation = true;
+			eval.PawnPromotionRank = 5;
 		}
 		#endregion
 	}

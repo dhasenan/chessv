@@ -59,17 +59,17 @@ namespace ChessV.GUI
 			this.label3 = new System.Windows.Forms.Label();
 			this.txtCurrentFEN = new System.Windows.Forms.TextBox();
 			this.listPieceTypes = new System.Windows.Forms.ListView();
-			this.label4 = new System.Windows.Forms.Label();
 			this.colNotation = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.colTypeName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.colInternalName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.label4 = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// btnCancel
 			// 
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.btnCancel.Image = ((System.Drawing.Image)(resources.GetObject("btnCancel.Image")));
-			this.btnCancel.Location = new System.Drawing.Point(386, 333);
+			this.btnCancel.Location = new System.Drawing.Point(439, 333);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(123, 32);
 			this.btnCancel.TabIndex = 3;
@@ -81,7 +81,7 @@ namespace ChessV.GUI
 			// btnOK
 			// 
 			this.btnOK.Image = global::ChessV.GUI.Properties.Resources.icon_ok;
-			this.btnOK.Location = new System.Drawing.Point(211, 333);
+			this.btnOK.Location = new System.Drawing.Point(264, 333);
 			this.btnOK.Name = "btnOK";
 			this.btnOK.Size = new System.Drawing.Size(123, 32);
 			this.btnOK.TabIndex = 2;
@@ -93,7 +93,7 @@ namespace ChessV.GUI
 			// lblGameName
 			// 
 			this.lblGameName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lblGameName.Location = new System.Drawing.Point(12, 9);
+			this.lblGameName.Location = new System.Drawing.Point(65, 9);
 			this.lblGameName.Name = "lblGameName";
 			this.lblGameName.Size = new System.Drawing.Size(696, 41);
 			this.lblGameName.TabIndex = 4;
@@ -154,7 +154,7 @@ namespace ChessV.GUI
 			// 
 			this.txtCurrentFEN.Location = new System.Drawing.Point(141, 125);
 			this.txtCurrentFEN.Name = "txtCurrentFEN";
-			this.txtCurrentFEN.Size = new System.Drawing.Size(456, 20);
+			this.txtCurrentFEN.Size = new System.Drawing.Size(534, 20);
 			this.txtCurrentFEN.TabIndex = 10;
 			// 
 			// listPieceTypes
@@ -165,7 +165,7 @@ namespace ChessV.GUI
             this.colInternalName});
 			this.listPieceTypes.FullRowSelect = true;
 			this.listPieceTypes.GridLines = true;
-			this.listPieceTypes.Location = new System.Drawing.Point(162, 173);
+			this.listPieceTypes.Location = new System.Drawing.Point(215, 173);
 			this.listPieceTypes.MultiSelect = false;
 			this.listPieceTypes.Name = "listPieceTypes";
 			this.listPieceTypes.ShowGroups = false;
@@ -173,15 +173,6 @@ namespace ChessV.GUI
 			this.listPieceTypes.TabIndex = 11;
 			this.listPieceTypes.UseCompatibleStateImageBehavior = false;
 			this.listPieceTypes.View = System.Windows.Forms.View.Details;
-			// 
-			// label4
-			// 
-			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(159, 157);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(97, 13);
-			this.label4.TabIndex = 12;
-			this.label4.Text = "Piece Types Used:";
 			// 
 			// colNotation
 			// 
@@ -198,12 +189,21 @@ namespace ChessV.GUI
 			this.colInternalName.Text = "Internal Name";
 			this.colInternalName.Width = 120;
 			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(212, 157);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(97, 13);
+			this.label4.TabIndex = 12;
+			this.label4.Text = "Piece Types Used:";
+			// 
 			// LoadFENForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.LemonChiffon;
-			this.ClientSize = new System.Drawing.Size(720, 377);
+			this.ClientSize = new System.Drawing.Size(822, 377);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.listPieceTypes);
 			this.Controls.Add(this.txtCurrentFEN);

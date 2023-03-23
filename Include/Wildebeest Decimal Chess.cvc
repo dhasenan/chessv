@@ -1,0 +1,39 @@
+
+Game 'Wildebeest Decimal Chess' : 'Generic 10x10'
+{
+	Invented = "2019";
+	InventedBy = "Erik";
+	Symmetry = MirrorSymmetry;
+	ColorScheme = "Brown Bear Brawl";
+
+	SetGameVariables
+	{
+		Array = "c4w3c/1rnbqkbnr1/pppppppppp/10/10/10/10/PPPPPPPPPP/1RNBQKBNR1/C4W3C";
+		Castling.AddChoice( "WDC",
+			"King slides one or more spaces to castle and may slide as far as the square occuped by the rook" );
+		Castling = "WDC";
+		PawnMultipleMove = "Grand";
+		EnPassant = true;
+		PromotionTypes = "QW";
+		StalemateResult = "Loss";
+	}
+
+	AddPieceTypes
+	{
+		AddChessPieceTypes();
+		AddPieceType( Camel, "Camel", "C", 225, 225 );
+		AddPieceType( Wildebeest, "Wildebeast", "W", 700, 675 );
+	}
+
+	AddRules
+	{
+		if( Castling == "WDC" )
+		{
+			AddFlexibleCastlingRule();
+			FlexibleCastlingMove( 0, "f2", "g2", "i2", `I`, true );
+			FlexibleCastlingMove( 0, "f2", "e2", "b2", `B`, true );
+			FlexibleCastlingMove( 1, "f9", "g9", "i9", `i`, true );
+			FlexibleCastlingMove( 1, "f9", "e9", "b9", `b`, true );
+		}
+	}
+}

@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -49,6 +49,11 @@ namespace ChessV.GUI
 		private void InitializeComponent()
 		{
 			this.groupBoxTC = new System.Windows.Forms.GroupBox();
+			this.optTimeTimePerGame = new System.Windows.Forms.RadioButton();
+			this.optTimeFixedNodes = new System.Windows.Forms.RadioButton();
+			this.optTimeFixedDepth = new System.Windows.Forms.RadioButton();
+			this.optTimeFixedPerMove = new System.Windows.Forms.RadioButton();
+			this.optTimeUnlimited = new System.Windows.Forms.RadioButton();
 			this.panelTimePerGame = new System.Windows.Forms.Panel();
 			this.labelTimeMSec = new System.Windows.Forms.Label();
 			this.labelTimeSec = new System.Windows.Forms.Label();
@@ -67,14 +72,12 @@ namespace ChessV.GUI
 			this.labelTimeUnlimited2 = new System.Windows.Forms.Label();
 			this.labelTimeUnlimited1 = new System.Windows.Forms.Label();
 			this.panelFixedDepth = new System.Windows.Forms.Panel();
-			this.txtFixedDepth = new System.Windows.Forms.TextBox();
-			this.label3 = new System.Windows.Forms.Label();
 			this.labelFixedDepth = new System.Windows.Forms.Label();
-			this.optTimeTimePerGame = new System.Windows.Forms.RadioButton();
-			this.optTimeFixedNodes = new System.Windows.Forms.RadioButton();
-			this.optTimeFixedDepth = new System.Windows.Forms.RadioButton();
-			this.optTimeFixedPerMove = new System.Windows.Forms.RadioButton();
-			this.optTimeUnlimited = new System.Windows.Forms.RadioButton();
+			this.txtFixedDepth = new System.Windows.Forms.TextBox();
+			this.panelFixedNodes = new System.Windows.Forms.Panel();
+			this.txtFixedNodes = new System.Windows.Forms.TextBox();
+			this.lblNodesSetting = new System.Windows.Forms.Label();
+			this.labelFixedNodes = new System.Windows.Forms.Label();
 			this.panelTimePerMove = new System.Windows.Forms.Panel();
 			this.lblTimeMoveMSec = new System.Windows.Forms.Label();
 			this.lblTimeMoveSec = new System.Windows.Forms.Label();
@@ -85,6 +88,7 @@ namespace ChessV.GUI
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.labelTimePerMove = new System.Windows.Forms.Label();
+			this.lblDepthSetting = new System.Windows.Forms.Label();
 			this.btnOK = new System.Windows.Forms.Button();
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.groupBoxPlayers = new System.Windows.Forms.GroupBox();
@@ -116,6 +120,7 @@ namespace ChessV.GUI
 			this.panelTimePerGame.SuspendLayout();
 			this.panelUnlimited.SuspendLayout();
 			this.panelFixedDepth.SuspendLayout();
+			this.panelFixedNodes.SuspendLayout();
 			this.panelTimePerMove.SuspendLayout();
 			this.groupBoxPlayers.SuspendLayout();
 			this.panelPlayerVsComputer.SuspendLayout();
@@ -135,6 +140,7 @@ namespace ChessV.GUI
 			this.groupBoxTC.Controls.Add(this.panelTimePerGame);
 			this.groupBoxTC.Controls.Add(this.panelUnlimited);
 			this.groupBoxTC.Controls.Add(this.panelFixedDepth);
+			this.groupBoxTC.Controls.Add(this.panelFixedNodes);
 			this.groupBoxTC.Controls.Add(this.panelTimePerMove);
 			this.groupBoxTC.Location = new System.Drawing.Point(12, 328);
 			this.groupBoxTC.Name = "groupBoxTC";
@@ -142,6 +148,63 @@ namespace ChessV.GUI
 			this.groupBoxTC.TabIndex = 0;
 			this.groupBoxTC.TabStop = false;
 			this.groupBoxTC.Text = "Time Control";
+			// 
+			// optTimeTimePerGame
+			// 
+			this.optTimeTimePerGame.AutoSize = true;
+			this.optTimeTimePerGame.Checked = true;
+			this.optTimeTimePerGame.Location = new System.Drawing.Point(53, 53);
+			this.optTimeTimePerGame.Name = "optTimeTimePerGame";
+			this.optTimeTimePerGame.Size = new System.Drawing.Size(98, 17);
+			this.optTimeTimePerGame.TabIndex = 4;
+			this.optTimeTimePerGame.TabStop = true;
+			this.optTimeTimePerGame.Text = "Time Per Game";
+			this.optTimeTimePerGame.UseVisualStyleBackColor = true;
+			this.optTimeTimePerGame.CheckedChanged += new System.EventHandler(this.optTimeTimePerGame_CheckedChanged);
+			// 
+			// optTimeFixedNodes
+			// 
+			this.optTimeFixedNodes.AutoSize = true;
+			this.optTimeFixedNodes.Location = new System.Drawing.Point(53, 122);
+			this.optTimeFixedNodes.Name = "optTimeFixedNodes";
+			this.optTimeFixedNodes.Size = new System.Drawing.Size(84, 17);
+			this.optTimeFixedNodes.TabIndex = 3;
+			this.optTimeFixedNodes.Text = "Fixed Nodes";
+			this.optTimeFixedNodes.UseVisualStyleBackColor = true;
+			this.optTimeFixedNodes.CheckedChanged += new System.EventHandler(this.optTimeFixedNodes_CheckedChanged);
+			// 
+			// optTimeFixedDepth
+			// 
+			this.optTimeFixedDepth.AutoSize = true;
+			this.optTimeFixedDepth.Location = new System.Drawing.Point(53, 99);
+			this.optTimeFixedDepth.Name = "optTimeFixedDepth";
+			this.optTimeFixedDepth.Size = new System.Drawing.Size(82, 17);
+			this.optTimeFixedDepth.TabIndex = 2;
+			this.optTimeFixedDepth.Text = "Fixed Depth";
+			this.optTimeFixedDepth.UseVisualStyleBackColor = true;
+			this.optTimeFixedDepth.CheckedChanged += new System.EventHandler(this.optTimeFixedDepth_CheckedChanged);
+			// 
+			// optTimeFixedPerMove
+			// 
+			this.optTimeFixedPerMove.AutoSize = true;
+			this.optTimeFixedPerMove.Location = new System.Drawing.Point(53, 76);
+			this.optTimeFixedPerMove.Name = "optTimeFixedPerMove";
+			this.optTimeFixedPerMove.Size = new System.Drawing.Size(125, 17);
+			this.optTimeFixedPerMove.TabIndex = 1;
+			this.optTimeFixedPerMove.Text = "Fixed Time Per Move";
+			this.optTimeFixedPerMove.UseVisualStyleBackColor = true;
+			this.optTimeFixedPerMove.CheckedChanged += new System.EventHandler(this.optTimeFixedPerMove_CheckedChanged);
+			// 
+			// optTimeUnlimited
+			// 
+			this.optTimeUnlimited.AutoSize = true;
+			this.optTimeUnlimited.Location = new System.Drawing.Point(53, 30);
+			this.optTimeUnlimited.Name = "optTimeUnlimited";
+			this.optTimeUnlimited.Size = new System.Drawing.Size(68, 17);
+			this.optTimeUnlimited.TabIndex = 0;
+			this.optTimeUnlimited.Text = "Unlimited";
+			this.optTimeUnlimited.UseVisualStyleBackColor = true;
+			this.optTimeUnlimited.CheckedChanged += new System.EventHandler(this.optTimeUnlimited_CheckedChanged);
 			// 
 			// panelTimePerGame
 			// 
@@ -333,31 +396,13 @@ namespace ChessV.GUI
 			// 
 			this.panelFixedDepth.BackColor = System.Drawing.Color.Wheat;
 			this.panelFixedDepth.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.panelFixedDepth.Controls.Add(this.txtFixedDepth);
-			this.panelFixedDepth.Controls.Add(this.label3);
 			this.panelFixedDepth.Controls.Add(this.labelFixedDepth);
+			this.panelFixedDepth.Controls.Add(this.txtFixedDepth);
+			this.panelFixedDepth.Controls.Add(this.lblDepthSetting);
 			this.panelFixedDepth.Location = new System.Drawing.Point(258, 24);
 			this.panelFixedDepth.Name = "panelFixedDepth";
 			this.panelFixedDepth.Size = new System.Drawing.Size(231, 125);
 			this.panelFixedDepth.TabIndex = 10;
-			// 
-			// txtFixedDepth
-			// 
-			this.txtFixedDepth.BackColor = System.Drawing.Color.FloralWhite;
-			this.txtFixedDepth.Location = new System.Drawing.Point(105, 60);
-			this.txtFixedDepth.Name = "txtFixedDepth";
-			this.txtFixedDepth.Size = new System.Drawing.Size(50, 20);
-			this.txtFixedDepth.TabIndex = 2;
-			this.txtFixedDepth.Text = "5";
-			// 
-			// label3
-			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(60, 63);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(39, 13);
-			this.label3.TabIndex = 1;
-			this.label3.Text = "Depth:";
 			// 
 			// labelFixedDepth
 			// 
@@ -371,61 +416,56 @@ namespace ChessV.GUI
 			this.labelFixedDepth.Text = "Fixed Depth";
 			this.labelFixedDepth.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
-			// optTimeTimePerGame
+			// txtFixedDepth
 			// 
-			this.optTimeTimePerGame.AutoSize = true;
-			this.optTimeTimePerGame.Checked = true;
-			this.optTimeTimePerGame.Location = new System.Drawing.Point(53, 53);
-			this.optTimeTimePerGame.Name = "optTimeTimePerGame";
-			this.optTimeTimePerGame.Size = new System.Drawing.Size(98, 17);
-			this.optTimeTimePerGame.TabIndex = 4;
-			this.optTimeTimePerGame.TabStop = true;
-			this.optTimeTimePerGame.Text = "Time Per Game";
-			this.optTimeTimePerGame.UseVisualStyleBackColor = true;
-			this.optTimeTimePerGame.CheckedChanged += new System.EventHandler(this.optTimeTimePerGame_CheckedChanged);
+			this.txtFixedDepth.BackColor = System.Drawing.Color.FloralWhite;
+			this.txtFixedDepth.Location = new System.Drawing.Point(105, 60);
+			this.txtFixedDepth.Name = "txtFixedDepth";
+			this.txtFixedDepth.Size = new System.Drawing.Size(50, 20);
+			this.txtFixedDepth.TabIndex = 2;
+			this.txtFixedDepth.Text = "5";
 			// 
-			// optTimeFixedNodes
+			// panelFixedNodes
 			// 
-			this.optTimeFixedNodes.AutoSize = true;
-			this.optTimeFixedNodes.Location = new System.Drawing.Point(53, 122);
-			this.optTimeFixedNodes.Name = "optTimeFixedNodes";
-			this.optTimeFixedNodes.Size = new System.Drawing.Size(84, 17);
-			this.optTimeFixedNodes.TabIndex = 3;
-			this.optTimeFixedNodes.Text = "Fixed Nodes";
-			this.optTimeFixedNodes.UseVisualStyleBackColor = true;
+			this.panelFixedNodes.BackColor = System.Drawing.Color.Wheat;
+			this.panelFixedNodes.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panelFixedNodes.Controls.Add(this.txtFixedNodes);
+			this.panelFixedNodes.Controls.Add(this.lblNodesSetting);
+			this.panelFixedNodes.Controls.Add(this.labelFixedNodes);
+			this.panelFixedNodes.Location = new System.Drawing.Point(258, 24);
+			this.panelFixedNodes.Name = "panelFixedNodes";
+			this.panelFixedNodes.Size = new System.Drawing.Size(231, 125);
+			this.panelFixedNodes.TabIndex = 10;
 			// 
-			// optTimeFixedDepth
+			// txtFixedNodes
 			// 
-			this.optTimeFixedDepth.AutoSize = true;
-			this.optTimeFixedDepth.Location = new System.Drawing.Point(53, 99);
-			this.optTimeFixedDepth.Name = "optTimeFixedDepth";
-			this.optTimeFixedDepth.Size = new System.Drawing.Size(82, 17);
-			this.optTimeFixedDepth.TabIndex = 2;
-			this.optTimeFixedDepth.Text = "Fixed Depth";
-			this.optTimeFixedDepth.UseVisualStyleBackColor = true;
-			this.optTimeFixedDepth.CheckedChanged += new System.EventHandler(this.optTimeFixedDepth_CheckedChanged);
+			this.txtFixedNodes.BackColor = System.Drawing.Color.FloralWhite;
+			this.txtFixedNodes.Location = new System.Drawing.Point(105, 60);
+			this.txtFixedNodes.Name = "txtFixedNodes";
+			this.txtFixedNodes.Size = new System.Drawing.Size(50, 20);
+			this.txtFixedNodes.TabIndex = 2;
+			this.txtFixedNodes.Text = "25000";
 			// 
-			// optTimeFixedPerMove
+			// lblNodesSetting
 			// 
-			this.optTimeFixedPerMove.AutoSize = true;
-			this.optTimeFixedPerMove.Location = new System.Drawing.Point(53, 76);
-			this.optTimeFixedPerMove.Name = "optTimeFixedPerMove";
-			this.optTimeFixedPerMove.Size = new System.Drawing.Size(125, 17);
-			this.optTimeFixedPerMove.TabIndex = 1;
-			this.optTimeFixedPerMove.Text = "Fixed Time Per Move";
-			this.optTimeFixedPerMove.UseVisualStyleBackColor = true;
-			this.optTimeFixedPerMove.CheckedChanged += new System.EventHandler(this.optTimeFixedPerMove_CheckedChanged);
+			this.lblNodesSetting.AutoSize = true;
+			this.lblNodesSetting.Location = new System.Drawing.Point(60, 63);
+			this.lblNodesSetting.Name = "lblNodesSetting";
+			this.lblNodesSetting.Size = new System.Drawing.Size(41, 13);
+			this.lblNodesSetting.TabIndex = 1;
+			this.lblNodesSetting.Text = "Nodes:";
 			// 
-			// optTimeUnlimited
+			// labelFixedNodes
 			// 
-			this.optTimeUnlimited.AutoSize = true;
-			this.optTimeUnlimited.Location = new System.Drawing.Point(53, 30);
-			this.optTimeUnlimited.Name = "optTimeUnlimited";
-			this.optTimeUnlimited.Size = new System.Drawing.Size(68, 17);
-			this.optTimeUnlimited.TabIndex = 0;
-			this.optTimeUnlimited.Text = "Unlimited";
-			this.optTimeUnlimited.UseVisualStyleBackColor = true;
-			this.optTimeUnlimited.CheckedChanged += new System.EventHandler(this.optTimeUnlimited_CheckedChanged);
+			this.labelFixedNodes.BackColor = System.Drawing.Color.Goldenrod;
+			this.labelFixedNodes.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.labelFixedNodes.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelFixedNodes.Location = new System.Drawing.Point(-1, -1);
+			this.labelFixedNodes.Name = "labelFixedNodes";
+			this.labelFixedNodes.Size = new System.Drawing.Size(231, 25);
+			this.labelFixedNodes.TabIndex = 0;
+			this.labelFixedNodes.Text = "Fixed Nodes";
+			this.labelFixedNodes.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// panelTimePerMove
 			// 
@@ -534,6 +574,15 @@ namespace ChessV.GUI
 			this.labelTimePerMove.TabIndex = 0;
 			this.labelTimePerMove.Text = "Time per Move";
 			this.labelTimePerMove.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// lblDepthSetting
+			// 
+			this.lblDepthSetting.AutoSize = true;
+			this.lblDepthSetting.Location = new System.Drawing.Point(60, 63);
+			this.lblDepthSetting.Name = "lblDepthSetting";
+			this.lblDepthSetting.Size = new System.Drawing.Size(39, 13);
+			this.lblDepthSetting.TabIndex = 1;
+			this.lblDepthSetting.Text = "Depth:";
 			// 
 			// btnOK
 			// 
@@ -794,17 +843,17 @@ namespace ChessV.GUI
 			this.panelGame.Controls.Add(this.lblGameDescription2);
 			this.panelGame.Controls.Add(this.lblGameDescription1);
 			this.panelGame.Controls.Add(this.labelGameTitle);
-			this.panelGame.Location = new System.Drawing.Point(83, 19);
+			this.panelGame.Location = new System.Drawing.Point(63, 19);
 			this.panelGame.Name = "panelGame";
-			this.panelGame.Size = new System.Drawing.Size(376, 91);
+			this.panelGame.Size = new System.Drawing.Size(426, 91);
 			this.panelGame.TabIndex = 1;
 			// 
 			// lblGameDescription2
 			// 
 			this.lblGameDescription2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lblGameDescription2.Location = new System.Drawing.Point(3, 56);
+			this.lblGameDescription2.Location = new System.Drawing.Point(-1, 56);
 			this.lblGameDescription2.Name = "lblGameDescription2";
-			this.lblGameDescription2.Size = new System.Drawing.Size(368, 23);
+			this.lblGameDescription2.Size = new System.Drawing.Size(426, 23);
 			this.lblGameDescription2.TabIndex = 2;
 			this.lblGameDescription2.Text = "Game Description 2";
 			this.lblGameDescription2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -812,9 +861,9 @@ namespace ChessV.GUI
 			// lblGameDescription1
 			// 
 			this.lblGameDescription1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lblGameDescription1.Location = new System.Drawing.Point(3, 33);
+			this.lblGameDescription1.Location = new System.Drawing.Point(-1, 33);
 			this.lblGameDescription1.Name = "lblGameDescription1";
-			this.lblGameDescription1.Size = new System.Drawing.Size(368, 23);
+			this.lblGameDescription1.Size = new System.Drawing.Size(426, 23);
 			this.lblGameDescription1.TabIndex = 1;
 			this.lblGameDescription1.Text = "Game Description 1";
 			this.lblGameDescription1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -826,7 +875,7 @@ namespace ChessV.GUI
 			this.labelGameTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelGameTitle.Location = new System.Drawing.Point(-1, -1);
 			this.labelGameTitle.Name = "labelGameTitle";
-			this.labelGameTitle.Size = new System.Drawing.Size(376, 25);
+			this.labelGameTitle.Size = new System.Drawing.Size(426, 25);
 			this.labelGameTitle.TabIndex = 0;
 			this.labelGameTitle.Text = "Game Name";
 			this.labelGameTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -856,6 +905,8 @@ namespace ChessV.GUI
 			this.panelUnlimited.ResumeLayout(false);
 			this.panelFixedDepth.ResumeLayout(false);
 			this.panelFixedDepth.PerformLayout();
+			this.panelFixedNodes.ResumeLayout(false);
+			this.panelFixedNodes.PerformLayout();
 			this.panelTimePerMove.ResumeLayout(false);
 			this.panelTimePerMove.PerformLayout();
 			this.groupBoxPlayers.ResumeLayout(false);
@@ -897,6 +948,7 @@ namespace ChessV.GUI
 		private System.Windows.Forms.Label lblGameDescription1;
 		private System.Windows.Forms.Label labelGameTitle;
 		private System.Windows.Forms.Panel panelTimePerMove;
+		private System.Windows.Forms.Panel panelFixedNodes;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label labelTimePerMove;
 		private System.Windows.Forms.Label lblTimeMoveMSec;
@@ -935,7 +987,10 @@ namespace ChessV.GUI
 		private System.Windows.Forms.Label labelTimeUnlimited1;
 		private System.Windows.Forms.Panel panelFixedDepth;
 		private System.Windows.Forms.TextBox txtFixedDepth;
-		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.TextBox txtFixedNodes;
+		private System.Windows.Forms.Label lblDepthSetting;
+		private System.Windows.Forms.Label lblNodesSetting;
 		private System.Windows.Forms.Label labelFixedDepth;
+		private System.Windows.Forms.Label labelFixedNodes;
 	}
 }

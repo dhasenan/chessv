@@ -53,7 +53,7 @@ namespace ChessV.Utilities
 			addPieceType( typeof(Amazon), "QN" );
 			addPieceType( typeof(Chancellor), "RN" );
 			addPieceType( typeof(Archbishop), "BN" );
-			addPieceType( typeof(Knightrider), "NN" );
+			addPieceType( typeof(Nightrider), "NN" );
 			addPieceType( typeof(Unicorn), "BNN" );
 			addPieceType( typeof(Champion), "WDA" );
 			addPieceType( typeof(Wizard), "FC" );

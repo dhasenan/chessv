@@ -92,9 +92,9 @@ namespace ChessV.GUI
 							unassignedCount++;
 						}
 					}
-					else if( property.PropertyType == typeof(IntVariable) )
+					else if( property.PropertyType == typeof(IntRangeVariable) )
 					{
-						IntVariable val = (IntVariable) property.GetValue( game, null );
+						IntRangeVariable val = (IntRangeVariable) property.GetValue( game, null );
 						if( val.Value == null )
 						{
 							//	this property is unassigned
@@ -165,7 +165,10 @@ namespace ChessV.GUI
 								pickVariable1.Visible = true;
 								foreach( string choicename in choice.Choices )
 									pickVariable1.Items.Add( choicename );
-								pickVariable1.SelectedIndex = Program.Random.Next( pickVariable1.Items.Count );
+								if( choice.DefaultValue != null )
+									pickVariable1.SelectedItem = choice.DefaultValue;
+								else
+									pickVariable1.SelectedIndex = Program.Random.Next( pickVariable1.Items.Count );
 							}
 							else if( unassignedCount == 1 )
 							{
@@ -175,16 +178,19 @@ namespace ChessV.GUI
 								pickVariable2.Visible = true;
 								foreach( string choicename in choice.Choices )
 									pickVariable2.Items.Add( choicename );
-								pickVariable2.SelectedIndex = Program.Random.Next( pickVariable2.Items.Count );
+								if( choice.DefaultValue != null )
+									pickVariable2.SelectedItem = choice.DefaultValue;
+								else
+									pickVariable2.SelectedIndex = Program.Random.Next( pickVariable2.Items.Count );
 							}
 							else
 								throw new Exception( "Not supported - too many unassigned variables" );
 							unassignedCount++;
 						}
 					}
-					else if( property.PropertyType == typeof(IntVariable) )
+					else if( property.PropertyType == typeof(IntRangeVariable) )
 					{
-						IntVariable val = (IntVariable) property.GetValue( game, null );
+						IntRangeVariable val = (IntRangeVariable) property.GetValue( game, null );
 						if( val.Value == null )
 						{
 							//	this property is unassigned
@@ -222,12 +228,12 @@ namespace ChessV.GUI
 				if( intProperty1 != null )
 				{
 					intPropertyNumber = 1;
-					((IntVariable) intProperty1.GetValue( game, null )).Value = Convert.ToInt32( txtVariable1.Text );
+					((IntRangeVariable) intProperty1.GetValue( game, null )).Value = Convert.ToInt32( txtVariable1.Text );
 				}
 				if( intProperty2 != null )
 				{
 					intPropertyNumber = 2;
-					((IntVariable) intProperty2.GetValue( game, null )).Value = Convert.ToInt32( txtVariable2.Text );
+					((IntRangeVariable) intProperty2.GetValue( game, null )).Value = Convert.ToInt32( txtVariable2.Text );
 				}
 				if( choiceProperty1 != null )
 					((ChoiceVariable) choiceProperty1.GetValue( game, null )).Value = (string) pickVariable1.SelectedItem;
@@ -237,7 +243,7 @@ namespace ChessV.GUI
 			catch
 			{
 				PropertyInfo property = intPropertyNumber == 1 ? intProperty1 : intProperty2;
-				IntVariable variable = (IntVariable) property.GetValue( game, null );
+				IntRangeVariable variable = (IntRangeVariable) property.GetValue( game, null );
 				string displayName = ConvertVariableNameToDisplay( property.Name );
 				MessageBox.Show( "Parameter '" + displayName.Substring( 0, displayName.Length - 1 ) + 
 					"' must be between " + variable.MinValue.ToString() + " and " + variable.MaxValue.ToString() );

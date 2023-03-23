@@ -1,0 +1,20 @@
+
+Game 'Almost Chess' : Chess
+{
+	Invented = "1977";
+	InventedBy = "Ralph Betza";
+	GameDescription1 = "Intended as a small change from Chess, the Queens are replaced";
+	GameDescription2 = "with Chancellors, which move as either Rook or Knight";
+
+	SetGameVariables
+	{
+		Array = "rnbckbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBCKBNR";
+		PromotionTypes = "CRNB";
+	}
+
+	AddPieceTypes
+	{
+		Queen.Enabled = false;
+		AddPieceType( Chancellor, "Chancellor", "C", 900, 925 );
+	}
+}

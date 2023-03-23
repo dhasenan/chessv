@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -19,7 +19,6 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 ****************************************************************************/
 
 using System;
-using System.Collections.Generic;
 
 namespace ChessV.Games
 {
@@ -43,11 +42,12 @@ namespace ChessV.Games
 		  GameDescription1 = "A derivative of Fischer Random Chess with alternate castling rules.",
 		  GameDescription2 = "The initial array is randomized to eliminate the memorization of openings",
 		  Definitions="Castling=Chess480")]
+	[Appearance(PieceSet="Motif")]
 	class FischerRandomChess: Chess
 	{
 		// *** GAME VARIABLES *** //
 
-		[GameVariable] public IntVariable PositionNumber { get; set; }
+		[GameVariable] public IntRangeVariable PositionNumber { get; set; }
 
 
 		// *** CONSTRUCTION *** //
@@ -62,7 +62,8 @@ namespace ChessV.Games
 		public override void SetGameVariables()
 		{
 			base.SetGameVariables();
-			PositionNumber = new IntVariable( 1, 960 );
+			PositionNumber = new IntRangeVariable( 1, 960 );
+			Array = null;
 			Castling.Choices.Add( "FRC" );
 			Castling.Choices.Add( "Chess480" );
 		}
@@ -148,7 +149,7 @@ namespace ChessV.Games
 				//	add castling rules
 				if( Castling.Value == "FRC" )
 				{
-					CastlingRule();
+					AddCastlingRule();
 					CastlingMove( 0, king, "c1", leftRook, "d1", Char.ToUpper( leftRook[0] ) );
 					CastlingMove( 0, king, "g1", rightRook, "f1", Char.ToUpper( rightRook[0] ) );
 					leftRook = leftRook[0] + "8";
@@ -159,7 +160,7 @@ namespace ChessV.Games
 				}
 				else if( Castling.Value == "Chess480" )
 				{
-					CastlingRule();
+					AddCastlingRule();
 					if( king == "b1" )
 					{
 						CastlingMove( 0, "b1", "a1", "a1", "b1", 'A' );

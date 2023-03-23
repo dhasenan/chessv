@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -25,6 +25,12 @@ namespace ChessV
 	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
 	public class GameVariableAttribute: Attribute
 	{
-		public GameVariableAttribute() { }
+		public bool Hidden { get; set; }
+
+		public GameVariableAttribute()
+		{
+			Hidden = false;
+		}
+
 	}
 }

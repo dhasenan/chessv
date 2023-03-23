@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -18,10 +18,6 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-using ChessV;
-
 namespace ChessV.Games
 {
 	[Game("Archchess", typeof(Geometry.Rectangular), 10, 10,
@@ -35,10 +31,6 @@ namespace ChessV.Games
 	{
 		// *** PIECE TYPES *** //
 
-		public PieceType Queen;
-		public PieceType Rook;
-		public PieceType Bishop;
-		public PieceType Knight;
 		public PieceType Decurion;
 		public PieceType Centurion;
 
@@ -64,7 +56,8 @@ namespace ChessV.Games
 		{
 			base.SetGameVariables();
 			FENFormat = "{array} {current player} {castling} {kings-leap} {en-passant} {half-move clock} {turn number}";
-			FENStart = "rnbckqdbnr/pppppppppp/10/10/10/10/10/10/PPPPPPPPPP/RNBCKQDBNR w JAja Kk - 0 1";
+			FENStart = "#{Array} w #default #default - 0 1";
+			Array = "rnbckqdbnr/pppppppppp/10/10/10/10/10/10/PPPPPPPPPP/RNBCKQDBNR";
 			KingsLeap = true;
 			EnPassant = true;
 			PromotionRule.Value = "Standard";
@@ -78,10 +71,7 @@ namespace ChessV.Games
 		public override void AddPieceTypes()
 		{
 			base.AddPieceTypes();
-			AddPieceType( Queen = new Queen( "Queen", "Q", 1025, 1250 ) );
-			AddPieceType( Rook = new Rook( "Rook", "R", 550, 650 ) );
-			AddPieceType( Bishop = new Bishop( "Bishop", "B", 375, 425 ) );
-			AddPieceType( Knight = new Knight( "Knight", "N", 300, 300 ) );
+			AddChessPieceTypes();
 			AddPieceType( Decurion = new Ferz( "Decurion", "D", 140, 140 ) );
 			AddPieceType( Centurion = new Squirrel( "Centurion", "C", 550, 550, "Guard" ) );
 		}

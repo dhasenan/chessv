@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -18,8 +18,6 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
 using Microsoft.Win32;
 
 namespace ChessV.GUI
@@ -52,7 +50,7 @@ namespace ChessV.GUI
 
 		// *** INITIALIZATION *** //
 
-		public static void Initialize()
+		public static int Initialize()
 		{
 			//	Find the ChessV key in HKEY_CURRENT_USER\Software (create if necessary)
 			RegistryKey softwareKey = Registry.CurrentUser.OpenSubKey( "Software", true );
@@ -62,8 +60,9 @@ namespace ChessV.GUI
 			if( RegistryKey == null )
 			{
 				RegistryKey = softwareKey.CreateSubKey( "ChessV" );
-				RegistryKey.SetValue( "RegistryVersion", 1, RegistryValueKind.DWord );
+				RegistryKey.SetValue( "RegistryVersion", 2, RegistryValueKind.DWord );
 				AutodetectNewEngines = Program.RunningOnWindows;
+				return 2;
 			}
 			else
 			{
@@ -74,8 +73,21 @@ namespace ChessV.GUI
 						RegistryKey.DeleteSubKeyTree( "Color Schemes" );
 					if( RegistryKey.OpenSubKey( "Games" ) != null )
 						RegistryKey.DeleteSubKeyTree( "Games" );
-					RegistryKey.SetValue( "RegistryVersion", 1, RegistryValueKind.DWord );
-					RegistryVersion = 1;
+					RegistryKey.SetValue( "RegistryVersion", 2, RegistryValueKind.DWord );
+					RegistryVersion = 2;
+					return 2;
+				}
+				else if( (int) version == 1 )
+				{
+					//	upgrade to registry version 2
+					RegistryVersion = 2;
+					RegistryKey.SetValue( "RegistryVersion", 2, RegistryValueKind.DWord );
+					object autodetect = RegistryKey.GetValue( "AutodetectEngines" );
+					if( autodetect != null && (int) autodetect == 0 )
+						autodetectNewEngines = false;
+					else
+						autodetectNewEngines = true;
+					return 1;
 				}
 				else
 				{
@@ -85,6 +97,7 @@ namespace ChessV.GUI
 						autodetectNewEngines = false;
 					else
 						autodetectNewEngines = true;
+					return 2;
 				}
 			}
 		}

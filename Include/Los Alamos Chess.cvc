@@ -1,0 +1,24 @@
+
+Game 'Los Alamos Chess' : 'Generic Chess'
+{
+	NumRanks = 6;
+	NumFiles = 6;
+	Symmetry = MirrorSymmetry;
+	Invented = "1956";
+	InventedBy = "Staff of Los Alamos";
+	GameDescription1 = "First Chess variant to be played by a computer.";
+	GameDescription2 = "Game simplified so it could be played by the primitive computers of the day.";
+
+	SetGameVariables
+	{
+		Array = "rnqknr/pppppp/6/6/PPPPPP/RNQKNR";
+		PromotionTypes = "RNQ";
+	}
+
+	AddPieceTypes
+	{
+		AddPieceType( Rook, "Rook", "R", 350, 350 );
+		AddPieceType( Knight, "Knight", "N", 260, 260 );
+		AddPieceType( Queen, "Queen", "Q", 600, 600 );
+	}
+}

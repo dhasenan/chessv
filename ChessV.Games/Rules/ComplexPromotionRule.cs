@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -18,7 +18,6 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
 using System.Collections.Generic;
 
 namespace ChessV.Games.Rules
@@ -30,9 +29,10 @@ namespace ChessV.Games.Rules
 		public List<PieceType> PromotionTypes;
 		public List<PieceType> ReplacementPromotionTypes;
 		public OptionalPromotionLocationDelegate ConditionDelegate;
+		public OptionalPromotionFromAndToLocationDelegate FromAndToConditionDelegate;
 	}
 
-	public class ComplexPromotionRule: Rule
+	public class ComplexPromotionRule: PromotionRule
 	{
 		public ComplexPromotionRule()
 		{
@@ -51,6 +51,22 @@ namespace ChessV.Games.Rules
 			newCapability.PromotionTypes = promotionTypes;
 			newCapability.ReplacementPromotionTypes = replacementPromotionTypes;
 			newCapability.ConditionDelegate = conditionDeletage;
+			newCapability.FromAndToConditionDelegate = null;
+			promotionCapabilities.Add( newCapability );
+		}
+
+		public void AddPromotionCapability
+			( PieceType promotingType,
+			  List<PieceType> promotionTypes,
+			  List<PieceType> replacementPromotionTypes,
+			  OptionalPromotionFromAndToLocationDelegate conditionDeletage )
+		{
+			PromotionCapability newCapability = new PromotionCapability();
+			newCapability.PromotingType = promotingType;
+			newCapability.PromotionTypes = promotionTypes;
+			newCapability.ReplacementPromotionTypes = replacementPromotionTypes;
+			newCapability.ConditionDelegate = null;
+			newCapability.FromAndToConditionDelegate = conditionDeletage;
 			promotionCapabilities.Add( newCapability );
 		}
 
@@ -68,8 +84,10 @@ namespace ChessV.Games.Rules
 			{
 				if( movingPiece.TypeNumber == promotion.PromotingTypeNumber )
 				{
-					Location loc = Board.SquareToLocation( Board.PlayerSquare( movingPiece.Player, to ) );
-					PromotionOption option = promotion.ConditionDelegate( loc );
+					Location toLocation = Board.SquareToLocation( Board.PlayerSquare( movingPiece.Player, to ) );
+					PromotionOption option = promotion.FromAndToConditionDelegate != null 
+						? promotion.FromAndToConditionDelegate( Board.SquareToLocation( Board.PlayerSquare( movingPiece.Player, from ) ), toLocation )
+						: promotion.ConditionDelegate( toLocation );
 					if( option != PromotionOption.CannotPromote )
 					{
 						for( int x = 0; x < Game.MAX_PIECE_TYPES; x++ )
@@ -149,6 +167,16 @@ namespace ChessV.Games.Rules
 				}
 			}
 			return MoveEventResponse.NotHandled;
+		}
+
+		public override void GetNotesForPieceType( PieceType type, List<string> notes )
+		{
+			foreach( PromotionCapability pc in promotionCapabilities )
+				if( pc.PromotingType == type )
+				{
+					notes.Add( "can promote" );
+					return;
+				}
 		}
 
 		private List<PromotionCapability> promotionCapabilities;

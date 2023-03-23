@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -28,6 +28,7 @@ namespace ChessV.Games.Pieces.OdinsRune
 		public OdinKing( string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null ):
 			base( "Odin King", name, notation, midgameValue, endgameValue, preferredImageName )
 		{
+			IsSliced = false;
 			AddMoves( this );
 		}
 

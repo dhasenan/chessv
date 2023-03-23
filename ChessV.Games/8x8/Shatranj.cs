@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -18,9 +18,6 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
 namespace ChessV.Games
 {
 	[Game("Shatranj", typeof(Geometry.Rectangular), 8, 8, 
@@ -28,14 +25,12 @@ namespace ChessV.Games
 		  Invented = "circa 7th century",
 		  InventedBy = "Unknown", 
 		  Tags = "Chess Variant,Historic,Popular")]
-	[Appearance(NumberOfColors=1)]
+	[Appearance(NumberOfSquareColors=1)]
 	public class Shatranj: Abstract.Generic8x8
 	{
 		// *** PIECE TYPES *** //
 
-		public PieceType Rook;
 		public PieceType Elephant;
-		public PieceType Knight;
 		public PieceType General;
 		
 
@@ -67,9 +62,17 @@ namespace ChessV.Games
 		{
 			base.AddPieceTypes();
 			AddPieceType( Rook = new Rook( "Rook", "R", 600, 600 ) );
-			AddPieceType( Knight = new Knight( "Knight", "N", 285, 285 ) );
-			AddPieceType( Elephant = new Elephant( "Elephant", "E", 150, 150 ) );
+			AddPieceType( Knight = new Knight( "Knight", "N", 425, 425 ) );
+			AddPieceType( Elephant = new Elephant( "Elephant", "E", 125, 125 ) );
 			AddPieceType( General = new Ferz( "General", "G", 175, 175 ) );
+		}
+		#endregion
+
+		#region AddEvaluations
+		public override void AddEvaluations()
+		{
+			base.AddEvaluations();
+			OutpostEval.AddOutpostBonus( Elephant );
 		}
 		#endregion
 	}

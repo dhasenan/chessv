@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -117,9 +117,11 @@ namespace ChessV.GUI
 			this.listAcknowledgements.ForeColor = System.Drawing.Color.Silver;
 			this.listAcknowledgements.FormattingEnabled = true;
 			this.listAcknowledgements.Items.AddRange(new object[] {
+            "CECP Protocol code for ChessV.Engine inspired by SharpChess by Peter Hughes",
             "Graphics for the Standard piece set by David Howe",
             "Graphics for the Abstract piece set by Fergus Duniho",
             "Eurasian graphics by Fergus Duniho",
+            "Graphics for the Motif piece set by Fergus Duniho and Armando Marroquin",
             "Some icons are from the Crystal Clear Action icon pack by Everaldo Coelho",
             "Some icons are from the Human-O2 icon pack by schollidesign",
             "Some icons are from the Ultimate Gnome icon pack by New Moon",

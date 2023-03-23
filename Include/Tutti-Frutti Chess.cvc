@@ -1,0 +1,19 @@
+
+Game 'Tutti-Frutti Chess' : Chess
+{
+	Invented = "1978";
+	InventedBy = "Ralph Betza;Philip Cohen";
+
+	SetGameVariables
+	{
+		Array = "enbakqsr/pppppppp/8/8/8/8/PPPPPPPP/ENBAKQSR";
+		PromotionTypes = "AQESRBN";
+	}
+
+	AddPieceTypes
+	{
+		AddPieceType( Chancellor, "Empress", "E", 950, 950 );
+		AddPieceType( Amazon, "Amazon", "A", 1350, 1450 );
+		AddPieceType( Archbishop, "Princess", "S", 875, 875 );
+	}
+}

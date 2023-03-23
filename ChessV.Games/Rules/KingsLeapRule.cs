@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -39,13 +39,13 @@ namespace ChessV.Games.Rules
 			base.Initialize( game );
 			hashKeyIndex = Game.HashKeys.TakeKeys( 4 );
 			gameHistory = new int[Game.MAX_GAME_LENGTH];
-			privs = new int[Game.MAX_DEPTH];
+			privs = new int[Game.MAX_PLY];
 			game.MovePlayed += MovePlayedHandler;
 		}
 
 		public override void ClearGameState()
 		{
-			for( int x = 0; x < Game.MAX_DEPTH; x++ )
+			for( int x = 0; x < Game.MAX_PLY; x++ )
 				privs[x] = 0;
 			for( int x = 0; x < Game.MAX_GAME_LENGTH; x++ )
 				gameHistory[x] = 0;
@@ -118,6 +118,12 @@ namespace ChessV.Games.Rules
 			}
 		}
 
+		public override void SetDefaultsInFEN( FEN fen )
+		{
+			if( fen["kings-leap"] == "#default" )
+				fen["kings-leap"] = "Kk";
+		}
+
 		public override void PositionLoaded( FEN fen )
 		{
 			privs[0] = 0;
@@ -141,6 +147,12 @@ namespace ChessV.Games.Rules
 			else if( move.FromSquare == kingSquare[1] )
 				privs[ply] = privs[ply] & 1;
 			return MoveEventResponse.MoveOk;
+		}
+
+		public override void GetNotesForPieceType( PieceType type, List<string> notes )
+		{
+			if( Board[kingSquare[0]] != null && Board[kingSquare[0]].PieceType == type )
+				notes.Add( "king's leap" );
 		}
 
 

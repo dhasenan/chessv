@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -18,7 +18,6 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
 using System.Collections.Generic;
 
 namespace ChessV
@@ -39,10 +38,16 @@ namespace ChessV
         public virtual void PostInitialize()
         { }
 
+		public virtual void SetVariation( int randomness )
+		{ }
+
 
 		// *** OVERRIDEABLE VIRTUAL FUNCTIONS *** //
 
-        public virtual void AdjustEvaluation( ref int midgameEval, ref int endgameEval )
+		public virtual void ReleaseMemoryAllocations()
+		{ }
+
+		public virtual void AdjustEvaluation( ref int midgameEval, ref int endgameEval )
         { }
 
 		public virtual void MoveBeingMade( MoveInfo move, int ply )
@@ -51,10 +56,16 @@ namespace ChessV
 		public virtual void MoveBeingUnmade( MoveInfo move, int ply )
 		{ }
 
+		public virtual MoveEventResponse TestForWinLossDraw( int currentPlayer, int ply )
+		{ return MoveEventResponse.NotHandled; }
 
-        // *** PROTECTED DATA MEMBERS *** //
+		public virtual void GetNotesForPieceType( PieceType type, List<string> notes )
+		{ }
 
-        protected Board board;
+
+		// *** PROTECTED DATA MEMBERS *** //
+
+		protected Board board;
         protected Game game;
     }
 }

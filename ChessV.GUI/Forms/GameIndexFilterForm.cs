@@ -60,6 +60,7 @@ namespace ChessV.GUI
 			chkTagPopular.Enabled = enable;
 			chkTagRandomArray.Enabled = enable;
 			chkTagRegional.Enabled = enable;
+			chkTagMultiMove.Enabled = enable;
 		}
 
 		private void LoadRequiredTags()
@@ -71,6 +72,7 @@ namespace ChessV.GUI
 			chkTagPopular.Checked = RequiredTags.Contains( "Popular" );
 			chkTagRandomArray.Checked = RequiredTags.Contains( "Random Array" );
 			chkTagRegional.Checked = RequiredTags.Contains( "Regional" );
+			chkTagMultiMove.Checked = RequiredTags.Contains( "Multi-Move" );
 		}
 
 		private void SaveRequiredTags()
@@ -90,6 +92,8 @@ namespace ChessV.GUI
 				RequiredTags.Add( "Random Array" );
 			if( chkTagRegional.Checked )
 				RequiredTags.Add( "Regional" );
+			if( chkTagMultiMove.Checked )
+				RequiredTags.Add( "Multi-Move" );
 		}
 
 		public List<string> RequiredTags { get; set; }

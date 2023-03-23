@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -17,9 +17,6 @@ more details; the file 'COPYING' contains the License text, but if for
 some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
-
-using System;
-using System.Collections.Generic;
 
 namespace ChessV.Games.Abstract
 {
@@ -38,18 +35,19 @@ namespace ChessV.Games.Abstract
 	//
 	//    This class adds optional support for a number of different 
 	//    initial pawn multiple-move rules and En Passant.
-    
-    public class Generic__x10: GenericChess
+
+	[Game("Generic x10", typeof(Geometry.Rectangular), 10,
+		  Template = true)]
+	public class Generic__x10: GenericChess
     {
-        // *** GAME VARIABLES *** //
+		// *** GAME VARIABLES *** //
 
-        [GameVariable] public ChoiceVariable PawnMultipleMove { get; set; }
-        [GameVariable] public bool EnPassant { get; set; }
+		[GameVariable] public ChoiceVariable PawnMultipleMove { get; set; }
 
 
-        // *** CONSTRUCTION *** //
+		// *** CONSTRUCTION *** //
 
-        public Generic__x10
+		public Generic__x10
 			( int nFiles,               // number of files on the board
 			  Symmetry symmetry ):      // symmetry determining board mirroring/rotation
                 base( nFiles, /* num ranks = */ 10, symmetry )
@@ -63,9 +61,26 @@ namespace ChessV.Games.Abstract
 		public override void SetGameVariables()
 		{
 			base.SetGameVariables();
-			PawnMultipleMove = new ChoiceVariable( new string[] { "None", "Double", "Triple", "Grand", "Wildebeest", "Unicorn", "Fast Pawn", "Custom" } );
+			PawnMultipleMove = new ChoiceVariable();
+			PawnMultipleMove.AddChoice( "None", "Pawns can never move more than a single space" );
+			PawnMultipleMove.AddChoice( "Double", "Pawns on the second rank can move two spaces" );
+			PawnMultipleMove.AddChoice( "Triple", "Pawns on the second rank can move up to three spaces" );
+			PawnMultipleMove.AddChoice( "Great", "Pawns on the second or third rank can move two spaces" );
+			PawnMultipleMove.AddChoice( "Grand", "Pawns on the third rank can move two spaces" );
+			PawnMultipleMove.AddChoice( "Wildebeest", "Pawns on the second rank can move up to three spaces and pawns on the third rank can move two spaces" );
+			PawnMultipleMove.AddChoice( "Unicorn", "Pawns on the second rank can move two spaces as well as pawns on the third rank of the centermost file(s)" );
+			PawnMultipleMove.AddChoice( "Fast Pawn", "Pawns can move two spaces from any location" );
+			PawnMultipleMove.AddChoice( "Custom", "Indicates a custom rule implemented by derived class" );
 			PawnMultipleMove.Value = "None";
-			EnPassant = false;
+		}
+		#endregion
+
+		#region AddPieceTypes
+		public override void AddPieceTypes()
+		{
+			base.AddPieceTypes();
+			Pawn.PSTMidgameInSmallCenter = 6;
+			Pawn.PSTMidgameInLargeCenter = 0;
 		}
 		#endregion
 
@@ -109,6 +124,17 @@ namespace ChessV.Games.Abstract
 					Pawn.AddMoveCapability( doubleMove );
 				}
 			}
+			else if( PawnMultipleMove.Value == "Great" )
+			{
+				MoveCapability doubleMove = new MoveCapability();
+				doubleMove.MinSteps = 2;
+				doubleMove.MaxSteps = 2;
+				doubleMove.MustCapture = false;
+				doubleMove.CanCapture = false;
+				doubleMove.Direction = new Direction( 1, 0 );
+				doubleMove.Condition = location => location.Rank == 1 || location.Rank == 2;
+				Pawn.AddMoveCapability( doubleMove );
+			}
 			else if( PawnMultipleMove.Value == "Grand" )
 			{
 				MoveCapability doubleMove = new MoveCapability();
@@ -128,9 +154,11 @@ namespace ChessV.Games.Abstract
 				doubleMove.MustCapture = false;
 				doubleMove.CanCapture = false;
 				doubleMove.Direction = new Direction( 1, 0 );
-				doubleMove.Condition = location => 
-					(location.Rank == 1 && location.File != 4 && location.File != 5) ||
-					(location.Rank == 2 && (location.File == 4 || location.File == 5));
+				int nFiles = Board.NumFiles;
+				int file1 = nFiles / 2;
+				int file2 = (nFiles - 1) / 2;
+				doubleMove.Condition = location => location.Rank == 1 ||
+					(location.Rank == 2 && (location.File == file1 || location.File == file2));
 				Pawn.AddMoveCapability( doubleMove );
 			}
 			else if( PawnMultipleMove.Value == "Fast Pawn" )
@@ -146,10 +174,6 @@ namespace ChessV.Games.Abstract
 						break;
 					}
 			}
-
-			// *** EN-PASSANT *** //
-			if( EnPassant )
-				EnPassantRule( Pawn, GetDirectionNumber( new Direction( 1, 0 ) ) );
 		}
 		#endregion
 	}

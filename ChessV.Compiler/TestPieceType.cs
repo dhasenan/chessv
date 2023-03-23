@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -23,7 +23,7 @@ using System.Collections.Generic;
 
 namespace ChessV.Compiler
 {
-	public class TestPieceType: PieceType
+	/*public class TestPieceType: PieceType
 	{
 		public TestPieceType( string internalName, string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null ):
 			base( internalName, name, notation, midgameValue, endgameValue, preferredImageName )
@@ -39,5 +39,5 @@ namespace ChessV.Compiler
 
 		public Environment Environment;
 		public static Dictionary<string, Antlr4.Runtime.ParserRuleContext> FunctionCodeLookup;
-	}
+	}*/
 }

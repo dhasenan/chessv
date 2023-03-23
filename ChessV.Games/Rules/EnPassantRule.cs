@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -18,7 +18,6 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
 using System.Collections.Generic;
 
 namespace ChessV.Games.Rules
@@ -33,6 +32,7 @@ namespace ChessV.Games.Rules
 
 		// *** CONSTRUCTION *** //
 
+		#region Constructors
 		public EnPassantRule( PieceType pawnType, int nDirection )
 		{
 			PawnType = pawnType;
@@ -45,13 +45,18 @@ namespace ChessV.Games.Rules
 			NDirection = templateRule.NDirection;
 			Initialize( templateRule.Game );
 		}
+		#endregion
 
+
+		// *** OVERRIDES *** //
+
+		#region Initialize
 		public override void Initialize( Game game )
 		{
 			base.Initialize( game );
 			hashKeyIndex = game.HashKeys.TakeKeys( game.Board.NumSquaresExtended );
-			epSquares = new int[Game.MAX_DEPTH];
-			for( int x = 0; x < Game.MAX_DEPTH; x++ )
+			epSquares = new int[Game.MAX_PLY];
+			for( int x = 0; x < Game.MAX_PLY; x++ )
 				epSquares[x] = 0;
 			gameHistory = new int[Game.MAX_GAME_LENGTH];
 			gameHistory[0] = 0;
@@ -73,24 +78,27 @@ namespace ChessV.Games.Rules
 			//	Hook up MoveBeingPlayed event handler
 			game.MoveBeingPlayed += MoveBeingPlayedHandler;
 		}
+		#endregion
 
+		#region ClearGameState
 		public override void ClearGameState()
 		{
-			for( int x = 0; x < Game.MAX_DEPTH; x++ )
+			for( int x = 0; x < Game.MAX_PLY; x++ )
 				epSquares[x] = 0;
 			for( int x = 0; x < Game.MAX_GAME_LENGTH; x++ )
 				gameHistory[x] = 0;
 		}
+		#endregion
 
-
-		// *** OVERRIDES *** //
-
+		#region GetPositionHashCode
 		public override ulong GetPositionHashCode( int ply )
 		{
 			int epSquare = ply == 1 ? gameHistory[Game.GameMoveNumber] : epSquares[ply - 1];
 			return HashKeys.Keys[hashKeyIndex + epSquare];
 		}
+		#endregion
 
+		#region PositionLoaded
 		public override void PositionLoaded( FEN fen )
 		{
 			string ep = fen["en-passant"];
@@ -99,27 +107,35 @@ namespace ChessV.Games.Rules
 			else
 				epSquares[0] = Game.NotationToSquare( ep );
 		}
+		#endregion 
 
+		#region SavePositionToFEN
 		public override void SavePositionToFEN( FEN fen )
 		{
-			int epSquare = (Game.GameMoveNumber == 0 ? 0 : gameHistory[Game.GameMoveNumber-1]);
+			int epSquare = (Game.GameMoveNumber == 0 ? epSquares[0] : gameHistory[Game.GameMoveNumber-1]);
 			if( epSquare > 0 )
 				fen["en-passant"] = Game.GetSquareNotation( epSquare );
 			else
 				fen["en-passant"] = "-";
 		}
+		#endregion
 
+		#region SetDefaultsInFEN
 		public override void SetDefaultsInFEN( FEN fen )
 		{
 			if( fen["en-passant"] == "#default" )
 				fen["en-passant"] = "-";
 		}
+		#endregion
 
+		#region MoveBeingPlayedHandler
 		public void MoveBeingPlayedHandler( MoveInfo move )
 		{
 			gameHistory[Game.GameMoveNumber] = epSquares[1];
 		}
+		#endregion
 
+		#region MoveBeingMade
 		public override MoveEventResponse MoveBeingMade( MoveInfo move, int ply )
 		{
 			epSquares[ply] = 0;
@@ -131,7 +147,8 @@ namespace ChessV.Games.Rules
 			if( Game.CurrentSide == Game.NextSide )
 				return MoveEventResponse.NotHandled;
 			if( move.PieceMoved != null && move.PieceMoved.PieceType == PawnType )
-				if( Board.GetDistance( move.FromSquare, move.ToSquare ) > 1 )
+				if( Board.DirectionLookup( move.FromSquare, move.ToSquare ) == Game.PlayerDirection( move.Player, NDirection ) && 
+					Board.GetDistance( move.FromSquare, move.ToSquare ) > 1 )
 				{
 					//	check to see if there are any pawn attackers - even if a pawn makes a 
 					//	multi-step move, we don't set the e.p. square unless there is a pawn 
@@ -167,11 +184,13 @@ namespace ChessV.Games.Rules
 				}
 			return MoveEventResponse.NotHandled;
 		}
+		#endregion
 
+		#region GenerateSpecialMoves
 		public override void GenerateSpecialMoves( MoveList list, bool capturesOnly, int ply )
 		{
 			int epSquare = ply == 1 
-				? (Game.GameMoveNumber == 0 ? 0 : gameHistory[Game.GameMoveNumber-1])
+				? (Game.GameMoveNumber == 0 ? epSquares[0] : gameHistory[Game.GameMoveNumber-1])
 				: epSquares[ply-1];
 			if( epSquare > 0 )
 			{
@@ -198,12 +217,21 @@ namespace ChessV.Games.Rules
 							list.AddPickup( nextSquare );
 							list.AddPickup( captureSquare );
 							list.AddDrop( piece, epSquare, null );
-							list.EndMoveAdd( 120 );
+							list.EndMoveAdd( 3000 );
 						}
 					}
 				}
 			}
 		}
+		#endregion
+
+		#region GetNotesForPieceType
+		public override void GetNotesForPieceType( PieceType type, List<string> notes )
+		{
+			if( type == PawnType )
+				notes.Add( "en passant" );
+		}
+		#endregion
 
 
 		// *** PROTECTED DATA MEMBERS *** //

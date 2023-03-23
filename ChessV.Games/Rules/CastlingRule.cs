@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -27,6 +27,7 @@ namespace ChessV.Games.Rules
 	{
 		const int MAX_CASTLING_MOVES = 16;
 
+		#region CastlingMove helper struct
 		protected struct CastlingMove
 		{
 			public int KingFromSquare;
@@ -39,10 +40,12 @@ namespace ChessV.Games.Rules
 			public CastlingMove( int kingfrom, int kingto, int otherfrom, int otherto, int priv, char privChar )
 			{ KingFromSquare = kingfrom; KingToSquare = kingto; OtherFromSquare = otherfrom; OtherToSquare = otherto; RequiredPriv = priv; PrivChar = privChar; }
 		}
+		#endregion
 
 
 		// *** CONSTRUCTION *** //
 
+		#region Construction
 		public CastlingRule()
 		{
 			privLookup = new Dictionary<char, int>();
@@ -58,16 +61,18 @@ namespace ChessV.Games.Rules
 			castlingMoves = template.castlingMoves;
 			nCastlingMoves = template.nCastlingMoves;
 		}
+		#endregion
 
 
 		// *** INITIALIZATION *** //
 
+		#region Initialize
 		public override void Initialize( Game game )
 		{
 			base.Initialize( game );
 			castlingMoves = new CastlingMove[game.NumPlayers, MAX_CASTLING_MOVES];
 			nCastlingMoves = new int[game.NumPlayers];
-			searchStackPrivs = new int[Game.MAX_DEPTH];
+			searchStackPrivs = new int[Game.MAX_PLY];
 			gameHistoryPrivs = new int[Game.MAX_GAME_LENGTH];
 			allPrivsPerPlayer = new int[game.NumPlayers];
 			allPrivString = "";
@@ -75,9 +80,11 @@ namespace ChessV.Games.Rules
 			privEraseMap = new int[game.Board.NumSquaresExtended];
 
 			//	Hook up MoveBeingPlayed event handler
-			game.MoveBeingPlayed += MovePlayedHandler;
+			game.MoveBeingPlayed += MoveBeingPlayedHandler;
 		}
+		#endregion
 
+		#region PostInitialize
 		public override void PostInitialize()
 		{
 			hashKeyIndex = Game.HashKeys.TakeKeys( nextPriv - 1 );
@@ -100,18 +107,22 @@ namespace ChessV.Games.Rules
 			for( int square = Game.Board.NumSquares; square < Game.Board.NumSquaresExtended; square++ )
 				privEraseMap[square] = -1;
 		}
+		#endregion
 
+		#region ClearGameState
 		public override void ClearGameState()
 		{
-			for( int x = 0; x < Game.MAX_DEPTH; x++ )
+			for( int x = 0; x < Game.MAX_PLY; x++ )
 				searchStackPrivs[x] = 0;
 			for( int x = 0; x < Game.MAX_GAME_LENGTH; x++ )
 				gameHistoryPrivs[x] = 0;
 		}
+		#endregion
 
 
 		// *** OPERATIONS *** //
 
+		#region AddCastlingMove
 		public void AddCastlingMove( int player, int kingfrom, int kingto, int otherfrom, int otherto, char privChar )
 		{
 			int priv = 0;
@@ -128,22 +139,28 @@ namespace ChessV.Games.Rules
 			allPrivsPerPlayer[player] |= priv;
 			castlingMoves[player, nCastlingMoves[player]++] = new CastlingMove( kingfrom, kingto, otherfrom, otherto, priv, privChar );
 		}
+		#endregion
 
 
 		// *** OVERRIDES *** //
 
+		#region GetPositionHashCode
 		public override ulong GetPositionHashCode( int ply )
 		{
 			int castlingPriv = ply == 1 ? gameHistoryPrivs[Game.GameMoveNumber + 1] : searchStackPrivs[ply - 1];
 			return HashKeys.Keys[hashKeyIndex + castlingPriv];
 		}
+		#endregion
 
+		#region SetDefaultsInFEN
 		public override void SetDefaultsInFEN( FEN fen )
 		{
 			if( fen["castling"] == "#default" )
 				fen["castling"] = allPrivString;
 		}
+		#endregion
 
+		#region PositionLoaded
 		public override void PositionLoaded( FEN fen )
 		{
 			searchStackPrivs[0] = 0;
@@ -159,7 +176,9 @@ namespace ChessV.Games.Rules
 			}
 			gameHistoryPrivs[Game.GameMoveNumber] = searchStackPrivs[0];
 		}
+		#endregion
 
+		#region SavePositionToFEN
 		public override void SavePositionToFEN( FEN fen )
 		{
 			int castlingPriv = gameHistoryPrivs[Game.GameMoveNumber];
@@ -171,23 +190,34 @@ namespace ChessV.Games.Rules
 				privString = "-";
 			fen["castling"] = privString;
 		}
+		#endregion
 
-		public void MovePlayedHandler( MoveInfo move )
+		#region MoveBeingPlayedHandler
+		public void MoveBeingPlayedHandler( MoveInfo move )
 		{
 			gameHistoryPrivs[Game.GameMoveNumber] = searchStackPrivs[1];
 			searchStackPrivs[0] = searchStackPrivs[1];
 		}
+		#endregion
 
+		#region MoveBeingMade
 		public override MoveEventResponse MoveBeingMade( MoveInfo move, int ply )
 		{
-			searchStackPrivs[ply] = 
-				(ply == 1 ? gameHistoryPrivs[Game.GameMoveNumber] : searchStackPrivs[ply - 1]) & 
-				privEraseMap[move.FromSquare];
+			//	remove privs associated with the move from and to squares
+			int privsToErase = privEraseMap[move.FromSquare] & privEraseMap[move.ToSquare];
+			//	if this move also has a baroque capture on another square (for example, 
+			//	a capture-by-advance) then we need to remove any priv associated with that square too
+			if( (move.MoveType & MoveType.CaptureProperty) != 0 && (move.MoveType & MoveType.BaroqueCaptureProperty) != 0 )
+				privsToErase &= privEraseMap[move.Tag];
+			searchStackPrivs[ply] =
+				(ply == 1 ? gameHistoryPrivs[Game.GameMoveNumber] : searchStackPrivs[ply - 1]) & privsToErase;
 			if( ply == 1 )
 				gameHistoryPrivs[Game.GameMoveNumber + 1] = searchStackPrivs[1];
 			return MoveEventResponse.MoveOk;
 		}
+		#endregion
 
+		#region GenerateSpecialMoves
 		public override void GenerateSpecialMoves( MoveList list, bool capturesOnly, int ply )
 		{
 			if( !capturesOnly )
@@ -249,28 +279,31 @@ namespace ChessV.Games.Rules
 							if( !squaresAttacked )
 							{
 								//	required squares are empty and not attacked so the move is legal - add it
-								try
-								{
-									if( Board[castlingMoves[Game.CurrentSide, x].KingFromSquare] == null )
-										throw new Exception( "!" );
-									list.BeginMoveAdd( MoveType.Castling, castlingMoves[Game.CurrentSide, x].KingFromSquare,
-										castlingMoves[Game.CurrentSide, x].KingToSquare );
-								}
-								catch( Exception ex )
-								{
-									throw ex;
-								}
+								if( Board[castlingMoves[Game.CurrentSide, x].KingFromSquare] == null )
+									throw new Exception( "!" );
+								list.BeginMoveAdd( MoveType.Castling, castlingMoves[Game.CurrentSide, x].KingFromSquare,
+									castlingMoves[Game.CurrentSide, x].KingToSquare );
 								Piece king = list.AddPickup( castlingMoves[Game.CurrentSide, x].KingFromSquare );
 								Piece other = list.AddPickup( castlingMoves[Game.CurrentSide, x].OtherFromSquare );
 								list.AddDrop( king, castlingMoves[Game.CurrentSide, x].KingToSquare, null );
 								list.AddDrop( other, castlingMoves[Game.CurrentSide, x].OtherToSquare, null );
-								list.EndMoveAdd( 1000 );
+								list.EndMoveAdd( 100 );
 							}
 						}
 					}
 				}
 			}
 		}
+		#endregion
+
+		#region GetNotesForPieceType
+		public override void GetNotesForPieceType( PieceType type, List<string> notes )
+		{
+			if( Board[castlingMoves[0, 0].KingFromSquare] != null &&
+				Board[castlingMoves[0, 0].KingFromSquare].PieceType == type )
+				notes.Add( "can castle" );
+		}
+		#endregion
 
 
 		// *** PROTECTED DATA MEMBERS *** //

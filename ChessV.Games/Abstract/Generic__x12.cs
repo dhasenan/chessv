@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -19,7 +19,6 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 ****************************************************************************/
 
 using System;
-using System.Collections.Generic;
 
 namespace ChessV.Games.Abstract
 {
@@ -39,19 +38,20 @@ namespace ChessV.Games.Abstract
 	//    This class adds optional support for a number of different 
 	//    initial pawn multiple-move rules and En Passant.
 
+	[Game("Generic x12", typeof(Geometry.Rectangular), 12,
+		  Template = true)]
 	public class Generic__x12: GenericChess
 	{
 		// *** GAME VARIABLES *** //
 
 		[GameVariable] public ChoiceVariable PawnMultipleMove { get; set; }
-		[GameVariable] public bool EnPassant { get; set; }
 
 
 		// *** CONSTRUCTION *** //
 
 		public Generic__x12
 			( int nFiles,               // number of files on main part of board
-			  Symmetry symmetry ):       // symmetry determining board mirroring/rotation
+			  Symmetry symmetry ):      // symmetry determining board mirroring/rotation
 				base( nFiles, /* num ranks = */ 12, symmetry )
 		{
 		}
@@ -63,9 +63,17 @@ namespace ChessV.Games.Abstract
 		public override void SetGameVariables()
 		{
 			base.SetGameVariables();
-			PawnMultipleMove = new ChoiceVariable( new string[] { "None", "@2(2,3,4)", "@3(2,3)", "@4(2)", "Custom" } );
+			PawnMultipleMove = new ChoiceVariable();
+			PawnMultipleMove.AddChoice( "None", "Pawns can never move more than a single space" );
+			PawnMultipleMove.AddChoice( "@2(2)", "Pawns can move two spaces when on the second rank" );
+			PawnMultipleMove.AddChoice( "@2(2,3)", "Pawns can move two or three spaces when on the second rank" );
+			PawnMultipleMove.AddChoice( "@2(2,3,4)", "Pawns can move up to four spaces when on the second rank" );
+			PawnMultipleMove.AddChoice( "@3(2)", "Pawns can move two spaces when on the third rank" );
+			PawnMultipleMove.AddChoice( "@3(2,3)", "Pawns can move two or three spaces when on the third rank" );
+			PawnMultipleMove.AddChoice( "@4(2)", "Pawns can move two spaces when on the fourth rank" );
+			PawnMultipleMove.AddChoice( "Fast Pawn", "Pawns can move two spaces from any location" );
+			PawnMultipleMove.AddChoice( "Custom", "Indicates a custom rule implemented by derived class" );
 			PawnMultipleMove.Value = "None";
-			EnPassant = false;
 		}
 		#endregion
 
@@ -75,22 +83,22 @@ namespace ChessV.Games.Abstract
 			base.AddRules();
 
 			// *** PAWN MULTIPLE MOVE *** //
-			if( PawnMultipleMove.Value == "@2(2,3,4)" )
+			if( PawnMultipleMove.Value == "@2(2)" || PawnMultipleMove.Value == "@2(2,3)" || PawnMultipleMove.Value == "@2(2,3,4)" )
 			{
 				MoveCapability doubleMove = new MoveCapability();
 				doubleMove.MinSteps = 2;
-				doubleMove.MaxSteps = 4;
+				doubleMove.MaxSteps = Convert.ToInt32( PawnMultipleMove.Value.Substring( PawnMultipleMove.Value.Length - 2, 1 ) );
 				doubleMove.MustCapture = false;
 				doubleMove.CanCapture = false;
 				doubleMove.Direction = new Direction( 1, 0 );
 				doubleMove.Condition = location => location.Rank == 1;
 				Pawn.AddMoveCapability( doubleMove );
 			}
-			else if( PawnMultipleMove.Value == "@3(2,3)" )
+			else if( PawnMultipleMove.Value == "@3(2)" || PawnMultipleMove.Value == "@3(2,3)" )
 			{
 				MoveCapability doubleMove = new MoveCapability();
 				doubleMove.MinSteps = 2;
-				doubleMove.MaxSteps = 3;
+				doubleMove.MaxSteps = Convert.ToInt32( PawnMultipleMove.Value.Substring( PawnMultipleMove.Value.Length - 2, 1 ) );
 				doubleMove.MustCapture = false;
 				doubleMove.CanCapture = false;
 				doubleMove.Direction = new Direction( 1, 0 );
@@ -108,10 +116,19 @@ namespace ChessV.Games.Abstract
 				doubleMove.Condition = location => location.Rank == 3;
 				Pawn.AddMoveCapability( doubleMove );
 			}
-
-			// *** EN-PASSANT *** //
-			if( EnPassant )
-				EnPassantRule( Pawn, GetDirectionNumber( new Direction( 1, 0 ) ) );
+			else if( PawnMultipleMove.Value == "Fast Pawn" )
+			{
+				//	Find the pawn's forward move capability and increase 
+				//	the range to two spaces
+				MoveCapability[] moves;
+				int nMoves = Pawn.GetMoveCapabilities( out moves );
+				foreach( MoveCapability move in moves )
+					if( move.NDirection == PredefinedDirections.N && move.MaxSteps == 1 )
+					{
+						move.MaxSteps = 2;
+						break;
+					}
+			}
 		}
 		#endregion
 	}

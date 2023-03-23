@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -18,8 +18,7 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
+using ChessV.Evaluations;
 
 namespace ChessV.Games
 {
@@ -33,11 +32,7 @@ namespace ChessV.Games
 	{
 		// *** PIECE TYPES *** //
 
-		public PieceType Queen;
-		public PieceType Rook;
-		public PieceType Knight;
 		public PieceType Elephant;
-		public PieceType Bishop;
 		public PieceType Man;
 		public PieceType Schleich;
 
@@ -72,10 +67,7 @@ namespace ChessV.Games
 		public override void AddPieceTypes()
 		{
 			base.AddPieceTypes();
-			AddPieceType( Rook = new Rook( "Rook", "R", 550, 650 ) );
-			AddPieceType( Queen = new Ferz( "Queen", "Q", 155, 155 ) );
-			AddPieceType( Bishop = new Bishop( "Bishop", "B", 350, 400 ) );
-			AddPieceType( Knight = new Knight( "Knight", "N", 300, 300 ) );
+			AddChessPieceTypes();
 			AddPieceType( Man = new King( "Mann", "M", 325, 325, "General" ) );
 			AddPieceType( Schleich = new Wazir( "Schleich", "S", 145, 145 ) );
 			AddPieceType( Elephant = new SilverGeneral( "Elephant", "E", 200, 200 ) );
@@ -96,6 +88,22 @@ namespace ChessV.Games
 			elephantRule.AddMove( MoveCapability.Step( new Direction( 2, 2 ) ) );
 			elephantRule.AddMove( MoveCapability.Step( new Direction( 2, -2 ) ) );
 			AddRule( elephantRule );
+		}
+		#endregion
+
+		#region AddEvaluations
+		public override void AddEvaluations()
+		{
+			base.AddEvaluations();
+			RookTypeEvaluation eval = new RookTypeEvaluation();
+			eval.AddOpenFileBonus( Rook );
+			eval.AddRookOn7thBonus( Rook, King );
+			AddEvaluation( eval );
+
+			OutpostEvaluation outpost = new OutpostEvaluation();
+			outpost.AddOutpostBonus( Knight );
+			outpost.AddOutpostBonus( Bishop, 10, 2, 5, 5 );
+			AddEvaluation( outpost );
 		}
 		#endregion
 	}

@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -18,7 +18,6 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
 using System.Collections.Generic;
 
 namespace ChessV.Games.Rules.FileSharing
@@ -72,6 +71,12 @@ namespace ChessV.Games.Rules.FileSharing
 					}
 				}
 			}
+		}
+
+		public override void GetNotesForPieceType( PieceType type, List<string> notes )
+		{
+			if( type == PawnType )
+				notes.Add( "pawn swap ability" );
 		}
 	}
 }

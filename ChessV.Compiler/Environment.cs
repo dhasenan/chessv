@@ -52,7 +52,7 @@ namespace ChessV.Compiler
 			typeSymbols.Add( name, type );
 		}
 
-		public void ExecuteMemberFunction( object obj, string functionName )
+		public void ExecuteMemberFunction( ExObject obj, string functionName )
 		{
 			FieldInfo fi = obj.GetType().GetField( "FunctionCodeLookup", BindingFlags.Public | BindingFlags.Static );
 			Dictionary<string, Antlr4.Runtime.ParserRuleContext> functionCodeLookup;

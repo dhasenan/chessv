@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -18,7 +18,6 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
 using System.Collections.Generic;
 
 namespace ChessV.Games
@@ -27,17 +26,9 @@ namespace ChessV.Games
 		  Invented = "2000",
 		  InventedBy = "Doug Vogel",
 		  Tags = "Chess Variant")]
-	[Appearance(ColorScheme = "Callisto")]
+	[Appearance(ColorScheme = "Baby Blues")]
 	public class ChessOnA12x12Board: Abstract.Generic12x12
 	{
-		// *** PIECE TYPES *** //
-
-		public PieceType Queen;
-		public PieceType Rook;
-		public PieceType Bishop;
-		public PieceType Knight;
-
-
 		// *** CONSTRUCTION *** //
 
 		public ChessOnA12x12Board():
@@ -53,7 +44,9 @@ namespace ChessV.Games
 		{
 			base.SetGameVariables();
 			Array = "12/12/2rnbqkbnr2/2pppppppp2/12/12/12/12/2PPPPPPPP2/2RNBQKBNR2/12/12";
-			Castling.Value = "Custom";
+			Castling.AddChoice( "ChessOnA12x12Board", "Kings on g3 and g10 slide two squares in either direction to castle with the pieces on the c and j files" );
+			Castling.Value = "ChessOnA12x12Board";
+			PromotionRule.AddChoice( "ChessOnA12x12Board", "Standard promotion except that promote on the 10th rank" );
 			PromotionRule.Value = "Custom";
 			PromotionTypes = "QRBN";
 			PawnMultipleMove.Value = "@4(2)";
@@ -65,10 +58,7 @@ namespace ChessV.Games
 		public override void AddPieceTypes()
 		{
 			base.AddPieceTypes();
-			AddPieceType( Rook = new Rook( "Rook", "R", 650, 750 ) );
-			AddPieceType( Bishop = new Bishop( "Bishop", "B", 350, 425 ) );
-			AddPieceType( Knight = new Knight( "Knight", "N", 275, 250 ) );
-			AddPieceType( Queen = new Queen( "Queen", "Q", 1000, 1200 ) );
+			AddChessPieceTypes();
 		}
 		#endregion
 
@@ -78,16 +68,16 @@ namespace ChessV.Games
 			base.AddRules();
 
 			//	add custom pawn promotion rule
-			if( PromotionRule.Value == "Custom" )
+			if( PromotionRule.Value == "ChessOnA12x12Board" )
 			{
 				List<PieceType> availablePromotionTypes = ParseTypeListFromString( PromotionTypes );
-				BasicPromotionRule( Pawn, availablePromotionTypes, loc => loc.Rank == 9 );
+				AddBasicPromotionRule( Pawn, availablePromotionTypes, loc => loc.Rank == 9 );
 			}
 
 			//	add custom castling rule
-			if( Castling.Value == "Custom" )
+			if( Castling.Value == "ChessOnA12x12Board" )
 			{
-				CastlingRule();
+				AddCastlingRule();
 				CastlingMove( 0, "g3", "i3", "j3", "h3", 'K' );
 				CastlingMove( 0, "g3", "e3", "c3", "f3", 'Q' );
 				CastlingMove( 1, "g10", "i10", "j10", "h10", 'k' );

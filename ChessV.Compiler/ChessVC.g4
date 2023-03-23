@@ -1,96 +1,219 @@
 
 grammar ChessVC;
 
-chunk
-	: unit EOF
-	;
-	
 unit
 	: declaration*
 	;
 
 declaration
-	: pieceTypeDeclaration                                # PieceTypeDecl
-	| gameDeclaration                                     # GameDecl
+	: gameDeclaration
+	| pieceTypeDeclaration
 	;
 	
 pieceTypeDeclaration
-	: 'PieceType' objectid '{' declMember* '}'
+	: 'PieceType' identifier '{' declMember* '}'
 	;
 	
 gameDeclaration
-	: 'Game' objectid ':' objectid '{' declMember* '}'
-	;
-
-declMember
-	: assignment                                          # MemberAssign
-	| functionDefn                                        # FnDefinition
-	| memberDefn                                          # MemberDefinition
+	: 'Game' identifier ':' identifier '{' declMember* '}'
 	;
 	
+declMember
+	: constructorAssign
+	| functionDefn
+	| memberDefn
+	;
+	
+constructorAssign
+	: identifier '=' literal ';'
+	;
+
 functionDefn
-	: objectid block
+	: identifier block
 	;
 
 memberDefn
-	: objectid objectid ';'
+	: predefinedType identifier ';'
+	;
+	
+lambdaprimary
+	: identifier                                                    # lambdaID
+	| c='true'                                                      # lambdaConstBool
+	| c='false'                                                     # lambdaConstBool
+	| INTEGER                                                       # lambdaConstInt
+	;
+	
+lambdaexpr
+	: lambdaprimary                                                 # lambdaPri
+	| '(' lambdaexpr ')'                                            # lambdaParen
+	| identifier '.' identifier                                     # lambdaDot
+	| lambdaexpr bop=('+'|'-') lambdaexpr                           # lambdaAdd
+	| lambdaexpr bop=('<'|'>'|'<='|'>=') lambdaexpr                 # lambdaCompare
+	| lambdaexpr bop=('=='|'!=') lambdaexpr                         # lambdaEqualtiy
+	| lambdaexpr '&&' lambdaexpr                                    # lambdaAnd
+	| lambdaexpr '||' lambdaexpr                                    # lambdaOr
+	;
+	
+simpleEmbeddedStatement
+	: ';'                                                           # theEmptyStatement
+	| expression ';'                                                # expressionStatement
+	| 'if' '(' expression ')' ifBody (el='else' ifBody)?            # ifStatement
+	| 'return' expression ';'                                       # returnStatement
+	;
+
+embeddedStatement
+	: block
+	| simpleEmbeddedStatement
 	;
 	
 statement
-	: block                                               # BlockStatement
-	| 'if' '(' expr ')' statement ('else' statement)?     # IfStatement
-	| assignment                                          # AssignStatement
-	| functionCall                                        # FnCallStatement
+	: variableDeclaration ';'
+	| embeddedStatement
+	;
+	
+statementList
+	: statement+
 	;
 	
 block
-	: '{' statement* '}'
+	: '{' statementList? '}'
 	;
 	
-assignment
-	: objectid '=' expr ';'
-	;
-	
-functionCall
-	: objectid '(' argumentList? ')' ';'
-	;
-	
-argumentList
-	: expr (',' expr)*
-	;
-	
-expr
-	: functionCall                                        # FnCallExpr
-	| '-' expr                                            # UnaryMinus
-	| '!' expr                                            # UnaryNot
-	| expr ('*' | '/' | '%') expr                         # OpMultDivMod
-	| expr ('+' | '-') expr                               # OpAddSub
-	| expr ('<<' | '>>') expr                             # OpBitShift
-	| expr ('<' | '<=' | '>' | '>=') expr                 # OpComparison
-	| expr ('==' | '!=') expr                             # OpEquality
-	| expr '&' expr                                       # OpBitwiseAnd
-	| expr '^' expr                                       # OpBitwiseXor
-	| expr '|' expr                                       # OpBitwiseOr
-	| expr '&&' expr                                      # OpLogicalAnd
-	| expr '||' expr                                      # OpLogicalOr
-	| objectid                                            # ObjectIdExpr
-	| constant                                            # ConstantExpr
-	| '(' expr ')'                                        # ParenExpr
-	| '{' (expr (',' expr)*)? '}'                         # ListExpr
+ifBody
+	: block
+	| simpleEmbeddedStatement
 	;
 
-objectid
-	: IDENTIFIER ('.' IDENTIFIER)*
+variableDeclaration
+	: t='var' identifier '=' expression
+	| t='local' identifier '=' expression
+	;
+
+primaryExpr
+	: literal                                                      # literalExp
+	| identifier                                                   # simpleNameExp
+	| '(' expression ')'                                           # parenthesisExp
+	| predefinedType                                               # predefTypeExp
+	;
+
+postfixExpr
+	: postfixExpr '[' expression ']'                               # indexExp
+	| postfixExpr '(' argumentList? ')'                            # fnCallExp
+	| postfixExpr '.' identifier                                   # memberAccExp
+	| postfixExpr uop=('++' | '--')                                # postfixOpExp
+	| primaryExpr                                                  # postfixExprPassthrough
 	;
 	
-constant
-	: INTEGER                                             # ConstInt
-	| STRING                                              # ConstStr
-	| INTEGER '..' INTEGER                                # ConstRange
-	| '<' ('-')? INTEGER ',' ('-')? INTEGER '>'           # ConstDir
-	| 'true'                                              # ConstBoolTrue
+unaryExpr
+	: postfixExpr
+	| uop=('+' | '-' | '!') unaryExpr
+	;
+	
+multiplicativeExpr
+	: unaryExpr 
+	| multiplicativeExpr bop=('*' | '/' | '%') unaryExpr
+	;
+
+additiveExpr
+	: multiplicativeExpr
+	| additiveExpr bop=('+' | '-') multiplicativeExpr
+	;
+
+relationalExpr
+	: additiveExpr
+	| relationalExpr bop=('<' | '>' | '<=' | '>=') additiveExpr
+	;
+	
+equalityExpr
+	: relationalExpr 
+	| equalityExpr bop=('==' | '!=') relationalExpr
+	;
+
+conditionalAndExpr
+	: equalityExpr
+	| conditionalAndExpr '&&' equalityExpr
+	;
+
+conditionalOrExpr
+	: conditionalAndExpr 
+	| conditionalOrExpr '||' conditionalAndExpr
+	;
+
+conditionalExpr
+	: conditionalOrExpr
+	| conditionalOrExpr '?' expression ':' expression
+	;
+
+assignmentExpr
+	: conditionalExpr
+	| conditionalExpr bop=('=' | '+=' | '-=') assignmentExpr
+	;
+	
+expression
+	: assignmentExpr                                                            # exprPassthrough
+	| expression ATTRIBUTE                                                      # exprApplyAttribute
+	;
+
+argumentList
+	: argument (',' argument)*
+	;
+	
+argument
+	: expression
+	;
+	
+predefinedType
+	: 'Int'
+	| 'IntRange'
+	| 'String'
+	| 'Bool'
+	| 'Choice'
+	;
+	
+identifier
+	: IDENTIFIER
+	;
+
+literal
+	: 'true'                                              # ConstBoolTrue
 	| 'false'                                             # ConstBoolFalse
+	| INTEGER                                             # ConstInt
+	| STRING                                              # ConstStrg
+	| CHAR                                                # ConstChar
+	| INTEGER '..' INTEGER                                # ConstRange
+	| '<' (m1='-')? INTEGER ',' (m2='-')? INTEGER '>'     # ConstDir
+	| '{' (expression (',' expression)*)? '}'             # ConstList
+	| '{' identifier ':' lambdaexpr '}'                   # ConstLambda
+	| 'MirrorSymmetry'                                    # ConstSymmetry
+	| 'RotationalSymmetry'                                # ConstSymmetry
+	| 'NoSymmetry'                                        # ConstSymmetry
 	| 'null'                                              # ConstNull
+	;
+
+
+LINE_COMMENT
+	: '//' .*? '\r'? '\n' -> channel(HIDDEN)
+	;
+	
+COMMENT
+	: '/*' .*? '*/' -> channel(HIDDEN)
+	;
+
+WHITESPACE: [ \t\r\n]+ -> skip ; // skip spaces, tabs, newlines
+
+
+fragment STR_ESC
+	: '\\"' 
+	| '\\\\'
+	;
+
+ATTRIBUTE
+	: '@' [a-zA-Z_][a-zA-Z0-9_]*
+	;
+	
+IDENTIFIER
+	: [a-zA-Z_][a-zA-Z0-9_]*
+	| '\'' (ID_ESC | .)*? '\''
 	;
 
 fragment ID_ESC
@@ -98,16 +221,10 @@ fragment ID_ESC
 	| '\\\\'
 	;
 
-IDENTIFIER
-	: ('@' | ':')? [a-zA-Z_][a-zA-Z0-9_]*
-	| ('@' | ':')? '\'' (ID_ESC | .)*? '\''
+CHAR
+	: '`' . '`'
 	;
-
-fragment STR_ESC
-	: '\\"' 
-	| '\\\\'
-	;
-	 
+	
 STRING
 	: '"' (STR_ESC | .)*? '"'
 	;
@@ -119,13 +236,3 @@ fragment DIGIT
 INTEGER
 	: DIGIT+
 	;
-
-LINE_COMMENT
-	: '//' .*? '\r'? '\n' -> channel(HIDDEN)
-	;
-	
-COMMENT
-	: '/*' .*? '*/' -> channel(HIDDEN)
-	;
-
-WHITESPACE: [ \t\r\n]+ -> skip ; // skip spaces, tabs, newlines

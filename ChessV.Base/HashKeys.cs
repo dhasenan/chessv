@@ -26,10 +26,12 @@ namespace ChessV
 	public class HashKeys
 	{
 		protected int nextKey;
+		protected int nextMaterialKey;
 
 		public HashKeys()
 		{
 			nextKey = 256;
+			nextMaterialKey = 256;
 		}
 
 		public int TakeKeys( int count )
@@ -38,6 +40,15 @@ namespace ChessV
 				throw new Exception( "Not enough Zobrist keys!" );
 			int given = nextKey;
 			nextKey += count;
+			return given;
+		}
+
+		public int TakeMaterialKeys( int count )
+		{
+			if( nextMaterialKey + count > Keys.Length )
+				throw new Exception( "Not enough Zobrist keys!" );
+			int given = nextMaterialKey;
+			nextMaterialKey += count;
 			return given;
 		}
 

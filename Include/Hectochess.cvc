@@ -1,0 +1,45 @@
+
+PieceType Leo
+{
+	FallbackImage = "Lion";
+
+	AddMoves
+	{
+		AddMovesOf( Cannon );
+		AddMovesOf( Vao );
+	}
+}
+
+Game Hectochess: 'Generic 10x10'
+{
+	Invented = "2019";
+	InventedBy = "Adam DeWitt";
+	Symmetry = MirrorSymmetry;
+
+	SetGameVariables
+	{
+		Array = "awl4lwm/rcnbqkbncr/pppppppppp/10/10/10/10/PPPPPPPPPP/RCNBQKBNCR/AWL4LWM";
+		PromotionTypes = "QMARCWBNL";
+		PawnMultipleMove = "Grand";
+		Castling = "2R Flexible";
+	}
+
+	AddPieceTypes
+	{
+		AddChessPieceTypes();
+		AddPieceType( Archbishop, "Archbishop", "A", 750, 800 );
+		AddPieceType( Chancellor, "Marshall", "M", 925, 975 );
+		AddPieceType( Wizard, "Wizard", "W", 360, 360 );
+		AddPieceType( Champion, "Champion", "C", 375, 375 );
+		AddPieceType( Leo, "Leo", "L", 450, 400 );
+	}
+
+	AddRules
+	{
+		// the 50-move rule becomes a 64-move rule
+		FindRule( Move50Rule ).HalfMoveCounterThreshold = 128;
+
+		// limit the king's range during the castling slide to 4
+		FindRule( FlexibleCastlingRule ).MaxSlideRange = 4;
+	}
+}

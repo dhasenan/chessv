@@ -1,0 +1,104 @@
+
+PieceType Veteran
+{
+	FallbackImage = "Wazir";
+
+	AddMoves
+	{
+		AddMovesOf( Wazir @Impotent );
+		AddMovesOf( Ferz @Combatant );
+	}
+}
+
+PieceType 'Mounted Veteran'
+{
+	FallbackImage = "Knight Wazir";
+
+	AddMoves
+	{
+		AddMovesOf( Knight );
+		AddMovesOf( Veteran );
+	}
+}
+
+PieceType Lady
+{
+	FallbackImage = "General";
+
+	AddMoves
+	{
+		AddMovesOf( King );
+	}
+}
+
+Game 'Veteran Chess': Chess
+{
+	Invented = "2019";
+	InventedBy = "H. G. Muller";
+
+	SetGameVariables
+	{
+		Array = "rnblkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBLKBNR";
+		PromotionRule = "None";
+		StaticExchangeEvaluation = false;
+	}
+
+	AddPieceTypes
+	{
+		// Add New Piece Types:
+		AddPieceType( Lady, "Lady", "L", 350, 350 );
+		AddPieceType( Veteran, "Veteran", "V", 250, 250 );
+		AddPieceType( 'Mounted Veteran', "Mounted Veteran", "M", 500, 500 );
+
+		// Adjust Piece Values:
+		// the rook is slightly less valuable
+		Rook.MidgameValue = 425;
+		Rook.EndgameValue = 450;
+		// the knight is slightly more valuable
+		Knight.MidgameValue = 375;
+		Knight.EndgameValue = 375;
+		// the queen is less valuable because she
+		// allows the enemy to create queens upon capture
+		Queen.MidgameValue = 700;
+		Queen.EndgameValue = 750;
+	}
+
+	AddRules
+	{
+		// Add the various "promotion" rules, which are handled
+		// by the flexible PieceChangeTypeRule
+
+		// create the rule object
+		local rule = PieceChangeTypeRule();
+
+		// add the various change rules:
+
+		// pawns change to queens when capturing a queen, and
+		// change to veterans when capturing anything else.
+		// these must be added in order - first match wins
+		rule.TypeChangeOnCapture( Pawn, Queen, Queen );
+		rule.TypeChangeOnCapture( Pawn, Veteran );
+		// knights change to queens when capturing a queen, and
+		// change to mounted veterans capturing anything else.
+		rule.TypeChangeOnCapture( Knight, Queen, Queen );
+		rule.TypeChangeOnCapture( Knight, 'Mounted Veteran' );
+		// rooks change to queens when capturing a queen, and
+		// change to the weaker veteran when capturing either
+		// veteran or mounted veteran
+		rule.TypeChangeOnCapture( Rook, Queen, Queen );
+		rule.TypeChangeOnCapture( Rook, Veteran, Veteran );
+		rule.TypeChangeOnCapture( Rook, Veteran, 'Mounted Veteran' );
+		// bishops only change to queens when capturing a queen
+		rule.TypeChangeOnCapture( Bishop, Queen, Queen );
+		// lady changes to queen on any capture
+		rule.TypeChangeOnCapture( Lady, Queen );
+
+		// add rule to the game
+		AddRule( rule );
+	}
+
+	AddEvaluations
+	{
+		FindEvaluation( PawnStructureEvaluation ).PassedPawnEvaluation = false;
+	}
+}

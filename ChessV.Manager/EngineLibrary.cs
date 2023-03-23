@@ -96,6 +96,31 @@ namespace ChessV.Manager
 			return supportingEngines;
 		}
 
+		public EngineConfigurationWithAdaptor AdaptEngine( Game game, EngineConfiguration engine )
+		{
+			if( game.GameAttribute.XBoardName != null && engine.SupportedVariants.Contains( game.GameAttribute.XBoardName ) )
+				return new EngineConfigurationWithAdaptor( engine, null );
+			EngineGameAdaptor adaptor = game.TryCreateAdaptor( engine );
+			if( adaptor != null )
+				return new EngineConfigurationWithAdaptor( engine, adaptor );
+			return null;
+		}
+
+		public EngineConfiguration LookupEngineByPartialName( string name )
+		{
+			string upperName = name.ToUpper();
+			//	scan internal names for a match before moving on to friendly names
+			foreach( EngineConfiguration engine in engines )
+				if( engine.InternalName.ToUpper().Contains( upperName ) )
+					return engine;
+			//	we didn't match an internal name so check friendly names
+			foreach( EngineConfiguration engine in engines )
+				if( engine.FriendlyName.ToUpper().Contains( upperName ) )
+					return engine;
+			//	we didn't find a match
+			return null;
+		}
+
 		public List<EngineConfiguration> GetAllEngines()
 		{
 			return engines;

@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -18,17 +18,19 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
 namespace ChessV.Games.Rules
 {
 	public class FlexibleCastlingRule: CastlingRule
 	{
+		// *** PROPERTIES *** //
+
+		int MaxSlideRange { get; set; }
+
+
 		// *** CONSTRUCTION *** //
 
-		public FlexibleCastlingRule() { }
-		public FlexibleCastlingRule( CastlingRule templateRule ) : base( templateRule ) { }
+		public FlexibleCastlingRule() { MaxSlideRange = 99; }
+		public FlexibleCastlingRule( CastlingRule templateRule ) : base( templateRule ) { MaxSlideRange = 99; }
 
 
 		public override void GenerateSpecialMoves( MoveList list, bool capturesOnly, int ply )
@@ -53,6 +55,7 @@ namespace ChessV.Games.Rules
 							}
 							if( squaresEmpty )
 							{
+								int slideDistance = 1;
 								bool squaresAttacked = false;
 								for( int file = Board.GetFile( castlingMoves[Game.CurrentSide, x].KingFromSquare );
 									!squaresAttacked && file <= Board.GetFile( castlingMoves[Game.CurrentSide, x].KingToSquare ); file++ )
@@ -60,6 +63,7 @@ namespace ChessV.Games.Rules
 									int sq = file * Board.NumRanks + Board.GetRank( castlingMoves[Game.CurrentSide, x].KingFromSquare );
 									if( Game.IsSquareAttacked( sq, Game.CurrentSide ^ 1 ) )
 										squaresAttacked = true;
+									slideDistance++;
 								}
 								if( !squaresAttacked )
 								{
@@ -73,7 +77,7 @@ namespace ChessV.Games.Rules
 
 									for( int file = Board.GetFile( castlingMoves[Game.CurrentSide, x].KingToSquare ) + 1;
 										!squaresAttacked && file < Board.GetFile( castlingMoves[Game.CurrentSide, x].OtherFromSquare ) + 
-										castlingMoves[Game.CurrentSide, x].OtherToSquare; file++ )
+										castlingMoves[Game.CurrentSide, x].OtherToSquare && slideDistance <= MaxSlideRange; file++ )
 									{
 										int sq = file * Board.NumRanks + Board.GetRank( castlingMoves[Game.CurrentSide, x].KingFromSquare );
 										squaresAttacked = Game.IsSquareAttacked( sq, Game.CurrentSide ^ 1 );
@@ -86,6 +90,7 @@ namespace ChessV.Games.Rules
 											list.AddDrop( other, sq - Board.NumRanks, null );
 											list.EndMoveAdd( 1000 );
 										}
+										slideDistance++;
 									}
 								}
 							}
@@ -103,6 +108,7 @@ namespace ChessV.Games.Rules
 							}
 							if( squaresEmpty )
 							{
+								int slideDistance = 1;
 								bool squaresAttacked = false;
 								for( int file = Board.GetFile( castlingMoves[Game.CurrentSide, x].KingFromSquare );
 									!squaresAttacked && file >= Board.GetFile( castlingMoves[Game.CurrentSide, x].KingToSquare ); file-- )
@@ -110,6 +116,7 @@ namespace ChessV.Games.Rules
 									int sq = file * Board.NumRanks + Board.GetRank( castlingMoves[Game.CurrentSide, x].KingFromSquare );
 									if( Game.IsSquareAttacked( sq, Game.CurrentSide ^ 1 ) )
 										squaresAttacked = true;
+									slideDistance++;
 								}
 								if( !squaresAttacked )
 								{
@@ -123,7 +130,7 @@ namespace ChessV.Games.Rules
 
 									for( int file = Board.GetFile( castlingMoves[Game.CurrentSide, x].KingToSquare ) - 1;
 										!squaresAttacked && file > Board.GetFile( castlingMoves[Game.CurrentSide, x].OtherFromSquare ) -
-										castlingMoves[Game.CurrentSide, x].OtherToSquare; file-- )
+										castlingMoves[Game.CurrentSide, x].OtherToSquare && slideDistance <= MaxSlideRange; file-- )
 									{
 										int sq = file * Board.NumRanks + Board.GetRank( castlingMoves[Game.CurrentSide, x].KingFromSquare );
 										squaresAttacked = Game.IsSquareAttacked( sq, Game.CurrentSide ^ 1 );
@@ -136,6 +143,7 @@ namespace ChessV.Games.Rules
 											list.AddDrop( other, sq + Board.NumRanks, null );
 											list.EndMoveAdd( 1000 );
 										}
+										slideDistance++;
 									}
 								}
 							}

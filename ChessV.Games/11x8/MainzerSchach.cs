@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -18,9 +18,6 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
 namespace ChessV.Games
 {
 	[Game("Mainzer Schach", typeof(Geometry.Rectangular), 11, 8,
@@ -31,10 +28,6 @@ namespace ChessV.Games
 	{
 		// *** PIECE TYPES *** //
 
-		public PieceType Queen;
-		public PieceType Rook;
-		public PieceType Bishop;
-		public PieceType Knight;
 		public PieceType Archbishop;
 		public PieceType Chancellor;
 		public PieceType Amazon;
@@ -68,13 +61,22 @@ namespace ChessV.Games
 		public override void AddPieceTypes()
 		{
 			base.AddPieceTypes();
-			AddPieceType( Queen = new Queen( "Queen", "Q", 1100, 1150 ) );
-			AddPieceType( Rook = new Rook( "Rook", "R", 550, 600 ) );
-			AddPieceType( Bishop = new Bishop( "Bishop", "B", 350, 350 ) );
-			AddPieceType( Knight = new Knight( "Knight", "N", 285, 285 ) );
-			AddPieceType( Archbishop = new Archbishop( "Janus", "J", 975, 1000 ) );
-			AddPieceType( Chancellor = new Chancellor( "Marshall", "M", 1050, 1125 ) );
+			AddChessPieceTypes();
+			AddPieceType( Archbishop = new Archbishop( "Janus", "J", 900, 900 ) );
+			AddPieceType( Chancellor = new Chancellor( "Marshall", "M", 950, 950 ) );
 			AddPieceType( Amazon = new Amazon( "Amazon", "A", 1500, 1600 ) );
+		}
+		#endregion
+
+		#region AddEvaluations
+		public override void AddEvaluations()
+		{
+			base.AddEvaluations();
+
+			if( Chancellor != null && Chancellor.Enabled )
+				RookTypeEval.AddRookOn7thBonus( Chancellor, King, 2, 8 );
+			if( Amazon != null && Amazon.Enabled )
+				RookTypeEval.AddRookOn7thBonus( Amazon, King );
 		}
 		#endregion
 	}

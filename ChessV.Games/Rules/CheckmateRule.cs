@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -44,10 +44,17 @@ namespace ChessV.Games.Rules
 		{
 			royalPieces = new Piece[game.NumPlayers];
 			base.Initialize( game );
+			if( RoyalPieceType.FindCustomAttributes( typeof(RoyalAttribute) ).Count == 0 )
+				RoyalPieceType.AddAttribute( new RoyalAttribute() );
 		}
 
 
 		// *** OVERRIDES *** //
+
+		public override void RuleRemoved()
+		{
+			RoyalPieceType.RemoveCustomAttributes( typeof(RoyalAttribute) );
+		}
 
 		public override void PositionLoaded( FEN fen )
 		{
@@ -92,6 +99,12 @@ namespace ChessV.Games.Rules
 				//	king is in check - extend by one ply
 				return Game.ONEPLY;
 			return 0;
+		}
+
+		public override void GetNotesForPieceType( PieceType type, List<string> notes )
+		{
+			if( type == RoyalPieceType )
+				notes.Add( "royal" );
 		}
 
 

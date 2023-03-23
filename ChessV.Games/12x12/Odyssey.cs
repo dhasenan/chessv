@@ -34,12 +34,8 @@ namespace ChessV.Games
 	{
 		// *** PIECE TYPES *** //
 
-		public PieceType Queen;
 		public PieceType DragonKing;
 		public PieceType DragonHorse;
-		public PieceType Rook;
-		public PieceType Bishop;
-		public PieceType Knight;
 		public PieceType Camel;
 		public PieceType GoldGeneral;
 		public PieceType SilverGeneral;
@@ -76,12 +72,9 @@ namespace ChessV.Games
 		public override void AddPieceTypes()
 		{
 			base.AddPieceTypes();
-			AddPieceType( Queen = new Queen( "Queen", "Q", 1250, 1350 ) );
+			AddChessPieceTypes();
 			AddPieceType( DragonKing = new DragonKing( "Dragon King", "DK", 850, 950 ) );
 			AddPieceType( DragonHorse = new DragonHorse( "Dragon Horse", "DH", 750, 800 ) );
-			AddPieceType( Rook = new Rook( "Rook", "R", 650, 750 ) );
-			AddPieceType( Bishop = new Bishop( "Bishop", "B", 500, 550 ) );
-			AddPieceType( Knight = new Knight( "Knight", "N", 300, 300 ) );
 			AddPieceType( Camel = new Camel( "Camel", "C", 250, 250 ) );
 			AddPieceType( GoldGeneral = new GoldGeneral( "Gold General", "GG", 250, 250 ) );
 			AddPieceType( SilverGeneral = new SilverGeneral( "Silver General", "SG", 225, 225 ) );

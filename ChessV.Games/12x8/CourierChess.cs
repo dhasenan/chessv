@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -18,9 +18,6 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
 namespace ChessV.Games
 {
 	[Game("Courier Chess", typeof(Geometry.Rectangular), 12, 8,
@@ -34,10 +31,6 @@ namespace ChessV.Games
 	{
 		// *** PIECE TYPES *** //
 
-		public PieceType Queen;
-		public PieceType Rook;
-		public PieceType Knight;
-		public PieceType Courier;
 		public PieceType Elephant;
 		public PieceType Mann;
 		public PieceType Schleich;
@@ -50,6 +43,7 @@ namespace ChessV.Games
 				( /* symmetry = */ new MirrorSymmetry() )
 		{
 		}
+
 
 		// *** INITIALIZATION *** //
 
@@ -65,11 +59,10 @@ namespace ChessV.Games
 		public override void AddPieceTypes()
 		{
 			base.AddPieceTypes();
-			AddPieceType( Rook = new Rook( "Rook", "R", 550, 650 ) );
-			AddPieceType( Queen = new Ferz( "Queen", "Q", 155, 155 ) );
+			AddChessPieceTypes();
+			Bishop.Name = "Courier";
+			Bishop.SetNotation( "C" );
 			AddPieceType( Elephant = new Elephant( "Bischof", "B", 100, 100 ) );
-			AddPieceType( Knight = new Knight( "Knight", "N", 300, 300 ) );
-			AddPieceType( Courier = new Bishop( "Courier", "C", 350, 400 ) );
 			AddPieceType( Mann = new King( "Mann", "M", 325, 325, "General" ) );
 			AddPieceType( Schleich = new Wazir( "Schleich", "S", 145, 145 ) );
 		}

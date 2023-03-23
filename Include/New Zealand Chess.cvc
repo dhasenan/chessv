@@ -1,0 +1,22 @@
+
+Game 'New Zealand Chess' : Chess
+{
+	Invented = "Unknown";
+	InventedBy = "Unknown";
+	GameDescription1 = "Knight change into Rooks and Rooks";
+	GameDescription2 = "change into Knights with every capture";
+
+	AddPieceTypes
+	{
+		Rook.MidgameValue = Rook.EndgameValue = 450;
+		Knight.MidgameValue = Knight.EndgameValue = 375;
+	}
+
+	AddRules
+	{
+		local rule = PieceChangeTypeRule();
+		rule.TypeChangeOnCapture( Rook, Knight );
+		rule.TypeChangeOnCapture( Knight, Rook );
+		AddRule( rule );
+	}
+}

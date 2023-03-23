@@ -26,7 +26,7 @@ namespace ChessV.Games
 	[Game("Marseillais Chess", typeof(Geometry.Rectangular), 8, 8,
 		  Invented = "circa 1920",
 		  InventedBy = "unknown",
-		  Tags = "Chess Variant,Popular,Historic" )]
+		  Tags = "Chess Variant,Popular,Historic,Multi-Move" )]
 	public class MarseillaisChess: Chess
 	{
 		#region AddRules

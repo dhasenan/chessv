@@ -1,0 +1,85 @@
+
+Game 'Separate Realms Chess' : Chess
+{
+	Invented = "2002";
+	InventedBy = "Mike Nelson;Peter Aronson";
+
+	SetGameVariables
+	{
+		// Stalemate is a loss in this game
+		StalemateResult = "Loss";
+
+		// Turn off the static exchange evaluator (SEE)
+		// this is important because this game has multiple paths
+		// to the same square (such as rook and dababbah move)
+		// and this messes with the SEE function
+		StaticExchangeEvaluation = false;
+	}
+
+	AddPieceTypes
+	{
+		// For each piece we need to adjust its moves
+		// and it's material evaluation
+
+		// KING
+		King.FindMove( < 1, 0> ).MustCapture = true;
+		King.FindMove( <-1, 0> ).MustCapture = true;
+		King.FindMove( <0,  1> ).MustCapture = true;
+		King.FindMove( <0, -1> ).MustCapture = true;
+
+		// KNIGHT
+		Knight.FindMove( < 1,  2> ).MustCapture = true;
+		Knight.FindMove( < 1, -2> ).MustCapture = true;
+		Knight.FindMove( <-1,  2> ).MustCapture = true;
+		Knight.FindMove( <-1, -2> ).MustCapture = true;
+		Knight.MidgameValue = Knight.EndgameValue = 200;
+
+		// BISHOP
+		Bishop.FindMove( < 1,  1> ).MustCapture = true;
+		Bishop.FindMove( < 1, -1> ).MustCapture = true;
+		Bishop.FindMove( <-1,  1> ).MustCapture = true;
+		Bishop.FindMove( <-1, -1> ).MustCapture = true;
+		Bishop.Slide( < 2,  2> ).CanCapture = false;
+		Bishop.Slide( < 2, -2> ).CanCapture = false;
+		Bishop.Slide( <-2,  2> ).CanCapture = false;
+		Bishop.Slide( <-2, -2> ).CanCapture = false;
+		Bishop.MidgameValue = Bishop.EndgameValue = 175;
+
+		// ROOK
+		Rook.FindMove( <  1, 0> ).MustCapture = true;
+		Rook.FindMove( < -1, 0> ).MustCapture = true;
+		Rook.FindMove( < 0,  1> ).MustCapture = true;
+		Rook.FindMove( < 0, -1> ).MustCapture = true;
+		Rook.Slide( <  2, 0> ).CanCapture = false;
+		Rook.Slide( < -2, 0> ).CanCapture = false;
+		Rook.Slide( < 0,  2> ).CanCapture = false;
+		Rook.Slide( < 0, -2> ).CanCapture = false;
+		Rook.MidgameValue = Rook.EndgameValue = 350;
+
+		// QUEEN
+		Queen.FindMove( < 1,  1> ).MustCapture = true;
+		Queen.FindMove( < 1, -1> ).MustCapture = true;
+		Queen.FindMove( <-1,  1> ).MustCapture = true;
+		Queen.FindMove( <-1, -1> ).MustCapture = true;
+		Queen.FindMove( <  1, 0> ).MustCapture = true;
+		Queen.FindMove( < -1, 0> ).MustCapture = true;
+		Queen.FindMove( < 0,  1> ).MustCapture = true;
+		Queen.FindMove( < 0, -1> ).MustCapture = true;
+		Queen.Slide( < 2,  2> ).CanCapture = false;
+		Queen.Slide( < 2, -2> ).CanCapture = false;
+		Queen.Slide( <-2,  2> ).CanCapture = false;
+		Queen.Slide( <-2, -2> ).CanCapture = false;
+		Queen.Slide( <  2, 0> ).CanCapture = false;
+		Queen.Slide( < -2, 0> ).CanCapture = false;
+		Queen.Slide( < 0,  2> ).CanCapture = false;
+		Queen.Slide( < 0, -2> ).CanCapture = false;
+		Queen.MidgameValue = Queen.EndgameValue = 650;
+	}
+
+	AddEvaluations
+	{
+		// Our normal development principles don't work very well for this
+		// game, so we will turn off the development evaluation function
+		RemoveEvaluation( DevelopmentEvaluation );
+	}
+}

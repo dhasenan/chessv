@@ -91,6 +91,7 @@ namespace ChessV.GUI
 			this.menuitem_StopThinking = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.menuitem_QuickAnalysis = new System.Windows.Forms.ToolStripMenuItem();
+			this.menuitem_StaticEvaluation = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuitem_MultiPVAnalysis = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuitem_Perft = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
@@ -108,13 +109,13 @@ namespace ChessV.GUI
 			this.menuitem_RotateBoard = new System.Windows.Forms.ToolStripMenuItem();
 			this.menu_Tools = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuitem_ShowEngineDebugWindow = new System.Windows.Forms.ToolStripMenuItem();
+			this.menuitem_ShowEngineStatisticsWindow = new System.Windows.Forms.ToolStripMenuItem();
 			this.menu_Help = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuitem_About = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuPieceContext = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.propertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.timer = new System.Windows.Forms.Timer(this.components);
 			this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-			this.menuitem_ShowEngineStatisticsWindow = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
@@ -203,7 +204,9 @@ namespace ChessV.GUI
             this.headerPV});
 			this.listThinking1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.listThinking1.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.listThinking1.LabelEdit = true;
 			this.listThinking1.Location = new System.Drawing.Point(0, 0);
+			this.listThinking1.MultiSelect = false;
 			this.listThinking1.Name = "listThinking1";
 			this.listThinking1.Size = new System.Drawing.Size(495, 212);
 			this.listThinking1.TabIndex = 0;
@@ -505,14 +508,14 @@ namespace ChessV.GUI
 			// menuitem_SaveGame
 			// 
 			this.menuitem_SaveGame.Name = "menuitem_SaveGame";
-			this.menuitem_SaveGame.Size = new System.Drawing.Size(132, 22);
+			this.menuitem_SaveGame.Size = new System.Drawing.Size(152, 22);
 			this.menuitem_SaveGame.Text = "Save Game";
 			this.menuitem_SaveGame.Click += new System.EventHandler(this.menuitem_SaveGame_Click);
 			// 
 			// menuitem_Exit
 			// 
 			this.menuitem_Exit.Name = "menuitem_Exit";
-			this.menuitem_Exit.Size = new System.Drawing.Size(132, 22);
+			this.menuitem_Exit.Size = new System.Drawing.Size(152, 22);
 			this.menuitem_Exit.Text = "Exit";
 			this.menuitem_Exit.Click += new System.EventHandler(this.menuitem_Exit_Click);
 			// 
@@ -527,6 +530,7 @@ namespace ChessV.GUI
             this.menuitem_StopThinking,
             this.toolStripSeparator4,
             this.menuitem_QuickAnalysis,
+            this.menuitem_StaticEvaluation,
             this.menuitem_MultiPVAnalysis,
             this.menuitem_Perft,
             this.toolStripSeparator6,
@@ -540,7 +544,7 @@ namespace ChessV.GUI
 			// 
 			this.menuitem_TakeBackMove.Enabled = false;
 			this.menuitem_TakeBackMove.Name = "menuitem_TakeBackMove";
-			this.menuitem_TakeBackMove.Size = new System.Drawing.Size(186, 22);
+			this.menuitem_TakeBackMove.Size = new System.Drawing.Size(207, 22);
 			this.menuitem_TakeBackMove.Text = "Take Back Move";
 			this.menuitem_TakeBackMove.Click += new System.EventHandler(this.menuitem_TakeBackMove_Click);
 			// 
@@ -548,20 +552,20 @@ namespace ChessV.GUI
 			// 
 			this.menuitem_TakeBackAllMoves.Enabled = false;
 			this.menuitem_TakeBackAllMoves.Name = "menuitem_TakeBackAllMoves";
-			this.menuitem_TakeBackAllMoves.Size = new System.Drawing.Size(186, 22);
+			this.menuitem_TakeBackAllMoves.Size = new System.Drawing.Size(207, 22);
 			this.menuitem_TakeBackAllMoves.Text = "Take Back All Moves";
 			this.menuitem_TakeBackAllMoves.Click += new System.EventHandler(this.menuitem_TakeBackAllMoves_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(183, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(204, 6);
 			// 
 			// menuitem_ComputerPlays0
 			// 
 			this.menuitem_ComputerPlays0.Enabled = false;
 			this.menuitem_ComputerPlays0.Name = "menuitem_ComputerPlays0";
-			this.menuitem_ComputerPlays0.Size = new System.Drawing.Size(186, 22);
+			this.menuitem_ComputerPlays0.Size = new System.Drawing.Size(207, 22);
 			this.menuitem_ComputerPlays0.Text = "Computer Plays 0";
 			this.menuitem_ComputerPlays0.Click += new System.EventHandler(this.menuitem_ComputerPlays0_Click);
 			// 
@@ -569,53 +573,60 @@ namespace ChessV.GUI
 			// 
 			this.menuitem_ComputerPlays1.Enabled = false;
 			this.menuitem_ComputerPlays1.Name = "menuitem_ComputerPlays1";
-			this.menuitem_ComputerPlays1.Size = new System.Drawing.Size(186, 22);
+			this.menuitem_ComputerPlays1.Size = new System.Drawing.Size(207, 22);
 			this.menuitem_ComputerPlays1.Text = "Computer Plays 1";
 			this.menuitem_ComputerPlays1.Click += new System.EventHandler(this.menuitem_ComputerPlays1_Click);
 			// 
 			// menuitem_StopThinking
 			// 
 			this.menuitem_StopThinking.Name = "menuitem_StopThinking";
-			this.menuitem_StopThinking.Size = new System.Drawing.Size(186, 22);
+			this.menuitem_StopThinking.Size = new System.Drawing.Size(207, 22);
 			this.menuitem_StopThinking.Text = "Stop Thinking";
 			this.menuitem_StopThinking.Click += new System.EventHandler(this.menuitem_StopThinking_Click);
 			// 
 			// toolStripSeparator4
 			// 
 			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(183, 6);
+			this.toolStripSeparator4.Size = new System.Drawing.Size(204, 6);
 			// 
 			// menuitem_QuickAnalysis
 			// 
 			this.menuitem_QuickAnalysis.Name = "menuitem_QuickAnalysis";
-			this.menuitem_QuickAnalysis.Size = new System.Drawing.Size(186, 22);
+			this.menuitem_QuickAnalysis.Size = new System.Drawing.Size(207, 22);
 			this.menuitem_QuickAnalysis.Text = "Quick Analysis";
 			this.menuitem_QuickAnalysis.Click += new System.EventHandler(this.quickAnalysisToolStripMenuItem_Click);
+			// 
+			// menuitem_StaticEvaluation
+			// 
+			this.menuitem_StaticEvaluation.Name = "menuitem_StaticEvaluation";
+			this.menuitem_StaticEvaluation.Size = new System.Drawing.Size(207, 22);
+			this.menuitem_StaticEvaluation.Text = "Static Evaluation";
+			this.menuitem_StaticEvaluation.Click += new System.EventHandler(this.menuitem_StaticEvaluation_Click);
 			// 
 			// menuitem_MultiPVAnalysis
 			// 
 			this.menuitem_MultiPVAnalysis.Name = "menuitem_MultiPVAnalysis";
-			this.menuitem_MultiPVAnalysis.Size = new System.Drawing.Size(186, 22);
+			this.menuitem_MultiPVAnalysis.Size = new System.Drawing.Size(207, 22);
 			this.menuitem_MultiPVAnalysis.Text = "Multi-PV Analysis ...";
 			this.menuitem_MultiPVAnalysis.Click += new System.EventHandler(this.menuitem_MultiPVAnalysis_Click);
 			// 
 			// menuitem_Perft
 			// 
 			this.menuitem_Perft.Name = "menuitem_Perft";
-			this.menuitem_Perft.Size = new System.Drawing.Size(186, 22);
+			this.menuitem_Perft.Size = new System.Drawing.Size(207, 22);
 			this.menuitem_Perft.Text = "Perft";
 			this.menuitem_Perft.Click += new System.EventHandler(this.perftToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator6
 			// 
 			this.toolStripSeparator6.Name = "toolStripSeparator6";
-			this.toolStripSeparator6.Size = new System.Drawing.Size(183, 6);
+			this.toolStripSeparator6.Size = new System.Drawing.Size(204, 6);
 			// 
 			// menuitem_LoadPositionByFEN
 			// 
 			this.menuitem_LoadPositionByFEN.Name = "menuitem_LoadPositionByFEN";
-			this.menuitem_LoadPositionByFEN.Size = new System.Drawing.Size(186, 22);
-			this.menuitem_LoadPositionByFEN.Text = "Load Position by FEN";
+			this.menuitem_LoadPositionByFEN.Size = new System.Drawing.Size(207, 22);
+			this.menuitem_LoadPositionByFEN.Text = "Get or Set Position FEN ...";
 			this.menuitem_LoadPositionByFEN.Click += new System.EventHandler(this.menuitem_LoadPositionByFEN_Click);
 			// 
 			// menu_Options
@@ -717,6 +728,13 @@ namespace ChessV.GUI
 			this.menuitem_ShowEngineDebugWindow.Text = "Show Engine Debug Window";
 			this.menuitem_ShowEngineDebugWindow.Click += new System.EventHandler(this.menuitem_ShowEngineDebugWindow_Click);
 			// 
+			// menuitem_ShowEngineStatisticsWindow
+			// 
+			this.menuitem_ShowEngineStatisticsWindow.Name = "menuitem_ShowEngineStatisticsWindow";
+			this.menuitem_ShowEngineStatisticsWindow.Size = new System.Drawing.Size(238, 22);
+			this.menuitem_ShowEngineStatisticsWindow.Text = "Show Engine Statistics Window";
+			this.menuitem_ShowEngineStatisticsWindow.Click += new System.EventHandler(this.menuitem_ShowEngineStatisticsWindow_Click);
+			// 
 			// menu_Help
 			// 
 			this.menu_Help.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -728,7 +746,7 @@ namespace ChessV.GUI
 			// menuitem_About
 			// 
 			this.menuitem_About.Name = "menuitem_About";
-			this.menuitem_About.Size = new System.Drawing.Size(148, 22);
+			this.menuitem_About.Size = new System.Drawing.Size(152, 22);
 			this.menuitem_About.Text = "About ChessV";
 			this.menuitem_About.Click += new System.EventHandler(this.menuitem_About_Click);
 			// 
@@ -750,13 +768,6 @@ namespace ChessV.GUI
 			// 
 			this.timer.Interval = 400;
 			this.timer.Tick += new System.EventHandler(this.timer_Tick);
-			// 
-			// menuitem_ShowEngineStatisticsWindow
-			// 
-			this.menuitem_ShowEngineStatisticsWindow.Name = "menuitem_ShowEngineStatisticsWindow";
-			this.menuitem_ShowEngineStatisticsWindow.Size = new System.Drawing.Size(238, 22);
-			this.menuitem_ShowEngineStatisticsWindow.Text = "Show Engine Statistics Window";
-			this.menuitem_ShowEngineStatisticsWindow.Click += new System.EventHandler(this.menuitem_ShowEngineStatisticsWindow_Click);
 			// 
 			// GameForm
 			// 
@@ -867,5 +878,6 @@ namespace ChessV.GUI
 		private System.Windows.Forms.PictureBox pictPrevious;
 		private System.Windows.Forms.ToolStripMenuItem menuitem_MultiPVAnalysis;
 		private System.Windows.Forms.ToolStripMenuItem menuitem_ShowEngineStatisticsWindow;
+		private System.Windows.Forms.ToolStripMenuItem menuitem_StaticEvaluation;
 	}
 }

@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -18,15 +18,14 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
+using ChessV.Evaluations;
 
 namespace ChessV.Games
 {
 	[Game("Relative Royalty Chess", typeof(Geometry.Rectangular), 8, 8,
 		  Invented = "2017",
 		  InventedBy = "various",
-		  Tags = "Chess Variant" )]
+		  Tags = "Chess Variant")]
 	public class RelativeRoyaltyChess: Chess
 	{
 		// *** INITIALIZATION *** //
@@ -44,6 +43,19 @@ namespace ChessV.Games
 		{
 			base.AddRules();
 			ReplaceRule( FindRule( typeof(Rules.CheckmateRule) ), new Rules.MultiKing.RelativeRoyaltyCheckmateRule( King ) );
+		}
+		#endregion
+
+		#region AddEvaluations
+		public override void AddEvaluations()
+		{
+			base.AddEvaluations();
+
+			//	We need to remove the LowMaterialEvaluation for now. 
+			//	It doesn't understand multiple kings, so all the logic to 
+			//	detect draws by insufficient material, etc, won't do 
+			//	the right thing.
+			RemoveEvaluation( typeof( LowMaterialEvaluation ) );
 		}
 		#endregion
 	}

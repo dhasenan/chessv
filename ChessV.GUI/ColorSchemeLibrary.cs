@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -27,7 +27,7 @@ namespace ChessV.GUI
 {
 	public static class ColorSchemeLibrary
 	{
-		public static void Initialize()
+		public static void Initialize( int currentVersion )
 		{
 			//	Create color scheme look-up table
 			colorSchemes = new Dictionary<string, ColorScheme>();
@@ -40,6 +40,8 @@ namespace ChessV.GUI
 				colorSchemesKey = RegistrySettings.RegistryKey.CreateSubKey( "Color Schemes" );
 				createDefaultColorSchemes( colorSchemesKey );
 			}
+			else if( currentVersion == 1 )
+				updateDefaultColorSchemes( colorSchemesKey, 1 );
 			//	Add all discovered/created color schemes to the color schemes index
 			string[] colorSchemeNames = colorSchemesKey.GetSubKeyNames();
 			foreach( string colorSchemeName in colorSchemeNames )
@@ -124,9 +126,9 @@ namespace ChessV.GUI
 			capeCod.SetValue( "BorderColor", unchecked((Int32) 0xFF804646), RegistryValueKind.DWord );
 			capeCod.SetValue( "HighlightColor", unchecked((Int32) 0xFF400000), RegistryValueKind.DWord );
 			capeCod.SetValue( "TextColor", unchecked((Int32) 0xFFFFFFCC), RegistryValueKind.DWord );
-			capeCod.SetValue( "SquareColor1", unchecked((Int32) 0xFFFFFFCC), RegistryValueKind.DWord );
+			capeCod.SetValue( "SquareColor1", unchecked((Int32) 0xFFFFFFD6), RegistryValueKind.DWord );
 			capeCod.SetValue( "SquareColor2", unchecked((Int32) 0xFF5D7E7E), RegistryValueKind.DWord );
-			capeCod.SetValue( "SquareColor3", unchecked((Int32) 0xFF648C8C), RegistryValueKind.DWord );
+			capeCod.SetValue( "SquareColor3", unchecked((Int32) 0xFF80979B), RegistryValueKind.DWord );
 			capeCod.SetValue( "PlayerColor1", unchecked((Int32) 0xFFFFFFFF), RegistryValueKind.DWord );
 			capeCod.SetValue( "PlayerColor2", unchecked((Int32) 0xFF5984BD), RegistryValueKind.DWord );
 			#endregion
@@ -317,7 +319,109 @@ namespace ChessV.GUI
 			norwegianWood.SetValue( "PlayerColor1", unchecked((Int32) 0xFFFFFFFF), RegistryValueKind.DWord );
 			norwegianWood.SetValue( "PlayerColor2", unchecked((Int32) 0xFFE68D4D), RegistryValueKind.DWord );
 			#endregion
+
+			#region Brown Bear Brawl
+			RegistryKey brownBearBrawl = colorSchemesKey.CreateSubKey( "Brown Bear Brawl" );
+			brownBearBrawl.SetValue( "BorderColor", unchecked((Int32) Color.SaddleBrown.ToArgb()), RegistryValueKind.DWord );
+			brownBearBrawl.SetValue( "HighlightColor", unchecked((Int32) Color.Black.ToArgb()), RegistryValueKind.DWord );
+			brownBearBrawl.SetValue( "TextColor", unchecked((Int32) Color.NavajoWhite.ToArgb()), RegistryValueKind.DWord );
+			brownBearBrawl.SetValue( "SquareColor1", unchecked((Int32) Color.NavajoWhite.ToArgb()), RegistryValueKind.DWord );
+			brownBearBrawl.SetValue( "SquareColor2", unchecked((Int32) Color.Peru.ToArgb()), RegistryValueKind.DWord );
+			brownBearBrawl.SetValue( "SquareColor3", unchecked((Int32) 0xFFB06F2D), RegistryValueKind.DWord );
+			brownBearBrawl.SetValue( "PlayerColor1", unchecked((Int32) 0xFFFFFFFF), RegistryValueKind.DWord );
+			brownBearBrawl.SetValue( "PlayerColor2", unchecked((Int32) 0xFF5984BD), RegistryValueKind.DWord );
 			#endregion
+
+			#region Cavalier Komi
+			RegistryKey cavalierKomi = colorSchemesKey.CreateSubKey( "Cavalier Komi" );
+			cavalierKomi.SetValue( "BorderColor", unchecked((Int32) Color.Black.ToArgb()), RegistryValueKind.DWord );
+			cavalierKomi.SetValue( "HighlightColor", unchecked((Int32) Color.Black.ToArgb()), RegistryValueKind.DWord );
+			cavalierKomi.SetValue( "TextColor", unchecked((Int32) Color.White.ToArgb()), RegistryValueKind.DWord );
+			cavalierKomi.SetValue( "SquareColor1", unchecked((Int32) 0xFFFFFFE1), RegistryValueKind.DWord );
+			cavalierKomi.SetValue( "SquareColor2", unchecked((Int32) 0xFF008000), RegistryValueKind.DWord );
+			cavalierKomi.SetValue( "SquareColor3", unchecked((Int32) 0xFF00428C), RegistryValueKind.DWord );
+			cavalierKomi.SetValue( "PlayerColor1", unchecked((Int32) 0xFFFFFFFF), RegistryValueKind.DWord );
+			cavalierKomi.SetValue( "PlayerColor2", unchecked((Int32) 0xFFFF0000), RegistryValueKind.DWord );
+			#endregion
+
+			#region Baby Blues
+			RegistryKey babyBlues = colorSchemesKey.CreateSubKey( "Baby Blues" );
+			babyBlues.SetValue( "BorderColor", unchecked((Int32) 0xFFFFFFF0), RegistryValueKind.DWord );
+			babyBlues.SetValue( "HighlightColor", unchecked((Int32) Color.Black.ToArgb()), RegistryValueKind.DWord );
+			babyBlues.SetValue( "TextColor", unchecked((Int32) Color.Black.ToArgb()), RegistryValueKind.DWord );
+			babyBlues.SetValue( "SquareColor1", unchecked((Int32) 0xFFFFFFFF), RegistryValueKind.DWord );
+			babyBlues.SetValue( "SquareColor2", unchecked((Int32) 0xFFA4C8F0), RegistryValueKind.DWord );
+			babyBlues.SetValue( "SquareColor3", unchecked((Int32) 0xFF82B4EA), RegistryValueKind.DWord );
+			babyBlues.SetValue( "PlayerColor1", unchecked((Int32) 0xFFFFFFFF), RegistryValueKind.DWord );
+			babyBlues.SetValue( "PlayerColor2", unchecked((Int32) 0xFF6994CD), RegistryValueKind.DWord );
+			#endregion
+
+			#region Golden Goose Egg
+			RegistryKey goldenGooseEgg = colorSchemesKey.CreateSubKey( "Golden Goose Egg" );
+			goldenGooseEgg.SetValue( "BorderColor", unchecked((Int32) 0xFFFFFFF0), RegistryValueKind.DWord );
+			goldenGooseEgg.SetValue( "HighlightColor", unchecked((Int32) Color.Black.ToArgb()), RegistryValueKind.DWord );
+			goldenGooseEgg.SetValue( "TextColor", unchecked((Int32) Color.Black.ToArgb()), RegistryValueKind.DWord );
+			goldenGooseEgg.SetValue( "SquareColor1", unchecked((Int32) 0xFFFFEEBB), RegistryValueKind.DWord );
+			goldenGooseEgg.SetValue( "SquareColor2", unchecked((Int32) 0xFF886600), RegistryValueKind.DWord );
+			goldenGooseEgg.SetValue( "SquareColor3", unchecked((Int32) 0xFF8E8300), RegistryValueKind.DWord );
+			goldenGooseEgg.SetValue( "PlayerColor1", unchecked((Int32) 0xFFFFFFFF), RegistryValueKind.DWord );
+			goldenGooseEgg.SetValue( "PlayerColor2", unchecked((Int32) 0xFF995500), RegistryValueKind.DWord );
+			#endregion
+			#endregion
+		}
+
+		private static void updateDefaultColorSchemes( RegistryKey colorSchemesKey, int currentRegistryVersion )
+		{
+			if( currentRegistryVersion == 1 )
+			{
+				#region Brown Bear Brawl
+				RegistryKey brownBearBrawl = colorSchemesKey.CreateSubKey( "Brown Bear Brawl" );
+				brownBearBrawl.SetValue( "BorderColor", unchecked((Int32) Color.SaddleBrown.ToArgb()), RegistryValueKind.DWord );
+				brownBearBrawl.SetValue( "HighlightColor", unchecked((Int32) Color.Black.ToArgb()), RegistryValueKind.DWord );
+				brownBearBrawl.SetValue( "TextColor", unchecked((Int32) Color.NavajoWhite.ToArgb()), RegistryValueKind.DWord );
+				brownBearBrawl.SetValue( "SquareColor1", unchecked((Int32) Color.NavajoWhite.ToArgb()), RegistryValueKind.DWord );
+				brownBearBrawl.SetValue( "SquareColor2", unchecked((Int32) Color.Peru.ToArgb()), RegistryValueKind.DWord );
+				brownBearBrawl.SetValue( "SquareColor3", unchecked((Int32) 0xFFB06F2D), RegistryValueKind.DWord );
+				brownBearBrawl.SetValue( "PlayerColor1", unchecked((Int32) 0xFFFFFFFF), RegistryValueKind.DWord );
+				brownBearBrawl.SetValue( "PlayerColor2", unchecked((Int32) 0xFF5984BD), RegistryValueKind.DWord );
+				#endregion
+
+				#region Cavalier Komi
+				RegistryKey cavalierKomi = colorSchemesKey.CreateSubKey( "Cavalier Komi" );
+				cavalierKomi.SetValue( "BorderColor", unchecked((Int32) Color.Black.ToArgb()), RegistryValueKind.DWord );
+				cavalierKomi.SetValue( "HighlightColor", unchecked((Int32) Color.Black.ToArgb()), RegistryValueKind.DWord );
+				cavalierKomi.SetValue( "TextColor", unchecked((Int32) Color.White.ToArgb()), RegistryValueKind.DWord );
+				cavalierKomi.SetValue( "SquareColor1", unchecked((Int32) 0xFFFFFFE1), RegistryValueKind.DWord );
+				cavalierKomi.SetValue( "SquareColor2", unchecked((Int32) 0xFF008000), RegistryValueKind.DWord );
+				cavalierKomi.SetValue( "SquareColor3", unchecked((Int32) 0xFF00428C), RegistryValueKind.DWord );
+				cavalierKomi.SetValue( "PlayerColor1", unchecked((Int32) 0xFFFFFFFF), RegistryValueKind.DWord );
+				cavalierKomi.SetValue( "PlayerColor2", unchecked((Int32) 0xFFFF0000), RegistryValueKind.DWord );
+				#endregion
+
+				#region Baby Blues
+				RegistryKey babyBlues = colorSchemesKey.CreateSubKey( "Baby Blues" );
+				babyBlues.SetValue( "BorderColor", unchecked((Int32) 0xFFFFFFF0), RegistryValueKind.DWord );
+				babyBlues.SetValue( "HighlightColor", unchecked((Int32) Color.Black.ToArgb()), RegistryValueKind.DWord );
+				babyBlues.SetValue( "TextColor", unchecked((Int32) Color.Black.ToArgb()), RegistryValueKind.DWord );
+				babyBlues.SetValue( "SquareColor1", unchecked((Int32) 0xFFFFFFFF), RegistryValueKind.DWord );
+				babyBlues.SetValue( "SquareColor2", unchecked((Int32) 0xFFA4C8F0), RegistryValueKind.DWord );
+				babyBlues.SetValue( "SquareColor3", unchecked((Int32) 0xFF82B4EA), RegistryValueKind.DWord );
+				babyBlues.SetValue( "PlayerColor1", unchecked((Int32) 0xFFFFFFFF), RegistryValueKind.DWord );
+				babyBlues.SetValue( "PlayerColor2", unchecked((Int32) 0xFF6994CD), RegistryValueKind.DWord );
+				#endregion
+
+				#region Golden Goose Egg
+				RegistryKey goldenGooseEgg = colorSchemesKey.CreateSubKey( "Golden Goose Egg" );
+				goldenGooseEgg.SetValue( "BorderColor", unchecked((Int32) 0xFFFFFFF0), RegistryValueKind.DWord );
+				goldenGooseEgg.SetValue( "HighlightColor", unchecked((Int32) Color.Black.ToArgb()), RegistryValueKind.DWord );
+				goldenGooseEgg.SetValue( "TextColor", unchecked((Int32) Color.Black.ToArgb()), RegistryValueKind.DWord );
+				goldenGooseEgg.SetValue( "SquareColor1", unchecked((Int32) 0xFFFFEEBB), RegistryValueKind.DWord );
+				goldenGooseEgg.SetValue( "SquareColor2", unchecked((Int32) 0xFFAE8300), RegistryValueKind.DWord );
+				goldenGooseEgg.SetValue( "SquareColor3", unchecked((Int32) 0xFF886600), RegistryValueKind.DWord );
+				goldenGooseEgg.SetValue( "PlayerColor1", unchecked((Int32) 0xFFFFFFFF), RegistryValueKind.DWord );
+				goldenGooseEgg.SetValue( "PlayerColor2", unchecked((Int32) 0xFF995500), RegistryValueKind.DWord );
+				#endregion
+			}
 		}
 
 		//	The registry key that contains all the color schemes as sub-keys

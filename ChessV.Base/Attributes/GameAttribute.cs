@@ -32,6 +32,7 @@ namespace ChessV
 		public int[] GeometryParameters { get; set; }
 		public string Definitions { get; set; }
 		public bool Template { get; set; }
+		public bool Hidden { get; set; }
 		public string Invented { get; set; }
 		public string InventedBy { get; set; }
 		public string Tags { get; set; }
@@ -43,6 +44,7 @@ namespace ChessV
 		{ 
 			GameName = gamename; 
 			Template = false;
+			Hidden = false;
 			GeometryType = geometryType;
 			GeometryParameters = geometryParameters;
 		}

@@ -26,7 +26,7 @@ namespace ChessV.Games
 	[Game("Doublemove Chess", typeof(Geometry.Rectangular), 8, 8,
 		  Invented = "1957",
 		  InventedBy = "Fred Galvin",
-		  Tags = "Chess Variant",
+		  Tags = "Chess Variant,Multi-Move",
 		  GameDescription1 = "Except for white's first move, players make two",
 		  GameDescription2 = "moves per turn.  Win by capturing the king.")]
 	public class DoublemoveChess: Chess

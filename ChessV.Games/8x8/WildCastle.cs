@@ -43,7 +43,7 @@ namespace ChessV.Games
 		public override void SetGameVariables()
 		{
 			base.SetGameVariables();
-			PositionNumber = new IntVariable( 1, 18 );
+			PositionNumber = new IntRangeVariable( 1, 18 );
 		}
 		#endregion
 

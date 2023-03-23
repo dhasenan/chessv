@@ -1,0 +1,31 @@
+
+Game 'Evolution Chess' : 'Generic Chess'
+{
+	NumRanks = 6;
+	NumFiles = 7;
+	Invented = "2001";
+	InventedBy = "Jason D. Wittman";
+	Symmetry = RotationalSymmetry;
+	GameDescription1 = "Knights change into Rooks after each move";
+	GameDescription2 = "and Rooks change into Queens";
+
+	SetGameVariables
+	{
+		Array = "NNN1nnk/NNN1nnn/NNN1nnn/NNN1nnn/NNN1nnn/KNN1nnn";
+		PromotionRule = "Custom";
+	}
+
+	AddPieceTypes
+	{
+		Pawn.Enabled = false;
+		AddPieceType( Knight, "Knight", "N", 260, 260 );
+		AddPieceType( Rook, "Rook", "R", 350, 350 );
+		AddPieceType( Queen, "Queen", "Q", 600, 600 );
+	}
+
+	AddRules
+	{
+		AddRule( BasicPromotionRule( Knight, { Rook }, { location: true } ) );
+		AddRule( BasicPromotionRule( Rook, { Queen }, { location: true } ) );
+	}
+}

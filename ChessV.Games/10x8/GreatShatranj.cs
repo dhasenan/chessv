@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -18,8 +18,7 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
+using ChessV.Evaluations;
 
 namespace ChessV.Games
 {
@@ -41,9 +40,7 @@ namespace ChessV.Games
 		public PieceType Minister;
 		public PieceType HighPriestess;
 		public PieceType Elephant;
-		public PieceType Knight;
-		public PieceType Bowman;
-		public PieceType Rook;
+		public PieceType Tower;
 
 
 		// *** CONSTRUCTION *** //
@@ -61,6 +58,8 @@ namespace ChessV.Games
 		{
 			base.SetGameVariables();
 			Variant = new ChoiceVariable( new string[] { "Great Shatranj D", "Great Shatranj R" } );
+			PromotionTypes = "G";
+			BareKing = true;
 		}
 		#endregion
 
@@ -91,7 +90,7 @@ namespace ChessV.Games
 			AddPieceType( Elephant = new Elephant( "Elephant", "E", 250, 250 ) );
 			Ferz.AddMoves( Elephant );
 			if( Variant.Value == "Great Shatranj D" )
-				AddPieceType( Bowman = new Bowman( "Dabbabah", "D", 270, 270 ) );
+				AddPieceType( Tower = new Tower( "Dabbabah", "D", 270, 270 ) );
 			if( Variant.Value == "Great Shatranj R" )
 				AddPieceType( Rook = new Rook( "Rook", "R", 600, 600 ) );
 		}
@@ -101,6 +100,17 @@ namespace ChessV.Games
 		public override void AddRules()
 		{
 			base.AddRules();
+		}
+		#endregion
+
+		#region AddEvaluations
+		public override void AddEvaluations()
+		{
+			base.AddEvaluations();
+			if( Elephant != null && Elephant.Enabled )
+				OutpostEval.AddOutpostBonus( Elephant );
+			if( General != null && General.Enabled )
+				OutpostEval.AddOutpostBonus( General, 10, 2, 5, 5 );
 		}
 		#endregion
 	}

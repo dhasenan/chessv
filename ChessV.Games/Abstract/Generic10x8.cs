@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -19,7 +19,8 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 ****************************************************************************/
 
 using System;
-using System.Collections.Generic;
+using ChessV.Games.Rules;
+using ChessV.Evaluations;
 
 namespace ChessV.Games.Abstract
 {
@@ -58,7 +59,18 @@ namespace ChessV.Games.Abstract
 		public override void SetGameVariables()
 		{
 			base.SetGameVariables();
-			Castling = new ChoiceVariable( new string[] { "None", "Standard", "Long", "Flexible", "Close-Rook", "Custom" } );
+			Castling = new ChoiceVariable();
+			Castling.AddChoice( "Standard", "King starting on e or f file slides three squares either direction, " +
+				"subject to the usual restrictions, to castle with the piece in the corner" );
+			Castling.AddChoice( "Long", "King starting on e or f file slides three squares when castling short " +
+				"or four when castling long, subject to the usual restrictions, to castle with the piece in the corner" );
+			Castling.AddChoice( "Flexible", "King starting on e or f file slides two or more squares, subject to the usual " +
+				"restrictions, to castle with the piece in the corner" );
+			Castling.AddChoice( "Close-Rook", "King starting on e or f file slides two squares either direction, " +
+				"subject to the usual restrictions, to castle with the piece on the b or i file" );
+			Castling.AddChoice( "Close-Rook Flexible", "King starting on e or f file slides two or more squares, " +
+				"subject to the usual restrictions, to castle with the piece on the b or i file" );
+			Castling.AddChoice( "None", "No castling" );
 			Castling.Value = "None";
 		}
 		#endregion
@@ -70,7 +82,9 @@ namespace ChessV.Games.Abstract
 
 			// *** CASTLING *** //
 
-			if( Castling.Value != "None" )
+			#region Castling
+			//	Only handle here if this is a castling type we defined
+			if( Castling.Choices.IndexOf( Castling.Value ) < Castling.Choices.IndexOf( "None" ) )
 			{
 				//	Adding castling rule is somewhat complicated because there are a number of different forms 
 				//	of castilng and we have to accomodate the King on either e1 or f1 as well as the fact that 
@@ -78,8 +92,8 @@ namespace ChessV.Games.Abstract
 				//	in which case we use Shredder-FEN notation where the priv char is the file of the rook
 
 				//	find the king's start square (must be e1 or f1)
-				GenericPiece WhiteKing = new GenericPiece( 0, castlingType );
-				GenericPiece BlackKing = new GenericPiece( 1, castlingType );
+				GenericPiece WhiteKing = new GenericPiece( 0, CastlingType );
+				GenericPiece BlackKing = new GenericPiece( 1, CastlingType );
 				bool supported = false;
 				string kingSquare = null;
 				if( StartingPieces["e1"] == WhiteKing )
@@ -103,14 +117,14 @@ namespace ChessV.Games.Abstract
 				//	And Shredder notation is always used if castling with a piece not in the corners (e.g., Close-Rook.)
 				bool shredderNotation = true;
 				if( kingSquare == "f1" && StartingPieces["f8"] != null && StartingPieces["f8"] == BlackKing &&
-					((StartingPieces["d1"] != null && StartingPieces["d1"].PieceType.Notation == "Q") || 
-					 (StartingPieces["e1"] != null && StartingPieces["e1"].PieceType.Notation == "Q")) )
+					((StartingPieces["d1"] != null && StartingPieces["d1"].PieceType.Notation[0] == "Q") || 
+					 (StartingPieces["e1"] != null && StartingPieces["e1"].PieceType.Notation[0] == "Q")) )
 					shredderNotation = false;
 
 				//	STANDARD CASTLING - King slides three squares and corner piece jumps over to adjacent square
 				if( Castling.Value == "Standard" )
 				{
-					CastlingRule();
+					AddCastlingRule();
 					if( kingSquare == "f1" )
 					{
 						CastlingMove( 0, "f1", "i1", "j1", "h1", shredderNotation ? 'J' : 'K' );
@@ -130,7 +144,7 @@ namespace ChessV.Games.Abstract
 				//	farther corner and the corner piece jumps over to adjacent square
 				else if( Castling.Value == "Long" )
 				{
-					CastlingRule();
+					AddCastlingRule();
 					if( kingSquare == "f1" )
 					{
 						CastlingMove( 0, "f1", "i1", "j1", "h1", shredderNotation ? 'J' : 'K' );
@@ -150,7 +164,7 @@ namespace ChessV.Games.Abstract
 				//	corner) and the corner piece jumps over to adjacent square
 				else if( Castling.Value == "Flexible" )
 				{
-					FlexibleCastlingRule();
+					AddFlexibleCastlingRule();
 					if( kingSquare == "f1" )
 					{
 						FlexibleCastlingMove( 0, "f1", "h1", "j1", shredderNotation ? 'J' : 'K' );
@@ -170,13 +184,13 @@ namespace ChessV.Games.Abstract
 				//	corners.  King slides two squares and castling piece jumps over to adjacent square.
 				else if( Castling.Value == "Close-Rook" )
 				{
-					CastlingRule();
+					AddCastlingRule();
 					if( kingSquare == "f1" )
 					{
-						CastlingMove( 0, "f1", "h1", "i1", "g1", 'J' );
-						CastlingMove( 0, "f1", "d1", "b1", "e1", 'A' );
-						CastlingMove( 1, "f8", "h8", "i8", "g8", 'j' );
-						CastlingMove( 1, "f8", "d8", "b8", "e8", 'a' );
+						CastlingMove( 0, "f1", "h1", "i1", "g1", 'I' );
+						CastlingMove( 0, "f1", "d1", "b1", "e1", 'B' );
+						CastlingMove( 1, "f8", "h8", "i8", "g8", 'i' );
+						CastlingMove( 1, "f8", "d8", "b8", "e8", 'b' );
 					}
 					else
 					{
@@ -186,8 +200,81 @@ namespace ChessV.Games.Abstract
 						CastlingMove( 1, "e8", "g8", "i8", "f8", 'i' );
 					}
 				}
+				//	CLOSE-ROOK FLEXIBLE - King slides two or more squares to castle with 
+				//	the piece on the b or i file (which jumps to the other side)
+				else if( Castling.Value == "Close-Rook Flexible" )
+				{
+					AddFlexibleCastlingRule();
+					if( kingSquare == "f1" )
+					{
+						FlexibleCastlingMove( 0, "f1", "h1", "i1", 'I' );
+						FlexibleCastlingMove( 0, "f1", "d1", "b1", 'B' );
+						FlexibleCastlingMove( 1, "f8", "h8", "i8", 'i' );
+						FlexibleCastlingMove( 1, "f8", "d8", "b8", 'b' );
+					}
+					else
+					{
+						FlexibleCastlingMove( 0, "e1", "c1", "b1", 'B' );
+						FlexibleCastlingMove( 0, "e1", "g1", "i1", 'I' );
+						FlexibleCastlingMove( 1, "e8", "c8", "b8", 'b' );
+						FlexibleCastlingMove( 1, "e8", "g8", "i8", 'i' );
+					}
+				}
+			}
+			#endregion
+		}
+		#endregion
+
+		#region AddEvaluations
+		public override void AddEvaluations()
+		{
+			base.AddEvaluations();
+
+			//	Outpost Evaluations
+			if( (Knight != null && Knight.Enabled) ||
+				(Bishop != null && Bishop.Enabled) )
+			{
+				OutpostEval = new OutpostEvaluation();
+				if( Knight != null && Knight.Enabled )
+					OutpostEval.AddOutpostBonus( Knight );
+				if( Bishop != null && Bishop.Enabled )
+					OutpostEval.AddOutpostBonus( Bishop, 10, 2, 5, 5 );
+				AddEvaluation( OutpostEval );
+			}
+
+			//	Rook-type Evaluations (rook-mover on open file 
+			//	and rook-mover on 7th ranks with enemy king on 8th)
+
+			//	Do we have a royal king?
+			CheckmateRule rule = (CheckmateRule) FindRule( typeof(CheckmateRule) );
+			bool royalKing = rule != null && King != null && King.Enabled && rule.RoyalPieceType == King;
+
+			if( (Rook != null && Rook.Enabled) ||
+				(Queen != null && Queen.Enabled && royalKing) )
+			{
+				RookTypeEval = new RookTypeEvaluation();
+				if( Rook != null && Rook.Enabled )
+				{
+					RookTypeEval.AddOpenFileBonus( Rook );
+					if( royalKing )
+						RookTypeEval.AddRookOn7thBonus( Rook, King );
+				}
+				if( Queen != null && Queen.Enabled && royalKing )
+					RookTypeEval.AddRookOn7thBonus( Queen, King, 2, 8 );
+				AddEvaluation( RookTypeEval );
 			}
 		}
 		#endregion
-    }
+
+
+		// *** OPERATIONS *** //
+
+		public void AddChessPieceTypes()
+		{
+			AddPieceType( Queen = new Queen( "Queen", "Q", 950, 950 ) );
+			AddPieceType( Rook = new Rook( "Rook", "R", 475, 500 ) );
+			AddPieceType( Bishop = new Bishop( "Bishop", "B", 350, 350 ) );
+			AddPieceType( Knight = new Knight( "Knight", "N", 310, 310 ) );
+		}
+	}
 }

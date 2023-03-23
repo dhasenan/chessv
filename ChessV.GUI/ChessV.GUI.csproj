@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ChessV.GUI</RootNamespace>
     <AssemblyName>ChessV</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -27,7 +27,8 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -38,6 +39,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x64</PlatformTarget>
@@ -47,6 +49,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -65,6 +68,7 @@
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
     <WarningLevel>4</WarningLevel>
     <Optimize>false</Optimize>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -82,6 +86,7 @@
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -99,6 +104,7 @@
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>bin\Release\</OutputPath>
@@ -113,6 +119,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>application_icon.ico</ApplicationIcon>
@@ -147,6 +154,24 @@
     <Compile Include="Forms\AcknowledgementsForm.Designer.cs">
       <DependentUpon>AcknowledgementsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\SaveGamesAsImagesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SaveGamesAsImagesForm.Designer.cs">
+      <DependentUpon>SaveGamesAsImagesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\AddMoveToGamesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AddMoveToGamesForm.Designer.cs">
+      <DependentUpon>AddMoveToGamesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\AddMoveToGamesProgressForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AddMoveToGamesProgressForm.Designer.cs">
+      <DependentUpon>AddMoveToGamesProgressForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\AppearanceSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -167,11 +192,29 @@
     <Compile Include="BoardPresentations\BoardWithPocketsPresentation.cs" />
     <Compile Include="ColorScheme.cs" />
     <Compile Include="ColorSchemeLibrary.cs" />
+    <Compile Include="Forms\AutomatedMatchesProgressForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AutomatedMatchesProgressForm.Designer.cs">
+      <DependentUpon>AutomatedMatchesProgressForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\AutomatedMatchesSettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AutomatedMatchesSettingsForm.Designer.cs">
+      <DependentUpon>AutomatedMatchesSettingsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\ConfirmationForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\ConfirmationForm.Designer.cs">
       <DependentUpon>ConfirmationForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\CreateReferenceDocsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\CreateReferenceDocsForm.Designer.cs">
+      <DependentUpon>CreateReferenceDocsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\EngineConfigurationForm.cs">
       <SubType>Form</SubType>
@@ -190,6 +233,12 @@
     </Compile>
     <Compile Include="Controls\EvaluationHistoryControl.Designer.cs">
       <DependentUpon>EvaluationHistoryControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\EngineSettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\EngineSettingsForm.Designer.cs">
+      <DependentUpon>EngineSettingsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\EngineStatisticsForm.cs">
       <SubType>Form</SubType>
@@ -227,6 +276,18 @@
     </Compile>
     <Compile Include="Forms\MultiPVAnalysisForm.Designer.cs">
       <DependentUpon>MultiPVAnalysisForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ToolsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ToolsForm.Designer.cs">
+      <DependentUpon>ToolsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\TranspositionDetectorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\TranspositionDetectorForm.Designer.cs">
+      <DependentUpon>TranspositionDetectorForm.cs</DependentUpon>
     </Compile>
     <Compile Include="GameCatalog.cs" />
     <Compile Include="LocationToPresentationMapping.cs" />
@@ -338,17 +399,35 @@
     <EmbeddedResource Include="Forms\AcknowledgementsForm.resx">
       <DependentUpon>AcknowledgementsForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SaveGamesAsImagesForm.resx">
+      <DependentUpon>SaveGamesAsImagesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\AddMoveToGamesForm.resx">
+      <DependentUpon>AddMoveToGamesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\AddMoveToGamesProgressForm.resx">
+      <DependentUpon>AddMoveToGamesProgressForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\AppearanceSettingsForm.resx">
       <DependentUpon>AppearanceSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\BoardControl.resx">
       <DependentUpon>BoardControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\AutomatedMatchesProgressForm.resx">
+      <DependentUpon>AutomatedMatchesProgressForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\AutomatedMatchesSettingsForm.resx">
+      <DependentUpon>AutomatedMatchesSettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\ColorSchemeSaveForm.resx">
       <DependentUpon>ColorSchemeSaveForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ConfirmationForm.resx">
       <DependentUpon>ConfirmationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\CreateReferenceDocsForm.resx">
+      <DependentUpon>CreateReferenceDocsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\DebugForm.resx">
       <DependentUpon>DebugForm.cs</DependentUpon>
@@ -361,6 +440,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\EvaluationHistoryControl.resx">
       <DependentUpon>EvaluationHistoryControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\EngineSettingsForm.resx">
+      <DependentUpon>EngineSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\EngineStatisticsForm.resx">
       <DependentUpon>EngineStatisticsForm.cs</DependentUpon>
@@ -385,6 +467,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MultiPVAnalysisForm.resx">
       <DependentUpon>MultiPVAnalysisForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ToolsForm.resx">
+      <DependentUpon>ToolsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\TranspositionDetectorForm.resx">
+      <DependentUpon>TranspositionDetectorForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\UnassignedGameVariablesForm.resx">
       <DependentUpon>UnassignedGameVariablesForm.cs</DependentUpon>
@@ -554,6 +642,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="application_icon.ico" />
+    <None Include="Resources\icon_tools.png" />
     <None Include="Resources\icon_gray_stop.png" />
     <None Include="Resources\icon_gray_previous.png" />
     <None Include="Resources\icon_gray_next.png" />

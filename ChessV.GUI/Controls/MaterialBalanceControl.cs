@@ -35,14 +35,6 @@ namespace ChessV.GUI
 		public Game Game { get; private set; }
 
 
-		// *** PROTECTED DATA *** //
-
-		protected List<Piece>[] unmatchedPieces;
-		protected BitmapPieceSetPresentation pieceSetPresentation;
-		protected int squareWidth;
-		protected int squareHeight;
-
-
 		// *** CONSTRUCTION *** //
 
 		public MaterialBalanceControl()
@@ -76,11 +68,11 @@ namespace ChessV.GUI
 			Theme = theme;
 			squareWidth = 50;
 			squareHeight = 50;
-			if( Theme.PieceSet is BitmapPieceSet )
+			if( Theme.PieceSet is PieceSet )
 			{
-				squareWidth = ((BitmapPieceSet) Theme.PieceSet).Width + 5;
-				squareHeight = ((BitmapPieceSet) Theme.PieceSet).Height + 5;
-				pieceSetPresentation = new BitmapPieceSetPresentation( Game, (BitmapPieceSet) Theme.PieceSet );
+				squareWidth = ((PieceSet) Theme.PieceSet).Width + 5;
+				squareHeight = ((PieceSet) Theme.PieceSet).Height + 5;
+				pieceSetPresentation = new BitmapPieceSetPresentation( Game, (PieceSet) Theme.PieceSet );
 				pieceSetPresentation.Initialize( Theme );
 			}
 			else
@@ -88,7 +80,7 @@ namespace ChessV.GUI
 			Invalidate();
 		}
 
-		private void UpdateUnmatchedPieceLists()
+		public void UpdateUnmatchedPieceLists()
 		{
 			for( int player = 0; player < Game.NumPlayers; player++ )
 				unmatchedPieces[player] = Game.GetPieceList( player );
@@ -140,5 +132,13 @@ namespace ChessV.GUI
 				}
 			}
 		}
+
+
+		// *** PROTECTED MEMBER DATA *** //
+
+		protected List<Piece>[] unmatchedPieces;
+		protected BitmapPieceSetPresentation pieceSetPresentation;
+		protected int squareWidth;
+		protected int squareHeight;
 	}
 }

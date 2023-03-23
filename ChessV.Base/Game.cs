@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -24,9 +24,8 @@ using System.IO;
 using System.Text;
 using System.Drawing;
 using System.Reflection;
+using System.Diagnostics;
 using Microsoft.Win32;
-using System.Windows.Forms;
-using System.Threading;
 using System.Text.RegularExpressions;
 
 namespace ChessV
@@ -39,7 +38,7 @@ namespace ChessV
 		public const int MAX_DIRECTIONS = 48;
 		public const int MAX_PIECE_TYPES = 24;
 		public const int MAX_PIECES = 64;
-		public const int MAX_DEPTH = 128;
+		public const int MAX_PLY = 128;
 		//	Internal indicator for movement matrices that a square is disconnected
 		public const int NOT_CONNECTED = -1;
 		#endregion
@@ -63,10 +62,10 @@ namespace ChessV
 		//	The number of players in this game (right now only two player games supported)
 		public int NumPlayers { get; private set; }
 
-		//	The number of ranks on the main part of the board
+		//	The number of ranks on the main part of the board (excludes pocket squares)
 		public int NumRanks { get; private set; }
 
-		//	The number of files on the main part of the board
+		//	The number of files on the main part of the board (excludes pocket squares)
 		public int NumFiles { get; private set; }
 
 		//	The format of the FEN for this game
@@ -74,8 +73,7 @@ namespace ChessV
 			get { return fen.FormatString; }
 			set { FEN = new FEN( value ); } }
 
-		//	The FEN of the start position for this game
-		public string FENStart { get; protected set; }
+		public string OriginalFENStart { get; protected set; }
 
 		//	Map to the placement of pieces to square notation at game start
 		public Dictionary<string, GenericPiece> StartingPieces;
@@ -97,14 +95,19 @@ namespace ChessV
 		public string FENString
 		{ get { return null; } }
 
-		//	A dictionary that looks up piece types by notation
-		public Dictionary<string, PieceType> TypesByNotation { get; protected set; }
+		//	A dictionary that looks up piece types by notation by player
+		public Dictionary<string, PieceType>[] TypesByNotation { get; protected set; }
 
 		//	Snapshot of the values of game variables before user editing/loading
 		public Dictionary<string, object> GameVariableSnapshot;
 
 		//	ArrayBeingLoaded - if true, suspends certain triggers while board is being set up
 		public bool ArrayBeingLoaded { get; protected set; }
+
+		//	Variation - a value from 0 to 3 controlling how much variation there is 
+		//	from game to game (assuming the same situations.)  Set to 0 ChessV is 
+		//	completely deterministic.
+		public int Variation { get; set; }
 
 		//	GameMoveNumber - the current number of moves into the actual game (on the board, does 
 		//	not count thinking depth.)  And this is the number of player moves, not the turn number.
@@ -114,9 +117,15 @@ namespace ChessV
 		{ get { return gameHistoryCount; } }
 
 		//	GameTurnNumber - the current number of the turn.  Will be 1 for both white's first move 
-		//	and black's first move, then will increment to 2.
+		//	and black's first move, then will increment to 2.  In double-move variants like Marseillais 
+		//	Chess, it still reflects what the player would consider to be the turn number to be.
 		public int GameTurnNumber
 		{ get { return moveCompletionRule.TurnNumber; } }
+
+		//	The active PromotionRule (if any.)  If there are multiple promotion 
+		//	rules, this will only return one.
+		public PromotionRule ActivePromotionRule
+		{ get { return (PromotionRule) FindRule( typeof(PromotionRule), true ); } }
 
 		//	Total board material value at which we start to shift from midgame evaluation to endgame
 		public int MidgameMaterialThreshold { get; set; }
@@ -133,6 +142,9 @@ namespace ChessV
 		//	The engines responsible for computer play in this game instance and current assignment
 		public bool[] ComputerControlled { get; private set; }
 
+		//	Is this game an automated match (no dialog boxes to user upon completion)
+		public bool IsAutomatedMatch { get; set; }
+
 		//	The outcome of the game (Result.IsNone will be true if not yet completed)
 		public Result Result { get; set; } 
 
@@ -141,6 +153,9 @@ namespace ChessV
 
 		//	The number of the side who is currently to move
 		public int CurrentSide { get; set; }
+
+        //  Is the internal engine within this Game object currently thinking?
+        public bool IsThinking { get; private set; }
 
 		//	The number of the side to move next after the current move is completed.  If the next side 
 		//	depends on what move is made, as in Marseillais Chess, this will not be a valid result 
@@ -161,6 +176,7 @@ namespace ChessV
 		public UInt32[] Killers1 { get { return killers1; } }
 		public UInt32[] Killers2 { get { return killers2; } }
 		public Statistics Statistics { get; private set; }
+		public Movement[] SearchPath;
 
 		public Match Match { get; set; }
 
@@ -179,10 +195,24 @@ namespace ChessV
 		[GameVariable] public string Name { get; set; }
 		[GameVariable] public string Invented { get; set; }
 		[GameVariable] public string InventedBy { get; set; }
+		[GameVariable(Hidden=true)] public string GameDescription1 { get; set; }
+		[GameVariable(Hidden=true)] public string GameDescription2 { get; set; }
 		[GameVariable] public int NumberOfSquareColors { get; set; }
 		public string[] PlayerNames { get; set; }
 		public char[] PlayerDesignations  { get; set; }
+
+		//	The FEN of the start position for this game
+		[GameVariable] public string FENStart { get; set; }
+
+		//	The array component of the FEN - assuming FENStart still contains %{Array}
 		[GameVariable] public string Array { get; set; }
+
+		//	Controls whether the move generator needs to detect and skip generation
+		//	of moves that would otherwise be duplicates (e.g., CylindricalChess)
+		[GameVariable] public bool DeduplicateMoves { get; set; }
+
+		//	Controls whether the Static Exchange Evaluator (SEE) should be used
+		[GameVariable] public bool StaticExchangeEvaluation { get; set; }
 		#endregion
 
 
@@ -233,26 +263,31 @@ namespace ChessV
 			oppositeDirections = new int[MAX_DIRECTIONS];
 			pieceTypes = new PieceType[MAX_PIECE_TYPES];
 			nPieceTypes = 0;
+			disabledPieceTypes = new PieceType[MAX_PIECE_TYPES];
+			nDisabledPieceTypes = 0;
 			for( int player = 0; player < nPlayers; player++ )
 				TimeUsed[player] = 0;
 			pieces = new Piece[nPlayers, MAX_PIECES];
 			nPieces = new int[nPlayers];
-			moveLists = new MoveList[MAX_DEPTH];
-			searchStack = new SearchStack[MAX_DEPTH];
-			killers1 = new UInt32[MAX_DEPTH];
-			killers2 = new UInt32[MAX_DEPTH];
-			razorMargin = new int[] { 300, 350, 400, 450 };
+			moveLists = new MoveList[MAX_PLY];
+			searchStack = new SearchStack[MAX_PLY];
+			killers1 = new UInt32[MAX_PLY];
+			killers2 = new UInt32[MAX_PLY];
+			razorMargin = new int[] { 300, 350, 400, 450, 450, 450, 450, 450 };
 			seeAttackers = new List<Piece>[2];
 			seeAttackers[0] = new List<Piece>( 24 );
 			seeAttackers[1] = new List<Piece>( 24 );
 			Statistics = new global::Statistics();
-			searchPath = new Movement[MAX_DEPTH];
-			for( int x = 0; x < MAX_DEPTH; x++ )
+			SearchPath = new Movement[MAX_PLY];
+			for( int x = 0; x < MAX_PLY; x++ )
 				searchStack[x].Initialize();
 			gameHistory = new MoveInfo[MAX_GAME_LENGTH];
 			gameHistoryTurnNumbers = new int[MAX_GAME_LENGTH];
-			TypesByNotation = new Dictionary<string, PieceType>();
+			TypesByNotation = new Dictionary<string, PieceType>[2];
+			TypesByNotation[0] = new Dictionary<string, PieceType>();
+			TypesByNotation[1] = new Dictionary<string, PieceType>();
 			pieceTypeNumbers = new Dictionary<PieceType, int>();
+			classesThatCreatedPieceTypes = new Dictionary<PieceType, Type>();
 			rules = new List<Rule>();
             evaluations = new List<Evaluation>();
 			rulesHandlingGetPositionHashCode = new List<Rule>();
@@ -265,11 +300,18 @@ namespace ChessV
 			rulesHandlingGenerateSpecialMoves = new List<Rule>();
 			rulesHandlingSearchExtensions = new List<Rule>();
 			rulesHandlingIsSquareAttacked = new List<Rule>();
+			rulesHandlingAdjustEvaluation = new List<Rule>();
 			ArrayBeingLoaded = false;
+			IsAutomatedMatch = false;
 			TimerFactory = new TimerFactory();
 			messageLog = new DebugMessageLog();
 			hashtable = null;
 			Symmetry = symmetry;
+			TTSizeInMB = 128;
+			Variation = 0;
+			Weakening = 0;
+            IsThinking = false;
+			finalized = false;
 		}
 		#endregion
 
@@ -290,7 +332,6 @@ namespace ChessV
 				Symmetry.Board = Board;
 				sign = new int[] { 1, -1 };
 
-
 				// *** GAME VARIABLES *** //
 
 				//	1 - virtual function sets game variables
@@ -299,14 +340,15 @@ namespace ChessV
 				//	2 - apply variables set with game attribute
 				HandleDefinitions( GameAttribute.Definitions );
 
-				//	3 - apply definitions passed in table to this function
-				HandleDefinitions( definitions );
-
 				//	Take a Snapshot of all game variable values.
 				//	This is so that we can compare later and see what changes 
 				//	beyond this point.  Any such changes will need to be 
 				//	stored if we save the game.
 				GameVariableSnapshot = GetAllGameVariables();
+				OriginalFENStart = FENStart;
+
+				//	3 - apply definitions passed in table to this function
+				HandleDefinitions( definitions );
 
 				//	4 - if any unassigned game variables remain, use the 
 				//	helper function passed to the constructor to handle.
@@ -329,10 +371,13 @@ namespace ChessV
 				for( ntype = 0; ntype < nPieceTypes; )
 				{
 					if( !pieceTypes[ntype].Enabled )
+					{
+						disabledPieceTypes[nDisabledPieceTypes++] = pieceTypes[ntype];
 						if( ntype < nPieceTypes - 1 )
 							pieceTypes[ntype] = pieceTypes[--nPieceTypes];
 						else
 							nPieceTypes--;
+					}
 					else
 						ntype++;
 				}
@@ -476,20 +521,20 @@ namespace ChessV
 				}
 				#endregion
 
+				// *** PIECE NOTATIONS *** //
 
-				// *** PIECE NAMING *** //
-
-				//	allow derived classes to change names of pieces added by base classes
-				ChangePieceNames();
-				//	enter all piece notations into the lookup table
+				//	Enter all piece notations into the lookup table
 				for( int x = 0; x < nPieceTypes; x++ )
-					if( pieceTypes[x].Notation != null )
-						TypesByNotation.Add( pieceTypes[x].Notation.ToUpper(), pieceTypes[x] );
-
+					if( pieceTypes[x].Notation[0] != null && pieceTypes[x].Notation[1] != null )
+					{
+						TypesByNotation[0].Add( pieceTypes[x].Notation[0], pieceTypes[x] );
+						TypesByNotation[1].Add( pieceTypes[x].Notation[1], pieceTypes[x] );
+					}
 
 				// *** PIECE PLACEMENT *** //
 
 				//	Expand variables in starting FEN
+				bool FENUnchanged = FENStart == OriginalFENStart;
 				ExpandVariablesInFEN();
 
 				//	load the FEN object with the string representation
@@ -521,6 +566,42 @@ namespace ChessV
 					rule.SetDefaultsInFEN( fen );
 				fen.SetUninitializedDefaults();
 				FENStart = fen.ToString();
+				if( FENUnchanged )
+					GameVariableSnapshot["FENStart"] = FENStart;
+
+				//	initialize maxAttackRange which stores the maximum attack range reachable by 
+				//	any piece of the given player in the given direction
+				for( int dir = 0; dir < nDirections; dir++ )
+					for( int player = 0; player <= 1; player++ )
+						for( int nPieceType = 0; nPieceType < nPieceTypes; nPieceType++ )
+						{
+							PieceType type = pieceTypes[nPieceType];
+							MoveCapability[] moveCapabilities;
+							int nMoveCapabilities = type.GetMoveCapabilities( out moveCapabilities );
+							for( int nMoveCapability = 0; nMoveCapability < nMoveCapabilities; nMoveCapability++ )
+							{
+								MoveCapability moveCapability = moveCapabilities[nMoveCapability];
+								int playerDirection = PlayerDirection( player, dir );
+								if( dir == moveCapability.NDirection &&
+									(moveCapability.CanCapture || moveCapability.SpecialAttacks != 0) &&
+									moveCapability.MaxSteps > maxAttackRange[player, playerDirection] )
+									maxAttackRange[player, playerDirection] = moveCapability.MaxSteps;
+							}
+						}
+
+
+				//	Initialize the Board
+				Board.Initialize();
+
+				//	Initialize the PieceTypes
+				//	this is where PSTs are calculated, mobility statistics, 
+				//	and slices (i.e., determination of colorbinding)
+				for( int x = 0; x < nPieceTypes; x++ )
+				{
+					PieceType piecetype = pieceTypes[x];
+					piecetype.Initialize( this );
+				}
+
 
 				// *** EVALUATION *** //
 				AddEvaluations();
@@ -543,13 +624,21 @@ namespace ChessV
 		protected virtual void finishInitialization()
 		{
 			//	Determine if game requires complex move generation
-			SimpleMoveGeneration = true;
-			for( int x = 0; x < NPieceTypes; x++ )
-				if( !pieceTypes[x].SimpleMoveGeneration )
-					SimpleMoveGeneration = false;
+			if( Board.DisableSimpleMoveGeneration )
+				SimpleMoveGeneration = false;
+			else
+			{
+				SimpleMoveGeneration = true;
+				for( int x = 0; x < NPieceTypes; x++ )
+					if( !pieceTypes[x].SimpleMoveGeneration )
+						SimpleMoveGeneration = false;
+			}
+			if( !SimpleMoveGeneration )
+				//	If we don't have simple move generation, we can't have SEE
+				StaticExchangeEvaluation = false;
 
 			//	Initialize game Result
-			Result = new ChessV.Result( ResultType.NoResult );
+			Result = new Result( ResultType.NoResult );
 
 			//	Allocate array of history counters (move ordering history heuristic)
 			historyCounters = new UInt32[NumPlayers, NPieceTypes, Board.NumSquaresExtended];
@@ -561,7 +650,7 @@ namespace ChessV
 			countermoves = new UInt32[Board.NumSquaresExtended, Board.NumSquaresExtended];
 
 			//	Allocate the MovementLists
-			for( int x = 0; x < MAX_DEPTH; x++ )
+			for( int x = 0; x < MAX_PLY; x++ )
 				moveLists[x] = new MoveList( Board, searchStack, killers1, killers2, historyCounters, butterflyCounters, x );
 			moveLists[1].LegalMovesOnly = true;
 
@@ -587,6 +676,7 @@ namespace ChessV
 
 			//	TestForWinLossDraw event
 			findRulesThatHandleEvent( "TestForWinLossDraw", rulesHandlingTestForWinLossDraw );
+			evalHandlingTestForWinLossDraw = findEvalThatHandlesEvent( "TestForWinLossDraw" );
 
 			//	NoMovesResult event
 			findRulesThatHandleEvent( "NoMovesResult", rulesHandlingNoMovesResult );
@@ -599,41 +689,15 @@ namespace ChessV
 
 			//	IsSquareAttacked event
 			findRulesThatHandleEvent( "IsSquareAttacked", rulesHandlingIsSquareAttacked );
+
+			//	AdjustEvaluation event
+			findRulesThatHandleEvent( "AdjustEvaluation", rulesHandlingAdjustEvaluation );
 		}
 		#endregion
 
 		#region postInitialize
 		protected virtual void postInitialize()
 		{
-			//	initialize maxAttackRange which stores the maximum attack range reachable by 
-			//	any piece of the given player in the given direction
-			for( int dir = 0; dir < nDirections; dir++ )
-				for( int player = 0; player <= 1; player++ )
-					for( int nPieceType = 0; nPieceType < nPieceTypes; nPieceType++ )
-					{
-						PieceType type = pieceTypes[nPieceType];
-						MoveCapability[] moveCapabilities;
-						int nMoveCapabilities = type.GetMoveCapabilities( out moveCapabilities );
-						for( int nMoveCapability = 0; nMoveCapability < nMoveCapabilities; nMoveCapability++ )
-						{
-							MoveCapability moveCapability = moveCapabilities[nMoveCapability];
-							int playerDirection = PlayerDirection( player, dir );
-							if( dir == moveCapability.NDirection &&
-								(moveCapability.CanCapture || moveCapability.SpecialAttacks != 0) &&
-								moveCapability.MaxSteps > maxAttackRange[player, playerDirection] )
-								maxAttackRange[player, playerDirection] = moveCapability.MaxSteps;
-						}
-					}
-
-			Board.Initialize();
-
-			//	initialize piece types
-			for( int x = 0; x < nPieceTypes; x++ )
-			{
-				PieceType piecetype = pieceTypes[x];
-				piecetype.Initialize( this );
-			}
-
 			//	post-initialize all rules
 			foreach( Rule rule in rules )
 				rule.PostInitialize();
@@ -692,9 +756,9 @@ namespace ChessV
 								break;
 						}
 					}
-					else if( property.PropertyType == typeof(IntVariable) )
+					else if( property.PropertyType == typeof(IntRangeVariable) )
 					{
-						IntVariable val = (IntVariable) property.GetValue( this, null );
+						IntRangeVariable val = (IntRangeVariable) property.GetValue( this, null );
 						if( val.Value == null )
 						{
 							//	this property is unassigned
@@ -775,9 +839,9 @@ namespace ChessV
 							ChoiceVariable choicevar = (ChoiceVariable) property.GetValue( this, null );
 							choicevar.Value = value;
 						}
-						else if( property.PropertyType == typeof(IntVariable) )
+						else if( property.PropertyType == typeof(IntRangeVariable) )
 						{
-							IntVariable intvar = (IntVariable) property.GetValue( this, null );
+							IntRangeVariable intvar = (IntRangeVariable) property.GetValue( this, null );
 							intvar.Value = Convert.ToInt32( value );
 						}
 					}
@@ -846,7 +910,8 @@ namespace ChessV
 		}
 		#endregion
 
-		#region Overridable Game Initialization Functions
+
+		#region ** Overridable Game Initialization Functions **
 		#region CreateBoard
 		public virtual Board CreateBoard( int nPlayers, int nFiles, int nRanks, Symmetry symmetry )
 		{ return new Board( nFiles, nRanks ); }
@@ -860,6 +925,8 @@ namespace ChessV
 			InventedBy = GameAttribute.InventedBy;
 			PlayerNames[0] = "White";
 			PlayerNames[1] = "Black";
+			DeduplicateMoves = false;
+			StaticExchangeEvaluation = true;
 			NumberOfSquareColors = 2;
 		}
 		#endregion
@@ -917,7 +984,29 @@ namespace ChessV
 						return property.GetValue( this, null );
 				}
 			}
-			return null;
+			return GetCustomProperty( variableName );
+		}
+		#endregion
+
+		#region PerformSymbolExpansion
+		public virtual string PerformSymbolExpansion( string input )
+		{
+			string translation = input;
+			while( translation.IndexOf( "#{" ) >= 0 )
+			{
+				int start = translation.IndexOf( "#{" );
+				int end = translation.IndexOf( "}", start + 2 );
+				if( end > start )
+				{
+					string token = translation.Substring( start + 2, end - start - 2 );
+					object lookup = LookupGameVariable( token );
+					string translated = lookup == null ? "#UNDEFINED" : lookup.ToString();
+					translation = translation.Substring( 0, start ) + translated + translation.Substring( end + 1 );
+				}
+				else
+					translation = translation.Substring( 0, start ) + translation.Substring( start + 2 );
+			}
+			return translation;
 		}
 		#endregion
 
@@ -974,12 +1063,7 @@ namespace ChessV
         }
         #endregion
 
-        #region ChangePieceNames
-        public virtual void ChangePieceNames()
-		{ }
-		#endregion
-
-		#region LoadFEN
+ 		#region LoadFEN
 		public virtual void LoadFEN( string newFEN ) 
 		{
 			//	place pieces as indicated in the 'array' portion
@@ -1009,11 +1093,11 @@ namespace ChessV
 			Board.ClearBoard();
 			pieces = new Piece[NumPlayers, MAX_PIECES];
 			nPieces = new int[NumPlayers];
-			moveLists = new MoveList[MAX_DEPTH];
-			searchStack = new SearchStack[MAX_DEPTH];
-			killers1 = new UInt32[MAX_DEPTH];
-			killers2 = new UInt32[MAX_DEPTH];
-			for( int x = 0; x < MAX_DEPTH; x++ )
+			moveLists = new MoveList[MAX_PLY];
+			searchStack = new SearchStack[MAX_PLY];
+			killers1 = new UInt32[MAX_PLY];
+			killers2 = new UInt32[MAX_PLY];
+			for( int x = 0; x < MAX_PLY; x++ )
 				searchStack[x].Initialize();
 			gameHistory = new MoveInfo[MAX_GAME_LENGTH];
 			gameHistoryTurnNumbers = new int[MAX_GAME_LENGTH];
@@ -1030,7 +1114,7 @@ namespace ChessV
 			//	Allocate array of countermoves
 			countermoves = new UInt32[Board.NumSquaresExtended, Board.NumSquaresExtended];
 			//	Allocate the MovementLists
-			for( int x = 0; x < MAX_DEPTH; x++ )
+			for( int x = 0; x < MAX_PLY; x++ )
 				moveLists[x] = new MoveList( Board, searchStack, killers1, killers2, historyCounters, butterflyCounters, x );
 			moveLists[1].LegalMovesOnly = true;
 		}
@@ -1074,10 +1158,11 @@ namespace ChessV
 		#endregion
 		#endregion
 
+
 		#region Protected - GenerateMoves
 		protected void generateMoves( int player, int ply, UInt32 movehash, bool capturesOnly = false )
 		{
-			UInt32 countermove = ply == 1 ? 0 : countermoves[searchPath[ply-1].FromSquare, searchPath[ply-1].ToSquare];
+			UInt32 countermove = ply == 1 ? 0 : countermoves[SearchPath[ply-1].FromSquare, SearchPath[ply-1].ToSquare];
 			moveLists[ply].Reset( movehash, countermove );
 			for( int nPiece = 0; nPiece < nPieces[player]; nPiece++ )
 				if( pieces[player, nPiece].Square >= 0 )
@@ -1090,6 +1175,23 @@ namespace ChessV
 		public virtual EngineGameAdaptor TryCreateAdaptor( EngineConfiguration config )
 		{
 			return null;
+		}
+		#endregion
+
+		#region VariationChanged
+		public void VariationChanged()
+		{
+			//	recalculate PSTs for all piece types
+			for( int x = 0; x < nPieceTypes; x++ )
+				pieceTypes[x].InitializePST( Variation );
+
+			//	recalculate the incrementally updated material evaluations
+			//	since these also incorporate the PST values
+			Board.RecalculateMaterialEvaluations();
+
+			//	update the variation for all evaluations
+			foreach( Evaluation evaluation in evaluations )
+				evaluation.SetVariation( Variation );
 		}
 		#endregion
 
@@ -1146,27 +1248,59 @@ namespace ChessV
 		public PieceType GetPieceType( int pieceTypeNumber )
 		{ return pieceTypes[pieceTypeNumber]; }
 
+		public int NDisabledPieceTypes
+		{ get { return nDisabledPieceTypes; } }
+
 		public int GetPieceTypeNumber( PieceType type )
 		{ return pieceTypeNumbers[type]; }
 
 		public PieceType GetTypeByNotation( string notation )
 		{
-			if( !TypesByNotation.ContainsKey( notation.ToUpper() ) )
-				return null;
-			return TypesByNotation[notation.ToUpper()];
+			if( TypesByNotation[0].ContainsKey( notation ) )
+				return TypesByNotation[0][notation];
+			if( TypesByNotation[1].ContainsKey( notation ) )
+				return TypesByNotation[1][notation];
+			return null;
 		}
 
 		#region AddPieceType
-		public void AddPieceType( PieceType type )
-		{ pieceTypes[nPieceTypes++] = type; }
+		public PieceType AddPieceType( PieceType type )
+		{
+			#if DEBUG
+			//	Debug mode only - track which classes define which types 
+			//	for the purpose of automatic documentation generation
+			StackTrace st = new StackTrace( false );
+			for( int x = 0; x < st.FrameCount; x++ )
+			{
+				StackFrame sf = st.GetFrame( x );
+				MethodBase mb = sf.GetMethod();
+				if( mb.Name == "AddPieceTypes" )
+				{
+					classesThatCreatedPieceTypes.Add( type, mb.DeclaringType );
+					break;
+				}
+			}
+			#endif
 
-		public void AddPieceType( Type pieceType, string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null )
+			pieceTypes[nPieceTypes] = type;
+			if( type.Name != null )
+				SetCustomProperty( type.Name, type );
+			return pieceTypes[nPieceTypes++];
+		}
+
+		public PieceType AddPieceType( Type pieceType, string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null )
 		{
 			ConstructorInfo ci = pieceType.GetConstructor( new Type[] { typeof(string), typeof(string), typeof(int), typeof(int), typeof(string) } );
 			pieceTypes[nPieceTypes] = (PieceType) ci.Invoke( new object[] { name, notation, midgameValue, endgameValue, preferredImageName } );
-			SetCustomProperty( name, pieceTypes[nPieceTypes++] );
+			SetCustomProperty( name, pieceTypes[nPieceTypes] );
+			return pieceTypes[nPieceTypes++];
 		}
 		#endregion
+
+		public Type GetClassThatCreatedPieceType( PieceType type )
+		{
+			return classesThatCreatedPieceTypes.ContainsKey( type ) ? classesThatCreatedPieceTypes[type] : null;
+		}
 
 		public List<PieceType> ParseTypeListFromString( string types )
 		{
@@ -1190,11 +1324,15 @@ namespace ChessV
 					throw new Exception( "Failure to parse piece type in Game.ParsePieceTypeFromString: " + str.Substring( cursor ) );
 				string notation = str.Substring( cursor, 3 );
 				//	first, try to find the notation in the map with the underscore
-				bool found = TypesByNotation.TryGetValue( notation.ToUpper(), out pieceType );
+				bool found = TypesByNotation[0].TryGetValue( notation, out pieceType );
+				if( !found )
+					found = TypesByNotation[1].TryGetValue( notation, out pieceType );
 				if( !found )
 					//	try finding without underscore (which would have been unnecessary if the first 
 					//	character of the two-character notation is not also a valid single-char notation)
-					found = TypesByNotation.TryGetValue( notation.Substring( 1 ).ToUpper(), out pieceType );
+					found = TypesByNotation[0].TryGetValue( notation.Substring( 1 ), out pieceType );
+				if( !found )
+					found = TypesByNotation[1].TryGetValue( notation.Substring( 1 ), out pieceType );
 				if( !found )
 					throw new Exception( "Piece type not found in Game.ParsePieceTypeFromString: " + notation );
 				cursor += 3;
@@ -1209,13 +1347,17 @@ namespace ChessV
 				//	Check to see if this character is the notation of a valid piece type.  If it is we go with it.
 				//	The first character of a two-character notation can't overlap with a single character notation 
 				//	unless preceeded with an underscore (handled above)
-				bool found = TypesByNotation.TryGetValue( str.Substring( start, 1 ).ToUpper(), out pieceType );
+				bool found = TypesByNotation[0].TryGetValue( str.Substring( start, 1 ), out pieceType );
+				if( !found )
+					found = TypesByNotation[1].TryGetValue( str.Substring( start, 1 ), out pieceType );
 				if( !found &&
 					((str[cursor] >= 'A' && str[cursor] <= 'Z') ||
 					 (str[cursor] >= 'a' && str[cursor] <= 'z') || 
 					  str[cursor] == '!' || str[cursor] == '\'') )
 				{
-					found = TypesByNotation.TryGetValue( str.Substring( start, 2 ).ToUpper(), out pieceType );
+					found = TypesByNotation[0].TryGetValue( str.Substring( start, 2 ), out pieceType );
+					if( !found )
+						found = TypesByNotation[1].TryGetValue( str.Substring( start, 2 ), out pieceType );
 					cursor++;
 				}
 				if( !found )
@@ -1258,6 +1400,16 @@ namespace ChessV
 			pieces[piece.Player, nPieces[piece.Player]++] = piece; 
 			if( piece.Square >= 0 )
 				Board[piece.Square] = piece; 
+		}
+
+		public List<string> GetPieceTypeNotes( PieceType type )
+		{
+			List<string> notes = new List<string>();
+			foreach( Rule rule in rules )
+				rule.GetNotesForPieceType( type, notes );
+			foreach( Evaluation eval in evaluations )
+				eval.GetNotesForPieceType( type, notes );
+			return notes;
 		}
 		#endregion
 
@@ -1317,9 +1469,15 @@ namespace ChessV
 			BoardMoveStack.MakingMove( moveLists[1], move );
 			gameHistoryTurnNumbers[gameHistoryCount] = GameTurnNumber;
 			gameHistory[gameHistoryCount++] = move;
+			//			Ply = 1;
+
+
+			//	send the MoveMade message to all rules that handle it
+			foreach( Rule rule in rulesHandlingMoveMade )
+				rule.MoveMade( move, Ply );
 
 			//	store move highlighting information
-            if( highlightMove )
+			if( highlightMove )
             {
 				//	Clear out the previous highligh squares only if the previous move was not 
 				//	made by the same player (so in the case of multi-move variants, we see the 
@@ -1328,12 +1486,14 @@ namespace ChessV
 					BoardMoveStack.GetMove( BoardMoveStack.MoveCount - 2 ).Player != move.Player )
 					HighlightSquares = new List<int>();
 				//	Highlight the squares for this move
-                HighlightSquares.Add( move.FromSquare );
-                HighlightSquares.Add( move.ToSquare );
+				if( move.MoveType != MoveType.Pass )
+				{
+					HighlightSquares.Add( move.FromSquare );
+					HighlightSquares.Add( move.ToSquare );
+				}
             }
             else
                 HighlightSquares = null;
-
 			if( Result.IsNone )
 			{
 				//	test for end-of-game
@@ -1348,10 +1508,8 @@ namespace ChessV
 						Result = new Result( ResultType.Win, CurrentSide );
 				}
 			}
-
 			//	raise MoveBeingPlayed event first, then MovePlayed event
-			if( MoveBeingPlayed != null )
-				MoveBeingPlayed( move );
+			MoveBeingPlayed?.Invoke( move );
 			MovePlayed( move );
 
 			if( Result.IsNone )
@@ -1373,6 +1531,11 @@ namespace ChessV
 						Result = new Result( ResultType.Win, CurrentSide ^ 1 );
 				}
 			}
+			else
+			{
+				//	perform some cleanup
+				cleanup();
+			}
 		}
 
 		//	Version of PerformMove for when only a Movement is available, 
@@ -1383,11 +1546,13 @@ namespace ChessV
 			MoveInfo[] moves;
 			int nMoves = moveLists[1].GetMoves( out moves );
 			for( int x = 0; x < nMoves; x++ )
+			{
 				if( moves[x].Hash == move.Hash )
 				{
 					MakeMove( moves[x], computer );
 					return;
 				}
+			}
 			throw new Exception( "Attempt to execute an illegal move in Game::MakeMove" );
 		}
 		#endregion
@@ -1395,13 +1560,14 @@ namespace ChessV
 		#region UndoMove
 		public void UndoMove( bool userCommand = false )
 		{
+			if( finalized )
+				return;
 			BoardMoveStack.UnmakeMove();
 			gameHistoryCount--;
 			moveLists[1].Reset();
 			Ply = 1;
 			generateMoves( CurrentSide, Ply, 0 );
-			if( MoveTakenBack != null )
-				MoveTakenBack();
+			MoveTakenBack?.Invoke();
 			if( userCommand )
 			{
 				HighlightSquares.Clear();
@@ -1414,16 +1580,19 @@ namespace ChessV
 		#endregion
 
 		#region PlayMoves
-		public void PlayMoves( IEnumerable<string> moves, MoveNotation format = MoveNotation.StandardAlbegraic )
+		public void PlayMoves( IEnumerable<string> moves, MoveNotation format = MoveNotation.StandardAlgebraic, List<ulong> hashcodes = null )
 		{
 			foreach( string moveNotation in moves )
 			{
 				Movement move = MoveFromDescription( moveNotation, format );
+				if( move == null )
+					throw new Exception( "Notation does not describe a legal move: " + moveNotation );
 				MakeMove( move, true );
+				hashcodes?.Add( GetPositionHashCode( 1 ) );
 			}
 		}
 
-		public void PlayMoves( string moves, MoveNotation format = MoveNotation.StandardAlbegraic )
+		public void PlayMoves( string moves, MoveNotation format = MoveNotation.StandardAlgebraic )
 		{
 			PlayMoves( moves.Split( ' ' ), format );
 		}
@@ -1514,6 +1683,8 @@ namespace ChessV
 				if( response != MoveEventResponse.NotHandled )
 					return response;
 			}
+			if( evalHandlingTestForWinLossDraw != null )
+				return evalHandlingTestForWinLossDraw.TestForWinLossDraw( currentPlayer, Ply );
 			return MoveEventResponse.NotHandled;
 		}
 		#endregion
@@ -1529,6 +1700,11 @@ namespace ChessV
 			}
 			throw new Exception( "No rule handled the NoMovesResult message" );
 		}
+		#endregion
+
+		#region CanPruneMove
+		public virtual bool CanPruneMove( MoveInfo move )
+		{ return true; }
 		#endregion
 
 		#region DescribeMove
@@ -1550,7 +1726,8 @@ namespace ChessV
 			if( format == MoveNotation.MoveSelectionText )
 				return null;
 
-			if( format == MoveNotation.StandardAlbegraic )
+			#region Format: Standard Algebraic
+			if( format == MoveNotation.StandardAlgebraic )
 			{
 				if( move.MoveType == MoveType.Drop )
 				{
@@ -1570,6 +1747,9 @@ namespace ChessV
 					return description;
 				}
 			}
+			#endregion
+
+			#region Format: XBoard
 			else if( format == MoveNotation.XBoard )
 			{
 				if( move.MoveType == MoveType.Drop )
@@ -1606,11 +1786,14 @@ namespace ChessV
 					return description;
 				}
 			}
+			#endregion
+
+			#region Format: Descriptive
 			else if( format == MoveNotation.Descriptive )
 			{
 				if( move.MoveType == MoveType.Drop )
 				{
-					return move.PieceMoved.PieceType.Notation + " * " +
+					return move.PieceMoved.PieceType.NotationClean[move.Player].ToUpper() + " * " +
 						GetSquareNotation( move.ToSquare );
 				}
 				else if( move.MoveType == MoveType.Castling )
@@ -1641,7 +1824,7 @@ namespace ChessV
 					description += " - " +
 						GetSquareNotation( move.ToSquare );
 					if( (move.MoveType & (MoveType.PromotionProperty | MoveType.DropOrReplaceProperty)) != 0 )
-						description += " = " + GetPieceType( move.PromotionType ).Notation;
+						description += " = " + GetPieceType( move.PromotionType ).NotationClean[move.Player].ToUpper();
 				}
 				else if( move.MoveType == MoveType.StandardCapture || 
 					move.MoveType == MoveType.CaptureWithPromotion || 
@@ -1650,10 +1833,10 @@ namespace ChessV
 					description += " x " +
 						GetSquareNotation( move.ToSquare );
 					if( (move.MoveType & (MoveType.PromotionProperty | MoveType.DropOrReplaceProperty)) != 0 )
-						description += " = " + GetPieceType( move.PromotionType ).Notation;
+						description += " = " + GetPieceType( move.PromotionType ).NotationClean[move.Player].ToUpper();
 					description += "\t" +
-						GetPieceType( move.OriginalType ).Notation + "x" +
-						move.PieceCaptured.PieceType.Notation;
+						GetPieceType( move.OriginalType ).NotationClean[move.Player].ToUpper() + "x" +
+						move.PieceCaptured.PieceType.NotationClean[move.Player ^ 1].ToUpper();
 				}
 				else if( move.MoveType == MoveType.BaroqueCapture )
 				{
@@ -1662,7 +1845,7 @@ namespace ChessV
 						//	"rifle capture" - capturing piece doesn't move
 						description = "x " +
 							GetSquareNotation( move.ToSquare );
-						description += "\tx" + move.PieceCaptured.PieceType.Notation +
+						description += "\tx" + move.PieceCaptured.PieceType.Notation[move.Player ^ 1].ToUpper().Replace( "_", "") +
 							" rifle capture";
 					}
 					else
@@ -1671,7 +1854,7 @@ namespace ChessV
 							GetSquareNotation( move.ToSquare );
 						description += "(x " +
 							GetSquareNotation( move.Tag ) + ")";
-						description += "\tx" + move.PieceCaptured.PieceType.Notation +
+						description += "\tx" + move.PieceCaptured.PieceType.Notation[move.Player ^ 1].ToUpper().Replace( "_","") +
 							" baroque capture";
 					}
 				}
@@ -1680,18 +1863,20 @@ namespace ChessV
 					description += " x " +
 						GetSquareNotation( move.ToSquare );
 					description += "\t" +
-						GetPieceType( move.OriginalType ).Notation + "x" +
-						move.PieceCaptured.PieceType.Notation + " e.p.";
+						GetPieceType( move.OriginalType ).Notation[move.Player].ToUpper().Replace( "_", "" ) + "x" +
+						move.PieceCaptured.PieceType.Notation[move.Player ^ 1].ToUpper().Replace( "_", "" ) + " e.p.";
 				}
 				return description;
 			}
+			#endregion
 
 			return null;
 		}
 
 		public virtual string DescribeMove( UInt32 movehash, MoveNotation format )
 		{
-			if( format == MoveNotation.StandardAlbegraic )
+			#region Format: Standard Algebraic
+			if( format == MoveNotation.StandardAlgebraic )
 			{
 				if( Movement.GetMoveTypeFromHash( movehash ) == MoveType.Drop )
 				{
@@ -1709,10 +1894,13 @@ namespace ChessV
 						GetSquareNotation( Movement.GetFromSquareFromHash( movehash ) ) +
 						GetSquareNotation( Movement.GetToSquareFromHash( movehash ) );
 					if( (Movement.GetMoveTypeFromHash( movehash ) & (MoveType.PromotionProperty | MoveType.DropOrReplaceProperty)) != 0 )
-						description += GetPieceType( Movement.GetTagFromHash( movehash ) ).Notation.ToLower();
+						description += GetPieceType( Movement.GetTagFromHash( movehash ) ).Notation[Movement.GetPlayerFromHash( movehash )].ToLower();
 					return description;
 				}
 			}
+			#endregion
+
+			#region Format: XBoard
 			else if( format == MoveNotation.XBoard )
 			{
 				if( Movement.GetMoveTypeFromHash( movehash ) == MoveType.Drop )
@@ -1736,7 +1924,7 @@ namespace ChessV
 							 Board.GetRank( Movement.GetToSquareFromHash( movehash ) ).ToString() :
 							 (Board.GetRank( Movement.GetToSquareFromHash( movehash ) ) + 1).ToString());
 					if( (Movement.GetMoveTypeFromHash( movehash ) & (MoveType.PromotionProperty | MoveType.DropOrReplaceProperty)) != 0 )
-						description += GetPieceType( Movement.GetTagFromHash( movehash ) ).Notation.ToLower();
+						description += GetPieceType( Movement.GetTagFromHash( movehash ) ).Notation[Movement.GetPlayerFromHash( movehash )].ToLower();
 					//	EXCEPTION - Castling in Shuffle Variants uses O-O notation
 					if( Movement.GetMoveTypeFromHash( movehash ) == MoveType.Castling && GameAttribute.TagList.Contains( "Random Array" ) &&
 						GameAttribute.GameName != "Chess256" /* Cheesy hack! */ )
@@ -1749,8 +1937,10 @@ namespace ChessV
 					return description;
 				}
 			}
+			#endregion
+
 			else
-				throw new Exception( "not implemented" );
+				throw new Exception( "DescribeMove: format not implemented from move hash" );
 		}
 
 		public virtual string DescribeMove( Movement move, MoveNotation format )
@@ -1769,7 +1959,7 @@ namespace ChessV
 				//	find piece type
 				PieceType type = null;
 				for( int x = 0; x < nPieceTypes && type == null; x++ )
-					if( pieceTypes[x].Notation == split[0] )
+					if( pieceTypes[x].Notation[0] == split[0] || pieceTypes[x].Notation[1] == split[0] )
 						type = pieceTypes[x];
 				if( type == null )
 					throw new Exception( "!" );
@@ -1836,7 +2026,7 @@ namespace ChessV
 							{
 								//	this might be the move we are looking for - check promotion
 								if( (moves[x].MoveType & MoveType.PromotionProperty) == 0 || 
-									promotionType.ToUpper() == GetPieceType( moves[x].PromotionType ).Notation.ToUpper() )
+									promotionType.ToLower() == GetPieceType( moves[x].PromotionType ).Notation[moves[x].Player].ToLower() )
 								{
 									return new Movement( fromSquare, toSquare, moves[x].Player, moves[x].MoveType, moves[x].PromotionType );
 								}
@@ -1877,7 +2067,7 @@ namespace ChessV
 			output.WriteLine( "Moves = {" );
 			output.Write( "   " );
 			for( int x = 0; x < gameHistoryCount; x++ )
-				output.Write( " " + DescribeMove( gameHistory[x], MoveNotation.StandardAlbegraic ) );
+				output.Write( " " + DescribeMove( gameHistory[x], MoveNotation.StandardAlgebraic ) );
 			output.WriteLine();
 			output.WriteLine( "}" );
 			if( !Result.IsNone )
@@ -1896,12 +2086,21 @@ namespace ChessV
 		}
 		#endregion
 
-		#region SEE
-		public bool SEE( int from, int to, int value )
+		#region SEE_GE
+		public bool SEE_GE( int from, int to, int value )
+
+			/*	Static Exchange Evaluation (SEE) Greather Than or Equal
+				Performs an SEE on the given move and determines only if 
+				it is greather than or equal to the provided value.
+				This logic comes from Stockfish.  This function only works 
+				on basic from-to type moves (no promotion, baroque capture, 
+				or other funny business.)  Also, SEE is disabled completely 
+				in games where it wouldn't work, such as games with 
+				Chinese Chess Cannon-type pieces.  */
 		{
 			Piece nextVictim = Board[from];
 			int side = nextVictim.Player ^ 1;
-			int balance = Board[to].MidgameValue;
+			int balance = Board[to] == null ? 0 : Board[to].MidgameValue;
 
 			if( balance < value )
 				return false;
@@ -2100,6 +2299,7 @@ namespace ChessV
 								{
 									//	if the piece has either multi-path moves or moves with 
 									//	conditional locations, we need to find the associated move capability
+									//	NOTE: multiple move capabilities in same direction not supported here
 									MoveCapability move = null;
 									if( pieceOnSquare.PieceType.HasMovesWithPaths || pieceOnSquare.PieceType.HasMovesWithConditionalLocation )
 									{
@@ -2112,22 +2312,27 @@ namespace ChessV
 												break;
 											}
 									}
+									//	handle moves only available on some squares
 									if( move != null && move.ConditionalBySquare != null && !move.ConditionalBySquare[player][nextSquare] )
+										//	move conditional by square and this square isn't one
 										break;
 									if( !pieceOnSquare.PieceType.HasMovesWithPaths )
+										//	the piece doesn't have paths so this square is attacked
+										return true;
+									if( move.PathInfo == null )
 										return true;
 									//	we have encountered a piece that might attack this square, but 
 									//	it has moves with paths so we need to check to see if there are 
 									//	any clear paths
-									if( move.PathInfo == null )
-										return true;
 									foreach( List<int> stepDirList in move.PathInfo.PathNDirections )
 									{
-										int sq = square;
+										int sq = nextSquare;
 										bool blocked = false;
 										foreach( int stepDir in stepDirList )
 										{
 											sq = Board.NextSquare( PlayerDirection( player, stepDir ), sq );
+											if( sq == square )
+												return true;
 											if( sq == NOT_CONNECTED || Board[sq] != null )
 											{
 												blocked = true;
@@ -2168,6 +2373,11 @@ namespace ChessV
 
 		// *** SPECIAL RULES *** //
 
+		#region GetRules
+		public List<Rule> GetRules()
+		{ return rules; }
+		#endregion
+
 		#region AddRule
 		public void AddRule( Rule rule )
 		{
@@ -2194,28 +2404,31 @@ namespace ChessV
 		public Rule FindRule( Type ruleType, bool inheritedTypes = false )
 		{
 			foreach( Rule rule in rules )
-				if( ruleType == rule.GetType() || (ruleType.IsSubclassOf( rule.GetType() ) && inheritedTypes) )
+				if( ruleType == rule.GetType() || (rule.GetType().IsSubclassOf( ruleType ) && inheritedTypes) )
 					return rule;
 			return null;
 		}
 		#endregion
 
 		#region RemoveRule
-		public void RemoveRule( Type ruleType, bool inheritedTypes = false )
+		public virtual void RemoveRule( Type ruleType, bool inheritedTypes = false )
 		{
 			List<Rule> rulesToRemove = new List<Rule>();
 			foreach( Rule rule in rules )
 				if( ruleType == rule.GetType() || (ruleType.IsSubclassOf( rule.GetType() ) && inheritedTypes) )
 					rulesToRemove.Add( rule );
 			foreach( Rule ruleToRemove in rulesToRemove )
+			{
 				rules.Remove( ruleToRemove );
+				ruleToRemove.RuleRemoved();
+			}
 		}
 		#endregion
 
 		#region ReplaceRule
 		//	Replace the oldRule (if found) with the newRule, keeping the 
 		//	rules in the same order.  Returns true if a replacement was made.
-		public bool ReplaceRule( Rule oldRule, Rule newRule )
+		public virtual bool ReplaceRule( Rule oldRule, Rule newRule )
 		{
 			List<Rule> newRules = new List<Rule>();
 			bool replacementMade = false;
@@ -2228,6 +2441,7 @@ namespace ChessV
 					replacementMade = true;
 					if( newRule is MoveCompletionRule )
 						moveCompletionRule = (MoveCompletionRule) newRule;
+					rule.RuleRemoved();
 				}
 				else
 					newRules.Add( rule );
@@ -2295,6 +2509,11 @@ namespace ChessV
 
 		// *** EVALUATIONS *** //
 
+		#region GetEvaluations
+		public List<Evaluation> GetEvaluations()
+		{ return evaluations; }
+		#endregion
+
 		#region AddEvaluation
 		public void AddEvaluation( Evaluation eval )
 		{
@@ -2310,6 +2529,18 @@ namespace ChessV
 				if( evaluationType == evaluation.GetType() || (evaluationType.IsSubclassOf( evaluation.GetType() ) && inheritedTypes) )
 					return evaluation;
 			return null;
+		}
+		#endregion
+
+		#region RemoveEvaluation
+		public void RemoveEvaluation( Type evalType, bool inheritedTypes = false )
+		{
+			List<Evaluation> evalsToRemove = new List<Evaluation>();
+			foreach( Evaluation eval in evaluations )
+				if( evalType == eval.GetType() || (evalType.IsSubclassOf( eval.GetType() ) && inheritedTypes) )
+					evalsToRemove.Add( eval );
+			foreach( Evaluation evalToRemove in evalsToRemove )
+				evaluations.Remove( evalToRemove );
 		}
 		#endregion
 
@@ -2331,6 +2562,30 @@ namespace ChessV
 		#endregion
 
 
+		// *** MISCELLANEOUS OPERATIONS *** //
+
+		#region ReleaseMemoryAllocations
+		public void ReleaseMemoryAllocations()
+		{
+			hashtable = null;
+			moveLists = null;
+			searchStack = null;
+			killers1 = null;
+			killers2 = null;
+			historyCounters = null;
+			butterflyCounters = null;
+			countermoves = null;
+			SearchPath = null;
+			seeAttackers = null;
+			foreach( Rule rule in rules )
+				rule.ReleaseMemoryAllocations();
+			foreach( Evaluation eval in evaluations )
+				eval.ReleaseMemoryAllocations();
+			finalized = true;
+		}
+		#endregion
+
+
 		// *** PROTECTED DATA AND FUNCTIONS *** //
 
 		#region Protected Data
@@ -2347,6 +2602,8 @@ namespace ChessV
 		protected List<Rule> rulesHandlingSearchExtensions;
 		protected List<Rule> rulesHandlingGetPositionHashCode;
 		protected List<Rule> rulesHandlingIsSquareAttacked;
+		protected List<Rule> rulesHandlingAdjustEvaluation;
+		protected Evaluation evalHandlingTestForWinLossDraw;
 
 		protected Direction[] directions;
 		protected int nDirections;
@@ -2357,6 +2614,8 @@ namespace ChessV
 
 		protected PieceType[] pieceTypes;
 		protected int nPieceTypes;
+		protected PieceType[] disabledPieceTypes;
+		protected int nDisabledPieceTypes;
 
 		protected Piece[,] pieces;
 		protected int[] nPieces;
@@ -2369,7 +2628,6 @@ namespace ChessV
 		protected UInt32[,,] butterflyCounters;
 		protected UInt32 lmrHistoryCutoff;
 		protected UInt32[,] countermoves;
-		protected Movement[] searchPath;
 		protected List<Piece>[] seeAttackers;
 
 		public const int MAX_GAME_LENGTH = 1000;
@@ -2379,6 +2637,8 @@ namespace ChessV
 
 		protected Dictionary<PieceType, int> pieceTypeNumbers;
 		protected FEN fen;
+
+		protected Dictionary<PieceType, Type> classesThatCreatedPieceTypes;
 
 		protected Int64 nodes;
 		protected int idepth;
@@ -2392,6 +2652,7 @@ namespace ChessV
 		protected DebugMessageLog messageLog;
 
 		protected Hashtable hashtable;
+		protected bool finalized;
 
 		public const int ONEPLY = 2;
 		public const int INFINITY = 1000000;
@@ -2399,6 +2660,14 @@ namespace ChessV
 		#endregion
 
 		#region Helper Functions
+		#region cleanup
+		protected virtual void cleanup()
+		{
+			hashtable = null;
+			//TypesByNotation = null;
+		}
+		#endregion
+
 		#region updateFEN
 		protected void updateFEN()
 		{
@@ -2429,18 +2698,18 @@ namespace ChessV
 							array.Append( emptySpaceCount.ToString() );
 							emptySpaceCount = 0;
 						}
-						string notation = piece.PieceType.Notation;
+						string notation = piece.PieceType.Notation[piece.Player];
 						//	determine if we need to prepend an _
 						if( notation.Length == 2 )
 						{
 							for( int x = 0; x < nPieceTypes; x++ )
 								if( pieceTypes[x].Notation.Length == 1 &&
-									pieceTypes[x].Notation[0] == notation[0] )
+									pieceTypes[x].Notation[piece.Player][0] == notation[0] )
 									notation = "_" + notation;
 						}
 						//	make lower case if second player
-						if( piece.Player == 1 )
-							notation = notation.ToLower();
+//						if( piece.Player == 1 )
+//							notation = notation.ToLower();
 						array.Append( notation );
 					}
 				}
@@ -2457,6 +2726,8 @@ namespace ChessV
 			for( int x = 0; x < nPieceTypes; x++ )
 				if( pieceTypes[x] == oldType )
 				{
+					oldType.Enabled = false;
+					disabledPieceTypes[nDisabledPieceTypes++] = oldType;
 					pieceTypes[x] = newType;
 					return;
 				}
@@ -2473,7 +2744,7 @@ namespace ChessV
 				int rank = Board.NumRanks == 10 ? rankInteger : rankInteger - 1;
 				return file * Board.NumRanks + rank;
 			}
-			else if( format == MoveNotation.StandardAlbegraic )
+			else if( format == MoveNotation.StandardAlgebraic )
 			{
 				return NotationToSquare( notation );
 			}
@@ -2500,6 +2771,23 @@ namespace ChessV
 		}
 		#endregion
 
+		#region findEvalThatHandlesEvent
+		protected Evaluation findEvalThatHandlesEvent( string methodName )
+		{
+			foreach( Evaluation eval in evaluations )
+			{
+				Type evaltype = eval.GetType();
+				while( evaltype != typeof(Evaluation) )
+				{
+					if( evaltype.GetMethod( methodName, BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance ) != null )
+						return eval;
+					evaltype = evaltype.BaseType;
+				}
+			}
+			return null;
+		}
+		#endregion
+
 		#region writeGameVariableToFile
 		protected void writeGameVariableToFile( KeyValuePair<string, object> variable, TextWriter file )
 		{
@@ -2510,12 +2798,19 @@ namespace ChessV
 				{
 					file.Write( variable.Key );
 					file.Write( " = " );
-					file.WriteLine( value );
+					if( value.IndexOf( ' ' ) >= 0 )
+					{
+						file.Write( '"' );
+						file.Write( value );
+						file.WriteLine( '"' );
+					}
+					else
+						file.WriteLine( value );
 				}
 			}
-			else if( variable.Value is IntVariable )
+			else if( variable.Value is IntRangeVariable )
 			{
-				IntVariable value = (IntVariable) variable.Value;
+				IntRangeVariable value = (IntRangeVariable) variable.Value;
 				if( value.Value != null )
 				{
 					file.Write( variable.Key );
@@ -2541,6 +2836,10 @@ namespace ChessV
 			{
 				file.WriteLine( variable.Key + " = " + ((int) variable.Value).ToString() );
 			}
+			else if( variable.Value is PieceType )
+			{
+				//	just skip this for now
+			}
 			else
 				throw new Exception( "Unexpected game variable type to write to file" );
 		}
@@ -2549,17 +2848,19 @@ namespace ChessV
 		#region compareGameVariablesForEquality
 		protected bool compareGameVariablesForEquality( object var1, object var2 )
 		{
-			if( var1 is string )
+			if( var1 == null || var2 == null )
+				return var1 == null && var2 == null;
+			else if( var1 is string )
 			{
 				if( !(var2 is string) )
 					return false;
 				return (string) var1 == (string) var2;
 			}
-			else if( var1 is IntVariable )
+			else if( var1 is IntRangeVariable )
 			{
-				if( !(var2 is IntVariable) )
+				if( !(var2 is IntRangeVariable) )
 					return false;
-				return ((IntVariable) var1).Value == ((IntVariable) var2).Value;
+				return ((IntRangeVariable) var1).Value == ((IntRangeVariable) var2).Value;
 			}
 			else if( var1 is ChoiceVariable )
 			{
@@ -2578,6 +2879,11 @@ namespace ChessV
 				if( !(var2 is int) )
 					return false;
 				return (int) var1 == (int) var2;
+			}
+			else if( var1 is PieceType )
+			{
+				//	do something better here down the road
+				return true;
 			}
 			else
 				throw new Exception( "Unexpected game variable type used in comparison" );

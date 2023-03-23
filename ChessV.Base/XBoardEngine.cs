@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
   
   THIS FILE DERIVED FROM CUTE CHESS BY ILARI PIHLAJISTO AND ARTO JONSSON
 
@@ -65,7 +65,7 @@ namespace ChessV
 			finishGameTimer.Tick += pong;
 			finishGameTimer.Tick += onSingleShotTimerTick;
 
-			addVariant( "standard" );
+			addVariant( "normal" );
 			Name = "XboardEngine";
 		}
 
@@ -174,7 +174,7 @@ namespace ChessV
 		#endregion
 
 		#region sendQuit
-		protected override void sendQuit()
+		public override void sendQuit()
 		{
 			Write( "quit" );
 		}
@@ -213,7 +213,7 @@ namespace ChessV
 				Write( "variant " + (Adaptor != null ? Adaptor.XBoardName : Game.GameAttribute.XBoardName) );
 	
 			//	send the "setboard" command?
-			if( Game.GameAttribute.TagList.Contains( "Random Array" ) || 
+			if( (Game.GameAttribute.TagList != null && Game.GameAttribute.TagList.Contains( "Random Array" )) || 
 				(Adaptor != null && Adaptor.IssueSetboard) ) //	||  board()->fenString() != board()->defaultFenString())
 			{
 				SetBoard( Adaptor != null ? Adaptor.TranslateFEN( Game.FENStart ) : Game.FENStart );
@@ -254,6 +254,27 @@ namespace ChessV
 				if( !Opponent.IsHuman )
 					Write( "computer" );
 				Write( "name " + Opponent.Name );
+			}
+
+			//	if the Game has any moves already played, send them 
+			//	now while we are in "force" mode
+			List<Movement> moves = new List<Movement>();
+			for( int nMove = 0; nMove < Game.GameMoveNumber; nMove++ )
+			{
+				int turnNumber;
+				MoveInfo moveMade = Game.GetHistoricalMove( nMove, out turnNumber );
+				//	we do not play the moves one-by-one but first accumulate all the
+				//	moves by the same player to accomodate multi-move variants
+				if( moves.Count > 0 && moves[0].Player != moveMade.Player )
+				{
+					MakeMove( moves );
+					moves.Clear();
+				}
+				moves.Add( moveMade );
+			}
+			if( moves.Count > 0 )
+			{
+				MakeMove( moves );
 			}
 		}
 		#endregion
@@ -312,7 +333,7 @@ namespace ChessV
 					claimResult( new Result( ResultType.NoResult, -1, description ) );
 				else if( command == "1/2-1/2" )
 				{
-					if( State == PlayerState.Thinking && ClaimsValidated )
+					if( State == PlayerState.Thinking && false /* && ClaimsValidated */ )
 						// The engine claims that its next move will draw the game
 						drawOnNextMove = true;
 					else

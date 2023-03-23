@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -17,9 +17,6 @@ more details; the file 'COPYING' contains the License text, but if for
 some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
-
-using System;
-using System.Collections.Generic;
 
 namespace ChessV.Games
 {
@@ -44,10 +41,6 @@ namespace ChessV.Games
 	{
 		// *** PIECE TYPES *** //
 
-		public PieceType Queen;
-		public PieceType Rook;
-		public PieceType Bishop;
-		public PieceType Knight;
 		public PieceType Elephant;
 		public PieceType Cannon;
 
@@ -80,10 +73,7 @@ namespace ChessV.Games
 		public override void AddPieceTypes()
 		{
 			base.AddPieceTypes();
-			AddPieceType( Rook = new Rook( "Rook", "R", 550, 650 ) );
-			AddPieceType( Bishop = new Bishop( "Bishop", "B", 375, 425 ) );
-			AddPieceType( Knight = new Knight( "Knight", "N", 250, 250 ) );
-			AddPieceType( Queen = new Queen( "Queen", "Q", 1025, 1250 ) );
+			AddChessPieceTypes();
 			AddPieceType( Cannon = new Cannon( "Cannon", "C", 400, 275 ) );
 			Elephant = new Elephant( "Elephant", "E", 225, 225 );
 			Elephant.Step( new Direction(  1,  1 ) );

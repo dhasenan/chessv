@@ -61,6 +61,7 @@ namespace ChessV.GUI
 			this.chkTagRegional = new System.Windows.Forms.CheckBox();
 			this.chkFilterGameIndex = new System.Windows.Forms.CheckBox();
 			this.btnOK = new System.Windows.Forms.Button();
+			this.chkTagMultiMove = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.pictFilterIcon)).BeginInit();
 			this.groupBox.SuspendLayout();
 			this.groupBox1.SuspendLayout();
@@ -97,6 +98,7 @@ namespace ChessV.GUI
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add(this.chkTagMultiMove);
 			this.groupBox1.Controls.Add(this.chkTagDifferentArmies);
 			this.groupBox1.Controls.Add(this.chkTagMultipleBoards);
 			this.groupBox1.Controls.Add(this.chkTagRandomArray);
@@ -114,7 +116,7 @@ namespace ChessV.GUI
 			// chkTagDifferentArmies
 			// 
 			this.chkTagDifferentArmies.AutoSize = true;
-			this.chkTagDifferentArmies.Location = new System.Drawing.Point(327, 53);
+			this.chkTagDifferentArmies.Location = new System.Drawing.Point(190, 76);
 			this.chkTagDifferentArmies.Name = "chkTagDifferentArmies";
 			this.chkTagDifferentArmies.Size = new System.Drawing.Size(100, 17);
 			this.chkTagDifferentArmies.TabIndex = 6;
@@ -204,6 +206,16 @@ namespace ChessV.GUI
 			this.btnOK.UseVisualStyleBackColor = true;
 			this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
 			// 
+			// chkTagMultiMove
+			// 
+			this.chkTagMultiMove.AutoSize = true;
+			this.chkTagMultiMove.Location = new System.Drawing.Point(327, 53);
+			this.chkTagMultiMove.Name = "chkTagMultiMove";
+			this.chkTagMultiMove.Size = new System.Drawing.Size(78, 17);
+			this.chkTagMultiMove.TabIndex = 7;
+			this.chkTagMultiMove.Text = "Multi-Move";
+			this.chkTagMultiMove.UseVisualStyleBackColor = true;
+			// 
 			// GameIndexFilterForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -243,5 +255,6 @@ namespace ChessV.GUI
 		private System.Windows.Forms.CheckBox chkTagMultipleBoards;
 		private System.Windows.Forms.CheckBox chkTagDifferentArmies;
 		private System.Windows.Forms.Button btnOK;
+		private System.Windows.Forms.CheckBox chkTagMultiMove;
 	}
 }

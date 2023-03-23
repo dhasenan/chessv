@@ -19,9 +19,7 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 ****************************************************************************/
 
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using ChessV;
 using Microsoft.Win32;
 
 namespace ChessV.GUI
@@ -49,13 +47,17 @@ namespace ChessV.GUI
 			int numColors = 2;
 
 			//	Find AppearanceAttribute and update defaults (if it exists)
-			object[] attrs = game.GetType().GetCustomAttributes( typeof(AppearanceAttribute), false );
-			if( attrs.Length >= 1 )
+			object[] attrs = null;
+			if( Program.Manager.AppearanceAttributes.ContainsKey( game.Name ) )
+				attrs = new object[] { Program.Manager.AppearanceAttributes[game.Name] };
+			else
+				attrs = game.GetType().GetCustomAttributes( typeof(AppearanceAttribute), false );
+			if( attrs != null && attrs.Length >= 1 )
 			{
 				AppearanceAttribute appearance = (AppearanceAttribute) attrs[0];
 				if( appearance.Game != null && appearance.Game != game.Name )
 					appearance = null;
-				numColors = appearance != null ? appearance.NumberOfColors : 2;
+				numColors = appearance != null ? appearance.NumberOfSquareColors : 2;
 				if( appearance != null && appearance.ColorScheme != null )
 					if( ColorSchemeLibrary.Contains( appearance.ColorScheme ) )
 						colorScheme = ColorSchemeLibrary.Lookup( appearance.ColorScheme );
@@ -82,6 +84,7 @@ namespace ChessV.GUI
 					colorScheme.Modified = true;
 					colorScheme.Name = "(custom)";
 				}
+				game.NumberOfSquareColors = numColors;
 			}
 
 			gameKey = getKeyForGame( game, true );
@@ -118,7 +121,11 @@ namespace ChessV.GUI
 			//	find AppearanceAttribute (if any) to fill in any data missing 
 			//	from the registry key with game defaults
 			AppearanceAttribute appearance = null;
-			object[] attrs = game.GetType().GetCustomAttributes( typeof(AppearanceAttribute), true );
+			object[] attrs;
+			if( Program.Manager.AppearanceAttributes.ContainsKey( game.Name ) )
+				attrs = new object[] { Program.Manager.AppearanceAttributes[game.Name] };
+			else
+				attrs = game.GetType().GetCustomAttributes( typeof(AppearanceAttribute), true );
 			if( attrs.Length >= 1 )
 			{
 				appearance = (AppearanceAttribute) attrs[0];
@@ -131,7 +138,7 @@ namespace ChessV.GUI
 			if( objNSquareColors == null )
 			{
 				if( appearance != null )
-					objNSquareColors = appearance.NumberOfColors;
+					objNSquareColors = appearance.NumberOfSquareColors;
 				else
 					objNSquareColors = 2;
 				gameKey.SetValue( "NSquareColors", objNSquareColors );

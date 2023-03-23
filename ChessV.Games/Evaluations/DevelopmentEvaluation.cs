@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -28,6 +28,7 @@ namespace ChessV.Evaluations
 	{
 		// *** PROPERTIES *** //
 
+		#region Properties
 		public int OpeningProgress { get; private set; }
 		public int OpeningTransitionThreshold { get; set; }
 		public int OpeningCompleteThreshold { get; set; }
@@ -39,9 +40,17 @@ namespace ChessV.Evaluations
 		public CastlingRule CastlingRule { get; private set; }
 		public int[] EvalAdjustment { get; private set; }
 
+		public int CastlingBonus { get; private set; }
+		public int MajorPieceInOpeningPenalty { get; private set; }
+		public int EdgePawnPenalty { get; private set; }
+		public int LossOfCastlingPenalty { get; private set; }
+		public int MovePieceTwicePenalty { get; private set; }
+		#endregion
+
 
 		// *** CONSTRUCTION *** //
 
+		#region Constructor
 		public DevelopmentEvaluation()
 		{
 			OpeningProgress = 0;
@@ -53,18 +62,22 @@ namespace ChessV.Evaluations
 			LeftPawnPenaltyFile = -1;
 			RightPawnPenaltyFile = -1;
 		}
+		#endregion
 
 
 		// *** INITIALIZATION *** //
 
-        public override void Initialize( Game game )
+		#region Initialize
+		public override void Initialize( Game game )
         {
             base.Initialize( game );
 			EvalAdjustment = new int[game.NumPlayers];
 			for( int player = 0; player < game.NumPlayers; player++ )
 				EvalAdjustment[player] = 0;
 		}
+		#endregion
 
+		#region PostInitialize
 		public override void PostInitialize()
 		{
 			base.PostInitialize();
@@ -100,7 +113,7 @@ namespace ChessV.Evaluations
 			if( PawnPieceType == -1 )
 			{
 				for( int nPieceType = 0; nPieceType < game.NPieceTypes; nPieceType++ )
-					if( game.GetPieceType( nPieceType ) is Pawn )
+					if( game.GetPieceType( nPieceType ).IsPawn )
 						PawnPieceType = game.GetPieceType( nPieceType ).TypeNumber;
 			}
 			if( PawnPieceType >= 0 && PawnMaxRankFirstMove == 0 )
@@ -139,11 +152,51 @@ namespace ChessV.Evaluations
 
 			//	find this game's castling rule (if it has one)
 			CastlingRule = (CastlingRule) game.FindRule( typeof(CastlingRule), true );
+
+			//	start with default randomness
+			SetVariation( game.Variation );
 		}
+		#endregion
+
+		#region SetVariation
+		public override void SetVariation( int randomness )
+		{
+			CastlingBonus = 50;
+			MajorPieceInOpeningPenalty = 100;
+			EdgePawnPenalty = 50;
+			LossOfCastlingPenalty = 75;
+			MovePieceTwicePenalty = 40;
+
+			if( randomness > 0 )
+			{
+				int[] randomAdjustments = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+				if( randomness == 1 )
+					randomAdjustments = new int[] { -2, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2 };
+				else if( randomness == 2 )
+					randomAdjustments = new int[] { -2, -2, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 2 };
+				else if( randomness == 3 )
+					randomAdjustments = new int[] { -3, -2, -2, -1, -1, 0, 0, 0, 0, 0, 0, 1, 1, 2, 2, 3 };
+				CastlingBonus += randomAdjustments[Program.Random.Next( 16 )];
+				MajorPieceInOpeningPenalty += randomAdjustments[Program.Random.Next( 16 )];
+				EdgePawnPenalty += randomAdjustments[Program.Random.Next( 16 )];
+				LossOfCastlingPenalty += randomAdjustments[Program.Random.Next( 16 )];
+				MovePieceTwicePenalty += randomAdjustments[Program.Random.Next( 16 )];
+			}
+		}
+		#endregion
 
 
 		// *** OVERRIDES *** //
 
+		#region ReleaseMemoryAllocations
+		public override void ReleaseMemoryAllocations()
+		{
+			base.ReleaseMemoryAllocations();
+			EvalAdjustment = null;
+		}
+		#endregion
+
+		#region MoveBeingMade
 		public override void MoveBeingMade( MoveInfo move, int ply )
 		{
 			// *** OPENING PROGRESS *** //
@@ -178,7 +231,7 @@ namespace ChessV.Evaluations
 
 			//	castling is worth a significant bonus
 			if( move.MoveType == MoveType.Castling )
-				EvalAdjustment[move.Player] += 50;
+				EvalAdjustment[move.Player] += CastlingBonus;
 			else
 			{
 				//	The first move of a piece may be given a penalty
@@ -187,30 +240,32 @@ namespace ChessV.Evaluations
 					//	Moving a major piece in the opening is penalized
 					if( move.PieceMoved != null && move.PieceMoved.PieceType.MidgameValue > HeavyPieceThreshold + 25 )
 					{
-						int adj = (int) Math.Log( move.PieceMoved.PieceType.MidgameValue - HeavyPieceThreshold, 1.03 ) - 100;
+						int adj = (int) Math.Log( move.PieceMoved.PieceType.MidgameValue - HeavyPieceThreshold, 1.03 ) - MajorPieceInOpeningPenalty;
 						EvalAdjustment[move.Player] -= adj;
 					}
 					//	Pushing an edge pawn is penalized
 					else if( move.PieceMoved != null && move.PieceMoved.PieceType.MidgameValue < 150 &&
 						(board.GetFile( move.FromSquare ) <= LeftPawnPenaltyFile ||
 							board.GetFile( move.FromSquare ) >= RightPawnPenaltyFile) )
-						EvalAdjustment[move.Player] -= 50;
+						EvalAdjustment[move.Player] -= EdgePawnPenalty;
 				}
 				//	Moving a piece twice is penalized
 				else if( move.MoveType == MoveType.StandardMove )
 				{
 					if( move.PieceMoved.PieceType.MidgameValue > 150 )
-						EvalAdjustment[move.Player] -= 40;
+						EvalAdjustment[move.Player] -= MovePieceTwicePenalty;
 					else
 						EvalAdjustment[move.Player] -= 10;
 				}
 				//	Moving a king in a non-castling move is penalized 
 				//	if this game has a castling rule
 				else if( move.PieceMoved != null && move.PieceMoved.PieceType.MidgameValue == 0 && CastlingRule != null )
-					EvalAdjustment[move.Player] -= 75;
+					EvalAdjustment[move.Player] -= LossOfCastlingPenalty;
 			}
 		}
+		#endregion
 
+		#region MoveBeingUnmade
 		public override void MoveBeingUnmade( MoveInfo move, int ply )
 		{
 			//	This function exactly reverses the operations performed 
@@ -242,7 +297,7 @@ namespace ChessV.Evaluations
 
 			//	castling is worth a significant bonus
 			if( move.MoveType == MoveType.Castling )
-				EvalAdjustment[move.Player] -= 50;
+				EvalAdjustment[move.Player] -= CastlingBonus;
 			else
 			{
 				//	The first move of a piece may be given a penalty
@@ -251,30 +306,32 @@ namespace ChessV.Evaluations
 					//	Moving a major piece in the opening is penalized
 					if( move.PieceMoved != null && move.PieceMoved.PieceType.MidgameValue > HeavyPieceThreshold + 25 )
 					{
-						int adj = (int) Math.Log( move.PieceMoved.PieceType.MidgameValue - HeavyPieceThreshold, 1.03 ) - 100;
+						int adj = (int) Math.Log( move.PieceMoved.PieceType.MidgameValue - HeavyPieceThreshold, 1.03 ) - MajorPieceInOpeningPenalty;
 						EvalAdjustment[move.Player] += adj;
 					}
 					//	Pushing an edge pawn is penalized
 					else if( move.PieceMoved != null && move.PieceMoved.PieceType.MidgameValue < 150 &&
 						(board.GetFile( move.FromSquare ) == 0 ||
 							board.GetFile( move.FromSquare ) == board.NumFiles - 1) )
-						EvalAdjustment[move.Player] += 50;
+						EvalAdjustment[move.Player] += EdgePawnPenalty;
 				}
 				//	Moving a piece twice is penalized
 				else if( move.MoveType == MoveType.StandardMove )
 				{
 					if( move.PieceMoved.PieceType.MidgameValue > 150 )
-						EvalAdjustment[move.Player] += 40;
+						EvalAdjustment[move.Player] += MovePieceTwicePenalty;
 					else
 						EvalAdjustment[move.Player] += 10;
 				}
 				//	Moving a king in a non-castling move is penalized 
 				//	if this game has a castling rule
 				else if( move.PieceMoved != null && move.PieceMoved.PieceType.MidgameValue == 0 && CastlingRule != null )
-					EvalAdjustment[move.Player] += 75;
+					EvalAdjustment[move.Player] += LossOfCastlingPenalty;
 			}
 		}
+		#endregion
 
+		#region AdjustEvaluation
 		public override void AdjustEvaluation( ref int midgameEval, ref int endgameEval )
 		{
 			int phase =
@@ -283,5 +340,6 @@ namespace ChessV.Evaluations
 				(OpeningProgress - OpeningTransitionThreshold));
 			midgameEval += (EvalAdjustment[0] - EvalAdjustment[1]) * phase / (OpeningCompleteThreshold - OpeningTransitionThreshold);
 		}
+		#endregion
 	}
 }

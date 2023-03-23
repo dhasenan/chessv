@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -17,9 +17,6 @@ more details; the file 'COPYING' contains the License text, but if for
 some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
-
-using System;
-using System.Collections.Generic;
 
 namespace ChessV.Games.Abstract
 {
@@ -39,6 +36,9 @@ namespace ChessV.Games.Abstract
 	//    This class adds optional support for the two-move initial pawn 
 	//    move and En Passant.
 
+	[Game("Generic x8",
+		  typeof(Geometry.Rectangular), 8,
+		  Template = true)]
 	public class Generic__x8: GenericChess
 	{
         // *** CONSTRUCTION *** //
@@ -54,7 +54,6 @@ namespace ChessV.Games.Abstract
 		// *** GAME VARIABLES *** //
 
 		[GameVariable] public bool PawnDoubleMove { get; set; }
-		[GameVariable] public bool EnPassant { get; set; }
 
 
 		// *** INITIALIZATION *** //
@@ -64,7 +63,6 @@ namespace ChessV.Games.Abstract
 		{
 			base.SetGameVariables();
 			PawnDoubleMove = false;
-			EnPassant = false;
 		}
 		#endregion
 
@@ -74,7 +72,7 @@ namespace ChessV.Games.Abstract
 			base.AddRules();
 
 			// *** PAWN DOUBLE MOVE *** //
-			if( PawnDoubleMove )
+			if( PawnDoubleMove && Pawn.Enabled )
 			{
 				MoveCapability doubleMove = new MoveCapability();
 				doubleMove.MinSteps = 2;
@@ -85,10 +83,6 @@ namespace ChessV.Games.Abstract
 				doubleMove.Condition = location => location.Rank == 1;
 				Pawn.AddMoveCapability( doubleMove );
 			}
-
-			// *** EN-PASSANT *** //
-			if( EnPassant )
-				EnPassantRule( Pawn, new Direction( 1, 0 ) );
 		}
 		#endregion
 	}

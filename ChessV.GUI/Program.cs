@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -20,16 +20,8 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 using System;
 using System.Windows.Forms;
-using System.Collections.Generic;
-using System.Reflection;
 using System.IO;
-using System.Threading;
 using System.Text;
-using Microsoft.Win32;
-using ChessV;
-using ChessV.Compiler;
-using ChessV.Manager;
-using System.Runtime.InteropServices;
 
 namespace ChessV.GUI
 {
@@ -64,7 +56,7 @@ namespace ChessV.GUI
 			RunningOnWindows = Path.DirectorySeparatorChar == '\\';
 
 			//	Base manager for registry key settings
-			RegistrySettings.Initialize();
+			int currentRegistryVersion = RegistrySettings.Initialize();
 
 			//	Factory object for dynamically creating a BoardPresentation for any Game object
 			PresentationFactory.Initialize();
@@ -73,7 +65,7 @@ namespace ChessV.GUI
 			TextureLibrary.Initialize();
 
 			//	Library object cointaining the collection of defined color schemes
-			ColorSchemeLibrary.Initialize();
+			ColorSchemeLibrary.Initialize( currentRegistryVersion );
 
 			//	Library object containing the collection of defined piece sets
 			PieceSetLibrary.Initialize();

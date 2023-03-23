@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -67,7 +67,7 @@ namespace ChessV.GUI
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(346, 16);
 			this.label1.TabIndex = 1;
-			this.label1.Text = "Copyright (C) 2012-2017 by Greg Strong";
+			this.label1.Text = "Copyright (C) 2012-2019 by Greg Strong";
 			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// label2
@@ -89,7 +89,7 @@ namespace ChessV.GUI
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(340, 16);
 			this.label3.TabIndex = 0;
-			this.label3.Text = "Version 2.1";
+			this.label3.Text = "Version 2.2";
 			this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// btnAcknowledgements
@@ -168,7 +168,7 @@ namespace ChessV.GUI
 			this.MinimizeBox = false;
 			this.Name = "AboutForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "About ChessV 2.1";
+			this.Text = "About ChessV 2.2";
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();

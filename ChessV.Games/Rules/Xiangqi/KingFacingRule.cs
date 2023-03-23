@@ -50,8 +50,8 @@ namespace ChessV.Games.Rules.Xiangqi
 		{
 			//	Make sure the kings aren't facing each other across an open 
 			//	rank, file or diagonal.  If they are, the move is illegal.
-			int k0square = Board.GetPieceTypeBitboard( 0, kingType ).GetLSB();
-			int k1square = Board.GetPieceTypeBitboard( 1, kingType ).GetLSB();
+			int k0square = Board.GetPieceTypeBitboard( 0, kingType ).LSB;
+			int k1square = Board.GetPieceTypeBitboard( 1, kingType ).LSB;
 			if( k0square == -1 || k1square == -1 )
 				throw new Exception( "King captured.  This should not be possible and indicates a problem with a rule implementation." );
 			Location k0location = Board.SquareToLocation( k0square );
@@ -104,6 +104,12 @@ namespace ChessV.Games.Rules.Xiangqi
 			}
 			//	The kings are not on the same rank, file, or diagonal
 			return MoveEventResponse.NotHandled;
+		}
+
+		public override void GetNotesForPieceType( PieceType type, List<string> notes )
+		{
+			if( type.TypeNumber == kingType )
+				notes.Add( "cannot face unblocked opposition" );
 		}
 	}
 }

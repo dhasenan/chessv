@@ -31,7 +31,7 @@ namespace ChessV.GUI
 	{
 		// *** PROPERTIES *** //
 
-		public BitmapPieceSet PieceSet { get; protected set; }
+		public PieceSet PieceSet { get; protected set; }
 		public Game Game { get; protected set; }
 		protected ColorScheme colorScheme { get; set; }
 		protected PieceType[] pieceTypes;
@@ -41,7 +41,7 @@ namespace ChessV.GUI
 
 		// *** CONSTRUCTION *** //
 
-		public BitmapPieceSetPresentation( Game game, BitmapPieceSet pieceSet )
+		public BitmapPieceSetPresentation( Game game, PieceSet pieceSet )
 		{
 			Game = game;
 			PieceSet = pieceSet;

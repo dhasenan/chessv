@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -19,7 +19,8 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 ****************************************************************************/
 
 using System;
-using System.Collections.Generic;
+using ChessV.Evaluations;
+using ChessV.Games.Rules;
 
 namespace ChessV.Games.Abstract
 {
@@ -58,7 +59,28 @@ namespace ChessV.Games.Abstract
 		public override void SetGameVariables()
 		{
 			base.SetGameVariables();
-			Castling = new ChoiceVariable( new string[] { "None", "3-3", "3-4", "4-4", "Close Rook 3-3", "Close Rook 3-4", "Close Rook 4-4", "Flexible", "Custom" } );
+			Castling = new ChoiceVariable();
+			Castling.AddChoice( "3-3", "King starting on f or g file slides three squares either direction, " +
+				"subject to the usual restrictions, to castle with the piece in the corner" );
+			Castling.AddChoice( "3-4", "King starting on f or g file slides three squares when castling short " +
+				"or four when castling long, subject to the usual restrictions, to castle with the piece in the corner" );
+			Castling.AddChoice( "4-4", "King starting on f or g file slides four squares either direction, " +
+				"subject to the usual restrictions, to castle with the piece in the corner" );
+			Castling.AddChoice( "4-5", "King starting on f or g file slides four squares when castling short " +
+				"or five when castling long, subject to the usual restrictions, to castle with the piece in the corner" );
+			Castling.AddChoice( "Close-Rook 2-2", "King starting on f or g file slides two squares either direction, " +
+				"subject to the usual restrictions, to castle with the piece on the b or k file" );
+			Castling.AddChoice( "Close-Rook 2-3", "King starting on f or g file slides two squares when castling short " +
+				"or three when castling long, subject to the usual restrictions, to castle with the piece on the b or k file" );
+			Castling.AddChoice( "Close-Rook 3-3", "King starting on f or g file slides three squares either direction, " +
+				"subject to the usual restrictions, to castle with the piece on the b or k file" );
+			Castling.AddChoice( "Close-Rook 3-4", "King starting on f or g file slides three squares when castling short " +
+				"or four when castling long, subject to the usual restrictions, to castle with the piece on the b or k file" );
+			Castling.AddChoice( "Flexible", "King starting on f or g file slides two or more squares, subject to the usual " +
+				"restrictions, to castle with the piece in the corner" );
+			Castling.AddChoice( "Close-Rook Flexible", "King starting on f or g file slides two or more squares, subject to the usual " +
+				"restrictions, to castle with the piece on the b or k file" );
+			Castling.AddChoice( "None", "No castling" );
 			Castling.Value = "None";
 		}
 		#endregion
@@ -70,211 +92,193 @@ namespace ChessV.Games.Abstract
 
 			// *** CASTLING *** //
 
-			if( Castling.Value != "None" )
+			#region Castling
+			//	Only handle here if this is a castling type we defined
+			if( Castling.Choices.IndexOf( Castling.Value ) < Castling.Choices.IndexOf( "None" ) )
 			{
 				//	Adding castling rule is somewhat complicated because there are a number of different forms 
 				//	of castilng and we have to accomodate the King on either f1 or g1.  On 12x8 we always use 
 				//	shredder notation for castling though.
 
 				//	find the king's start square (must be f1 or g1)
-				GenericPiece WhiteKing = new GenericPiece( 0, castlingType );
-				GenericPiece BlackKing = new GenericPiece( 1, castlingType );
+				GenericPiece WhiteKing = new GenericPiece( 0, CastlingType );
+				GenericPiece BlackKing = new GenericPiece( 1, CastlingType );
 				string whiteKingSquare = null;
 				string blackKingSquare = null;
 				if( StartingPieces["f1"] == WhiteKing )
 					whiteKingSquare = "f1";
-				if( StartingPieces["g1"] == WhiteKing )
+				else if( StartingPieces["g1"] == WhiteKing )
 					whiteKingSquare = "g1";
 				if( StartingPieces["f8"] == BlackKing )
 					blackKingSquare = "f8";
-				if( StartingPieces["g8"] == BlackKing )
+				else if( StartingPieces["g8"] == BlackKing )
 					blackKingSquare = "g8";
 				if( whiteKingSquare == null || blackKingSquare == null )
 					throw new Exception( "Can't enable castling rule because King does not start on a supported square" );
 
-				//	3-3 CASTLING - King slides three squares and corner piece jumps over to adjacent square
-				if( Castling.Value == "3-3" )
-				{
-					CastlingRule();
-					if( whiteKingSquare == "g1" )
-					{
-						CastlingMove( 0, "g1", "j1", "l1", "i1", 'L' );
-						CastlingMove( 0, "g1", "d1", "a1", "e1", 'A' );
-					}
-					else
-					{
-						CastlingMove( 0, "f1", "c1", "a1", "d1", 'A' );
-						CastlingMove( 0, "f1", "i1", "l1", "h1", 'L' );
-					}
-					if( blackKingSquare == "g8" )
-					{
-						CastlingMove( 1, "g8", "j8", "l8", "i8", 'l' );
-						CastlingMove( 1, "g8", "d8", "a8", "e8", 'a' );
-					}
-					else
-					{
-						CastlingMove( 1, "f8", "c8", "a8", "d8", 'a' );
-						CastlingMove( 1, "f8", "i8", "l8", "h8", 'l' );
-					}
-				}
-				//	3-4 CASTLING - King slides three squares to the closer corner and four squares 
-				//	to the farther and corner piece jumps over to adjacent square
-				if( Castling.Value == "3-4" )
-				{
-					CastlingRule();
-					if( whiteKingSquare == "g1" )
-					{
-						CastlingMove( 0, "g1", "j1", "l1", "i1", 'L' );
-						CastlingMove( 0, "g1", "c1", "a1", "d1", 'A' );
-					}
-					else
-					{
-						CastlingMove( 0, "f1", "c1", "a1", "d1", 'A' );
-						CastlingMove( 0, "f1", "j1", "l1", "i1", 'L' );
-					}
-					if( blackKingSquare == "g8" )
-					{
-						CastlingMove( 1, "g8", "j8", "l8", "i8", 'l' );
-						CastlingMove( 1, "g8", "c8", "a8", "d8", 'a' );
-					}
-					else
-					{
-						CastlingMove( 1, "f8", "c8", "a8", "d8", 'a' );
-						CastlingMove( 1, "f8", "j8", "l8", "i8", 'l' );
-					}
-				}
-				//	4-4 CASTLING - King slides four squares and corner piece jumps over to adjacent square
-				else if( Castling.Value == "4-4" )
-				{
-					CastlingRule();
-					if( whiteKingSquare == "g1" )
-					{
-						CastlingMove( 0, "g1", "k1", "l1", "j1", 'L' );
-						CastlingMove( 0, "g1", "c1", "a1", "d1", 'A' );
-					}
-					else
-					{
-						CastlingMove( 0, "f1", "b1", "a1", "c1", 'A' );
-						CastlingMove( 0, "f1", "j1", "l1", "i1", 'L' );
-					}
-					if( blackKingSquare == "g8" )
-					{
-						CastlingMove( 1, "g8", "k8", "l8", "j8", 'l' );
-						CastlingMove( 1, "g8", "c8", "a8", "d8", 'a' );
-					}
-					else
-					{
-						CastlingMove( 1, "f8", "b8", "a8", "c8", 'a' );
-						CastlingMove( 1, "f8", "j8", "l8", "i8", 'l' );
-					}
-				}
-				//	CLOSE ROOK 3-3 CASTLING - King slides three squares and piece one square in 
-				//	from the corner jumps over to adjacent square
-				if( Castling.Value == "Close Rook 3-3" )
-				{
-					CastlingRule();
-					if( whiteKingSquare == "g1" )
-					{
-						CastlingMove( 0, "g1", "j1", "k1", "i1", 'K' );
-						CastlingMove( 0, "g1", "d1", "b1", "e1", 'B' );
-					}
-					else
-					{
-						CastlingMove( 0, "f1", "c1", "b1", "d1", 'B' );
-						CastlingMove( 0, "f1", "i1", "k1", "h1", 'K' );
-					}
-					if( blackKingSquare == "g8" )
-					{
-						CastlingMove( 1, "g8", "j8", "k8", "i8", 'k' );
-						CastlingMove( 1, "g8", "d8", "b8", "e8", 'b' );
-					}
-					else
-					{
-						CastlingMove( 1, "f8", "c8", "b8", "d8", 'b' );
-						CastlingMove( 1, "f8", "i8", "k8", "h8", 'k' );
-					}
-				}
-				//	CLOSE ROOK 3-4 CASTLING - King slides three squares to the closer corner and 
-				//	four squares to the farther and piece one square in from the corner 
-				//	jumps over to adjacent square
-				if( Castling.Value == "Close Rook 3-4" )
-				{
-					CastlingRule();
-					if( whiteKingSquare == "g1" )
-					{
-						CastlingMove( 0, "g1", "j1", "k1", "i1", 'K' );
-						CastlingMove( 0, "g1", "c1", "b1", "d1", 'B' );
-					}
-					else
-					{
-						CastlingMove( 0, "f1", "c1", "b1", "d1", 'B' );
-						CastlingMove( 0, "f1", "j1", "k1", "i1", 'K' );
-					}
-					if( blackKingSquare == "g8" )
-					{
-						CastlingMove( 1, "g8", "j8", "k8", "i8", 'k' );
-						CastlingMove( 1, "g8", "c8", "b8", "d8", 'b' );
-					}
-					else
-					{
-						CastlingMove( 1, "f8", "c8", "b8", "d8", 'b' );
-						CastlingMove( 1, "f8", "j8", "k8", "i8", 'k' );
-					}
-				}
-				//	CLOSE ROOK 4-4 CASTLING - King slides four squares and the piece on square in 
-				//	from the corner jumps over to adjacent square
-				else if( Castling.Value == "Close Rook 4-4" )
-				{
-					CastlingRule();
-					if( whiteKingSquare == "g1" )
-					{
-						CastlingMove( 0, "g1", "k1", "k1", "j1", 'K' );
-						CastlingMove( 0, "g1", "c1", "b1", "d1", 'B' );
-					}
-					else
-					{
-						CastlingMove( 0, "f1", "b1", "b1", "c1", 'B' );
-						CastlingMove( 0, "f1", "j1", "k1", "i1", 'K' );
-					}
-					if( blackKingSquare == "g8" )
-					{
-						CastlingMove( 1, "g8", "k8", "k8", "j8", 'k' );
-						CastlingMove( 1, "g8", "c8", "b8", "d8", 'b' );
-					}
-					else
-					{
-						CastlingMove( 1, "f8", "b8", "b8", "c8", 'b' );
-						CastlingMove( 1, "f8", "j8", "k8", "i8", 'k' );
-					}
-				}
 				//	FLEXIBLE CASTLING - King slides two or more squares towards the corner 
 				//	and the corner piece leaps to the square immediately to the other side
-				else if( Castling.Value == "Flexible" )
+				if( Castling.Value == "Flexible" )
 				{
-					FlexibleCastlingRule();
+					AddFlexibleCastlingRule();
 					if( whiteKingSquare == "g1" )
 					{
-						CastlingMove( 0, "g1", "i1", "l1", "i1", 'L' );
-						CastlingMove( 0, "g1", "e1", "a1", "e1", 'A' );
+						FlexibleCastlingMove( 0, "g1", "i1", "l1", 'L' );
+						FlexibleCastlingMove( 0, "g1", "e1", "a1", 'A' );
 					}
 					else
 					{
-						CastlingMove( 0, "f1", "d1", "a1", "d1", 'A' );
-						CastlingMove( 0, "f1", "h1", "l1", "h1", 'L' );
+						FlexibleCastlingMove( 0, "f1", "d1", "a1", 'A' );
+						FlexibleCastlingMove( 0, "f1", "h1", "l1", 'L' );
 					}
 					if( blackKingSquare == "g8" )
 					{
-						CastlingMove( 1, "g8", "i8", "l8", "i8", 'l' );
-						CastlingMove( 1, "g8", "e8", "a8", "e8", 'a' );
+						FlexibleCastlingMove( 1, "g8", "i8", "l8", 'l' );
+						FlexibleCastlingMove( 1, "g8", "e8", "a8", 'a' );
 					}
 					else
 					{
-						CastlingMove( 1, "f8", "d8", "a8", "d8", 'a' );
-						CastlingMove( 1, "f8", "h8", "l8", "h8", 'l' );
+						FlexibleCastlingMove( 1, "f8", "d8", "a8", 'a' );
+						FlexibleCastlingMove( 1, "f8", "h8", "l8", 'l' );
+					}
+				}
+				//	CLOSE-ROOK FLEXIBLE CASTLING - King slides two or more squares towards the 
+				//	b or k file and that piece leaps to the square immediately to the other side
+				else if( Castling.Value == "Close-Rook Flexible" )
+				{
+					AddFlexibleCastlingRule();
+					if( whiteKingSquare == "g1" )
+					{
+						FlexibleCastlingMove( 0, "g1", "i1", "k1", 'K' );
+						FlexibleCastlingMove( 0, "g1", "e1", "b1", 'B' );
+					}
+					else
+					{
+						FlexibleCastlingMove( 0, "f1", "d1", "b1", 'B' );
+						FlexibleCastlingMove( 0, "f1", "h1", "k1", 'K' );
+					}
+					if( blackKingSquare == "g8" )
+					{
+						FlexibleCastlingMove( 1, "g8", "i8", "k8", 'k' );
+						FlexibleCastlingMove( 1, "g8", "e8", "b8", 'b' );
+					}
+					else
+					{
+						FlexibleCastlingMove( 1, "f8", "d8", "b8", 'b' );
+						FlexibleCastlingMove( 1, "f8", "h8", "k8", 'k' );
+					}
+				}
+				else
+				{
+					//	handle implementation of all other castling options by algorithm
+					bool closeRook = Castling.Value.IndexOf( "Close-Rook" ) >= 0;
+					int shortDistance = Convert.ToInt32( Castling.Value.Substring( Castling.Value.Length - 3, 1 ) );
+					int longDistance = Convert.ToInt32( Castling.Value.Substring( Castling.Value.Length - 1, 1 ) );
+					AddCastlingRule();
+					if( !closeRook )
+					{
+						if( whiteKingSquare == "g1" )
+						{
+							CastlingMove( 0, "g1", (char) ('g' + shortDistance) + "1", "l1", (char) ('g' + shortDistance - 1) + "1", 'L' );
+							CastlingMove( 0, "g1", (char) ('g' - longDistance) + "1", "a1", (char) ('g' - longDistance + 1) + "1", 'A' );
+						}
+						else
+						{
+							CastlingMove( 0, "f1", (char) ('f' + longDistance) + "1", "l1", (char) ('f' + longDistance - 1) + "1", 'L' );
+							CastlingMove( 0, "f1", (char) ('f' - shortDistance) + "1", "a1", (char) ('f' - shortDistance + 1) + "1", 'A' );
+						}
+						if( blackKingSquare == "g8" )
+						{
+							CastlingMove( 1, "g8", (char) ('g' + shortDistance) + "8", "l8", (char) ('g' + shortDistance - 1) + "8", 'l' );
+							CastlingMove( 1, "g8", (char) ('g' - longDistance) + "8", "a8", (char) ('g' - longDistance + 1) + "8", 'a' );
+						}
+						else
+						{
+							CastlingMove( 1, "f8", (char) ('f' + longDistance) + "8", "l8", (char) ('f' + longDistance - 1) + "8", 'l' );
+							CastlingMove( 1, "f8", (char) ('f' - shortDistance) + "8", "a8", (char) ('f' - shortDistance + 1) + "8", 'a' );
+						}
+					}
+					else
+					{
+						{
+							if( whiteKingSquare == "g1" )
+							{
+								CastlingMove( 0, "g1", (char) ('g' + shortDistance) + "1", "k1", (char) ('g' + shortDistance - 1) + "1", 'K' );
+								CastlingMove( 0, "g1", (char) ('g' - longDistance) + "1", "b1", (char) ('g' - longDistance + 1) + "1", 'B' );
+							}
+							else
+							{
+								CastlingMove( 0, "f1", (char) ('f' + longDistance) + "1", "k1", (char) ('f' + longDistance - 1) + "1", 'K' );
+								CastlingMove( 0, "f1", (char) ('f' - shortDistance) + "1", "b1", (char) ('f' - shortDistance + 1) + "1", 'B' );
+							}
+							if( blackKingSquare == "g8" )
+							{
+								CastlingMove( 1, "g8", (char) ('g' + shortDistance) + "8", "k8", (char) ('g' + shortDistance - 1) + "8", 'k' );
+								CastlingMove( 1, "g8", (char) ('g' - longDistance) + "8", "b8", (char) ('g' - longDistance + 1) + "8", 'b' );
+							}
+							else
+							{
+								CastlingMove( 1, "f8", (char) ('f' + longDistance) + "8", "k8", (char) ('f' + longDistance - 1) + "8", 'k' );
+								CastlingMove( 1, "f8", (char) ('f' - shortDistance) + "8", "b8", (char) ('f' - shortDistance + 1) + "8", 'b' );
+							}
+						}
 					}
 				}
 			}
+			#endregion
 		}
 		#endregion
+
+		#region AddEvaluations
+		public override void AddEvaluations()
+		{
+			base.AddEvaluations();
+
+			//	Outpost Evaluations
+			if( (Knight != null && Knight.Enabled) ||
+				(Bishop != null && Bishop.Enabled) )
+			{
+				OutpostEval = new OutpostEvaluation();
+				if( Knight != null && Knight.Enabled )
+					OutpostEval.AddOutpostBonus( Knight, 10, 4, 5, 5 );
+				if( Bishop != null && Bishop.Enabled )
+					OutpostEval.AddOutpostBonus( Bishop, 8, 2, 5, 5 );
+				AddEvaluation( OutpostEval );
+			}
+
+			//	Rook-type Evaluations (rook-mover on open file 
+			//	and rook-mover on 7th ranks with enemy king on 8th)
+
+			//	Do we have a royal king?
+			CheckmateRule rule = (CheckmateRule) FindRule( typeof( CheckmateRule ) );
+			bool royalKing = rule != null && King != null && King.Enabled && rule.RoyalPieceType == King;
+
+			if( (Rook != null && Rook.Enabled) ||
+				(Queen != null && Queen.Enabled && royalKing) )
+			{
+				RookTypeEval = new RookTypeEvaluation();
+				if( Rook != null && Rook.Enabled )
+				{
+					RookTypeEval.AddOpenFileBonus( Rook );
+					if( royalKing )
+						RookTypeEval.AddRookOn7thBonus( Rook, King );
+				}
+				if( Queen != null && Queen.Enabled && royalKing )
+					RookTypeEval.AddRookOn7thBonus( Queen, King, 2, 8 );
+				AddEvaluation( RookTypeEval );
+			}
+		}
+		#endregion
+
+
+		// *** OPERATIONS *** //
+
+		public void AddChessPieceTypes()
+		{
+			AddPieceType( Queen = new Queen( "Queen", "Q", 1000, 1050 ) );
+			AddPieceType( Rook = new Rook( "Rook", "R", 550, 600 ) );
+			AddPieceType( Bishop = new Bishop( "Bishop", "B", 350, 350 ) );
+			AddPieceType( Knight = new Knight( "Knight", "N", 285, 285 ) );
+		}
 	}
 }

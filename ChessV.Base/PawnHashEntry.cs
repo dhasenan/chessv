@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -27,5 +27,24 @@ namespace ChessV
 		public UInt64 HashCode;
 		public Int32 MidgameAdjustment;
 		public Int32 EndgameAdjustment;
+		private UInt64 backPawnRank0;
+		private UInt64 backPawnRank1;
+		public BitBoard PassedPawns;
+
+		public int GetBackPawnRank( int player, int file )
+		{
+			UInt64 backPawnRank = (player == 0 ? backPawnRank0 : backPawnRank1);
+			return (int) ((backPawnRank >> (file * 4)) & 0x0000000FUL);
+		}
+
+		public void SetBackPawnRank( int player, int file, int backRank )
+		{
+			UInt64 clear = 0xFFFFFFFFFFFFFFFFUL ^ (0x0FUL << (file * 4));
+			UInt64 set = (UInt64) backRank << (file * 4);
+			if( player == 0 )
+				backPawnRank0 = (backPawnRank0 & clear) | set;
+			else
+				backPawnRank1 = (backPawnRank1 & clear) | set;
+		}
 	}
 }

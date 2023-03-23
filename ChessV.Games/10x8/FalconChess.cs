@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -18,12 +18,12 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
+using ChessV.Evaluations;
 
 namespace ChessV.Games
 {
 	[Game("Falcon Chess", typeof(Geometry.Rectangular), 10, 8,
+		  XBoardName = "falcon",
 		  Invented = "1992",
 		  InventedBy = "George Duke",
 		  Tags = "Chess Variant")]
@@ -32,10 +32,6 @@ namespace ChessV.Games
 	{
 		// *** PIECE TYPES *** //
 
-		public PieceType Queen;
-		public PieceType Rook;
-		public PieceType Bishop;
-		public PieceType Knight;
 		public PieceType Falcon;
 
 
@@ -66,10 +62,7 @@ namespace ChessV.Games
 		public override void AddPieceTypes()
 		{
 			base.AddPieceTypes();
-			AddPieceType( Queen = new Queen( "Queen", "Q", 1100, 1150 ) );
-			AddPieceType( Rook = new Rook( "Rook", "R", 550, 600 ) );
-			AddPieceType( Bishop = new Bishop( "Bishop", "B", 350, 350 ) );
-			AddPieceType( Knight = new Knight( "Knight", "N", 285, 285 ) );
+			AddChessPieceTypes();
 			AddPieceType( Falcon = new Falcon( "Falcon", "F", 600, 650 ) );
 		}
 		#endregion

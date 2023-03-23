@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
   
   THIS FILE DERIVED FROM CUTE CHESS BY ILARI PIHLAJISTO AND ARTO JONSSON
 
@@ -187,7 +187,7 @@ namespace ChessV
 		protected abstract void sendStop();
 
 		//	Sends the quit command to the engine
-		protected abstract void sendQuit();
+		public abstract void sendQuit();
 
 		//	Writes text data to the chess engine.
 		//	If mode is Unbuffered, the data will be written to
@@ -214,7 +214,7 @@ namespace ChessV
 		{
 			if( State == PlayerState.Starting || State == PlayerState.NotStarted )
 			{
-				optionBuffer.Add( name, value );
+				optionBuffer[name] = value;
 				return;
 			}
 

@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -19,11 +19,7 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 ****************************************************************************/
 
 using System;
-using System.Collections.Generic;
 using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
-using IToken = Antlr4.Runtime.IToken;
-using ParserRuleContext = Antlr4.Runtime.ParserRuleContext;
 
 namespace ChessV.Compiler
 {
@@ -34,19 +30,19 @@ namespace ChessV.Compiler
 			this.compiler = compiler;
 		}
 
-		public override object VisitPieceTypeDeclaration( ChessVCParser.PieceTypeDeclarationContext context )
+		public override object VisitPieceTypeDeclaration( [NotNull] ChessVCParser.PieceTypeDeclarationContext context )
 		{
-			string pieceName = getObjectIdName( context.objectid() );
+			string pieceName = getObjectName( context.identifier().GetText() );
 			partial = new PartialDefinition( pieceName );
 			var returnval = base.VisitPieceTypeDeclaration( context );
 			compiler.AddPieceType( partial );
 			return returnval;
 		}
 
-		public override object VisitGameDeclaration( ChessVCParser.GameDeclarationContext context )
+		public override object VisitGameDeclaration( [NotNull] ChessVCParser.GameDeclarationContext context )
 		{
-			string gameName = getObjectIdName( context.objectid( 0 ) );
-			string baseGameName = getObjectIdName( context.objectid( 1 ) );
+			string gameName = getObjectName( context.identifier( 0 ).GetText() );
+			string baseGameName = getObjectName( context.identifier( 1 ).GetText() );
 			partial = new PartialDefinition( gameName, baseGameName );
 			var returnval = base.VisitGameDeclaration( context );
 			compiler.AddGame( partial );
@@ -55,8 +51,8 @@ namespace ChessV.Compiler
 
 		public override object VisitMemberDefn( ChessVCParser.MemberDefnContext context )
 		{
-			string typename = context.objectid( 0 ).GetText();
-			string variableName = context.objectid( 1 ).GetText();
+			string typename = context.predefinedType().GetText();
+			string variableName = context.identifier().GetText();
 			Type variableType = null;
 			switch( typename )
 			{
@@ -64,12 +60,16 @@ namespace ChessV.Compiler
 					variableType = typeof(ChoiceVariable);
 					break;
 
-				case "Integer":
-					variableType = typeof(IntVariable);
+				case "IntRange":
+					variableType = typeof(IntRangeVariable);
 					break;
 
 				case "String":
 					variableType = typeof(string);
+					break;
+
+				case "Bool":
+					variableType = typeof( Boolean );
 					break;
 
 				case "PieceType":
@@ -84,43 +84,58 @@ namespace ChessV.Compiler
 
 		public override object VisitFunctionDefn( ChessVCParser.FunctionDefnContext context )
 		{
-			string functionName = getObjectIdName( context.objectid() );
+			string functionName = getObjectName( context.identifier().GetText() );
 			if( partial != null )
 				partial.AddFunctionDeclaration( functionName, context.block() );
 			return base.VisitFunctionDefn( context );
 		}
 
-		public override object VisitMemberAssign( ChessVCParser.MemberAssignContext context )
+		public override object VisitConstructorAssign( [NotNull] ChessVCParser.ConstructorAssignContext context )
 		{
-			ChessVCParser.AssignmentContext assignmentContext = (ChessVCParser.AssignmentContext) context.GetChild( 0 );
-			string memberName = getObjectIdName( assignmentContext.objectid() );
-			
-			if( assignmentContext.GetChild( 2 ) is ChessVCParser.ConstantExprContext )
-			{
-				ChessVCParser.ConstantExprContext constExprContext = (ChessVCParser.ConstantExprContext) assignmentContext.GetChild( 2 );
-				if( constExprContext.GetChild( 0 ) is ChessVCParser.ConstIntContext )
-				{
-					if( partial != null )
-						partial.AddVariableAssignment( memberName, getConstInt( constExprContext ) );
-				}
-				else if( constExprContext.GetChild( 0 ) is ChessVCParser.ConstStrContext )
-				{
-					if( partial != null )
-						partial.AddVariableAssignment( memberName, getConstStr( constExprContext ) );
-				}
-			}
-			else if( assignmentContext.GetChild( 2 ) is ChessVCParser.ExprContext )
-			{
-				object obj = Visit( ((ChessVCParser.ExprContext) assignmentContext.GetChild( 2 )) );
-				if( obj != null && partial != null )
-					partial.AddVariableAssignment( memberName, obj );
-				if( obj == null )
-					throw new Exception( "Invalid top-level assignment" );
-			}
-			return base.VisitMemberAssign( context );
+			string memberName = getObjectName( context.identifier().GetText() );
+			object value = Visit( context.literal() );
+			partial.AddVariableAssignment( memberName, value );
+			return base.VisitConstructorAssign( context );
 		}
 
-		public override object VisitObjectid( ChessVCParser.ObjectidContext context )
+		public override object VisitConstBoolTrue( [NotNull] ChessVCParser.ConstBoolTrueContext context )
+		{
+			return true;
+		}
+
+		public override object VisitConstBoolFalse( [NotNull] ChessVCParser.ConstBoolFalseContext context )
+		{
+			return false;
+		}
+
+		public override object VisitConstChar( [NotNull] ChessVCParser.ConstCharContext context )
+		{
+			return context.CHAR().GetText().Substring( 1, 1 );
+		}
+
+		public override object VisitConstNull( [NotNull] ChessVCParser.ConstNullContext context )
+		{
+			return null;
+		}
+
+		public override object VisitConstStrg( [NotNull] ChessVCParser.ConstStrgContext context )
+		{
+			string s = context.STRING().GetText();
+			//	trim the quotation marks from the end
+			s = s.Substring( 1, s.Length - 2 );
+			//	unescape embedded backslashes
+			s = s.Replace( @"\\", @"\" );
+			//	unescape embedded quotes
+			s = s.Replace( "\\\"", "\"" );
+			return s;
+		}
+
+		public override object VisitConstInt( [NotNull] ChessVCParser.ConstIntContext context )
+		{
+			return Convert.ToInt32( context.INTEGER().GetText() );
+		}
+
+		public override object VisitConstSymmetry( [NotNull] ChessVCParser.ConstSymmetryContext context )
 		{
 			if( context.GetText() == "MirrorSymmetry" )
 				return new MirrorSymmetry();
@@ -128,28 +143,16 @@ namespace ChessV.Compiler
 				return new RotationalSymmetry();
 			else if( context.GetText() == "NoSymmetry" )
 				return new NoSymmetry();
-			return base.VisitObjectid( context );
+			return null;
 		}
 
-		protected string getObjectIdName( ChessVCParser.ObjectidContext context )
+		protected string getObjectName( string name )
 		{
-			string name = context.GetText();
 			if( name.Length >= 2 && name[0] == '\'' )
 				name = name.Substring( 1, name.Length - 2 );
 			return name;
 		}
 
-		protected int getConstInt( ChessVCParser.ConstantExprContext context )
-		{
-			return Convert.ToInt32( ((ChessVCParser.ConstIntContext) context.GetChild( 0 )).INTEGER().GetText() );
-		}
-
-		protected string getConstStr( ChessVCParser.ConstantExprContext context )
-		{
-			string s = ((ChessVCParser.ConstStrContext) context.GetChild( 0 )).GetText();
-			//	trim off the quotation marks
-			return s.Substring( 1, s.Length - 2 );
-		}
 
 		protected PartialDefinition partial;
 		protected Compiler compiler;

@@ -1,0 +1,37 @@
+
+Game Xhess : 'Generic 10x10'
+{
+	Invented = "1999";
+	InventedBy = "David Howe";
+	Symmetry = MirrorSymmetry;
+
+	SetGameVariables
+	{
+		Array = "r8r/3nkqn3/hcb1ii1bch/1hhhhhhhh1/10/10/1HHHHHHHH1/HCB1II1BCH/3NKQN3/R8R";
+		PromotionTypes = "QRIBNC";
+	}
+
+	AddPieceTypes
+	{
+		AddChessPieceTypes();
+		AddPieceType( Cannon, "Cannon", "C", 400, 275 );
+		AddPieceType( Nightrider, "Nightrider", "I", 550, 500 );
+
+		// Enhance the Pawn into a Horseman
+		Pawn.Name = "Horseman";
+		Pawn.SetNotation( "H" );
+		Pawn.PreferredImage = "KnightPawn";
+		Pawn.StepMoveOnly( <1,  2> ).AddPath( { <0,  1>, <1,  1> } );
+		Pawn.StepMoveOnly( <1, -2> ).AddPath( { <0, -1>, <1, -1> } );
+		Pawn.StepMoveOnly( <2,  1> ).AddPath( { <1,  0>, <1,  1> } );
+		Pawn.StepMoveOnly( <2, -1> ).AddPath( { <1,  0>, <1, -1> } );
+		Pawn.MidgameValue = 150;
+		Pawn.EndgameValue = 150;
+	}
+
+	AddRules
+	{
+		// add the victory condition where the game is won if the king moves to the last rank
+		AddRule( LocationVictoryConditionRule( King, { location: location.Rank == 9 } ) );
+	}
+}

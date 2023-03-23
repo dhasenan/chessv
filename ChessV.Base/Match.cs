@@ -135,7 +135,7 @@ namespace ChessV
 		{
 			//	We can only convert HumanPlayer to InternalEngine
 			if( m_player[side] == null || !(m_player[side] is HumanPlayer) )
-				throw new Exception();
+				return; // throw new Exception();
 			HumanPlayer oldPlayer = (HumanPlayer) m_player[side];
 			InternalEngine newPlayer = new InternalEngine( oldPlayer.MessageLog, m_timerFactory );
 			newPlayer.AttachGame( side, m_player[side ^ 1], Game, oldPlayer.TimeControl );
@@ -256,7 +256,7 @@ namespace ChessV
 //			m_pauseSem.acquire();
 		}
 
-		public void unlockThread()
+		public void UnlockThread()
 		{
 //			if (QThread::currentThread() == thread())
 //				return;
@@ -377,6 +377,10 @@ namespace ChessV
 				Adjudicator.AddEval( Game, sender.Evaluation );
 				if( Adjudicator.Result != null )
 					Result = Adjudicator.Result;
+			}
+			else
+			{
+				int q = 0;
 			}
 			for( int x = 0; x < moves.Count; x++ )
 				Game.UndoMove();
@@ -661,7 +665,7 @@ namespace ChessV
 			PGNGame.MoveData md = new PGNGame.MoveData();
 			md.Key = Game.Board.HashCode;
 			md.Move = move[0];
-			md.MoveString = Game.DescribeMove( move[0], MoveNotation.StandardAlbegraic /* TODO: change to SAN */ );
+			md.MoveString = Game.DescribeMove( move[0], MoveNotation.StandardAlgebraic /* TODO: change to SAN */ );
 			md.Comment = comment;
 			PGN.AddMove( md );
 		}

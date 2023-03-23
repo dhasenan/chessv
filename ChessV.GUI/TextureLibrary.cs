@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2020 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -18,10 +18,8 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Drawing;
 
 namespace ChessV.GUI
 {
@@ -32,7 +30,37 @@ namespace ChessV.GUI
 			textures = new Dictionary<string, Texture>();
 			//	Textures sets aren't stored in the Registry - we just check the Graphics\Textures 
 			//	subdirectiry on each run of the program to see what's available.
-			string rootTextureDir = Path.Combine( "Graphics", "Textures" );
+			//	Search for the directory.  We allow some flexiblity regarding where it is located.
+			string currPath = Directory.GetCurrentDirectory();
+			string rootTextureDir = Path.Combine( currPath, "Graphics", "Textures" );
+			if( !Directory.Exists( rootTextureDir ) )
+			{
+				int iIndex = currPath.LastIndexOf( "ChessV" );
+				if( iIndex >= 0 )
+				{
+					iIndex = currPath.IndexOf( Path.DirectorySeparatorChar, iIndex );
+					if( iIndex > 0 )
+					{
+						currPath = currPath.Remove( iIndex );
+						rootTextureDir = Path.Combine( currPath, "Graphics", "Textures" );
+						if( !Directory.Exists( rootTextureDir ) )
+						{
+							currPath = Directory.GetCurrentDirectory();
+							iIndex = currPath.IndexOf( "ChessV" );
+							if( iIndex >= 0 )
+							{
+								iIndex = currPath.IndexOf( Path.DirectorySeparatorChar, iIndex );
+								if( iIndex > 0 )
+								{
+									currPath = currPath.Remove( iIndex );
+									rootTextureDir = Path.Combine( currPath, "Graphics", "Textures" );
+								}
+							}
+						}
+					}
+				}
+			}
+			
 			if( Directory.Exists( rootTextureDir ) )
 			{
 				string[] textureDirs = Directory.GetDirectories( rootTextureDir );
@@ -44,7 +72,7 @@ namespace ChessV.GUI
 						File.Exists( textureDir + Path.DirectorySeparatorChar + "sample_image.png" ) &&
 						File.Exists( textureDir + Path.DirectorySeparatorChar + "properties.txt" ) )
 					{
-						string textureName = textureDir.Substring( 18 );
+						string textureName = textureDir.Substring( textureDir.LastIndexOf( '\\' ) + 1 );
 						textures.Add( textureName, new Texture( textureName, textureDir ) );
 					}
 				}

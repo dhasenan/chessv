@@ -98,12 +98,13 @@ namespace ChessV.GUI
 			this.lvInventorColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.lvInventedColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.largeImageList = new System.Windows.Forms.ImageList(this.components);
-			this.btnAbout = new System.Windows.Forms.Button();
 			this.startTimer = new System.Windows.Forms.Timer(this.components);
+			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.btnQuit = new System.Windows.Forms.Button();
+			this.btnTools = new System.Windows.Forms.Button();
+			this.btnAbout = new System.Windows.Forms.Button();
 			this.btnEngines = new System.Windows.Forms.Button();
 			this.btnLoadGame = new System.Windows.Forms.Button();
-			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.mainTabControl.SuspendLayout();
 			this.tabIndexPage.SuspendLayout();
 			this.panelGameIndexHeader.SuspendLayout();
@@ -612,25 +613,13 @@ namespace ChessV.GUI
 			this.largeImageList.Images.SetKeyName(0, "GameIcon_64x64.png");
 			this.largeImageList.Images.SetKeyName(1, "VintageGameIcon_64x64.png");
 			// 
-			// btnAbout
-			// 
-			this.btnAbout.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-			this.btnAbout.BackColor = System.Drawing.SystemColors.ControlLight;
-			this.btnAbout.Image = global::ChessV.GUI.Properties.Resources.icon_about;
-			this.btnAbout.Location = new System.Drawing.Point(12, 600);
-			this.btnAbout.MaximumSize = new System.Drawing.Size(123, 32);
-			this.btnAbout.MinimumSize = new System.Drawing.Size(123, 32);
-			this.btnAbout.Name = "btnAbout";
-			this.btnAbout.Size = new System.Drawing.Size(123, 32);
-			this.btnAbout.TabIndex = 16;
-			this.btnAbout.Text = "   About ";
-			this.btnAbout.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-			this.btnAbout.UseVisualStyleBackColor = true;
-			this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
-			// 
 			// startTimer
 			// 
 			this.startTimer.Tick += new System.EventHandler(this.startTimer_Tick);
+			// 
+			// openFileDialog
+			// 
+			this.openFileDialog.Filter = "Save game files (*.sgf)|*.sgf|All files (*.*)|*.*";
 			// 
 			// btnQuit
 			// 
@@ -648,6 +637,38 @@ namespace ChessV.GUI
 			this.btnQuit.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
 			this.btnQuit.UseVisualStyleBackColor = true;
 			this.btnQuit.Click += new System.EventHandler(this.btnQuit_Click);
+			// 
+			// btnTools
+			// 
+			this.btnTools.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+			this.btnTools.BackColor = System.Drawing.SystemColors.ControlLight;
+			this.btnTools.Image = global::ChessV.GUI.Properties.Resources.icon_tools;
+			this.btnTools.Location = new System.Drawing.Point(979, 600);
+			this.btnTools.MaximumSize = new System.Drawing.Size(123, 32);
+			this.btnTools.MinimumSize = new System.Drawing.Size(123, 32);
+			this.btnTools.Name = "btnTools";
+			this.btnTools.Size = new System.Drawing.Size(123, 32);
+			this.btnTools.TabIndex = 17;
+			this.btnTools.Text = "   Tools";
+			this.btnTools.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+			this.btnTools.UseVisualStyleBackColor = true;
+			this.btnTools.Click += new System.EventHandler(this.btnTools_Click);
+			// 
+			// btnAbout
+			// 
+			this.btnAbout.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+			this.btnAbout.BackColor = System.Drawing.SystemColors.ControlLight;
+			this.btnAbout.Image = global::ChessV.GUI.Properties.Resources.icon_about;
+			this.btnAbout.Location = new System.Drawing.Point(12, 600);
+			this.btnAbout.MaximumSize = new System.Drawing.Size(123, 32);
+			this.btnAbout.MinimumSize = new System.Drawing.Size(123, 32);
+			this.btnAbout.Name = "btnAbout";
+			this.btnAbout.Size = new System.Drawing.Size(123, 32);
+			this.btnAbout.TabIndex = 16;
+			this.btnAbout.Text = "   About ";
+			this.btnAbout.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+			this.btnAbout.UseVisualStyleBackColor = true;
+			this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
 			// 
 			// btnEngines
 			// 
@@ -681,17 +702,15 @@ namespace ChessV.GUI
 			this.btnLoadGame.UseVisualStyleBackColor = true;
 			this.btnLoadGame.Click += new System.EventHandler(this.btnLoadGame_Click);
 			// 
-			// openFileDialog
-			// 
-			this.openFileDialog.Filter = "Save game files (*.sgf)|*.sgf|All files (*.*)|*.*";
-			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoSize = true;
 			this.BackColor = System.Drawing.SystemColors.ButtonFace;
 			this.CancelButton = this.btnQuit;
 			this.ClientSize = new System.Drawing.Size(1118, 648);
+			this.Controls.Add(this.btnTools);
 			this.Controls.Add(this.btnAbout);
 			this.Controls.Add(this.mainTabControl);
 			this.Controls.Add(this.btnEngines);
@@ -706,9 +725,10 @@ namespace ChessV.GUI
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.panelSubGames);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.MinimumSize = new System.Drawing.Size(1134, 686);
 			this.Name = "MainForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "ChessV 2.1";
+			this.Text = "ChessV 2.2";
 			this.Load += new System.EventHandler(this.MainForm_Load);
 			this.mainTabControl.ResumeLayout(false);
 			this.tabIndexPage.ResumeLayout(false);
@@ -780,5 +800,6 @@ namespace ChessV.GUI
 		private System.Windows.Forms.ColumnHeader colInvented;
 		private System.Windows.Forms.ColumnHeader colInventor;
 		private System.Windows.Forms.OpenFileDialog openFileDialog;
+		private System.Windows.Forms.Button btnTools;
 	}
 }

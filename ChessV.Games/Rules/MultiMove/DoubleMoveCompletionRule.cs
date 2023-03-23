@@ -35,7 +35,7 @@ namespace ChessV.Games.Rules.MultiMove
 		public override void Initialize( Game game )
 		{
 			base.Initialize( game );
-			hashKeyIndex = game.HashKeys.TakeKeys( 4 );
+			hashKeyIndex = game.HashKeys.TakeKeys( stateNotations.Length );
 		}
 
 

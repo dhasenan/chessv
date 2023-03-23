@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
 using System.Windows.Forms;
+using ChessV.Games;
 
 namespace ChessV.GUI
 {
@@ -46,25 +47,25 @@ namespace ChessV.GUI
 			Games.Abstract.UndefinedGame.PieceTypeList = new List<PieceType>();
 			types = new List<PieceType>();
 
-			addPieceType( typeof( Queen ), "Q" );
-			addPieceType( typeof( Rook ), "R" );
-			addPieceType( typeof( Bishop ), "B" );
-			addPieceType( typeof( Knight ), "N" );
-			addPieceType( typeof( Amazon ), "QN" );
-			addPieceType( typeof( Chancellor ), "RN" );
-			addPieceType( typeof( Archbishop ), "BN" );
-			addPieceType( typeof( Knightrider ), "NN" );
-			addPieceType( typeof( Unicorn ), "BNN" );
-			addPieceType( typeof( Lion ), "HFD" );
-			addPieceType( typeof( WarElephant ), "FAD" );
-			addPieceType( typeof( Phoenix ), "WA" );
-			addPieceType( typeof( Cleric ), "BD" );
-			addPieceType( typeof( ShortRook ), "R4" );
-			addPieceType( typeof( Bowman ), "WD" );
-			addPieceType( typeof( NarrowKnight ), "fbNF" );
-			addPieceType( typeof( ChargingRook ), "frlRbK" );
-			addPieceType( typeof( ChargingKnight ), "fhNrlbK" );
-			addPieceType( typeof( Colonel ), "fhNfrlRbK" );
+			addPieceType( typeof(Queen), "Q" );
+			addPieceType( typeof(Rook), "R" );
+			addPieceType( typeof(Bishop), "B" );
+			addPieceType( typeof(Knight), "N" );
+			addPieceType( typeof(Amazon), "QN" );
+			addPieceType( typeof(Chancellor), "RN" );
+			addPieceType( typeof(Archbishop), "BN" );
+			addPieceType( typeof(Nightrider), "NN" );
+			addPieceType( typeof(Unicorn), "BNN" );
+			addPieceType( typeof(Lion), "HFD" );
+			addPieceType( typeof(WarElephant), "FAD" );
+			addPieceType( typeof(Phoenix), "WA" );
+			addPieceType( typeof(Cleric), "BD" );
+			addPieceType( typeof(ShortRook), "R4" );
+			addPieceType( typeof(Tower), "WD" );
+			addPieceType( typeof(NarrowKnight), "fbNF" );
+			addPieceType( typeof(ChargingRook), "frlRbK" );
+			addPieceType( typeof(ChargingKnight), "fhNrlbK" );
+			addPieceType( typeof(Colonel), "fhNfrlRbK" );
 
 			ChessV.Games.Abstract.UndefinedGame game = new Games.Abstract.UndefinedGame( nFiles, nRanks );
 

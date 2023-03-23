@@ -1,0 +1,14 @@
+
+Game Euchess : 'Grand Chess'
+{
+	Invented = "1998";
+	InventedBy = "Carlos Cetina";
+
+	SetGameVariables
+	{
+		Array = "m8m/crnbqkbnrc/pppppppppp/10/10/10/10/PPPPPPPPPP/CRNBQKBNRC/M8M";
+		PromotionRule = "Standard";
+		PromotionTypes = "QMCRBN";
+		Castling = "2R Close-Rook";
+	}
+}

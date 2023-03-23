@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -23,6 +23,10 @@ using System.Collections.Generic;
 
 namespace ChessV
 {
+	public delegate void ThinkingCallback( Dictionary<string, string> info );
+
+	public delegate void InitializationHelper( Game game, object helperObject = null );
+
 	#region MoveEventResponse enumeration
 	public enum MoveEventResponse
 	{
@@ -33,6 +37,16 @@ namespace ChessV
 		GameWon = 5,
 		GameLost = 6,
 		GameDrawn = 7
+	}
+	#endregion
+
+	#region MoveNotation enumemartion
+	public enum MoveNotation
+	{
+		XBoard,
+		StandardAlgebraic,
+		Descriptive,
+		MoveSelectionText
 	}
 	#endregion
 
@@ -108,6 +122,8 @@ namespace ChessV
 	}
 	#endregion
 
+	public delegate bool ConditionalLocationDelegate( Location loc );
+
 	#region Direction
 	public struct Direction
 	{
@@ -161,17 +177,14 @@ namespace ChessV
 	}
 	#endregion
 
-	public delegate void ThinkingCallback( Dictionary<string, string> info );
-
-	public delegate void InitializationHelper( Game game, object helperObject = null );
-
+	#region PV class
 	public class PV
 	{
 		public UInt32[] MoveHashes { get; set; }
 
 		public void Initialize()
 		{
-			MoveHashes = new UInt32[Game.MAX_DEPTH];
+			MoveHashes = new UInt32[Game.MAX_PLY];
 		}
 
 		public UInt32 this[int moveNumber]
@@ -185,14 +198,17 @@ namespace ChessV
 
 		public void CopyTo( PV targetPV )
 		{
-			for( int x = 0; x < Game.MAX_DEPTH; x++ )
+			for( int x = 0; x < Game.MAX_PLY; x++ )
 				targetPV[x] = MoveHashes[x];
 		}
 	}
+	#endregion
 
+	#region SearchStack struct
 	public struct SearchStack
 	{
 		public bool IsInCheck { get; set; }
+		public int Eval { get; set; }
 		public PV PV;
 
 		public void Initialize()
@@ -201,28 +217,26 @@ namespace ChessV
 			PV.Initialize();
 		}
 	}
+	#endregion
 
+	#region Pickup struct
 	public struct Pickup
 	{
 		public Piece Piece { get; set; }
 		public int Square { get; set; }
 	}
+	#endregion
 
+	#region Drop struct
 	public struct Drop
 	{
 		public Piece Piece { get; set; }
 		public int Square { get; set; }
 		public PieceType NewType { get; set; }
 	}
+	#endregion
 
-	public enum MoveNotation
-	{
-		XBoard,
-		StandardAlbegraic,
-		Descriptive,
-		MoveSelectionText
-	}
-
+	#region PerftResults class
 	public class PerftResults
 	{
 		public int Nodes { get; set; }
@@ -234,4 +248,5 @@ namespace ChessV
 		public PerftResults()
 		{ Nodes = 0; Captures = 0; EnPassants = 0; Castles = 0; Promotions = 0; }
 	}
+	#endregion
 }

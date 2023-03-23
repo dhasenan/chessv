@@ -1,0 +1,23 @@
+
+Game 'Royal Court' : 'Generic 10x8'
+{
+	Invented = "1998";
+	InventedBy = "Sidney LeVasseur";
+	Symmetry = MirrorSymmetry;
+	ColorScheme = "Baby Blues";
+
+	SetGameVariables
+	{
+		Array = "rcnbqkbncr/pppppppppp/10/10/10/10/PPPPPPPPPP/RCNBQKBNCR";
+		Castling = "Standard";
+		PromotionTypes = "QCRBN";
+		PawnDoubleMove = true;
+		EnPassant = true;
+	}
+
+	AddPieceTypes
+	{
+		AddChessPieceTypes();
+		AddPieceType( Centaur, "Crowned Knight", "C", 700, 700 );
+	}
+}

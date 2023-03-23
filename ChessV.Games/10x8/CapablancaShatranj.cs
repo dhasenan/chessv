@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -18,8 +18,7 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
+using ChessV.Evaluations;
 
 namespace ChessV.Games
 {
@@ -31,8 +30,8 @@ namespace ChessV.Games
 	{
 		// *** PIECE TYPES *** //
 
-		PieceType Minister;
-		PieceType HighPriestess;
+		public PieceType Minister;
+		public PieceType HighPriestess;
 
 
 		// *** CONSTRUCTION *** //
@@ -57,10 +56,10 @@ namespace ChessV.Games
 		public override void AddPieceTypes()
 		{
 			base.AddPieceTypes();
-			AddPieceType( Minister = new Minister( "Minister", "M", 600, 600, "Knight Wazir Dabbabah" ) );
-			AddPieceType( HighPriestess = new HighPriestess( "High Priestess", "H", 625, 625, "ElephantKnight" ) );
 			Archbishop.Enabled = false;
 			Chancellor.Enabled = false;
+			AddPieceType( Minister = new Minister( "Minister", "M", 600, 600, "Knight Wazir Dabbabah" ) );
+			AddPieceType( HighPriestess = new HighPriestess( "High Priestess", "H", 625, 625, "ElephantKnight" ) );
 		}
 		#endregion
 

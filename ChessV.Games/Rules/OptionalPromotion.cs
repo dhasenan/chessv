@@ -31,4 +31,5 @@ namespace ChessV.Games.Rules
 	}
 
 	public delegate PromotionOption OptionalPromotionLocationDelegate( Location loc );
+	public delegate PromotionOption OptionalPromotionFromAndToLocationDelegate( Location fromLoc, Location toLoc );
 }

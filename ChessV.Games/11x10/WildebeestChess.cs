@@ -42,10 +42,6 @@ namespace ChessV.Games
 	{
 		// *** PIECE TYPES *** //
 
-		public PieceType Queen;
-		public PieceType Rook;
-		public PieceType Bishop;
-		public PieceType Knight;
 		public PieceType Camel;
 		public PieceType Wildebeest;
 
@@ -71,6 +67,7 @@ namespace ChessV.Games
 			PawnMultipleMove.Value = "Wildebeest";
 			Castling.Value = "Wildebeest";
 			EnPassant = true;
+			StalemateResult.Value = "Loss";
 		}                    
 		#endregion
 
@@ -78,10 +75,7 @@ namespace ChessV.Games
 		public override void AddPieceTypes()
 		{
 			base.AddPieceTypes();
-			AddPieceType( Queen = new Queen( "Queen", "Q", 1025, 1250 ) );
-			AddPieceType( Rook = new Rook( "Rook", "R", 550, 650 ) );
-			AddPieceType( Bishop = new Bishop( "Bishop", "B", 375, 425 ) );
-			AddPieceType( Knight = new Knight( "Knight", "N", 250, 250 ) );
+			AddChessPieceTypes();
 			AddPieceType( Camel = new Camel( "Camel", "C", 250, 250 ) );
 			AddPieceType( Wildebeest = new Wildebeest( "Wildebeest", "W", 675, 675 ) );
 		}

@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2018 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -24,14 +24,18 @@ namespace ChessV
 {
 	public struct TTHashEntry
 	{
+		private const UInt64 uint64_all_bits = 0xFFFFFFFFFFFFFFFFUL;
+		private const UInt64 uint64_generation_part = 0x00000000000001FFUL;
+		private const UInt64 uint64_hash_part = uint64_all_bits ^ uint64_generation_part;
+
 		public enum HashType: int
 		{
 			NoHash = 0,
-			Exact = 1,
-			UpperBound = 2,
-			LowerBound = 3,
+			UpperBound = 1,
+			LowerBound = 2,
+			Exact = UpperBound | LowerBound,
 			Quiescent = 4,
-			MoveOnly = 5
+			MoveOnly = 8
 		}
 
 		private UInt64 hash;
@@ -40,13 +44,13 @@ namespace ChessV
 
 		public bool CheckHash( UInt64 hashToCheck )
 		{
-			return (hash & 0xFFFFFFFFFFFFFE00UL) == (hashToCheck & 0xFFFFFFFFFFFFFE00UL);
+			return (hash & uint64_hash_part) == (hashToCheck & uint64_hash_part);
 		}
 
 		public int Generation
 		{
 			get
-			{ return (int) (hash & 0x00000000000001FFUL); }
+			{ return (int) (hash & uint64_generation_part); }
 		}
 
 		public UInt32 MoveHash
@@ -78,7 +82,7 @@ namespace ChessV
 			this.moveHash = moveHash;  // store the best move
 
 			// the lower 9 bits of m_hash store the generation
-			this.hash = (hash & 0xFFFFFFFFFFFFFE00UL) | (UInt64) generation;
+			this.hash = (hash & uint64_hash_part) | (UInt64) generation;
 		
 			// the remaining information is packed into data as follows
 			data = 

@@ -41,7 +41,7 @@ namespace ChessV.Games.Rules.MultiMove
 		{
 			base.Initialize( game );
 			hashKeyIndex = game.HashKeys.TakeKeys( 4 );
-			searchStateHistory = new int[Game.MAX_GAME_LENGTH + Game.MAX_DEPTH];
+			searchStateHistory = new int[Game.MAX_GAME_LENGTH + Game.MAX_PLY];
 			searchStateHistoryIndex = 0;
 			searchStateHistory[searchStateHistoryIndex++] = currentState;
 			

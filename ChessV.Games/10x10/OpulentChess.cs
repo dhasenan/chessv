@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -17,9 +17,6 @@ more details; the file 'COPYING' contains the License text, but if for
 some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
-
-using System;
-using System.Collections.Generic;
 
 namespace ChessV.Games
 {
@@ -51,7 +48,7 @@ namespace ChessV.Games
 		public override void SetGameVariables()
 		{
 			base.SetGameVariables();
-			Array = "rw6wr/clbnqknbla/pppppppppp/10/10/10/10/PPPPPPPPPP/CLBNQKNBLA/RW6WR";
+			Array = "rw6wr/clnbqkbnla/pppppppppp/10/10/10/10/PPPPPPPPPP/CLNBQKBNLA/RW6WR";
 		}
 		#endregion
 
@@ -67,18 +64,11 @@ namespace ChessV.Games
 			Knight.EndgameValue = 475;
 			Knight.PreferredImage = "Knight Wazir";
 			//	Set the name for the Chancellor (called Marshall in Grand Chess)
-			Chancellor.Name = "Chancellor";
-			Chancellor.Notation = "C";
+			Marshall.Name = "Chancellor";
+			Marshall.SetNotation( "C" );
 			//	Set the name for the Archbishop (called a Cardinal in Grand Chess)
-			Archbishop.Name = "Archbishop";
-			Archbishop.Notation = "A";
-		}
-		#endregion
-
-		#region AddRules
-		public override void AddRules()
-		{
-			base.AddRules();
+			Cardinal.Name = "Archbishop";
+			Cardinal.SetNotation( "A" );
 		}
 		#endregion
 
@@ -86,8 +76,9 @@ namespace ChessV.Games
 		public override void AddEvaluations()
 		{
 			base.AddEvaluations();
-			Evaluations.Grand.GrandChessDevelopmentEvaluation newDevelopentEval = new Evaluations.Grand.GrandChessDevelopmentEvaluation();
-			ReplaceEvaluation( FindEvaluation( typeof( Evaluations.DevelopmentEvaluation ) ), newDevelopentEval );
+			var developentEval =  (Evaluations.Grand.GrandChessDevelopmentEvaluation)
+				FindEvaluation( typeof(Evaluations.Grand.GrandChessDevelopmentEvaluation) );
+			developentEval.HeavyPieceThreshold = 700;
 		}
 		#endregion
 	}

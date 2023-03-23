@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2020 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -18,7 +18,6 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -44,7 +43,40 @@ namespace ChessV.Games
 
 		public EurasianChess()
 		{
-			boardImageFile = "Graphics" +
+			string currPath = Directory.GetCurrentDirectory();
+			if( !File.Exists( currPath +
+				Path.DirectorySeparatorChar + "Graphics" +
+				Path.DirectorySeparatorChar + "Themes" +
+				Path.DirectorySeparatorChar + "Eurasian Chess" +
+				Path.DirectorySeparatorChar + "EurasianBoard.jpg" ) )
+			{
+				int iIndex = currPath.LastIndexOf( "ChessV" );
+				if( iIndex >= 0 )
+				{
+					iIndex = currPath.IndexOf( Path.DirectorySeparatorChar, iIndex );
+					if( iIndex > 0 )
+					{
+						currPath = currPath.Remove( iIndex );
+						if( !File.Exists( currPath +
+							Path.DirectorySeparatorChar + "Graphics" +
+							Path.DirectorySeparatorChar + "Themes" +
+							Path.DirectorySeparatorChar + "Eurasian Chess" +
+							Path.DirectorySeparatorChar + "EurasianBoard.jpg" ) )
+						{
+							currPath = Directory.GetCurrentDirectory();
+							iIndex = currPath.IndexOf( "ChessV" );
+							if( iIndex >= 0 )
+							{
+								iIndex = currPath.IndexOf( Path.DirectorySeparatorChar, iIndex );
+								if( iIndex > 0 )
+									currPath = currPath.Remove( iIndex );
+							}
+						}
+					}
+				}
+			}
+			boardImageFile = currPath + 
+				Path.DirectorySeparatorChar + "Graphics" +
 				Path.DirectorySeparatorChar + "Themes" +
 				Path.DirectorySeparatorChar + "Eurasian Chess" +
 				Path.DirectorySeparatorChar + "EurasianBoard.jpg";
@@ -65,8 +97,8 @@ namespace ChessV.Games
 		public override void AddPieceTypes()
 		{
 			base.AddPieceTypes();
-			Chancellor.Enabled = false;
-			Archbishop.Enabled = false;
+			Marshall.Enabled = false;
+			Cardinal.Enabled = false;
 			AddPieceType( Cannon = new Cannon( "Cannon", "C", 400, 275 ) );
 			AddPieceType( Vao = new Vao( "Vao", "V", 300, 175 ) );
 		}
@@ -108,7 +140,7 @@ namespace ChessV.Games
 		#endregion
 
 		#region RenderCustomThemeBoard
-		public override void RenderCustomThemeBoard( System.Drawing.Graphics gr, int borderWidth, string customThemeName )
+		public override void RenderCustomThemeBoard( Graphics gr, int borderWidth, string customThemeName )
 		{
 			if( boardImage == null && File.Exists( boardImageFile ) )
 				boardImage = Image.FromFile( boardImageFile );

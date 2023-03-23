@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -18,7 +18,6 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
 using System.Collections.Generic;
 
 namespace ChessV
@@ -59,8 +58,7 @@ namespace ChessV
 		//	lambda function determining if a move is allowed for the 
 		//	given location (translated appropriately for each player 
 		//	based on the Symmetry of the Game.)
-		public delegate bool ConditionDelegate( Location location );
-		public ConditionDelegate Condition { get; set; }
+		public ConditionalLocationDelegate Condition { get; set; }
 
 		//	Records any special attack types (such as Cannon-moves)
 		public SpecialAttacks SpecialAttacks { get; set; }
@@ -117,6 +115,14 @@ namespace ChessV
 		}
 		#endregion
 
+
+		public MoveCapability AddPath( List<Direction> path )
+		{
+			if( PathInfo == null )
+				PathInfo = new MovePathInfo();
+			PathInfo.AddPath( path );
+			return this;
+		}
 
 		public static MoveCapability Step( Direction direction )
 		{

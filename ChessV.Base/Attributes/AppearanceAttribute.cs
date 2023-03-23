@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -19,14 +19,13 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 ****************************************************************************/
 
 using System;
-using System.Collections.Generic;
-using System.Drawing;
 
 namespace ChessV
 {
+	[AttributeUsage(AttributeTargets.Class, AllowMultiple=true)]
 	public class AppearanceAttribute: Attribute
 	{
-		public int NumberOfColors { get; set; }
+		public int NumberOfSquareColors { get; set; }
 		public string ColorScheme { get; set; }
 		public string PieceSet { get; set; }
 		public string Game { get; set; }
@@ -35,7 +34,7 @@ namespace ChessV
 
 		public AppearanceAttribute()
 		{
-			NumberOfColors = 2;
+			NumberOfSquareColors = 2;
 		}
 	}
 }

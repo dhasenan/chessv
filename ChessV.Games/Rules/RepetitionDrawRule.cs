@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -19,7 +19,6 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 ****************************************************************************/
 
 using System;
-using System.Collections.Generic;
 
 namespace ChessV.Games.Rules
 {
@@ -36,8 +35,8 @@ namespace ChessV.Games.Rules
 		{
 			base.Initialize( game );
 			gameHistoryHashes = new UInt64[Game.MAX_GAME_LENGTH];
-			searchStackHashes = new UInt64[Game.MAX_DEPTH];
-			Game.MovePlayed += MovePlayedHandler;
+			searchStackHashes = new UInt64[Game.MAX_PLY];
+			Game.MoveBeingPlayed += MoveBeingPlayedHandler;
 		}
 
 		public override void PostInitialize()
@@ -45,20 +44,22 @@ namespace ChessV.Games.Rules
 			base.PostInitialize();
 		}
 
-		void MovePlayedHandler( MoveInfo move )
+		void MoveBeingPlayedHandler( MoveInfo move )
 		{
-			gameHistoryHashes[Game.GameMoveNumber] = Game.GetPositionHashCode( 1 );
+			UInt64 hash = Game.GetPositionHashCode( 2 );
+			gameHistoryHashes[Game.GameMoveNumber] = hash;
 		}
 
 		public override MoveEventResponse MoveMade( MoveInfo move, int ply )
 		{
-			searchStackHashes[ply] = Game.GetPositionHashCode( ply );
+			UInt64 hash = Game.GetPositionHashCode( ply );
+			searchStackHashes[ply] = hash;
 			return MoveEventResponse.MoveOk;
 		}
 
 		public override MoveEventResponse TestForWinLossDraw( int currentPlayer, int ply )
 		{
-			int count = 0;
+			int count = 1;
 			UInt64 hash = Game.GetPositionHashCode( ply );
 			for( int x = ply - 1; x > 0; x-- )
 				if( searchStackHashes[x] == hash )

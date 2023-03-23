@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -18,9 +18,10 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
 using System.Collections.Generic;
 using ChessV.Games.Rules;
+using ChessV.Evaluations;
+using System;
 
 namespace ChessV.Games.Abstract
 {
@@ -37,12 +38,18 @@ namespace ChessV.Games.Abstract
 	//    standard Chess pawns, defines the 50-move rule and draw by 
 	//    repitition rule, and sets the standard FEN format.
 
+	[Game("Generic Chess", typeof(Geometry.Rectangular), Template = true)]
 	public class GenericChess: Game
 	{
 		// *** PIECE TYPES *** //
 
 		[Royal] public PieceType King;
 		public PieceType Pawn;
+
+		public PieceType Queen;     //   \   This class creates the King and Pawn, but
+		public PieceType Rook;      //    \  not these four types.  They are set up only 
+		public PieceType Bishop;    //    /  by derived class, but are declared here to 
+		public PieceType Knight;    //   /   make things uniform for these common types.
 
 
 		// *** GAME VARIABLES *** //
@@ -51,17 +58,33 @@ namespace ChessV.Games.Abstract
 		[GameVariable] public ChoiceVariable PromotionRule { get; set; }
 		[GameVariable] public string PromotionTypes { get; set; }
 		[GameVariable] public bool BareKing { get; set; }
+		[GameVariable] public bool EnPassant { get; set; }
+		[GameVariable] public PieceType PromotingType { get; set; }
+		[GameVariable] public PieceType CastlingType { get; set; }
 
-		
-        // *** CONSTRUCTION *** //
 
-        public GenericChess
+		// *** PROPERTIES *** //
+
+		public PawnHashEntry PawnStructureInfo { get; set; }
+
+
+		// *** EVALUATIONS *** //
+
+		public OutpostEvaluation OutpostEval { get; set; }
+		public RookTypeEvaluation RookTypeEval { get; set; }
+
+
+		// *** CONSTRUCTION *** //
+
+		#region Constructor
+		public GenericChess
 			( int nFiles,               // number of files on the board
 			  int nRanks,               // number of ranks on the board
 			  Symmetry symmetry ):      // symmetry determining board mirroring/rotation
                 base( 2, nFiles, nRanks, symmetry )
         {
-        }
+		}
+		#endregion
 
 
 		// *** INITIALIZATION *** //
@@ -86,8 +109,7 @@ namespace ChessV.Games.Abstract
 		{
 			AddPieceType( King = new King( "King", "K", 0, 0 ) );
 			AddPieceType( Pawn = new Pawn( "Pawn", "P", 100, 125 ) );
-			castlingType = King;
-			pawnType = Pawn;
+			CastlingType = King;
 		}
 		#endregion
 
@@ -97,16 +119,26 @@ namespace ChessV.Games.Abstract
 			// *** PROMOTION *** //
 			if( PromotionRule.Value == "Standard" )
 			{
+				if( PromotingType == null )
+					PromotingType = Pawn;
 				List<PieceType> availablePromotionTypes = ParseTypeListFromString( PromotionTypes );
-				BasicPromotionRule( pawnType, availablePromotionTypes, loc => loc.Rank == Board.NumRanks - 1 );
+				AddBasicPromotionRule( PromotingType, availablePromotionTypes, loc => loc.Rank == Board.NumRanks - 1 );
 			}
 			else if( PromotionRule.Value == "Replacement" )
-				PromoteByReplacementRule( Pawn, loc => loc.Rank == Board.NumRanks - 1 ? 
-					Rules.PromotionOption.MustPromote : Rules.PromotionOption.CannotPromote );
+			{
+				if( PromotingType == null )
+					PromotingType = Pawn;
+				AddPromoteByReplacementRule( PromotingType, loc => loc.Rank == Board.NumRanks - 1 ?
+					PromotionOption.MustPromote : PromotionOption.CannotPromote );
+			}
+
+			// *** EN-PASSANT *** //
+			if( EnPassant && Pawn.Enabled )
+				AddEnPassantRule( Pawn, new Direction( 1, 0 ) );
 
 			// *** BARE KING *** //
 			if( BareKing )
-				AddRule( new Rules.BareKingRule() );
+				AddRule( new BareKingRule() );
 
 			//	We added the Bare King rule first before calling the 
 			//	base class because BareKing must happen before the 
@@ -115,15 +147,15 @@ namespace ChessV.Games.Abstract
 
 			// *** STALEMATE RESULT *** //
 			if( StalemateResult.Value == "Loss" )
-				((Rules.CheckmateRule) FindRule( typeof(Rules.CheckmateRule), true )).StalemateResult = MoveEventResponse.GameLost;
+				((CheckmateRule) FindRule( typeof(Rules.CheckmateRule), true )).StalemateResult = MoveEventResponse.GameLost;
 			else if( StalemateResult.Value == "Win" )
-				((Rules.CheckmateRule) FindRule( typeof( Rules.CheckmateRule ), true )).StalemateResult = MoveEventResponse.GameWon;
+				((CheckmateRule) FindRule( typeof( Rules.CheckmateRule ), true )).StalemateResult = MoveEventResponse.GameWon;
 
 			// *** FIFTY-MOVE RULE *** //
-			AddRule( new Rules.Move50Rule( Pawn ) );
+			AddRule( new Move50Rule( Pawn ) );
 
 			// *** DRAW-BY-REPETITION RULE *** //
-			AddRule( new Rules.RepetitionDrawRule() );
+			AddRule( new RepetitionDrawRule() );
 		}
 		#endregion
 
@@ -155,10 +187,14 @@ namespace ChessV.Games.Abstract
 			base.AddEvaluations();
 
 			//  Add pawn structure evaluation
-			AddEvaluation( new Evaluations.PawnStructureEvaluation() );
+			if( Pawn.Enabled )
+				AddEvaluation( new PawnStructureEvaluation() );
 
 			//	Add development evaluation
-			AddEvaluation( new Evaluations.DevelopmentEvaluation() );
+			AddEvaluation( new DevelopmentEvaluation() );
+
+			//	Add evalation for low or insufficient material
+			AddEvaluation( new LowMaterialEvaluation() );
 
 			//	Check for colorbound pieces
 			bool colorboundPieces = false;
@@ -166,7 +202,30 @@ namespace ChessV.Games.Abstract
 				if( pieceTypes[x].NumSlices == 2 )
 					colorboundPieces = true;
 			if( colorboundPieces )
-				AddEvaluation( new Evaluations.ColorbindingEvaluation() );
+				AddEvaluation( new ColorbindingEvaluation() );
+		}
+		#endregion
+
+
+		// *** OVERRIDES *** //
+
+		#region CanPruneMove
+		public override bool CanPruneMove( MoveInfo move )
+		{
+			//	do not prune passed pawn pushes
+			return PromotionRule.Value == "None" || !PawnStructureInfo.PassedPawns[move.FromSquare];
+		}
+		#endregion
+
+		#region RemoveRule
+		public override void RemoveRule( Type ruleType, bool inheritedTypes = false )
+		{
+			base.RemoveRule( ruleType, inheritedTypes );
+			if( ruleType == typeof(BasicPromotionRule) || 
+				ruleType.IsSubclassOf( typeof(BasicPromotionRule) ) )
+			{
+				PromotingType = null;
+			}
 		}
 		#endregion
 
@@ -174,21 +233,21 @@ namespace ChessV.Games.Abstract
 		// *** HELPER FUNCTIONS *** //
 
 		#region EnPassant
-		public void EnPassantRule( PieceType pawnType, int nDirection )
+		public void AddEnPassantRule( PieceType pawnType, int nDirection )
 		{ AddRule( new EnPassantRule( pawnType, nDirection ) ); }
 
-		public void EnPassantRule( PieceType pawnType, Direction direction )
-		{ EnPassantRule( pawnType, GetDirectionNumber( direction ) ); }
+		public void AddEnPassantRule( PieceType pawnType, Direction direction )
+		{ AddEnPassantRule( pawnType, GetDirectionNumber( direction ) ); }
 		#endregion
 
 		#region Castling
-		public void CastlingRule()
+		public void AddCastlingRule()
 		{
 			castlingRule = new CastlingRule();
 			AddRule( castlingRule );
 		}
 
-		public void FlexibleCastlingRule()
+		public void AddFlexibleCastlingRule()
 		{
 			castlingRule = new FlexibleCastlingRule();
 			AddRule( castlingRule );
@@ -213,19 +272,33 @@ namespace ChessV.Games.Abstract
 		#endregion
 
 		#region Promotion
-		public void BasicPromotionRule( PieceType promotingType, List<PieceType> availablePromotionTypes, ConditionalLocationDelegate destinationConditionDelegate )
+		public void AddBasicPromotionRule( PieceType promotingType, List<PieceType> availablePromotionTypes, ConditionalLocationDelegate destinationConditionDelegate )
 		{
+			if( PromotingType == null )
+				PromotingType = promotingType;
 			AddRule( new BasicPromotionRule( promotingType, availablePromotionTypes, destinationConditionDelegate ) );
 		}
 
-		public void BasicPromotionRule( PieceType promotingType, List<PieceType> availablePromotionTypes, ConditionalLocationDelegate destinationConditionDelegate, ConditionalLocationDelegate originConditionDelegate )
+		public void AddBasicPromotionRule( PieceType promotingType, List<PieceType> availablePromotionTypes, ConditionalLocationDelegate destinationConditionDelegate, ConditionalLocationDelegate originConditionDelegate )
 		{
+			if( PromotingType == null )
+				PromotingType = promotingType;
 			AddRule( new BasicPromotionRule( promotingType, availablePromotionTypes, destinationConditionDelegate, originConditionDelegate ) );
 		}
 
-		public void PromoteByReplacementRule( PieceType promotingType, OptionalPromotionLocationDelegate conditionDelegate )
+		public void AddPromoteByReplacementRule( PieceType promotingType, OptionalPromotionLocationDelegate conditionDelegate )
 		{
+			if( PromotingType == null )
+				PromotingType = promotingType;
 			AddRule( new PromoteByReplacementRule( promotingType, conditionDelegate ) );
+		}
+		#endregion
+
+		#region cleanup
+		protected override void cleanup()
+		{
+			base.cleanup();
+			PawnStructureInfo = new PawnHashEntry();
 		}
 		#endregion
 
@@ -233,7 +306,5 @@ namespace ChessV.Games.Abstract
 		// *** PROTECTED DATA MEMBERS *** //
 
 		protected CastlingRule castlingRule;
-		protected PieceType castlingType;
-		protected PieceType pawnType;
 	}
 }

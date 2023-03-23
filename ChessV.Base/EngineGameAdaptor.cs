@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -167,9 +167,7 @@ namespace ChessV
 			//	perform character translations
 			foreach( KeyValuePair<string, string> translation in pieceNotationTranslationGameToEngine )
 			{
-				fenParts[0] = fenParts[0]
-					.Replace( translation.Key.ToLower(), translation.Value.ToLower() )
-					.Replace( translation.Key.ToUpper(), translation.Value.ToUpper() );
+				fenParts[0] = fenParts[0].Replace( translation.Key, translation.Value );
 			}
 			if( !MirrorBoard )
 			{

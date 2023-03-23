@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -18,7 +18,6 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
 using System.Collections.Generic;
 using ChessV.Games.Pieces.Diamond;
 
@@ -35,15 +34,11 @@ namespace ChessV.Games
 		  Tags = "Chess Variant,Historic",
 		  GameDescription1 = "Chess with the board rotated 45 degrees and a different",
 		  GameDescription2 = "opening position.  Only the pawns move differently.")]
-	class DiamondChess: ChessV.Games.Abstract.GenericChess
+	class DiamondChess: Abstract.GenericChess
 	{
 		// *** PIECE TYPES *** //
 
 		public PieceType DiamondPawn;
-		public PieceType Queen;
-		public PieceType Rook;
-		public PieceType Bishop;
-		public PieceType Knight;
 		
 
 		// *** CONSTRUCTION *** //
@@ -72,12 +67,12 @@ namespace ChessV.Games
 		public override void AddPieceTypes()
 		{
 			base.AddPieceTypes();
-			replacePieceType( Pawn, DiamondPawn = new DiamondPawn( "Pawn", "P", 100, 125 ) );
 			AddPieceType( Rook = new Rook( "Rook", "R", 500, 550 ) );
 			AddPieceType( Bishop = new Bishop( "Bishop", "B", 325, 350 ) );
 			AddPieceType( Knight = new Knight( "Knight", "N", 325, 325 ) );
 			AddPieceType( Queen = new Queen( "Queen", "Q", 900, 1000 ) );
-			pawnType = DiamondPawn;
+			replacePieceType( Pawn, DiamondPawn = new DiamondPawn( "Pawn", "P", 100, 125 ) );
+			PromotingType = DiamondPawn;
 		}
 		#endregion
 
@@ -88,7 +83,7 @@ namespace ChessV.Games
 
 			// *** PROMOTION *** //
 			List<PieceType> availablePromotionTypes = ParseTypeListFromString( PromotionTypes );
-			BasicPromotionRule( DiamondPawn, availablePromotionTypes, loc => loc.Rank == 7 || loc.File == 0 );
+			AddBasicPromotionRule( DiamondPawn, availablePromotionTypes, loc => loc.Rank == 7 || loc.File == 0 );
 		}
 		#endregion
 	}

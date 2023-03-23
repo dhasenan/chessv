@@ -1,0 +1,22 @@
+
+Game 'Hannibal Chess' : 'Generic 10x8'
+{
+	Invented = "2017";
+	InventedBy = "Kevin Pacey";
+	Symmetry = MirrorSymmetry;
+
+	SetGameVariables
+	{
+		Array = "rnebqkbenr/pppppppppp/10/10/10/10/PPPPPPPPPP/RNEBQKBENR";
+		Castling = "Standard";
+		PawnDoubleMove = true;
+		EnPassant = true;
+		PromotionTypes = "QRBNE";
+	}
+
+	AddPieceTypes
+	{
+		AddChessPieceTypes();
+		AddPieceType( 'Elephant Ferz', "Elephant", "E", 285, 285 );
+	}
+}

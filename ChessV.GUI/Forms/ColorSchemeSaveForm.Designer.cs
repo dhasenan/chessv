@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -48,7 +48,7 @@ namespace ChessV.GUI
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager( typeof( ColorSchemeSaveForm ) );
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ColorSchemeSaveForm));
 			this.optOverwrite = new System.Windows.Forms.RadioButton();
 			this.optSaveAs = new System.Windows.Forms.RadioButton();
 			this.txtNewSchemeName = new System.Windows.Forms.TextBox();
@@ -59,76 +59,77 @@ namespace ChessV.GUI
 			// optOverwrite
 			// 
 			this.optOverwrite.AutoSize = true;
-			this.optOverwrite.Location = new System.Drawing.Point( 31, 22 );
+			this.optOverwrite.Location = new System.Drawing.Point(31, 22);
 			this.optOverwrite.Name = "optOverwrite";
-			this.optOverwrite.Size = new System.Drawing.Size( 136, 17 );
+			this.optOverwrite.Size = new System.Drawing.Size(136, 17);
 			this.optOverwrite.TabIndex = 0;
 			this.optOverwrite.TabStop = true;
 			this.optOverwrite.Text = "Overwrite color scheme";
 			this.optOverwrite.UseVisualStyleBackColor = true;
-			this.optOverwrite.CheckedChanged += new System.EventHandler( this.optOverwrite_CheckedChanged );
+			this.optOverwrite.CheckedChanged += new System.EventHandler(this.optOverwrite_CheckedChanged);
 			// 
 			// optSaveAs
 			// 
 			this.optSaveAs.AutoSize = true;
-			this.optSaveAs.Location = new System.Drawing.Point( 31, 50 );
+			this.optSaveAs.Location = new System.Drawing.Point(31, 50);
 			this.optSaveAs.Name = "optSaveAs";
-			this.optSaveAs.Size = new System.Drawing.Size( 127, 17 );
+			this.optSaveAs.Size = new System.Drawing.Size(127, 17);
 			this.optSaveAs.TabIndex = 1;
 			this.optSaveAs.TabStop = true;
 			this.optSaveAs.Text = "Save as new scheme";
 			this.optSaveAs.UseVisualStyleBackColor = true;
-			this.optSaveAs.CheckedChanged += new System.EventHandler( this.optSaveAs_CheckedChanged );
+			this.optSaveAs.CheckedChanged += new System.EventHandler(this.optSaveAs_CheckedChanged);
 			// 
 			// txtNewSchemeName
 			// 
-			this.txtNewSchemeName.Location = new System.Drawing.Point( 58, 81 );
+			this.txtNewSchemeName.Location = new System.Drawing.Point(58, 81);
 			this.txtNewSchemeName.Name = "txtNewSchemeName";
-			this.txtNewSchemeName.Size = new System.Drawing.Size( 267, 20 );
+			this.txtNewSchemeName.Size = new System.Drawing.Size(267, 20);
 			this.txtNewSchemeName.TabIndex = 2;
 			// 
 			// btnCancel
 			// 
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Image = ((System.Drawing.Image) (resources.GetObject( "btnCancel.Image" )));
-			this.btnCancel.Location = new System.Drawing.Point( 205, 129 );
+			this.btnCancel.Image = ((System.Drawing.Image)(resources.GetObject("btnCancel.Image")));
+			this.btnCancel.Location = new System.Drawing.Point(205, 129);
 			this.btnCancel.Name = "btnCancel";
-			this.btnCancel.Size = new System.Drawing.Size( 112, 36 );
+			this.btnCancel.Size = new System.Drawing.Size(112, 36);
 			this.btnCancel.TabIndex = 4;
 			this.btnCancel.Text = "    &Cancel";
 			this.btnCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
 			this.btnCancel.UseVisualStyleBackColor = true;
-			this.btnCancel.Click += new System.EventHandler( this.btnCancel_Click );
+			this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
 			// 
 			// btnOK
 			// 
 			this.btnOK.Image = global::ChessV.GUI.Properties.Resources.icon_ok;
-			this.btnOK.Location = new System.Drawing.Point( 65, 129 );
+			this.btnOK.Location = new System.Drawing.Point(65, 129);
 			this.btnOK.Name = "btnOK";
-			this.btnOK.Size = new System.Drawing.Size( 112, 36 );
+			this.btnOK.Size = new System.Drawing.Size(112, 36);
 			this.btnOK.TabIndex = 3;
 			this.btnOK.Text = "    &OK";
 			this.btnOK.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
 			this.btnOK.UseVisualStyleBackColor = true;
-			this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
+			this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
 			// 
 			// ColorSchemeSaveForm
 			// 
 			this.AcceptButton = this.btnOK;
-			this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.BackColor = System.Drawing.Color.LemonChiffon;
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size( 383, 178 );
-			this.Controls.Add( this.btnCancel );
-			this.Controls.Add( this.btnOK );
-			this.Controls.Add( this.txtNewSchemeName );
-			this.Controls.Add( this.optSaveAs );
-			this.Controls.Add( this.optOverwrite );
+			this.ClientSize = new System.Drawing.Size(383, 178);
+			this.Controls.Add(this.btnCancel);
+			this.Controls.Add(this.btnOK);
+			this.Controls.Add(this.txtNewSchemeName);
+			this.Controls.Add(this.optSaveAs);
+			this.Controls.Add(this.optOverwrite);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Name = "ColorSchemeSaveForm";
 			this.Text = "Save Color Scheme";
-			this.Load += new System.EventHandler( this.ColorSchemeSaveForm_Load );
-			this.ResumeLayout( false );
+			this.Load += new System.EventHandler(this.ColorSchemeSaveForm_Load);
+			this.ResumeLayout(false);
 			this.PerformLayout();
 
 		}

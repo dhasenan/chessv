@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -25,11 +25,12 @@ namespace ChessV.Games.Rules
 {
 	public class Move50Rule: Rule
 	{
-		protected int[] gameHistoryCounter;
-		protected int[] searchStackCounter;
-		protected List<PieceType> types;
-		protected int requiredDirection;
+		// *** PROPERTIES *** //
+
 		public int HalfMoveCounterThreshold { get; set; }
+
+
+		// *** CONSTRUCTION *** //
 
 		public Move50Rule( PieceType pawnType )
 		{
@@ -44,10 +45,22 @@ namespace ChessV.Games.Rules
 			requiredDirection = -1;
 		}
 
+
+		// *** INITIALIZATION *** //
+
+		public override void Initialize( Game game )
+		{
+			base.Initialize( game );
+			gameHistoryCounter = new int[Game.MAX_GAME_LENGTH];
+			searchStackCounter = new int[Game.MAX_PLY];
+			game.MovePlayed += MovePlayedHandler;
+		}
+
 		public void SetRequiredDirection( Direction direction )
 		{
 			requiredDirection = Game.GetDirectionNumber( direction );
 		}
+
 
 		void MovePlayedHandler( MoveInfo move )
 		{
@@ -55,17 +68,12 @@ namespace ChessV.Games.Rules
 			searchStackCounter[0] = searchStackCounter[1];
 		}
 
-		public override void Initialize( Game game )
-		{
-			base.Initialize( game );
-			gameHistoryCounter = new int[Game.MAX_GAME_LENGTH];
-			searchStackCounter = new int[Game.MAX_DEPTH];
-			game.MovePlayed += MovePlayedHandler;
-		}
+
+		// *** OVERRIDES *** //
 
 		public override void ClearGameState()
 		{
-			for( int x = 0; x < Game.MAX_DEPTH; x++ )
+			for( int x = 0; x < Game.MAX_PLY; x++ )
 				searchStackCounter[x] = 0;
 			for( int x = 0; x < Game.MAX_GAME_LENGTH; x++ )
 				gameHistoryCounter[x] = 0;
@@ -96,7 +104,7 @@ namespace ChessV.Games.Rules
 				(ply == 1 ? gameHistoryCounter[Game.GameMoveNumber] : searchStackCounter[ply - 1]) + 1;
 			bool resetCounter = // we reset the half-move counter if ...
 				/* a piece is captured */ move.PieceCaptured != null || 
-				/* or move is a promotion */ (move.MoveType & MoveType.PromotionProperty) != null || 
+				/* or move is a promotion */ (move.MoveType & MoveType.PromotionProperty) != 0 || 
 				/* or piece moved is of correct type AND ... */ (move.PieceMoved != null && types.Contains( move.PieceMoved.PieceType ) && 
 					/* required move direction is not set OR */ (requiredDirection == -1 || 
 					/* move is in required direction */ Game.DirectionLookup( move ) == requiredDirection));
@@ -109,10 +117,18 @@ namespace ChessV.Games.Rules
 
 		public override MoveEventResponse TestForWinLossDraw( int currentPlayer, int ply )
 		{
-			if( (ply == 1 && gameHistoryCounter[Game.GameMoveNumber] >= HalfMoveCounterThreshold) ||
+			if( (ply == 2 && gameHistoryCounter[Game.GameMoveNumber] >= HalfMoveCounterThreshold) ||
 				searchStackCounter[ply] >= HalfMoveCounterThreshold )
 				return MoveEventResponse.GameDrawn;
 			return MoveEventResponse.NotHandled;
 		}
+
+
+		// *** PROTECTED DATA *** //
+
+		protected int[] gameHistoryCounter;
+		protected int[] searchStackCounter;
+		protected List<PieceType> types;
+		protected int requiredDirection;
 	}
 }

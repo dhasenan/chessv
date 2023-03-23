@@ -1,0 +1,36 @@
+
+Game 'Bear Chess' : 'Generic 10x10'
+{
+	Invented = "1985";
+	InventedBy = "Mikhail Sosnovsky";
+	Symmetry = MirrorSymmetry;
+
+	SetGameVariables
+	{
+		Array = "rnbsqksbnr/pppppppppp/10/10/10/10/10/10/PPPPPPPPPP/RNBSQKSBNR";
+		PawnMultipleMove = "Triple";
+		EnPassant = true;
+		PromotionTypes = "QRSBN";
+		Castling.AddChoice( "Bear Chess",
+			"Kings on f1/f10 slide two squares to castle short and three to castle long with the pieces in the corner" );
+		Castling = "Bear Chess";
+	}
+
+	AddPieceTypes
+	{
+		AddChessPieceTypes();
+		AddPieceType( Squirrel, "Bear", "S", 550, 500 );
+	}
+
+	AddRules
+	{
+		if( Castling == "Bear Chess" )
+		{
+			AddCastlingRule();
+			CastlingMove( 0, "f1", "h1", "j1", "g1", `J` );
+			CastlingMove( 0, "f1", "c1", "a1", "d1", `A` );
+			CastlingMove( 1, "f10", "h10", "j10", "g10", `j` );
+			CastlingMove( 1, "f10", "c10", "a10", "d10", `a` );
+		}
+	}
+}

@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2018 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -33,28 +33,47 @@ namespace ChessV
 			writes = 0;
 		}
 
-		public void SetSize( uint sizeInMB )
+		public void SetSize( int sizeInMB )
 		{
-			if( sizeInMB < 32 )
-				sizeInMB = 32;
-			if( sizeInMB > 1024 )
-				sizeInMB = 1024;
+			if( sizeInMB < 16 )
+				sizeInMB = 16;
+			if( sizeInMB > 4096 )
+				sizeInMB = 4096;
 
-			UInt32 newSize = 1024;
+			long newSize = 16;
 
 			// we store a cluster of hash entries for each hashcode set and newSize is
 			// the maximum number of storable sets of hashcodes
-			ulong hashentrysize = (ulong) System.Runtime.InteropServices.Marshal.SizeOf( typeof(TTHashEntry) );
-			ulong sizeInBytes = ((ulong) sizeInMB << 20);
+			int hashentrysize = System.Runtime.InteropServices.Marshal.SizeOf( typeof(TTHashEntry) );
+			long sizeInBytes = (sizeInMB << 20);
 			for( ; newSize * 4 * hashentrysize <= sizeInBytes; newSize *= 2 ) ;
 			newSize /= 2;
 
-			size = newSize * 4;
-			tabledata = new TTHashEntry[size];
+			while( allocate( (int) newSize ) == false )
+			{
+				//	if we didn't succeed, we didn't have enough available memory 
+				//	so try again for only half the size
+				newSize /= 2;
+			}
+		}
 
-			if( tabledata == null )
-				//	Failure!!!
-				throw new Exception( "Allocation of memory for Transposition Table failed" );
+		protected bool allocate( int size )
+		{
+			int arraySize = size * 4;
+			try
+			{
+				tabledata = new TTHashEntry[arraySize];
+			}
+			catch( OutOfMemoryException ex )
+			{
+				return false;
+			}
+			catch( Exception ex )
+			{
+				throw ex;
+			}
+			this.size = arraySize;
+			return true;
 		}
 
 		public void Clear()
@@ -65,7 +84,7 @@ namespace ChessV
 
 		public bool Lookup( UInt64 hashcode, ref TTHashEntry hash )
 		{
-			uint groupStart = (uint) hashcode & (size - 1) & 0xFFFFFFFCU;
+			long groupStart = (long) hashcode & (size - 1) & 0xFFFFFFFCL;
 			for( int slot = 0; slot < 4; slot++ )
 			{
 				if( tabledata[groupStart+slot].CheckHash( hashcode ) )
@@ -79,8 +98,8 @@ namespace ChessV
 
 		public void Store( UInt64 hashcode, int score, int depth, UInt32 movehash, TTHashEntry.HashType hashtype )
 		{
-			uint groupStart = (uint) hashcode & (size - 1) & 0xFFFFFFFCU;
-			uint replace = groupStart;
+			long groupStart = (long) hashcode & (size - 1) & 0xFFFFFFFCL;
+			long replace = groupStart;
 
 			for( uint slot = 0; slot < 4; slot++ )
 			{
@@ -98,7 +117,7 @@ namespace ChessV
 				}
 				//	relacement scheme lifted from Stockfish
 				int c1 = (tabledata[replace].Generation == generation ? 2 : 0);
-				int c2 = (tabledata[groupStart+slot].Generation == generation || tabledata[groupStart+slot].Type == TTHashEntry.HashType.Exact ? -2 : 0);
+				int c2 = (tabledata[groupStart+slot].Generation == generation /* || tabledata[groupStart+slot].Type == TTHashEntry.HashType.Exact */ ? -2 : 0);
 				int c3 = (tabledata[groupStart+slot].Depth < tabledata[replace].Depth ? 1 : 0);
 				if( c1 + c2 + c3 > 0 )
 					replace = groupStart + slot;
@@ -112,9 +131,9 @@ namespace ChessV
 			generation++;
 		}
 
-		private TTHashEntry[] tabledata;
+		protected TTHashEntry[] tabledata;
 		uint generation;
-		uint size;
+		long size;
 		ulong writes;
 	}
 }

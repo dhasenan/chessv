@@ -35,11 +35,7 @@ namespace ChessV.Games
 		// *** PIECE TYPES *** //
 
 		public PieceType General;
-		public PieceType Queen;
 		public PieceType Adjutant;
-		public PieceType Rook;
-		public PieceType Bishop;
-		public PieceType Knight;
 
 
 		// *** CONSTRUCTION *** //
@@ -69,12 +65,9 @@ namespace ChessV.Games
 		public override void AddPieceTypes()
 		{
 			base.AddPieceTypes();
+			AddChessPieceTypes();
 			AddPieceType( General = new Amazon( "General", "G", 1350, 1500 ) );
-			AddPieceType( Queen = new Queen( "Queen", "Q", 1025, 1250 ) );
 			AddPieceType( Adjutant = new Archbishop( "Adjutant", "A", 725, 800 ) );
-			AddPieceType( Rook = new Rook( "Rook", "R", 550, 650 ) );
-			AddPieceType( Bishop = new Bishop( "Bishop", "B", 375, 425 ) );
-			AddPieceType( Knight = new Knight( "Knight", "N", 250, 250 ) );
 		}
 		#endregion
 	}

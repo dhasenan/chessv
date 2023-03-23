@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2020 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -91,11 +91,11 @@ namespace ChessV.GUI
 			Theme = theme;
 			int squareWidth = 50;
 			int squareHeight = 50;
-			if( Theme.PieceSet is BitmapPieceSet )
+			if( Theme.PieceSet is PieceSet )
 			{
-				squareWidth = ((BitmapPieceSet) Theme.PieceSet).Width + 6;
-				squareHeight = ((BitmapPieceSet) Theme.PieceSet).Height + 6;
-				pieceSetPresentation = new BitmapPieceSetPresentation( Game, (BitmapPieceSet) Theme.PieceSet );
+				squareWidth = Theme.PieceSet.Width + 6;
+				squareHeight = Theme.PieceSet.Height + 6;
+				pieceSetPresentation = new BitmapPieceSetPresentation( Game, (PieceSet) Theme.PieceSet );
 				pieceSetPresentation.Initialize( Theme );
 			}
 			else
@@ -270,7 +270,7 @@ namespace ChessV.GUI
 					//	draw rank labels
 					for( int rank = 0; rank < Board.NumRanks; rank++ )
 					{
-						Location squareToTheRightLocation = new Location( rank, 0 );
+						Location squareToTheRightLocation = new Location( rotateBoard ? Board.NumRanks - rank - 1 : rank, 0 );
 						Rectangle squareToTheRightRect = mapping.MapLocation( squareToTheRightLocation );
 						Rectangle textrect = new Rectangle( squareToTheRightRect.Left - mapping.BorderSize, squareToTheRightRect.Top, mapping.BorderSize, squareToTheRightRect.Height );
 						g.DrawString( Board.GetRankNotation( rank ), System.Drawing.SystemFonts.CaptionFont, new SolidBrush( Theme.ColorScheme.TextColor ), textrect, centered );

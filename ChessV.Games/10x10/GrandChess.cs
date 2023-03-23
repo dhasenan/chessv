@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -18,8 +18,7 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
+using ChessV.Evaluations;
 
 namespace ChessV.Games
 {
@@ -47,12 +46,8 @@ namespace ChessV.Games
 	{
 		// *** PIECE TYPES *** //
 
-		public PieceType Queen;
-		public PieceType Rook;
-		public PieceType Bishop;
-		public PieceType Knight;
-		public PieceType Archbishop;
-		public PieceType Chancellor;
+		public PieceType Cardinal;
+		public PieceType Marshall;
 
 
 		// *** CONSTRUCTION *** //
@@ -72,7 +67,7 @@ namespace ChessV.Games
 			base.SetGameVariables();
 			Array = "r8r/1nbqkmcbn1/pppppppppp/10/10/10/10/PPPPPPPPPP/1NBQKMCBN1/R8R";
 			PawnMultipleMove.Value = "Grand";
-			PromotionRule.Value = "Custom";
+			PromotionRule.Value = "Grand";
 			EnPassant = true;
 		}                    
 		#endregion
@@ -81,24 +76,11 @@ namespace ChessV.Games
 		public override void AddPieceTypes()
 		{
 			base.AddPieceTypes();
+			AddChessPieceTypes();
+			Knight.MidgameValue = Knight.EndgameValue = 300;
+			AddPieceType( Cardinal = new Archbishop( "Cardinal", "C", 750, 800 ) );
+			AddPieceType( Marshall = new Chancellor( "Marshall", "M", 925, 975 ) );
 			King.PSTMidgameForwardness = 0;
-			AddPieceType( Rook = new Rook( "Rook", "R", 550, 600 ) );
-			AddPieceType( Bishop = new Bishop( "Bishop", "B", 350, 400 ) );
-			AddPieceType( Knight = new Knight( "Knight", "N", 275, 275 ) );
-			AddPieceType( Archbishop = new Archbishop( "Cardinal", "C", 750, 800 ) );
-			AddPieceType( Chancellor = new Chancellor( "Marshall", "M", 925, 1000 ) );
-			AddPieceType( Queen = new Queen( "Queen", "Q", 1000, 1100 ) );
-		}
-		#endregion
-
-		#region AddRules
-		public override void AddRules()
-		{
-			base.AddRules();
-
-			// *** PAWN PROMOTION *** //
-			if( PromotionRule.Value == "Custom" )
-				PromoteByReplacementRule( Pawn, loc => loc.Rank == 9 ? Rules.PromotionOption.MustPromote : (loc.Rank == 7 || loc.Rank == 8 ? Rules.PromotionOption.CanPromote : Rules.PromotionOption.CannotPromote) );
 		}
 		#endregion
 
@@ -106,8 +88,21 @@ namespace ChessV.Games
 		public override void AddEvaluations()
 		{
 			base.AddEvaluations();
+
+			//	Replace the development evaluation function with an updated one that 
+			//	understands that there is no castling and the rooks are already connected
 			Evaluations.Grand.GrandChessDevelopmentEvaluation newDevelopentEval = new Evaluations.Grand.GrandChessDevelopmentEvaluation();
-			ReplaceEvaluation( FindEvaluation( typeof( Evaluations.DevelopmentEvaluation ) ), newDevelopentEval );
+			ReplaceEvaluation( FindEvaluation( typeof(DevelopmentEvaluation) ), newDevelopentEval );
+
+			//	We also need to update the pawn structure evaluation to inform it 
+			//	that pawns promote on the 5th rank.  This is important for 
+			//	proper evaluation of passed pawns.
+			PawnStructureEvaluation eval = (PawnStructureEvaluation) FindEvaluation( typeof(PawnStructureEvaluation) );
+			eval.PassedPawnEvaluation = true;
+			eval.PawnPromotionRank = 5;
+
+			if( Marshall != null && Marshall.Enabled )
+				RookTypeEval.AddRookOn7thBonus( Marshall, King, 2, 8 );
 		}
 		#endregion
 	}

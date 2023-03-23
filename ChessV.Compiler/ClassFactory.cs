@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -43,8 +43,11 @@ namespace ChessV.Compiler
 			var baseClassConstructor = baseGameType.GetConstructor( BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public, null,
 				constructorArgs, null );
 			ConstructorInfo baseSymmetryConstructor = null;
+			int numFiles = -1;
+			int numRanks = -1;
 			if( baseClassConstructor == null )
 			{
+				//	First, check for a constructor taking only Symmetry
 				baseClassConstructor = baseGameType.GetConstructor( BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public, null,
 					new Type[] { typeof(Symmetry) }, null );
 				if( baseClassConstructor != null )
@@ -55,11 +58,36 @@ namespace ChessV.Compiler
 						throw new Exception( "Abstract Game requires a Symmetry to be defined" );
 				}
 				else
-					throw new Exception( "The base Game class is not supported - too many undefined parameters" );
+				{
+					//	Next, check for a constructor taking Symmetry, number of files, and number of ranks
+					baseClassConstructor = baseGameType.GetConstructor( BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public, null,
+						new Type[] { typeof(int), typeof(int), typeof(Symmetry) }, null );
+					if( baseClassConstructor != null )
+					{
+						Type baseSymmetryType = partial.VariableAssignments["Symmetry"].GetType();
+						baseSymmetryConstructor = baseSymmetryType.GetConstructor( constructorArgs );
+						if( baseSymmetryConstructor == null )
+							throw new Exception( "Abstract Game requires a Symmetry to be defined" );
+						object numFilesObject = partial.VariableAssignments["NumFiles"];
+						if( numFilesObject == null || numFilesObject.GetType() != typeof(int) )
+							throw new Exception( "Error defining game - NumFiles not defined" );
+						numFiles = (int) numFilesObject;
+						object numRanksObject = partial.VariableAssignments["NumRanks"];
+						if( numRanksObject == null || numRanksObject.GetType() != typeof(int) )
+							throw new Exception( "Error defining game - NumRanks not defined" );
+						numRanks = (int) numRanksObject;
+					}
+					else
+						throw new Exception( "The base Game class is not supported - too many undefined parameters" );
+				}
 			}
 			var constructorBuilder = typeBuilder.DefineConstructor( MethodAttributes.Public, CallingConventions.Standard, constructorArgs );
 			var ilGenerator = constructorBuilder.GetILGenerator();
 			ilGenerator.Emit( OpCodes.Ldarg_0 );
+			if( numFiles != -1 )
+				ilGenerator.Emit( OpCodes.Ldc_I4, numFiles );
+			if( numRanks != -1 )
+				ilGenerator.Emit( OpCodes.Ldc_I4, numRanks );
 			if( baseSymmetryConstructor != null )
 				ilGenerator.Emit( OpCodes.Newobj, baseSymmetryConstructor );
 			ilGenerator.Emit( OpCodes.Call, baseClassConstructor );
@@ -243,16 +271,16 @@ namespace ChessV.Compiler
 
 				MemberInfo[] membersWithName = baseType.GetMember( memberName );
 				if( membersWithName.Length == 0 )
-					throw new Exception( "Unknown member: " + memberName );
+					continue; // TODO: LOG THIS
 				else if( membersWithName.Length > 1 )
 					throw new Exception( "Multiple members with name: " + memberName );
 				MemberInfo mi = membersWithName[0];
 				if( mi.MemberType != MemberTypes.Field && mi.MemberType != MemberTypes.Property )
 					throw new Exception( "Attempt to assign member that is not assignable: " + memberName );
 				Type variableType = mi.MemberType == MemberTypes.Field ? ((FieldInfo) mi).FieldType : ((PropertyInfo) mi).PropertyType;
-				if( variableType == typeof(int) )
+				if( variableType == typeof(int) && memberName != "NumFiles" && memberName != "NumRanks" )
 				{
-					if( memberObject.GetType() != typeof( int ) )
+					if( memberObject.GetType() != typeof(int) )
 						throw new Exception( "Type mismatch assigning member " + memberName + " - required type is int" );
 
 					if( mi.MemberType == MemberTypes.Property )
@@ -273,7 +301,7 @@ namespace ChessV.Compiler
 						generator.Emit( OpCodes.Stfld, fi );
 					}
 				}
-				else if( variableType == typeof(string) )
+				else if( variableType == typeof(string) && memberName != "ColorScheme" )
 				{
 					if( memberObject.GetType() != typeof(string) )
 						throw new Exception( "Type mismatch assigning member " + memberName + " - required type is string" );

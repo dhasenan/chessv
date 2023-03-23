@@ -123,10 +123,10 @@ namespace ChessV
 		 */
 		//public bool write(const string filename, PgnMode mode = Verbose) const;
 		
-		//	Returns true only for a "standard" game of Orthodox Chess
+		//	Returns true only for a "normal" game of Orthodox Chess
 		//	played from the default starting position
 		public bool IsStandard
-		{ get { return Variant == "standard" && !Tags.ContainsKey( "FEN" ); } }
+		{ get { return Variant == "normal" && !Tags.ContainsKey( "FEN" ); } }
 
 		//	Looks up the value of a tag - null if it doesn't exist
 		public string TagValue( string tag )
@@ -247,11 +247,11 @@ namespace ChessV
 			{
 				if( Tags.ContainsKey( "Variant" ) )
 					return Tags["Variant"];
-				return "standard";
+				return "normal";
 			}
 			set
 			{
-				if( Variant == "standard" )
+				if( Variant == "normal" )
 				{
 					if( Tags.ContainsKey( "Variant" ) )
 							Tags.Remove("Variant");

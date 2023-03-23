@@ -1,0 +1,49 @@
+
+Game Wildebeast9 : 'Generic 9x10'
+{
+	Invented = "2019";
+	InventedBy = "wdtr2";
+	Symmetry = MirrorSymmetry;
+
+	SetGameVariables
+	{
+		Array = "w1bb1cc1w/1rn1k1nr1/hhhhhhhhh/9/9/9/9/HHHHHHHHH/1RN1K1NR1/W1BB1CC1W";
+		Castling = "2R Close-Rook";
+		PawnMultipleMove = "Grand";
+		EnPassant = true;
+		PromotionTypes = "QW";
+	}
+
+	AddPieceTypes
+	{
+		AddChessPieceTypes();
+		AddPieceType( Camel, "Camel", "C", 250, 250 );
+		AddPieceType( Wildebeest, "Wildebeast", "W", 675, 675 );
+
+		// Enhance the Pawn into a Horseman
+		Pawn.Name = "Horseman";
+		Pawn.SetNotation( "H" );
+		Pawn.PreferredImage = "KnightPawn";
+		Pawn.StepMoveOnly( <1,  2> );
+		Pawn.StepMoveOnly( <1, -2> );
+		Pawn.MidgameValue = 150;
+		Pawn.EndgameValue = 200;
+	}
+
+	AddRules
+	{
+		// The horsemen promote on rank 8 in this game but we
+		// specify it as 7 because we start counting at zero
+		ActivePromotionRule.SetPromotionRank( 7 );
+
+		// Prevent promotion to Queen if we already have one
+		AddRule( LimitPieceTypeQuantityRule( Queen, 1 ) );
+	}
+
+	AddEvaluations
+	{
+		// Disable the pawn structure evaluation given the
+		// greatly enhanced mobility of the pawns
+		RemoveEvaluation( PawnStructureEvaluation );
+	}
+}

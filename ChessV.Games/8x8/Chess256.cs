@@ -38,7 +38,7 @@ namespace ChessV.Games
 	{
 		// *** GAME VARIABLES *** //
 
-		[GameVariable] public IntVariable PositionNumber { get; set; }
+		[GameVariable] public IntRangeVariable PositionNumber { get; set; }
 
 
 		// *** CONSTRUCTION *** //
@@ -53,7 +53,7 @@ namespace ChessV.Games
 		public override void SetGameVariables()
 		{
 			base.SetGameVariables();
-			PositionNumber = new IntVariable( 1, 256 );
+			PositionNumber = new IntRangeVariable( 1, 256 );
 			Array = "rnbqkbnr/#{BlackPawns}/8/8/#{WhitePawns}/RNBQKBNR";
 		}
 		#endregion

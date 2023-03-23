@@ -1,0 +1,19 @@
+
+Game 'Nightrider Chess' : Chess
+{
+	Invented = "1950s";
+	InventedBy = "V. R. Parton";
+
+	SetGameVariables
+	{
+		Array = "r1bnkb1r/8/pppppppp/8/8/PPPPPPPP/8/R1BNKB1R";
+		EnPassant = false;
+		PromotionTypes = "N";
+	}
+
+	AddPieceTypes
+	{
+		Knight.Enabled = false;
+		AddPieceType( Nightrider, "Nightrider", "N", 450, 450 );
+	}
+}

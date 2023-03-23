@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -17,9 +17,6 @@ more details; the file 'COPYING' contains the License text, but if for
 some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
-
-using System;
-using System.Collections.Generic;
 
 namespace ChessV.Games
 {
@@ -38,18 +35,10 @@ namespace ChessV.Games
 		  Invented = "circa 8th century", 
 		  Tags = "Chess Variant,Historic,Regional,Popular", 
 		  GameDescription1 = "Exact origins unknown", 
-		  GameDescription2 = "Generally believed to be from India around the 6th century AD")]
+		  GameDescription2 = "Generally believed to be from India around the 8th century AD")]
 	[Appearance(ColorScheme = "Luna Decorabat")]
 	public class Chess: Abstract.Generic8x8
 	{
-		// *** PIECE TYPES *** //
-
-		public PieceType Queen;
-		public PieceType Rook;
-		public PieceType Bishop;
-		public PieceType Knight;
-
-
 		// *** CONSTRUCTION *** //
 
 		public Chess(): 
@@ -78,10 +67,7 @@ namespace ChessV.Games
 		public override void AddPieceTypes()
 		{
 			base.AddPieceTypes();
-			AddPieceType( Rook = new Rook( "Rook", "R", 500, 550 ) );
-			AddPieceType( Bishop = new Bishop( "Bishop", "B", 325, 350 ) );
-			AddPieceType( Knight = new Knight( "Knight", "N", 325, 325 ) );
-			AddPieceType( Queen = new Queen( "Queen", "Q", 950, 1000 ) );
+			AddChessPieceTypes();
 		}
 		#endregion
 	}

@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -18,9 +18,6 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
 namespace ChessV.Games
 {
 	[Game("Cagliostro's Chess", typeof(Geometry.Rectangular), 12, 8,
@@ -31,10 +28,6 @@ namespace ChessV.Games
 	{
 		// *** PIECE TYPES *** //
 
-		public PieceType Queen;
-		public PieceType Rook;
-		public PieceType Bishop;
-		public PieceType Knight;
 		public PieceType Archbishop;
 		public PieceType Chancellor;
 		public PieceType Amazon;
@@ -67,15 +60,11 @@ namespace ChessV.Games
 		public override void AddPieceTypes()
 		{
 			base.AddPieceTypes();
-			AddPieceType( Queen = new Queen( "Queen", "Q", 1000, 1150 ) );
-			AddPieceType( Rook = new Rook( "Rook", "R", 550, 650 ) );
-			AddPieceType( Bishop = new Bishop( "Bishop", "B", 350, 400 ) );
-			AddPieceType( Knight = new Knight( "Knight", "N", 300, 300 ) );
-			AddPieceType( Archbishop = new Archbishop( "Archbishop", "A", 900, 1000 ) );
-			AddPieceType( Chancellor = new Chancellor( "Chancellor", "C", 975, 1100 ) );
-			AddPieceType( Amazon = new Amazon( "General", "G", 1300, 1200 ) );
+			AddChessPieceTypes();
+			AddPieceType( Archbishop = new Archbishop( "Archbishop", "A", 900, 900 ) );
+			AddPieceType( Chancellor = new Chancellor( "Chancellor", "C", 950, 975 ) );
+			AddPieceType( Amazon = new Amazon( "General", "G", 1250, 1250 ) );
 		}
 		#endregion
 	}
 }
-

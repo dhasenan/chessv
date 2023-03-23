@@ -1,0 +1,38 @@
+
+Game 'Grand Cavalier Chess' : 'Generic 10x10'
+{
+	Invented = "1999";
+	InventedBy = "Fergus Duniho";
+	Symmetry = MirrorSymmetry;
+	ColorScheme = "Cavalier Komi";
+	NumberOfSquareColors = 3;
+	PieceSet = "Motif";
+
+	SetGameVariables
+	{
+		Array = "1mnpqepnm1/c8c/1vvvvvvvv1/10/10/10/10/1VVVVVVVV1/C8C/1MNPQEPNM1";
+		PromotionRule = "Replacement";
+	}
+
+	AddPieceTypes
+	{
+		// upgrade the king to Equus Rex
+		King.AddMovesOf( Knight );
+		King.Name = "Equus Rex";
+		King.SetNotation( "E" );
+		King.PreferredImage = "Knight King";
+
+		// disable the pawn
+		Pawn.Enabled = false;
+
+		AddPieceType( Queen, "Queen", "Q", 1025, 1150 );
+		AddPieceType( Cannon, "Cannon", "C", 400, 275 );
+		AddPieceType( Nightrider, "Nightrider", "N", 550, 500 );
+		AddPieceType( Chancellor, "Marshall", "M", 925, 975 );
+		AddPieceType( Archbishop, "Paladin", "P", 750, 800 );
+		AddPieceType( Mao, "Cavalier", "V", 175, 225 );
+		Cavalier.PreferredImage = "Cavalier";
+		Cavalier.FallbackImage = "Knight";
+		PromotingType = Cavalier;
+	}
+}

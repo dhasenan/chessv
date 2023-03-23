@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -18,8 +18,7 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
+using ChessV.Evaluations;
 
 namespace ChessV.Games
 {
@@ -28,14 +27,14 @@ namespace ChessV.Games
 	//                             Knightmate
 	//
 
-	[Game("Knightmate", typeof(Geometry.Rectangular), 8, 8, 
+	[Game("Knightmate", typeof( Geometry.Rectangular ), 8, 8,
 		  XBoardName = "knightmate",
 		  InventedBy = "Bruce Zimov",
 		  Invented = "1972",
 		  Tags = "Chess Variant,Popular",
 		  GameDescription1 = "Player has two Kings where the Knights usually are",
 		  GameDescription2 = "and a royal Knight where the King usually is")]
-	[Appearance(ColorScheme="Cinnamon")]
+	[Appearance(ColorScheme = "Cinnamon")]
 	public class Knightmate: Chess
 	{
 		// *** INITIALIZATION *** //
@@ -52,7 +51,7 @@ namespace ChessV.Games
 		public override void AddPieceTypes()
 		{
 			base.AddPieceTypes();
-			castlingType = Knight;
+			CastlingType = Knight;
 			Knight.MidgameValue = Knight.EndgameValue = 0;
 			King.MidgameValue = King.EndgameValue = 325;
 
@@ -83,9 +82,27 @@ namespace ChessV.Games
 		{
 			base.AddRules();
 			//	get rid of the Checkmate Rule
-			RemoveRule( typeof(Rules.CheckmateRule) );
+			RemoveRule( typeof( Rules.CheckmateRule ) );
 			//	add the new Checkmate rule
 			AddRule( new Rules.CheckmateRule( Knight ) );
+		}
+		#endregion
+
+		#region AddEvaluations
+		public override void AddEvaluations()
+		{
+			base.AddEvaluations();
+
+			//	We need to remove the LowMaterialEvaluation for now. 
+			//	It doesn't expect a royal knight, so all the logic to 
+			//	detect draws by insufficient material, etc, won't do 
+			//	the right thing.
+			RemoveEvaluation( typeof(LowMaterialEvaluation) );
+
+			//	We also want to remove the output bonus.  We 
+			//	don't want it to encourange the royal knight to 
+			//	hang out in the middle of the board.
+			RemoveEvaluation( typeof(OutpostEvaluation) );
 		}
 		#endregion
 	}

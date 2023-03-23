@@ -3,7 +3,7 @@
 
                                  ChessV
 
-                  COPYRIGHT (C) 2012-2017 BY GREG STRONG
+                  COPYRIGHT (C) 2012-2019 BY GREG STRONG
 
 This file is part of ChessV.  ChessV is free software; you can redistribute
 it and/or modify it under the terms of the GNU General Public License as 
@@ -20,23 +20,23 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Windows.Forms;
-using ChessV;
 
 namespace ChessV.GUI
 {
 	public partial class GameSettingsForm: Form
 	{
+		// *** PROPERTIES *** //
+
 		public TimeControl TimeControl { get; private set; }
 		public List<EngineConfigurationWithAdaptor> EngineConfigurations { get; private set; }
 		public int ComputerPlayerCount { get; private set; }
 		public int ComputerSide { get; private set; }
 
-		protected Game game;
-		protected List<EngineConfigurationWithAdaptor> engines;
-		protected Dictionary<string, EngineConfigurationWithAdaptor> engineLookup;
 
+		// *** CONSTRUCTION *** //
+
+		#region Constructor
 		public GameSettingsForm( Game game )
 		{
 			this.game = game;
@@ -45,7 +45,7 @@ namespace ChessV.GUI
 			if( game.GameAttribute.GameDescription1 != null )
 				lblGameDescription1.Text = game.GameAttribute.GameDescription1;
 			else if( game.InventedBy != null && game.InventedBy != "Unknown" )
-				lblGameDescription1.Text = "Invented by " + game.InventedBy;
+				lblGameDescription1.Text = "Invented by " + game.InventedBy.Replace( ";", " and " );
 			else
 				lblGameDescription1.Text = "Inventor not known";
 			if( game.GameAttribute.GameDescription2 != null )
@@ -57,7 +57,12 @@ namespace ChessV.GUI
 			engines = Program.Manager.EngineLibrary.FindEngines( game );
 			EngineConfigurations = new List<EngineConfigurationWithAdaptor>();
 		}
+		#endregion
 
+
+		// *** EVENT HANDLERS *** //
+
+		#region Event Handlers
 		private void optTimeUnlimited_CheckedChanged( object sender, EventArgs e )
 		{
 			if( optTimeUnlimited.Checked )
@@ -215,5 +220,19 @@ namespace ChessV.GUI
 			if( optTimeFixedDepth.Checked )
 				panelFixedDepth.BringToFront();
 		}
+
+		private void optTimeFixedNodes_CheckedChanged( object sender, EventArgs e )
+		{
+			if( optTimeFixedNodes.Checked )
+				panelFixedNodes.BringToFront();
+		}
+		#endregion
+
+
+		// *** PROTECTED DATA MEMBERS *** //
+
+		protected Game game;
+		protected List<EngineConfigurationWithAdaptor> engines;
+		protected Dictionary<string, EngineConfigurationWithAdaptor> engineLookup;
 	}
 }
