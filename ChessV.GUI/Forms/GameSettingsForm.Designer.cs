@@ -838,7 +838,7 @@ namespace ChessV.GUI
 			// 
 			// panelGame
 			// 
-			this.panelGame.BackColor = System.Drawing.Color.Khaki;
+			// this.panelGame.BackColor = System.Drawing.Color.Khaki;
 			this.panelGame.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.panelGame.Controls.Add(this.lblGameDescription2);
 			this.panelGame.Controls.Add(this.lblGameDescription1);
@@ -850,7 +850,7 @@ namespace ChessV.GUI
 			// 
 			// lblGameDescription2
 			// 
-			this.lblGameDescription2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblGameDescription2.Font = new System.Drawing.Font("Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblGameDescription2.Location = new System.Drawing.Point(-1, 56);
 			this.lblGameDescription2.Name = "lblGameDescription2";
 			this.lblGameDescription2.Size = new System.Drawing.Size(426, 23);
@@ -870,7 +870,7 @@ namespace ChessV.GUI
 			// 
 			// labelGameTitle
 			// 
-			this.labelGameTitle.BackColor = System.Drawing.Color.Gold;
+			// this.labelGameTitle.BackColor = System.Drawing.Color.Gold;
 			this.labelGameTitle.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.labelGameTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelGameTitle.Location = new System.Drawing.Point(-1, -1);
@@ -885,7 +885,7 @@ namespace ChessV.GUI
 			this.AcceptButton = this.btnOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BackColor = System.Drawing.Color.LemonChiffon;
+			// this.BackColor = System.Drawing.Color.LemonChiffon;
 			this.CancelButton = this.btnCancel;
 			this.ClientSize = new System.Drawing.Size(576, 555);
 			this.Controls.Add(this.groupBoxGame);

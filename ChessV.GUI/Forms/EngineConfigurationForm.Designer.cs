@@ -141,7 +141,7 @@ namespace ChessV.GUI
 			// 
 			// label6
 			// 
-			this.label6.BackColor = System.Drawing.Color.Khaki;
+			// this.label6.BackColor = System.Drawing.Color.Khaki;
 			this.label6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.label6.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.label6.Location = new System.Drawing.Point(374, 104);
@@ -191,7 +191,7 @@ namespace ChessV.GUI
 			// 
 			// label5
 			// 
-			this.label5.BackColor = System.Drawing.Color.Khaki;
+			// this.label5.BackColor = System.Drawing.Color.Khaki;
 			this.label5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.label5.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.label5.Location = new System.Drawing.Point(78, 104);
@@ -265,7 +265,7 @@ namespace ChessV.GUI
 			// 
 			// groupBox2
 			// 
-			this.groupBox2.BackColor = System.Drawing.Color.LemonChiffon;
+			// this.groupBox2.BackColor = System.Drawing.Color.LemonChiffon;
 			this.groupBox2.Controls.Add(this.chkValidateClaims);
 			this.groupBox2.Controls.Add(this.label10);
 			this.groupBox2.Controls.Add(this.listSupportedVariants);
@@ -294,7 +294,7 @@ namespace ChessV.GUI
 			// 
 			// label10
 			// 
-			this.label10.BackColor = System.Drawing.Color.Khaki;
+			// this.label10.BackColor = System.Drawing.Color.Khaki;
 			this.label10.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.label10.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.label10.Location = new System.Drawing.Point(374, 67);
@@ -314,7 +314,7 @@ namespace ChessV.GUI
 			// 
 			// label9
 			// 
-			this.label9.BackColor = System.Drawing.Color.Khaki;
+			// this.label9.BackColor = System.Drawing.Color.Khaki;
 			this.label9.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.label9.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.label9.Location = new System.Drawing.Point(78, 67);
@@ -438,7 +438,7 @@ namespace ChessV.GUI
 			this.AcceptButton = this.btnOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BackColor = System.Drawing.Color.LemonChiffon;
+			// this.BackColor = System.Drawing.Color.LemonChiffon;
 			this.CancelButton = this.btnCancel;
 			this.ClientSize = new System.Drawing.Size(729, 739);
 			this.Controls.Add(this.label2);

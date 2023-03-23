@@ -231,7 +231,7 @@ namespace ChessV.GUI
 			// 
 			// NewEngineForm
 			// 
-			this.BackColor = System.Drawing.Color.LemonChiffon;
+			// this.BackColor = System.Drawing.Color.LemonChiffon;
 			this.ClientSize = new System.Drawing.Size(569, 336);
 			this.Controls.Add(this.btnRemoveArgument);
 			this.Controls.Add(this.btnEditArgument);

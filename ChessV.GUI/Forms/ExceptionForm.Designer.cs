@@ -83,7 +83,7 @@ namespace ChessV.GUI
 			// txtExceptionDetails
 			// 
 			this.txtExceptionDetails.AcceptsReturn = true;
-			this.txtExceptionDetails.BackColor = System.Drawing.Color.LemonChiffon;
+			// this.txtExceptionDetails.BackColor = System.Drawing.Color.LemonChiffon;
 			this.txtExceptionDetails.Location = new System.Drawing.Point(12, 153);
 			this.txtExceptionDetails.Multiline = true;
 			this.txtExceptionDetails.Name = "txtExceptionDetails";
@@ -162,7 +162,7 @@ namespace ChessV.GUI
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BackColor = System.Drawing.Color.LemonChiffon;
+			// this.BackColor = System.Drawing.Color.LemonChiffon;
 			this.ClientSize = new System.Drawing.Size(574, 393);
 			this.Controls.Add(this.btnSaveLog);
 			this.Controls.Add(this.btnInnerException);

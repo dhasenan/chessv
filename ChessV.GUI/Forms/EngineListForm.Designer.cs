@@ -18,6 +18,8 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
+using System.Drawing;
+
 namespace ChessV.GUI
 {
 	partial class EngineListForm
@@ -121,6 +123,7 @@ namespace ChessV.GUI
 			this.btnNew.Size = new System.Drawing.Size(112, 36);
 			this.btnNew.TabIndex = 2;
 			this.btnNew.Text = "    &New";
+			this.btnNew.Font = SystemFonts.IconTitleFont;
 			this.btnNew.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
 			this.btnNew.UseVisualStyleBackColor = true;
 			this.btnNew.Click += new System.EventHandler(this.btnNew_Click);
@@ -139,7 +142,7 @@ namespace ChessV.GUI
 			this.lvEngineList.TabIndex = 6;
 			this.lvEngineList.UseCompatibleStateImageBehavior = false;
 			this.lvEngineList.View = System.Windows.Forms.View.Details;
-			// 
+			//  
 			// hdrNameColumn
 			// 
 			this.hdrNameColumn.Text = "Nane";
@@ -164,7 +167,7 @@ namespace ChessV.GUI
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BackColor = System.Drawing.Color.LemonChiffon;
+			//this.BackColor = System.Drawing.Color.LemonChiffon;
 			this.ClientSize = new System.Drawing.Size(614, 468);
 			this.Controls.Add(this.lvEngineList);
 			this.Controls.Add(this.chkAutodetectEngines);

@@ -103,7 +103,7 @@ namespace ChessV.Utilities
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BackColor = System.Drawing.Color.LemonChiffon;
+			// this.BackColor = System.Drawing.Color.LemonChiffon;
 			this.ClientSize = new System.Drawing.Size(452, 150);
 			this.Controls.Add(this.btnCalculate);
 			this.Controls.Add(this.txtNumberOfRanks);

@@ -150,34 +150,16 @@ namespace ChessV.Engine
 						done (integer, no default) 
 						If you set done=1 during the initial two-second timeout after xboard sends you the "xboard" command, the timeout will end and xboard will not look for any more feature commands before starting normal operation. If you set done=0, the initial timeout is increased to one hour; in this case, you must set done=1 before xboard will enter normal operation. 
 					*/
-					string strFeatures = string.Empty;
-					strFeatures += "feature ping=1\n";
-					strFeatures += "feature memory=1\n";
-					strFeatures += "feature setboard=1\n";
-					strFeatures += "feature usermove=1\n";
-					strFeatures += "feature time=1\n";
-					strFeatures += "feature reuse=1\n";
-					strFeatures += "feature sigint=0\n";
-					strFeatures += "feature sigterm=0\n";
-					strFeatures += "feature draw=0\n";
-					strFeatures += "feature option=\"Variation of Play\" -combo *None /// Small /// Medium /// Large\n";
-					strFeatures += "feature option=\"Weakening\" -slider 0 0 15\n";
-					strFeatures += "feature myname=\"ChessV 2.2\"\n";
-					strFeatures += "feature colors=0\n";
-
-					//	Determine all supported variants with an XBoard protocol name
-					List<string> xboardVariants = Program.Manager.GetXBoardVariantList();
-					StringBuilder variants = new StringBuilder( 400 );
-					foreach( string variant in xboardVariants )
-					{
-						if( variants.Length > 0 )
-							variants.Append( ',' );
-						variants.Append( variant );
-					}
-					strFeatures += "feature variants=\"" + variants.ToString() + "\"\n";
-
-					strFeatures += "feature done=1";
-					sendOutputMessage( "feature" + strFeatures );
+					
+					var variants = string.Join(",", Program.Manager.GetXBoardVariantList());
+					
+					var strFeatures =
+						"feature ping=1 memory=1 setboard=1 usermove=1 time=1 reuse=1 sigint=0 sigterm=0 draw=0 myname=\"ChessV 2.2\" colors=0\n" +
+						"feature option=\"Variation of Play -combo *None /// Small /// Medium /// Large\"\n" +
+						"feature option=\"Weakening -slider 0 0 15\"\n" +
+						$"feature variants=\"{variants}\"\n" +
+						"feature done=1";
+					sendOutputMessage( strFeatures );
 				}
 				#endregion
 

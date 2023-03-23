@@ -86,7 +86,7 @@ namespace ChessV.GUI
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BackColor = System.Drawing.Color.LemonChiffon;
+			// this.BackColor = System.Drawing.Color.LemonChiffon;
 			this.ClientSize = new System.Drawing.Size(500, 262);
 			this.Controls.Add(this.listGames);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;

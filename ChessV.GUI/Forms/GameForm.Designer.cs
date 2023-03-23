@@ -401,7 +401,7 @@ namespace ChessV.GUI
 			this.listMoves.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.listMoves.BackColor = System.Drawing.Color.LemonChiffon;
+			// this.listMoves.BackColor = System.Drawing.Color.LemonChiffon;
 			this.listMoves.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2,
@@ -455,7 +455,7 @@ namespace ChessV.GUI
 			// 
 			// mbControl
 			// 
-			this.mbControl.BackColor = System.Drawing.Color.LemonChiffon;
+			// this.mbControl.BackColor = System.Drawing.Color.LemonChiffon;
 			this.mbControl.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.mbControl.Location = new System.Drawing.Point(3, 3);
 			this.mbControl.Name = "mbControl";
