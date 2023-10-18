@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessV.GUI", "ChessV.GUI\ChessV.GUI.csproj", "{FB1668A1-9003-470D-8D97-2EDFF2702EB3}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -37,6 +37,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessV.Base", "ChessV.Base\ChessV.Base.csproj", "{41D4C8DC-6052-4D5E-BEA8-F8565BD49575}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessV.Engine", "ChessV.Engine\ChessV.Engine.csproj", "{C63DDB5D-6C6C-4EBF-8388-293014EB4970}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APMW.Client", "APMW.Client\APMW.Client.csproj", "{D55D03DE-E887-4147-93E9-A618E3AB2101}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -158,9 +160,28 @@ Global
 		{C63DDB5D-6C6C-4EBF-8388-293014EB4970}.Release|x64.ActiveCfg = Release|x86
 		{C63DDB5D-6C6C-4EBF-8388-293014EB4970}.Release|x86.ActiveCfg = Release|x86
 		{C63DDB5D-6C6C-4EBF-8388-293014EB4970}.Release|x86.Build.0 = Release|x86
+		{D55D03DE-E887-4147-93E9-A618E3AB2101}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D55D03DE-E887-4147-93E9-A618E3AB2101}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D55D03DE-E887-4147-93E9-A618E3AB2101}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{D55D03DE-E887-4147-93E9-A618E3AB2101}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{D55D03DE-E887-4147-93E9-A618E3AB2101}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D55D03DE-E887-4147-93E9-A618E3AB2101}.Debug|x64.Build.0 = Debug|Any CPU
+		{D55D03DE-E887-4147-93E9-A618E3AB2101}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D55D03DE-E887-4147-93E9-A618E3AB2101}.Debug|x86.Build.0 = Debug|Any CPU
+		{D55D03DE-E887-4147-93E9-A618E3AB2101}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D55D03DE-E887-4147-93E9-A618E3AB2101}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D55D03DE-E887-4147-93E9-A618E3AB2101}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{D55D03DE-E887-4147-93E9-A618E3AB2101}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{D55D03DE-E887-4147-93E9-A618E3AB2101}.Release|x64.ActiveCfg = Release|Any CPU
+		{D55D03DE-E887-4147-93E9-A618E3AB2101}.Release|x64.Build.0 = Release|Any CPU
+		{D55D03DE-E887-4147-93E9-A618E3AB2101}.Release|x86.ActiveCfg = Release|Any CPU
+		{D55D03DE-E887-4147-93E9-A618E3AB2101}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A35A9630-8EF0-4FDB-9375-34671B58B314}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = ChessV.vsmdi
