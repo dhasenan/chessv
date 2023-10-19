@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace APMW.Client
+namespace Archipelago.APChessV
 {
-  public class Client
+  internal class ArchipelagoConfig
   {
   }
 }

@@ -387,6 +387,7 @@ namespace ChessV.GUI
 
 			//	close out main table encompassing the entire page
 			writer.WriteLine( "\t\t</td><td>&nbsp;</td></tr>" );
+			writer.WriteLine( "\t\t<tr><td>&nbsp;</td><td><center><h3><pre>Archipelago Multiworld by RAIN WHITE</pre></h3></center></td><td>&nbsp;</td></tr>" );
 			writer.WriteLine( "\t\t<tr><td>&nbsp;</td><td><center><h3><pre>COPYRIGHT (C) 2020 BY GREG STRONG</pre></h3></center></td><td>&nbsp;</td></tr>" );
 			writer.WriteLine( "\t\t</table></center>" );
 			writer.WriteLine( "\t</body>" );
