@@ -84,10 +84,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client.cs" />
+    <Compile Include="Progress.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\APMW.Core\APMW.Core.csproj">
+      <Project>{EAE05EE2-73D3-4DD3-B74C-0AE43C697BF6}</Project>
+      <Name>APMW.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ChessV.Base\ChessV.Base.csproj">
       <Project>{41D4C8DC-6052-4D5E-BEA8-F8565BD49575}</Project>
       <Name>ChessV.Base</Name>

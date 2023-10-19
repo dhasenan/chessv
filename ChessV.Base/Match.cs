@@ -20,6 +20,7 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
+using APMW.Core;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -64,7 +65,12 @@ namespace ChessV
 			}
 
 			HumanEnabled = delegate { };
-			Started = delegate { };
+			Started = (match) => {
+				foreach (Delegate handler in Starter.getInstance().StartedEventHandlers)
+				{
+					handler.DynamicInvoke(match);
+				}
+			};
 			FENChanged = delegate { };
 			MoveMade = delegate { };
 			Finished = delegate { };

@@ -1,5 +1,6 @@
 ﻿using Archipelago.MultiClient.Net;
 using Archipelago.MultiClient.Net.Packets;
+using APMW.Core;
 using ChessV;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,11 @@ namespace Archipelago.APChessV
 {
   public class ArchipelagoClient
   {
+    ArchipelagoClient() {
+      StartedEventHandler seHandler = (match) => this.match = match;
+      Starter.getInstance().StartedEventHandlers.Add(seHandler);
+    }
+
     private ArchipelagoSession session;
 
     private DataPackagePacket dataPackagePacket;
@@ -21,10 +27,12 @@ namespace Archipelago.APChessV
     private Dictionary<int, string> itemLookupById;
     private Dictionary<int, string> locationLookupById;
     private Dictionary<int, string> playerNameById;
-    private int pickedUpItemCount = 0;
+    private ArchipelagoProgress apmwProgress;
+
+    private ChessV.Match match;
 
     private Queue<string> itemReceivedQueue = new Queue<string>();
-    private ArchipelagoConfig itemPickupStep;
+    private ArchipelagoConfig apmwConfig;
     private int totalLocations;
     private bool finishedAllChecks = false;
     private ulong seed;
@@ -34,7 +42,7 @@ namespace Archipelago.APChessV
     {
       get
       {
-        return ChessV.Game.Match != null;
+        return match != null;
       }
     }
   }

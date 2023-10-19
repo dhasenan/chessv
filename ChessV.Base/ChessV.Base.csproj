@@ -196,6 +196,12 @@
       <DesignTime>True</DesignTime>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\APMW.Core\APMW.Core.csproj">
+      <Project>{EAE05EE2-73D3-4DD3-B74C-0AE43C697BF6}</Project>
+      <Name>APMW.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
