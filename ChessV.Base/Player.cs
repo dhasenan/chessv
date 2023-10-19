@@ -66,11 +66,18 @@ namespace ChessV
 
 		public IDebugMessageLog MessageLog { get; protected set; }
 
-		//	true if the player is ready for input.  
-		//	NOTE: when the player's state is \a Disconnected, this
-		//	function still returns true if all the cleanup following
-		//	the disconnection is done.
-		public virtual bool IsReady
+		public int Gems {
+			get {
+				return (2 * Side) + Game.GameTurnNumber - GemsSpent;
+      }
+    }
+		public int GemsSpent { get; protected set; } = 0;
+
+    //	true if the player is ready for input.  
+    //	NOTE: when the player's state is \a Disconnected, this
+    //	function still returns true if all the cleanup following
+    //	the disconnection is done.
+    public virtual bool IsReady
 		{
 			get
 			{
