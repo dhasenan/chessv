@@ -68,7 +68,7 @@ namespace ChessV
 
 		public int Gems {
 			get {
-				return (2 * Side) + Game.GameTurnNumber - GemsSpent;
+				return -1 + Side + Game.GameTurnNumber /* starts at 1 */ - GemsSpent;
       }
     }
 		public int GemsSpent { get; protected set; } = 0;

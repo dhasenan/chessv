@@ -142,6 +142,12 @@
     <Compile Include="Controls\CapturedPiecesControl.Designer.cs">
       <DependentUpon>CapturedPiecesControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ArchipelagoLobbyControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ArchipelagoLobbyControl.Designer.cs">
+      <DependentUpon>ArchipelagoLobbyControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\AboutForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -393,6 +399,9 @@
     </Compile>
     <Compile Include="Theme.cs" />
     <Compile Include="ThemeFactory.cs" />
+    <EmbeddedResource Include="Controls\ArchipelagoLobbyControl.resx">
+      <DependentUpon>ArchipelagoLobbyControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\AboutForm.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </EmbeddedResource>
