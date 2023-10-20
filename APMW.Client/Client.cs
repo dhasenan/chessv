@@ -1,6 +1,5 @@
 ﻿using Archipelago.MultiClient.Net;
 using Archipelago.MultiClient.Net.Packets;
-using APMW.Core;
 using ChessV;
 using System;
 using System.Collections.Generic;
@@ -10,6 +9,7 @@ using System.Threading.Tasks;
 using Archipelago.MultiClient.Net.Enums;
 using ChessV.Games;
 using ChessV.Games.Pieces.Berolina;
+using ChessV.Base;
 
 namespace Archipelago.APChessV
 {

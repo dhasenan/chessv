@@ -111,6 +111,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApmwEvents.cs" />
     <Compile Include="Attributes\AppearanceAttribute.cs" />
     <Compile Include="Attributes\GameAttribute.cs" />
     <Compile Include="Attributes\GameVariableAttribute.cs" />

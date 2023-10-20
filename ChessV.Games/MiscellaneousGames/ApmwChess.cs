@@ -18,7 +18,7 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using APMW.Core;
+using ChessV.Base;
 using ChessV.Games.Pieces.Berolina;
 using ChessV.Games.Rules.Alice;
 using System;
@@ -171,7 +171,8 @@ namespace ChessV.Games
       base.SetOtherVariables();
 
       Starter starter = Starter.getInstance();
-      Dictionary<KeyValuePair<int, int>, PieceType> pieces = (Dictionary<KeyValuePair<int, int>, PieceType>) starter.PlayerPieceSetProvider.FirstOrDefault().DynamicInvoke();
+      Dictionary<KeyValuePair<int, int>, PieceType> pieces =
+        starter.PlayerPieceSetProvider.FirstOrDefault().Invoke();
 
       String humanPrefix = "Black";
       String cpuPrefix = "White";
@@ -180,7 +181,7 @@ namespace ChessV.Games
       {
         (humanPrefix, cpuPrefix) = (cpuPrefix, humanPrefix);
 
-        // TODO: CPU gets 1 piece per checkmate, Goal is to checkmate a "full" CPU army
+        // TODO: CPU gets 1 piece per checkmate (as location?), Goal is to checkmate a "full" CPU army
         // TODO: CPU different armies
         SetCustomProperty("BlackOuter", "8");
         SetCustomProperty("BlackPawns", "pppppppp");
