@@ -25,9 +25,9 @@ namespace APMW.Core
 		}
 
     /** ChessV.Base.Match */
-    public List<Action<Object>> StartedEventHandlers = new List<Action<Object>>();
+    public List<Action<object>> StartedEventHandlers = new List<Action<object>>();
     /** ChessV.Base.PieceType */
-    public List<Func<Dictionary<KeyValuePair<int, int>, Object>>> PlayerPieceSetProvider = new List<Func<Dictionary<KeyValuePair<int, int>, Object>>>();
+    public List<Func<Dictionary<KeyValuePair<int, int>, object>>> PlayerPieceSetProvider = new List<Func<Dictionary<KeyValuePair<int, int>, object>>>();
     /** Provides 0 if the player has found PlayAsWhite item, otherwise provides 1 */
     public List<Func<int>> GeriProvider = new List<Func<int>>();
   }

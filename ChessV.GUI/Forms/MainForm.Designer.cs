@@ -102,8 +102,9 @@ namespace ChessV.GUI
 			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.btnQuit = new System.Windows.Forms.Button();
 			this.btnTools = new System.Windows.Forms.Button();
-			this.btnAbout = new System.Windows.Forms.Button();
-			this.btnEngines = new System.Windows.Forms.Button();
+      this.btnAbout = new System.Windows.Forms.Button();
+      this.btnApmw = new System.Windows.Forms.Button();
+      this.btnEngines = new System.Windows.Forms.Button();
 			this.btnLoadGame = new System.Windows.Forms.Button();
 			this.mainTabControl.SuspendLayout();
 			this.tabIndexPage.SuspendLayout();
@@ -653,26 +654,42 @@ namespace ChessV.GUI
 			this.btnTools.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
 			this.btnTools.UseVisualStyleBackColor = true;
 			this.btnTools.Click += new System.EventHandler(this.btnTools_Click);
-			// 
-			// btnAbout
-			// 
-			this.btnAbout.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-			this.btnAbout.BackColor = System.Drawing.SystemColors.ControlLight;
-			this.btnAbout.Image = global::ChessV.GUI.Properties.Resources.icon_about;
-			this.btnAbout.Location = new System.Drawing.Point(12, 600);
-			this.btnAbout.MaximumSize = new System.Drawing.Size(123, 32);
-			this.btnAbout.MinimumSize = new System.Drawing.Size(123, 32);
-			this.btnAbout.Name = "btnAbout";
-			this.btnAbout.Size = new System.Drawing.Size(123, 32);
-			this.btnAbout.TabIndex = 16;
-			this.btnAbout.Text = "   About ";
-			this.btnAbout.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-			this.btnAbout.UseVisualStyleBackColor = true;
-			this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
-			// 
-			// btnEngines
-			// 
-			this.btnEngines.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+      // 
+      // btnAbout
+      // 
+      this.btnAbout.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+      this.btnAbout.BackColor = System.Drawing.SystemColors.ControlLight;
+      this.btnAbout.Image = global::ChessV.GUI.Properties.Resources.icon_about;
+      this.btnAbout.Location = new System.Drawing.Point(12, 600);
+      this.btnAbout.MaximumSize = new System.Drawing.Size(123, 32);
+      this.btnAbout.MinimumSize = new System.Drawing.Size(123, 32);
+      this.btnAbout.Name = "btnAbout";
+      this.btnAbout.Size = new System.Drawing.Size(123, 32);
+      this.btnAbout.TabIndex = 16;
+      this.btnAbout.Text = "   About ";
+      this.btnAbout.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.btnAbout.UseVisualStyleBackColor = true;
+      this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
+      // 
+      // btnApmw
+      // 
+      this.btnApmw.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+      this.btnApmw.BackColor = System.Drawing.SystemColors.ControlLight;
+      this.btnApmw.Image = global::ChessV.GUI.Properties.Resources.icon_apmw;
+      this.btnApmw.Location = new System.Drawing.Point(12, 550);
+      this.btnApmw.MaximumSize = new System.Drawing.Size(123, 32);
+      this.btnApmw.MinimumSize = new System.Drawing.Size(123, 32);
+      this.btnApmw.Name = "btnApmw";
+      this.btnApmw.Size = new System.Drawing.Size(123, 32);
+      this.btnApmw.TabIndex = 16;
+      this.btnApmw.Text = "   About ";
+      this.btnApmw.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.btnApmw.UseVisualStyleBackColor = true;
+      this.btnApmw.Click += new System.EventHandler(this.btnApmw_Click);
+      // 
+      // btnEngines
+      // 
+      this.btnEngines.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
 			this.btnEngines.BackColor = System.Drawing.SystemColors.ControlLight;
 			this.btnEngines.Image = ((System.Drawing.Image)(resources.GetObject("btnEngines.Image")));
 			this.btnEngines.Location = new System.Drawing.Point(684, 600);
@@ -711,8 +728,9 @@ namespace ChessV.GUI
 			this.CancelButton = this.btnQuit;
 			this.ClientSize = new System.Drawing.Size(1118, 648);
 			this.Controls.Add(this.btnTools);
-			this.Controls.Add(this.btnAbout);
-			this.Controls.Add(this.mainTabControl);
+      this.Controls.Add(this.btnAbout);
+      this.Controls.Add(this.btnApmw);
+      this.Controls.Add(this.mainTabControl);
 			this.Controls.Add(this.btnEngines);
 			this.Controls.Add(this.btnQuit);
 			this.Controls.Add(this.btnLoadGame);
@@ -782,8 +800,9 @@ namespace ChessV.GUI
 		private System.Windows.Forms.Button btnBack;
 		private System.Windows.Forms.Button btnStartGame;
 		private System.Windows.Forms.TabPage tabIndexPage;
-		private System.Windows.Forms.Button btnAbout;
-		private System.Windows.Forms.Timer startTimer;
+    private System.Windows.Forms.Button btnAbout;
+    private System.Windows.Forms.Button btnApmw;
+    private System.Windows.Forms.Timer startTimer;
 		private System.Windows.Forms.Panel panelShuffledVariants;
 		private System.Windows.Forms.Label label18;
 		private System.Windows.Forms.Label label19;

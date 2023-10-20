@@ -27,14 +27,14 @@ namespace ChessV.Boards
 	{
 		public int HandSize;
 
-		public BoardWithCards( int nFiles, int nRanks, int handSize ): base( nFiles, nRanks, nRanks * nFiles + handSize )
+		public BoardWithCards( int nFiles, int nRanks, int handSize, int numPlayers = 2) : base( nFiles, nRanks, nRanks * nFiles + handSize * numPlayers )
 		{
 			HandSize = handSize;
-			for( int player = 0; player < 2; player++ )
+			for( int player = 0; player < numPlayers; player++ )
 			{
 				for (int handIndex = 0; handIndex < handSize; handIndex++)
 				{
-					int square = NumSquares + handIndex * (1 + player) + 1;
+					int square = NumSquares + handIndex * (1 + player);
 					rankBySquare[square] = player;
           fileBySquare[square] = -handIndex;
         }

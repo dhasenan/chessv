@@ -81,7 +81,7 @@ namespace ChessV.Games
 
     public ApmwChessGame()
 		{
-		}
+    }
 
 
 		// *** INITIALIZATION *** //
@@ -116,7 +116,7 @@ namespace ChessV.Games
     {
       base.SetGameVariables();
       Array = "#{BlackPieces}/#{BlackPawns}/#{BlackOuter}/8/8/#{WhiteOuter}/#{WhitePawns}/#{WhitePieces}";
-      Castling.AddChoice("CwDA", "Standard castling with the extra exception to prevent color-bound pieces from changing square colors");
+      Castling.RemoveChoice("Flexible");
       PawnDoubleMove = true;
       EnPassant = true;
       Castling.AddChoice("CwDA", "Standard castling with the extra exception to prevent color-bound pieces from changing square colors");
@@ -132,7 +132,7 @@ namespace ChessV.Games
       // We can load all the piece types, I don't think the engine cares if some pieces are never used
 
       // Berolina
-      AddPieceType(BerolinaPawn = new BerolinaPawn("Pawn", "BP", 100, 125));
+      AddPieceType(BerolinaPawn = new BerolinaPawn("Berolina Pawn", "Ƥ / ƥ", 100, 125, preferredImageName: "Ferz"));
       // Cwda
       AddPieceType(Queen = new Queen("Queen", "Q", 950, 1000));
       AddPieceType(Rook = new Rook("Rook", "R", 500, 550));
@@ -151,7 +151,7 @@ namespace ChessV.Games
       AddPieceType(ChargingKnight = new ChargingKnight("Charging Knight", "N", 365, 365));
       AddPieceType(Colonel = new Colonel("Colonel", "C", 950, 950));
       // Eurasian
-      AddPieceType(Cannon = new Cannon("Cannon", "C", 400, 275));
+      AddPieceType(Cannon = new Cannon("Cannon", "O", 400, 275));
       AddPieceType(Vao = new Vao("Vao", "V", 300, 175));
 
       //	Army adjustment
@@ -180,6 +180,7 @@ namespace ChessV.Games
       {
         (humanPrefix, cpuPrefix) = (cpuPrefix, humanPrefix);
 
+        // TODO: CPU gets 1 piece per checkmate, Goal is to checkmate a "full" CPU army
         // TODO: CPU different armies
         SetCustomProperty("BlackOuter", "8");
         SetCustomProperty("BlackPawns", "pppppppp");

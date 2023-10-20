@@ -25,7 +25,7 @@ namespace ChessV.Boards
 {
 	public class BoardWithPockets: BoardWithCards
 	{
-		public BoardWithPockets( int nFiles, int nRanks, int nPlayers ): base( nFiles, nRanks, 1 )
+		public BoardWithPockets( int nFiles, int nRanks, int nPlayers ): base( nFiles, nRanks, 1, nPlayers )
 		{
 			for( int player = 0; player < nPlayers; player++ )
 			{

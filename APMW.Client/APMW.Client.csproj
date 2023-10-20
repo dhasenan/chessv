@@ -97,6 +97,10 @@
       <Project>{41D4C8DC-6052-4D5E-BEA8-F8565BD49575}</Project>
       <Name>ChessV.Base</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ChessV.Games\ChessV.Games.csproj">
+      <Project>{24E2D77A-3F2C-4DBA-8A89-82EAC43C5211}</Project>
+      <Name>ChessV.Games</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

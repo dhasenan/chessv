@@ -204,6 +204,7 @@
     <Compile Include="Rules\Berolina\BerolinaEnPassantRule.cs" />
     <Compile Include="Rules\Brouhaha\BrouhahaBorderRule.cs" />
     <Compile Include="Rules\CaptureByAdvanceRule.cs" />
+    <Compile Include="Rules\Cards\CardDropRule.cs" />
     <Compile Include="Rules\CastlingRule.cs" />
     <Compile Include="Rules\CheckmateRule.cs" />
     <Compile Include="Rules\KingsCourt\KingsFlightRule.cs" />
@@ -255,7 +256,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Rules\Apmw\" />
-    <Folder Include="Rules\Cards\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

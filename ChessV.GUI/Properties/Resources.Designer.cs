@@ -103,6 +103,16 @@ namespace ChessV.GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap icon_apmw {
+            get {
+                object obj = ResourceManager.GetObject("icon_apmw", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap icon_back {
             get {
                 object obj = ResourceManager.GetObject("icon_back", resourceCulture);

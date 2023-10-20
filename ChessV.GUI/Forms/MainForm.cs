@@ -25,6 +25,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Text;
 using Microsoft.Win32;
+using Archipelago.APChessV;
 
 namespace ChessV.GUI
 {
@@ -337,18 +338,27 @@ namespace ChessV.GUI
 			gameListIsFiltered = form.ListIsFiltered;
 			updateMasterGameList();
 		}
-		#endregion
+    #endregion
 
-		#region About Button Click Event
-		private void btnAbout_Click( object sender, EventArgs e )
-		{
-			AboutForm aboutform = new AboutForm();
-			aboutform.ShowDialog();
-		}
-		#endregion
+    #region About Button Click Event
+    private void btnAbout_Click(object sender, EventArgs e)
+    {
+      AboutForm aboutform = new AboutForm();
+      aboutform.ShowDialog();
+    }
+    #endregion
 
-		#region Engines Button Click Event
-		private void btnEngines_Click( object sender, EventArgs e )
+    #region Archipelago Multiworld Button Click Event
+    private void btnApmw_Click(object sender, EventArgs e)
+    {
+			new ArchipelagoClient();
+    }
+    #endregion
+
+    
+
+    #region Engines Button Click Event
+    private void btnEngines_Click( object sender, EventArgs e )
 		{
 			EngineListForm form = new EngineListForm();
 			form.ShowDialog();

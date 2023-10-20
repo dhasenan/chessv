@@ -655,6 +655,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="application_icon.ico" />
+    <Content Include="Resources\icon_apmw.png" />
     <None Include="Resources\icon_tools.png" />
     <None Include="Resources\icon_gray_stop.png" />
     <None Include="Resources\icon_gray_previous.png" />
