@@ -132,24 +132,24 @@ namespace ChessV.Games
       // We can load all the piece types, I don't think the engine cares if some pieces are never used
 
       // Berolina
-      AddPieceType(BerolinaPawn = new BerolinaPawn("Berolina Pawn", "Ƥ / ƥ", 100, 125, preferredImageName: "Ferz"));
+      AddPieceType(BerolinaPawn = new BerolinaPawn("Berolina Pawn", "Ƥ/ƥ", 100, 125, preferredImageName: "Ferz"));
       // Cwda
-      AddPieceType(Queen = new Queen("Queen", "Q", 950, 1000));
-      AddPieceType(Rook = new Rook("Rook", "R", 500, 550));
-      AddPieceType(Bishop = new Bishop("Bishop", "B", 325, 350));
-      AddPieceType(Knight = new Knight("Knight", "N", 325, 325));
+      //AddPieceType(Queen = new Queen("Queen", "Q", 950, 1000));
+      //AddPieceType(Rook = new Rook("Rook", "R", 500, 550));
+      //AddPieceType(Bishop = new Bishop("Bishop", "B", 325, 350));
+      //AddPieceType(Knight = new Knight("Knight", "N", 325, 325));
       AddPieceType(Archbishop = new Archbishop("Archbishop", "A", 875, 875));
       AddPieceType(WarElephant = new WarElephant("War Elephant", "E", 475, 475));
       AddPieceType(Phoenix = new Phoenix("Phoenix", "X", 315, 315));
       AddPieceType(Cleric = new Cleric("Cleric", "C", 450, 500));
-      AddPieceType(Chancellor = new Chancellor("Chancellor", "C", 950, 950));
+      AddPieceType(Chancellor = new Chancellor("Chancellor", "CQ", 950, 950));
       AddPieceType(ShortRook = new ShortRook("Short Rook", "S", 400, 425));
       AddPieceType(Tower = new Tower("Tower", "T", 325, 325));
-      AddPieceType(Lion = new Lion("Lion", "L", 500, 500));
-      AddPieceType(ChargingRook = new ChargingRook("Charging Rook", "R", 495, 530));
+      AddPieceType(Lion = new Lion("Lion", "I", 500, 500));
+      AddPieceType(ChargingRook = new ChargingRook("Charging Rook", "HR", 495, 530));
       AddPieceType(NarrowKnight = new NarrowKnight("Lancer", "L", 325, 325));
-      AddPieceType(ChargingKnight = new ChargingKnight("Charging Knight", "N", 365, 365));
-      AddPieceType(Colonel = new Colonel("Colonel", "C", 950, 950));
+      AddPieceType(ChargingKnight = new ChargingKnight("Charging Knight", "HN", 365, 365));
+      AddPieceType(Colonel = new Colonel("Colonel", "CL", 950, 950));
       // Eurasian
       AddPieceType(Cannon = new Cannon("Cannon", "O", 400, 275));
       AddPieceType(Vao = new Vao("Vao", "V", 300, 175));
@@ -199,6 +199,7 @@ namespace ChessV.Games
 
       for (int rank = 0; rank < this.NumRanks; rank++)
       {
+        notations[rank] = "";
         int emptySpaceCount = 0;
         for (int file = 0; file < this.NumFiles; file++)
         {

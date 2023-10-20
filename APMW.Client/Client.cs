@@ -51,7 +51,7 @@ namespace Archipelago.APChessV
       var Cannon = new Cannon("Cannon", "O", 400, 275);
       var Vao = new Vao("Vao", "V", 300, 175);
 
-      var starters = new Dictionary<KeyValuePair<int, int>, object>();
+      var starters = new Dictionary<KeyValuePair<int, int>, PieceType>();
       Starter.getInstance().PlayerPieceSetProvider.Add(() => starters);
       for (int i = 0; i < 8; i++)
       {
