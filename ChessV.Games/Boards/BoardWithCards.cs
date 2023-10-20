@@ -23,24 +23,32 @@ using System.Collections.Generic;
 
 namespace ChessV.Boards
 {
-	public class BoardWithPockets: BoardWithCards
+	public class BoardWithCards: Board
 	{
-		public BoardWithPockets( int nFiles, int nRanks, int nPlayers ): base( nFiles, nRanks, 1 )
+		public int HandSize;
+
+		public BoardWithCards( int nFiles, int nRanks, int handSize ): base( nFiles, nRanks, nRanks * nFiles + handSize )
 		{
-			for( int player = 0; player < nPlayers; player++ )
+			HandSize = handSize;
+			for( int player = 0; player < 2; player++ )
 			{
-				int square = NumSquares + player;
-				fileBySquare[square] = -1;
-				rankBySquare[square] = player;
+				for (int handIndex = 0; handIndex < handSize; handIndex++)
+				{
+					int square = NumSquares + handIndex * (1 + player) + 1;
+					rankBySquare[square] = player;
+          fileBySquare[square] = -handIndex;
+        }
 			}
 		}
 
 		public override Location SquareToLocation( int square )
 		{
-			if( square < NumSquares )
-				return new Location( rankBySquare[square], fileBySquare[square] );
-			else
-				return new Location( square - NumSquares, -1 );
+			if (square < NumSquares)
+				return new Location(rankBySquare[square], fileBySquare[square]);
+			else {
+				int offset = square - NumSquares;
+				return new Location(offset % HandSize, -offset / HandSize) ;
+			}
 		}
 
 		public override int LocationToSquare( Location location )

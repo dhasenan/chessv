@@ -15,7 +15,9 @@ namespace Archipelago.APChessV
   {
     ArchipelagoClient() {
       StartedEventHandler seHandler = (match) => this.match = match;
-      Starter.getInstance().StartedEventHandlers.Add(seHandler);
+      Starter.getInstance().StartedEventHandlers.Add(((match) => seHandler((ChessV.Match) match)));
+      // TODO: PlayAsWhite
+      Starter.getInstance().GeriProvider.Add(() => 1);
     }
 
     public delegate void ClientDisconnected(ushort code, string reason, bool wasClean);

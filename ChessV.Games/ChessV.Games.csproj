@@ -74,6 +74,9 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -133,6 +136,7 @@
     <Compile Include="Abstract\Generic__x12.cs" />
     <Compile Include="Abstract\Generic__x8.cs" />
     <Compile Include="Abstract\Generic__x9.cs" />
+    <Compile Include="Boards\BoardWithCards.cs" />
     <Compile Include="Boards\CylindricalBoard.cs" />
     <Compile Include="Evaluations\ColorbindingEvaluation.cs" />
     <Compile Include="Evaluations\Grand\GrandChessDevelopmentEvaluation.cs" />
@@ -142,6 +146,7 @@
     <Compile Include="Evaluations\PawnStructureAdjustments.cs" />
     <Compile Include="Evaluations\PawnStructureEvaluation.cs" />
     <Compile Include="Evaluations\RookTypeEvaluation.cs" />
+    <Compile Include="MiscellaneousGames\ApmwChess.cs" />
     <Compile Include="MiscellaneousGames\AliceChess.cs" />
     <Compile Include="10x10\Archchess.cs" />
     <Compile Include="12x8\ArchCourierChess.cs" />
@@ -239,12 +244,22 @@
     <Compile Include="Rules\YangQi\YangQiKingSwapRule.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\APMW.Core\APMW.Core.csproj">
+      <Project>{EAE05EE2-73D3-4DD3-B74C-0AE43C697BF6}</Project>
+      <Name>APMW.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ChessV.Base\ChessV.Base.csproj">
       <Project>{41D4C8DC-6052-4D5E-BEA8-F8565BD49575}</Project>
       <Name>ChessV.Base</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Rules\Apmw\" />
+    <Folder Include="Rules\Cards\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
