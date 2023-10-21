@@ -676,13 +676,13 @@ namespace ChessV.GUI
       this.btnApmw.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
       this.btnApmw.BackColor = System.Drawing.SystemColors.ControlLight;
       this.btnApmw.Image = global::ChessV.GUI.Properties.Resources.icon_apmw;
-      this.btnApmw.Location = new System.Drawing.Point(12, 550);
+      this.btnApmw.Location = new System.Drawing.Point(940, 6);
       this.btnApmw.MaximumSize = new System.Drawing.Size(123, 32);
       this.btnApmw.MinimumSize = new System.Drawing.Size(123, 32);
       this.btnApmw.Name = "btnApmw";
       this.btnApmw.Size = new System.Drawing.Size(123, 32);
       this.btnApmw.TabIndex = 16;
-      this.btnApmw.Text = "   About ";
+      this.btnApmw.Text = "   Connect to AP";
       this.btnApmw.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
       this.btnApmw.UseVisualStyleBackColor = true;
       this.btnApmw.Click += new System.EventHandler(this.btnApmw_Click);

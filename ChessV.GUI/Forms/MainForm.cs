@@ -55,6 +55,7 @@ namespace ChessV.GUI
 
 			//	call .NET Forms Designer-generated initialization
 			InitializeComponent();
+			btnApmw_Click(this, new EventArgs());
 		}
 		#endregion
 
@@ -351,6 +352,7 @@ namespace ChessV.GUI
     #region Archipelago Multiworld Button Click Event
     private void btnApmw_Click(object sender, EventArgs e)
     {
+      btnApmw.Enabled = false;
 			new ArchipelagoClient();
     }
     #endregion

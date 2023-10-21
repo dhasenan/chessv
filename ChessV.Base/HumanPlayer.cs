@@ -22,6 +22,7 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ChessV
 {
@@ -73,7 +74,7 @@ namespace ChessV
 			//Q_ASSERT(m_bufferMove.isNull());
 			if( State != PlayerState.Thinking )
 			{
-				if( State == PlayerState.Observing )
+				if( State == PlayerState.Observing)
 					bufferMove = move;
 
 				WokeUp(); // raise wokeUp event
@@ -117,6 +118,7 @@ namespace ChessV
 			bufferMove = null;
 
 			// TODO if (board()->isLegalMove(move))
+			if (move.First().Player == Side)
 				emitMove( move );
 		}
 

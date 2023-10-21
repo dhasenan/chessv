@@ -1,4 +1,5 @@
 ﻿using Archipelago.MultiClient.Net;
+using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.Packets;
 using ChessV;
 using System;
@@ -6,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Archipelago.MultiClient.Net.Enums;
 using ChessV.Games;
 using ChessV.Games.Pieces.Berolina;
 using ChessV.Base;
@@ -42,7 +42,7 @@ namespace Archipelago.APChessV
       var Chancellor = new Chancellor("Chancellor", "CQ", 950, 950);
       var ShortRook = new ShortRook("Short Rook", "S", 400, 425);
       var Tower = new Tower("Tower", "T", 325, 325);
-      var Lion = new Lion("Lion", "L", 500, 500);
+      var Lion = new Lion("Lion", "I", 500, 500);
       var ChargingRook = new ChargingRook("Charging Rook", "HR", 495, 530);
       var NarrowKnight = new NarrowKnight("Lancer", "L", 325, 325);
       var ChargingKnight = new ChargingKnight("Charging Knight", "HN", 365, 365);
