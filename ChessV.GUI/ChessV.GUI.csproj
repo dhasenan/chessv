@@ -666,6 +666,7 @@
   <ItemGroup>
     <Content Include="application_icon.ico" />
     <Content Include="Resources\icon_apmw.png" />
+    <Content Include="Resources\icon_apmw_license.txt" />
     <None Include="Resources\icon_tools.png" />
     <None Include="Resources\icon_gray_stop.png" />
     <None Include="Resources\icon_gray_previous.png" />
