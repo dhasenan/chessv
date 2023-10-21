@@ -38,13 +38,13 @@ namespace Archipelago.APChessV
       var Archbishop = new Archbishop("Archbishop", "A", 875, 875);
       var WarElephant = new WarElephant("War Elephant", "E", 475, 475);
       var Phoenix = new Phoenix("Phoenix", "X", 315, 315);
-      var Cleric = new Cleric("Cleric", "C", 450, 500);
-      var Chancellor = new Chancellor("Chancellor", "CQ", 950, 950);
+      var Cleric = new Cleric("Cleric", "L", 450, 500);
+      var Chancellor = new Chancellor("Chancellor", "C", 950, 950);
       var ShortRook = new ShortRook("Short Rook", "S", 400, 425);
       var Tower = new Tower("Tower", "T", 325, 325);
       var Lion = new Lion("Lion", "I", 500, 500);
       var ChargingRook = new ChargingRook("Charging Rook", "HR", 495, 530);
-      var NarrowKnight = new NarrowKnight("Lancer", "L", 325, 325);
+      var NarrowKnight = new NarrowKnight("Lancer", "LC", 325, 325);
       var ChargingKnight = new ChargingKnight("Charging Knight", "HN", 365, 365);
       var Colonel = new Colonel("Colonel", "CN", 950, 950);
       // Eurasian
