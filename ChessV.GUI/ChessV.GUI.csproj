@@ -128,6 +128,7 @@
     <StartupObject>ChessV.GUI.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Archipelago.MultiClient.Net, Version=5.0.6.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -159,6 +160,12 @@
     </Compile>
     <Compile Include="Forms\AcknowledgementsForm.Designer.cs">
       <DependentUpon>AcknowledgementsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ApmwForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ApmwForm.Designer.cs">
+      <DependentUpon>ApmwForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\SaveGamesAsImagesForm.cs">
       <SubType>Form</SubType>
@@ -407,6 +414,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\AcknowledgementsForm.resx">
       <DependentUpon>AcknowledgementsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ApmwForm.resx">
+      <DependentUpon>ApmwForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SaveGamesAsImagesForm.resx">
       <DependentUpon>SaveGamesAsImagesForm.cs</DependentUpon>

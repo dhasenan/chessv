@@ -35,12 +35,12 @@ namespace ChessV.GUI
 
 		//	the Manager object which list and creates Games, Engines, etc.
 		public Manager.Manager Manager { get; private set; }
+    private ApmwForm apmwForm;
 
+    // *** CONSTRUCTION *** //
 
-		// *** CONSTRUCTION *** //
-
-		#region Construction
-		public MainForm()
+    #region Construction
+    public MainForm()
 		{
 			//	initialize reference to Manager object so we don't have 
 			//	to use Program.Manager all over the place
@@ -353,7 +353,10 @@ namespace ChessV.GUI
     private void btnApmw_Click(object sender, EventArgs e)
     {
       btnApmw.Enabled = false;
-			new ArchipelagoClient();
+			apmwForm = new ApmwForm();
+			apmwForm.ShowDialog();
+
+      //if (typeof(Game) == typeof(ChessV.Games.ApmwChessGame))
     }
     #endregion
 

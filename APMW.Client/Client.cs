@@ -10,16 +10,21 @@ using System.Threading.Tasks;
 using ChessV.Games;
 using ChessV.Games.Pieces.Berolina;
 using ChessV.Base;
+using Archipelago.MultiClient.Net.MessageLog.Messages;
 
 namespace Archipelago.APChessV
 {
   public class ArchipelagoClient
   {
-    public ArchipelagoClient() {
+    public ArchipelagoClient()
+    {
+      nonSessionMessages = new List<string>();
+
       StartedEventHandler seHandler = (match) => this.match = match;
       Starter.getInstance().StartedEventHandlers.Add(((match) => seHandler((ChessV.Match) match)));
       // TODO: PlayAsWhite
       Starter.getInstance().GeriProvider.Add(() => 1);
+
       loadPieces();
     }
 
@@ -67,10 +72,13 @@ namespace Archipelago.APChessV
       starters.Add(new KeyValuePair<int, int>(2, 7), Rook);
     }
 
+
+
     public delegate void ClientDisconnected(ushort code, string reason, bool wasClean);
     public event ClientDisconnected OnClientDisconnect;
 
-    private ArchipelagoSession session;
+    public ArchipelagoSession session { get; private set; }
+    public List<String> nonSessionMessages { get; private set; }
 
     private DataPackagePacket dataPackagePacket;
     private ConnectedPacket connectedPacket;
@@ -90,6 +98,7 @@ namespace Archipelago.APChessV
     private bool finishedAllChecks = false;
     private ulong seed;
     private string lastServerUrl;
+    private Task connectionTask;
 
     private bool IsInGame
     {
@@ -110,32 +119,41 @@ namespace Archipelago.APChessV
       //ItemLogic = new ArchipelagoItemLogicController(session);
       //LocationCheckBar = new ArchipelagoLocationCheckProgressBarUI();
 
-      var result = session.TryConnectAndLogin("ChessV", slotName, itemsHandlingFlags: ItemsHandlingFlags.AllItems, new Version(3, 4, 0));
-
-      if (!result.Successful)
+      connectionTask = new Task(() =>
       {
-        LoginFailure failureResult = (LoginFailure)result;
-        foreach (var err in failureResult.Errors)
+        var result = session.TryConnectAndLogin("ChessV", slotName, itemsHandlingFlags: ItemsHandlingFlags.AllItems, new Version(4, 3, 0), tags: new string[] { "DeathLink" });
+
+        if (!result.Successful)
         {
-          //ChatMessage.SendColored(err, Color.red);
-          //Log.LogError(err);
+          LoginFailure failureResult = (LoginFailure)result;
+          foreach (var errCode in failureResult.ErrorCodes)
+          {
+            nonSessionMessages.Add("Error code: " + errCode.GetTypeCode().ToString());
+          }
+          foreach (var err in failureResult.Errors)
+          {
+            nonSessionMessages.Add(err);
+            //ChatMessage.SendColored(err, Color.red);
+            //Log.LogError(err);
+          }
+          return;
         }
-        return;
-      }
 
-      LoginSuccessful successResult = (LoginSuccessful)result;
-      if (successResult.SlotData.TryGetValue("FinalStageDeath", out var stageDeathObject))
-      {
-        //finalStageDeath = Convert.ToBoolean(stageDeathObject);
-      }
+        LoginSuccessful successResult = (LoginSuccessful)result;
+        if (successResult.SlotData.TryGetValue("FinalStageDeath", out var stageDeathObject))
+        {
+          //finalStageDeath = Convert.ToBoolean(stageDeathObject);
+        }
 
-      //LocationCheckBar.ItemPickupStep = ItemLogic.ItemPickupStep;
+        //LocationCheckBar.ItemPickupStep = ItemLogic.ItemPickupStep;
 
-      //session.Socket.PacketReceived += Session_PacketReceived;
-      //session.Socket.SocketClosed += Session_SocketClosed;
-      //ItemLogic.OnItemDropProcessed += ItemLogicHandler_ItemDropProcessed;
+        //session.Socket.PacketReceived += Session_PacketReceived;
+        //session.Socket.SocketClosed += Session_SocketClosed;
+        //ItemLogic.OnItemDropProcessed += ItemLogicHandler_ItemDropProcessed;
 
-      //new ArchipelagoStartMessage().Send(NetworkDestination.Clients);
+        //new ArchipelagoStartMessage().Send(NetworkDestination.Clients);
+      });
+      connectionTask.Start();
     }
 
     public void Dispose()

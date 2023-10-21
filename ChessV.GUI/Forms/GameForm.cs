@@ -45,8 +45,8 @@ namespace ChessV.GUI
 		protected int sideOnClock;
 		protected int reviewCursor;
 		protected Stack<MoveInfo> reviewRedoStack;
-		private DebugForm debugForm;
-		private double? currentEval;
+    private DebugForm debugForm;
+    private double? currentEval;
 		protected bool engineThinking;
 		protected EngineStatisticsForm engineStatsForm;
 		protected Result gameResult;
