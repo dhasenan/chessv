@@ -21,7 +21,7 @@ namespace Archipelago.APChessV
       nonSessionMessages = new List<string>();
 
       StartedEventHandler seHandler = (match) => this.match = match;
-      Starter.getInstance().StartedEventHandlers.Add(((match) => seHandler((ChessV.Match) match)));
+      Starter.getInstance().StartedEventHandlers.Add(((match) => seHandler((ChessV.Match)match)));
       // TODO: PlayAsWhite
       Starter.getInstance().GeriProvider.Add(() => 1);
 
