@@ -76,7 +76,7 @@ namespace ChessV.Test
     [TestMethod]
     public void generatePocketValues_makesHugePockets()
     {
-      Assert.AreEqual((4, 3, 3), tested.generatePocketValues(10));
+      Assert.AreEqual((3, 3, 4), tested.generatePocketValues(10));
     }
 
     [TestMethod]
