@@ -25,6 +25,17 @@ namespace ChessV.Base
     }
 
     public int pocketSeed = -1;
+    public int pawnSeed = -1;
+    public int minorSeed = -1;
+    public int majorSeed = -1;
+    public int queenSeed = -1;
+
+    /** ChessV.Base.Match */
+    public List<Action<object>> StartedEventHandlers = new List<Action<object>>();
+    /** ChessV.Base.PieceType */
+    public List<Func<Dictionary<KeyValuePair<int, int>, PieceType>>> PlayerPieceSetProvider = new List<Func<Dictionary<KeyValuePair<int, int>, PieceType>>>();
+    /** Provides 0 if the player has found PlayAsWhite item, otherwise provides 1 */
+    public List<Func<int>> GeriProvider = new List<Func<int>>();
 
     /** Possibly not stable - will generate a different pocket distribution as the player progresses through different foundPockets - but it is uniform */
     public (int, int, int) generatePocketValues(int foundPockets)
@@ -48,11 +59,5 @@ namespace ChessV.Base
       return (x, y, z);
     }
 
-    /** ChessV.Base.Match */
-    public List<Action<object>> StartedEventHandlers = new List<Action<object>>();
-    /** ChessV.Base.PieceType */
-    public List<Func<Dictionary<KeyValuePair<int, int>, PieceType>>> PlayerPieceSetProvider = new List<Func<Dictionary<KeyValuePair<int, int>, PieceType>>>();
-    /** Provides 0 if the player has found PlayAsWhite item, otherwise provides 1 */
-    public List<Func<int>> GeriProvider = new List<Func<int>>();
   }
 }

@@ -141,15 +141,15 @@ namespace ChessV.Games
       AddPieceType(Archbishop = new Archbishop("Archbishop", "A", 875, 875));
       AddPieceType(WarElephant = new WarElephant("War Elephant", "E", 475, 475));
       AddPieceType(Phoenix = new Phoenix("Phoenix", "X", 315, 315));
-      AddPieceType(Cleric = new Cleric("Cleric", "L", 450, 500));
+      AddPieceType(Cleric = new Cleric("Cleric", "Ċ/ċ", 450, 500));
       AddPieceType(Chancellor = new Chancellor("Chancellor", "C", 950, 950));
       AddPieceType(ShortRook = new ShortRook("Short Rook", "S", 400, 425));
       AddPieceType(Tower = new Tower("Tower", "T", 325, 325));
       AddPieceType(Lion = new Lion("Lion", "I", 500, 500));
-      AddPieceType(ChargingRook = new ChargingRook("Charging Rook", "HR", 495, 530));
-      AddPieceType(NarrowKnight = new NarrowKnight("Lancer", "LC", 325, 325));
-      AddPieceType(ChargingKnight = new ChargingKnight("Charging Knight", "HN", 365, 365));
-      AddPieceType(Colonel = new Colonel("Colonel", "CL", 950, 950));
+      AddPieceType(ChargingRook = new ChargingRook("Charging Rook", "Ṙ/ṙ", 495, 530));
+      AddPieceType(NarrowKnight = new NarrowKnight("Lancer", "L", 325, 325));
+      AddPieceType(ChargingKnight = new ChargingKnight("Charging Knight", "Ṅ/ṅ", 365, 365));
+      AddPieceType(Colonel = new Colonel("Colonel", "K̇/k̇", 950, 950));
       // Eurasian
       AddPieceType(Cannon = new Cannon("Cannon", "O", 400, 275));
       AddPieceType(Vao = new Vao("Vao", "V", 300, 175));

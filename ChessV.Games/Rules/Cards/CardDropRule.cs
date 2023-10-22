@@ -54,12 +54,12 @@ namespace ChessV.Games.Rules.Pocket
 		public override void PositionLoaded( FEN fen )
 		{
 			int file = 1;
-			foreach( String c in fen["pieces in hand"].Split('_') )
+			foreach( char c in fen["pieces in hand"].ToCharArray() )
 			{
-				if( c != "-" && c != "@" )
+				if( c != '-' && c != '@' )
 				{
-					PieceType type = Game.GetTypeByNotation( c );
-					int player = Char.IsUpper( c.ToCharArray().First() ) ? 0 : 1;
+					PieceType type = Game.GetTypeByNotation( c.ToString() );
+					int player = Char.IsUpper( c ) ? 0 : 1;
 					Location loc = new Location( player, -file++ ); // TODO: order of operations?
 					Piece piece = new Piece( Game, player, type, loc );
 					Board.Game.AddPiece( piece );

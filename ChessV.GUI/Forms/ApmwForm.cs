@@ -65,16 +65,6 @@ namespace ChessV.GUI
       for (int x = nonSessionLinesSeen; x < archipelagoClient.nonSessionMessages.Count; x++)
         append.Append(archipelagoClient.nonSessionMessages[nonSessionLinesSeen++] + "\r\n");
       txtApmwOutput.Text += append.ToString();
-
-      if (archipelagoClient.session != null)
-      {
-        var names = archipelagoClient.session.Players.AllPlayers.Select((PlayerInfo info) => info.Name);
-        if (!comboBox1.Items.Equals(names))
-        {
-          comboBox1.Items.Clear();
-          names.Select((String name) => comboBox1.Items.Add(name));
-        }
-      }
     }
 
 		private void ApmwForm_FormClosing( object sender, FormClosingEventArgs e )
@@ -91,8 +81,8 @@ namespace ChessV.GUI
 
     private void timer2_Tick(object sender, EventArgs e)
     {
-      timer2.Stop();
       button1.Enabled = true;
+      timer2.Stop();
     }
 
     private void textBox1_TextChanged(object sender, EventArgs e)
@@ -103,8 +93,11 @@ namespace ChessV.GUI
 
     private void textBox1_KeyDown(object sender, KeyEventArgs e)
     {
-      timer1.Stop();
-      button1_Click(sender, e);
+      if (e.KeyCode == Keys.Enter)
+      {
+        timer1.Stop();
+        button1_Click(sender, e);
+      }
     }
 
     private void button1_Click(object sender, EventArgs e)
@@ -116,22 +109,28 @@ namespace ChessV.GUI
       linesSeen = 0;
       nonSessionLinesSeen = 0;
       var url = new Uri("wss://" + textBox1.Text.Split('/').Last());
-      var slot = comboBox1.SelectedText;
+      var slot = textBox2.Text;
       //messageLog.OnMessageReceived -= (message) => pastMessages.Add(message);
       archipelagoClient.Connect(url, slot);
-      messageLog = archipelagoClient.session.MessageLog;
-      messageLog.OnMessageReceived += (message) => pastMessages.Add(message);
-
+      if (messageLog != archipelagoClient.session.MessageLog)
+      {
+        messageLog = archipelagoClient.session.MessageLog;
+        messageLog.OnMessageReceived += (message) => pastMessages.Add(message);
+      }
     }
 
-    private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+    private void textBox2_KeyDown(object sender, KeyEventArgs e)
     {
-      linesSeen = 0;
-      nonSessionLinesSeen = 0;
-      //messageLog.OnMessageReceived -= (message) => pastMessages.Add(message);
-      archipelagoClient.Connect(new Uri(textBox1.Text), comboBox1.SelectedText);
-      messageLog = archipelagoClient.session.MessageLog;
-      messageLog.OnMessageReceived += (message) => pastMessages.Add(message);
+      if (e.KeyCode == Keys.Enter)
+      {
+        timer1.Stop();
+        button1_Click(sender, e);
+      }
+    }
+
+    private void textBox2_TextChanged(object sender, EventArgs e)
+    {
+
     }
   }
 }
