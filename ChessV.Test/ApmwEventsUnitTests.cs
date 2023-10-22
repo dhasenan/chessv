@@ -38,6 +38,25 @@ namespace ChessV.Test
     }
 
     [TestMethod]
+    public void generatePocketValues_makesSeveralPockets()
+    {
+      tested.pocketSeed = 10001;
+      Assert.AreEqual((0, 0, 0), tested.generatePocketValues(0));
+      Assert.AreEqual((0, 0, 1), tested.generatePocketValues(1));
+      Assert.AreEqual((1, 0, 1), tested.generatePocketValues(2));
+      Assert.AreEqual((1, 0, 2), tested.generatePocketValues(3));
+      Assert.AreEqual((2, 1, 1), tested.generatePocketValues(4)); // demonstrates instability - the second item is called with different arguments due to the narrowed range via the first item
+      Assert.AreEqual((2, 1, 2), tested.generatePocketValues(5));
+      Assert.AreEqual((2, 1, 3), tested.generatePocketValues(6));
+      Assert.AreEqual((2, 2, 3), tested.generatePocketValues(7));
+      Assert.AreEqual((2, 2, 4), tested.generatePocketValues(8));
+      Assert.AreEqual((3, 2, 4), tested.generatePocketValues(9));
+      Assert.AreEqual((3, 3, 4), tested.generatePocketValues(10));
+      Assert.AreEqual((4, 3, 4), tested.generatePocketValues(11));
+      Assert.AreEqual((4, 4, 4), tested.generatePocketValues(12));
+    }
+
+    [TestMethod]
     public void generatePocketValues_makesEmptyPockets()
     {
       Assert.AreEqual((0, 0, 0), tested.generatePocketValues(0));
@@ -75,6 +94,12 @@ namespace ChessV.Test
 
     [TestMethod]
     public void generatePocketValues_makesHugePockets()
+    {
+      Assert.AreEqual((2, 3, 4), tested.generatePocketValues(9));
+    }
+
+    [TestMethod]
+    public void generatePocketValues_makesGiantPockets()
     {
       Assert.AreEqual((3, 3, 4), tested.generatePocketValues(10));
     }
