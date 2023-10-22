@@ -68,10 +68,11 @@ namespace ChessV
 
 		public int Gems {
 			get {
-				return -1 + Side + Game.GameTurnNumber /* starts at 1 */ - GemsSpent;
+				return -1 + Side + Game.GameTurnNumber /* starts at 1 */ - GemsSpent + GemsGained;
       }
     }
-		public int GemsSpent { get; protected set; } = 0;
+    public int GemsSpent { get; set; } = 0;
+    public int GemsGained { get; protected set; } = 0; // TODO: increased by losing a queen, and once by losing a minor piece and moving a pawn to rank 6
 
     //	true if the player is ready for input.  
     //	NOTE: when the player's state is \a Disconnected, this

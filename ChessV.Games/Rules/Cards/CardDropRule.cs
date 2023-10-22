@@ -20,6 +20,7 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ChessV.Games.Rules.Pocket
 {
@@ -27,6 +28,8 @@ namespace ChessV.Games.Rules.Pocket
   {
     protected int handSize;
     protected int[] pocketSquares;
+
+		protected static List<Player> players = new List<Player>(2);
 
 		public CardDropRule()
 		{
@@ -37,7 +40,9 @@ namespace ChessV.Games.Rules.Pocket
 			base.Initialize( game );
 			handSize = game.Board.NumSquares - game.Board.NumRanks * game.Board.NumFiles / 2;
       pocketSquares = new int[handSize * 2];
-			for( int player = 0; player < game.NumPlayers; player++ )
+      players[0] = game.CurrentPlayer;
+      players[1] = game.CurrentPlayer.Opponent;
+      for ( int player = 0; player < game.NumPlayers; player++ )
       {
 				for (int card = 0; card < handSize; card++)
 				{
@@ -48,18 +53,30 @@ namespace ChessV.Games.Rules.Pocket
 
 		public override void PositionLoaded( FEN fen )
 		{
-			foreach( char c in fen["pieces in hand"] )
+			int file = 1;
+			foreach( String c in fen["pieces in hand"].Split('_') )
 			{
-				if( c != '-' && c != '@' )
+				if( c != "-" && c != "@" )
 				{
-					PieceType type = Game.GetTypeByNotation( c.ToString() );
-					int player = Char.IsUpper( c ) ? 0 : 1;
-					Location loc = new Location( player, -1 );
+					PieceType type = Game.GetTypeByNotation( c );
+					int player = Char.IsUpper( c.ToCharArray().First() ) ? 0 : 1;
+					Location loc = new Location( player, -file++ ); // TODO: order of operations?
 					Piece piece = new Piece( Game, player, type, loc );
 					Board.Game.AddPiece( piece );
 				}
 			}
 		}
+
+		public override MoveEventResponse MoveBeingMade(MoveInfo info, int something)
+    {
+			// TODO: this probably sucks
+      if (players[info.Player].Gems < info.PieceMoved.MidgameValue / 100)
+      {
+        return MoveEventResponse.IllegalMove;
+      }
+      players[info.Player].GemsSpent += info.PieceMoved.MidgameValue / 100;
+			return MoveEventResponse.MoveOk;
+    }
 
 		public override void GenerateSpecialMoves( MoveList list, bool capturesOnly, int ply )
 		{
@@ -68,15 +85,23 @@ namespace ChessV.Games.Rules.Pocket
 				int pocketSquare = pocketSquares[Game.CurrentSide];
 				Piece pieceInPocket = Board[pocketSquare];
 				if( pieceInPocket != null )
-				{
-					for( int square = 0; square < Board.NumSquares; square++ )
+        {
+					var player = Game.CurrentPlayer;
+					players[player.Side] = player;
+					if (player.Gems < pieceInPocket.MidgameValue / 100)
+					{
+						return;
+					}
+
+					// TODO: square bounding based on apmw Pocket Forwardness
+          for ( int square = 0; square < Board.NumSquares; square++ )
 					{
 						if( Board[square] == null )
 						{
 							list.BeginMoveAdd( MoveType.Drop, pocketSquare, square );
 							Piece piece = list.AddPickup( pocketSquare );
 							list.AddDrop( piece, square, pieceInPocket.PieceType );
-							list.EndMoveAdd( piece.PieceType.GetMidgamePST( square ) - 10 );
+              list.EndMoveAdd( piece.PieceType.GetMidgamePST( square ) - 10 );
 						}
 					}
 				}

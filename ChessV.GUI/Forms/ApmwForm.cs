@@ -52,7 +52,7 @@ namespace ChessV.GUI
     private void ApmwForm_Load( object sender, EventArgs e )
 		{
 			timer.Start();
-		}
+    }
 
 		private void timer_Tick( object sender, EventArgs e )
     {
@@ -65,6 +65,16 @@ namespace ChessV.GUI
       for (int x = nonSessionLinesSeen; x < archipelagoClient.nonSessionMessages.Count; x++)
         append.Append(archipelagoClient.nonSessionMessages[nonSessionLinesSeen++] + "\r\n");
       txtApmwOutput.Text += append.ToString();
+
+      if (archipelagoClient.session != null)
+      {
+        var names = archipelagoClient.session.Players.AllPlayers.Select((PlayerInfo info) => info.Name);
+        if (!comboBox1.Items.Equals(names))
+        {
+          comboBox1.Items.Clear();
+          names.Select((String name) => comboBox1.Items.Add(name));
+        }
+      }
     }
 
 		private void ApmwForm_FormClosing( object sender, FormClosingEventArgs e )

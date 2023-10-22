@@ -128,7 +128,7 @@ namespace Archipelago.APChessV
           LoginFailure failureResult = (LoginFailure)result;
           foreach (var errCode in failureResult.ErrorCodes)
           {
-            nonSessionMessages.Add("Error code: " + errCode.GetTypeCode().ToString());
+            nonSessionMessages.Add("Error code: " + errCode.ToString());
           }
           foreach (var err in failureResult.Errors)
           {
