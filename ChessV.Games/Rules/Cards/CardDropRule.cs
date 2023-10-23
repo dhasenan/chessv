@@ -66,8 +66,11 @@ namespace ChessV.Games.Rules.Cards
 					PieceType type = Game.GetTypeByNotation( c.ToString() );
 					int player = Char.IsUpper( c ) ? 0 : 1;
 					Location loc = new Location( player, -files[player]++ ); // TODO(chesslogic): order of operations?
-          Piece piece = new Piece( Game, player, type, loc );
-					Board.Game.AddPiece( piece );
+					if (type != null)
+					{
+						Piece piece = new Piece(Game, player, type, loc);
+						Board.Game.AddPiece(piece);
+					}
 				}
 			}
 		}

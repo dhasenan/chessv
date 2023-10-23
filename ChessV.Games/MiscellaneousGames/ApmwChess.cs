@@ -122,6 +122,8 @@ namespace ChessV.Games
     public override void SetGameVariables()
     {
       base.SetGameVariables();
+      FENFormat = "{array} {current player} {pieces in hand} {castling} {en-passant} {half-move clock} {turn number}";
+      FENStart = "#{Array} w #{PocketPieces} KQkq - 0 1";
       Array = "#{BlackPieces}/#{BlackPawns}/#{BlackOuter}/8/8/#{WhiteOuter}/#{WhitePawns}/#{WhitePieces}";
       Castling.RemoveChoice("Flexible");
       PawnDoubleMove = true;
@@ -266,18 +268,22 @@ namespace ChessV.Games
       int empty = 0;
       for (int i = 0; i < 3; i++)
       {
-        //if (pockets[i] == 0)
-        //{
-        //  empty++;
-        //  pocketPieces.Add(null);
-        //}
+        if (pockets[i] == 0)
+        {
+          empty++;
+          pocketPieces.Add(null);
+          continue;
+        }
         var setOfPieceType = pocketSets[pockets[i]-1];
         Random random = new Random(ApmwCore.getInstance().pocketChoiceSeed[i]);
         int index = random.Next(setOfPieceType.Count);
         pocketPieces.Add(setOfPieceType.ToList()[index]);
       }
-      SetCustomProperty("pieces in pocket",
-        pocketPieces.Select((PieceType piece) => piece == null ? piece.Notation[humanPlayer] : "1").Aggregate("", (string piece, string notation) => notation + piece));
+      SetCustomProperty("PocketPieces",
+        (humanPlayer == 1 ? "3" : "") +
+        pocketPieces.Select((PieceType piece) => piece == null ? "1" : piece.Notation[humanPlayer])
+          .Aggregate("", (string piece, string notation) => notation + piece)
+          + (humanPlayer == 0 ? "3" : ""));
 
       SetCustomProperty(humanPrefix + "Outer", notations[0]);
       SetCustomProperty(humanPrefix + "Pawns", notations[1]);

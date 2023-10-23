@@ -5,10 +5,11 @@ using ChessV.Base;
 using ChessV.Games;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Archipelago.APChessV
 {
-  internal class LocationHandler
+  public class LocationHandler
   {
 
     public LocationHandler(ArchipelagoSession session)
@@ -61,12 +62,8 @@ namespace Archipelago.APChessV
       if (info == null)
         return; // probably never happens
 
-      // update original positions
-      if (!currentSquaresToOriginalSquares.ContainsKey(info.FromSquare))
-        currentSquaresToOriginalSquares[info.FromSquare] = info.ToSquare;
-      else
-        currentSquaresToOriginalSquares[currentSquaresToOriginalSquares[info.FromSquare]] = info.ToSquare;
-      
+      UpdateMoveState(info);
+
       // CPU can't emit locations - we've updated state, so return early
       if (info.Player != humanPlayer) {
         return;
@@ -154,6 +151,15 @@ namespace Archipelago.APChessV
           LocationCheckHelper.CompleteLocationChecks(location);
         }
       }
+    }
+
+    protected void UpdateMoveState(MoveInfo info)
+    {
+      // update original positions
+      if (!currentSquaresToOriginalSquares.ContainsKey(info.FromSquare))
+        currentSquaresToOriginalSquares[info.FromSquare] = info.ToSquare;
+      else
+        currentSquaresToOriginalSquares[currentSquaresToOriginalSquares[info.FromSquare]] = info.ToSquare;
     }
   }
 }
