@@ -28,12 +28,12 @@ namespace ChessV.Test
   [TestClass]
   public class ApmwEventsUnitTests
   {
-    Starter tested;
+    ApmwCore tested;
 
     [TestInitialize()]
     public void beforeEach()
     {
-      tested = Starter.getInstance();
+      tested = ApmwCore.getInstance();
       tested.pocketSeed = 11;
     }
 

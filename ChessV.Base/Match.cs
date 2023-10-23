@@ -66,7 +66,7 @@ namespace ChessV
 
 			HumanEnabled = delegate { };
 			Started = (match) => {
-				foreach (StartedEventHandler handler in Starter.getInstance().StartedEventHandlers)
+				foreach (StartedEventHandler handler in ApmwCore.getInstance().StartedEventHandlers)
 				{
 					handler(match);
 				}

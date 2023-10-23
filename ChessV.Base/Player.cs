@@ -20,8 +20,10 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
+using ChessV.Base;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace ChessV
@@ -406,7 +408,8 @@ namespace ChessV
 				return;
 			}
 
-			MoveMade( this, moves );
+      ApmwCore.getInstance().MoveCompletionHandler.ForEach((handler) => handler(moves.First()));
+      MoveMade( this, moves );
 		}
 
 		private void startClock()

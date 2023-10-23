@@ -14,7 +14,7 @@ namespace Archipelago.APChessV
       LocationCheckHelper = session.Locations;
 
       StartedEventHandler seHandler = (match) => this.match = match;
-      Starter.getInstance().StartedEventHandlers.Add(seHandler);
+      ApmwCore.getInstance().StartedEventHandlers.Add(seHandler);
       this.Hook();
     }
 
@@ -24,27 +24,34 @@ namespace Archipelago.APChessV
 
     public void Hook()
     {
-      Starter.getInstance().MoveCompletionHandler.Add((move) => this.HandleMove(move));
+      ApmwCore.getInstance().MoveCompletionHandler.Add((move) => this.HandleMove(move));
     }
 
-    public void HandleMove(MoveInfo info)
+    public void HandleMove(Movement movement)
     {
-      if (info == null)
+      if (movement == null)
       {
         return;
       }
 
-      if (info.PieceMoved.PieceType.Notation.Equals("K"))
+      int fromSquare = movement.FromSquare;
+      int toSquare = movement.ToSquare;
+      string notation = match.Game.GetSquareNotation(fromSquare);
+      // check if move is not to border
+      if (match.Game.Board.GetFile(toSquare) >= 1 && match.Game.Board.GetFile(toSquare) <= 6 &&
+        match.Game.Board.GetRank(toSquare) >= 1 && match.Game.Board.GetRank(toSquare) <= 6)
       {
-        var location = LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud Once");
-        LocationCheckHelper.CompleteLocationChecks(location);
+        if (notation.Equals("K"))
+        {
+          var location = LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud Once");
+          LocationCheckHelper.CompleteLocationChecks(location);
+        }
       }
-      var ToSquare = info.ToSquare;
       // check if move is to center
-      if (match.Game.Board.GetFile(ToSquare) >= 3 && match.Game.Board.GetFile(ToSquare) <= 4 &&
-        match.Game.Board.GetRank(ToSquare) >= 3 && match.Game.Board.GetRank(ToSquare) <= 4)
+      if (match.Game.Board.GetFile(toSquare) >= 3 && match.Game.Board.GetFile(toSquare) <= 4 &&
+        match.Game.Board.GetRank(toSquare) >= 3 && match.Game.Board.GetRank(toSquare) <= 4)
       {
-        if (info.PieceMoved.PieceType.Notation.Equals("K"))
+        if (notation.Equals("K"))
         {
           var location = LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud Thrice");
           LocationCheckHelper.CompleteLocationChecks(location);

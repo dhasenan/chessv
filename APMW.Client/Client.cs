@@ -23,9 +23,9 @@ namespace Archipelago.APChessV
       nonSessionMessages = new List<string>();
 
       StartedEventHandler seHandler = (match) => this.match = match;
-      Starter.getInstance().StartedEventHandlers.Add(seHandler);
+      ApmwCore.getInstance().StartedEventHandlers.Add(seHandler);
       // TODO(chesslogic): PlayAsWhite
-      Starter.getInstance().GeriProvider.Add(() => 1);
+      ApmwCore.getInstance().GeriProvider.Add(() => 1);
 
       loadPieces();
     }
@@ -59,7 +59,7 @@ namespace Archipelago.APChessV
       var Vao = new Vao("Vao", "V", 300, 175);
 
       var starters = new Dictionary<KeyValuePair<int, int>, PieceType>();
-      Starter.getInstance().PlayerPieceSetProvider.Add(() => starters);
+      ApmwCore.getInstance().PlayerPieceSetProvider.Add(() => starters);
       for (int i = 0; i < 8; i++)
       {
         starters.Add(new KeyValuePair<int, int>(1, i), Pawn);
@@ -161,7 +161,7 @@ namespace Archipelago.APChessV
           Convert.ToInt32(SlotData["majorSeed"]),
           Convert.ToInt32(SlotData["queenSeed"]), };
         // TODO(chesslogic): Check if mode is chaos, if so, set random seeds based on current time
-        Starter.getInstance().seed(seeds);
+        ApmwCore.getInstance().seed(seeds);
 
         //LocationCheckBar.ItemPickupStep = ItemLogic.ItemPickupStep;
 

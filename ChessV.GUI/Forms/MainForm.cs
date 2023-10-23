@@ -55,7 +55,7 @@ namespace ChessV.GUI
 
 			//	call .NET Forms Designer-generated initialization
 			InitializeComponent();
-			btnApmw_Click(this, new EventArgs());
+			// btnApmw_Click(this, new EventArgs());
 		}
 		#endregion
 
@@ -353,8 +353,13 @@ namespace ChessV.GUI
     private void btnApmw_Click(object sender, EventArgs e)
     {
       btnApmw.Enabled = false;
-			apmwForm = new ApmwForm();
-			apmwForm.ShowDialog();
+			if (apmwForm == null || apmwForm.IsDisposed)
+			{
+				apmwForm = new ApmwForm();
+				apmwForm.FormClosed +=
+					(object _s, FormClosedEventArgs _e) => btnApmw.Enabled = true;
+      }
+      apmwForm.Show();
 
       //if (typeof(Game) == typeof(ChessV.Games.ApmwChessGame))
     }

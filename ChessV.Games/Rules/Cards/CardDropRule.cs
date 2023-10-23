@@ -38,7 +38,7 @@ namespace ChessV.Games.Rules.Cards
 		public override void Initialize( Game game )
 		{
 			base.Initialize( game );
-			handSize = game.Board.NumSquares - game.Board.NumRanks * game.Board.NumFiles / 2;
+      handSize = game.Board.NumSquares - game.Board.NumRanks * game.Board.NumFiles / 2;
       pocketSquares = new int[handSize * 2];
       for ( int player = 0; player < game.NumPlayers; player++ )
       {
@@ -49,8 +49,14 @@ namespace ChessV.Games.Rules.Cards
       }
 		}
 
+		public override void PostInitialize()
+		{
+			
+		}
+
 		public override void PositionLoaded( FEN fen )
 		{
+			/*
 			int[] files = { 1, 1 };
 			foreach( char c in fen["pieces in hand"].ToCharArray() )
 			{
@@ -63,31 +69,38 @@ namespace ChessV.Games.Rules.Cards
 					Board.Game.AddPiece( piece );
 				}
 			}
+			*/
 		}
 
     public override MoveEventResponse MoveBeingUnmade(MoveInfo info, int ply)
     {
-			Player movingPlayer = game.CurrentPlayer;
-      if (game.CurrentPlayer.Side != info.Player)
-			{
-				movingPlayer = movingPlayer.Opponent;
+      Player movingPlayer = Game.CurrentPlayer;
+      if (movingPlayer != null)
+      {
+        if (info.FromSquare >= 0)
+          return MoveEventResponse.NotHandled;
+        if (movingPlayer.Side != info.Player)
+          movingPlayer = movingPlayer.Opponent;
+				movingPlayer.GemsSpent += info.PieceMoved.MidgameValue / 100;
+				return MoveEventResponse.Handled;
 			}
-			movingPlayer.GemsSpent += info.PieceMoved.MidgameValue / 100;
+			// TODO(chesslogic): try NotHandled
 			return MoveEventResponse.Handled;
     }
 
     public override MoveEventResponse MoveBeingMade(MoveInfo info, int something)
     {
-      Player movingPlayer = game.CurrentPlayer;
-      if (game.CurrentPlayer.Side != info.Player)
-      {
-        movingPlayer = movingPlayer.Opponent;
+      Player movingPlayer = Game.CurrentPlayer;
+      if (movingPlayer != null) {
+				if (info.FromSquare >= 0)
+          return MoveEventResponse.NotHandled;
+        if (movingPlayer.Side != info.Player)
+					movingPlayer = movingPlayer.Opponent;
+        if (movingPlayer.Gems < info.PieceMoved.MidgameValue / 100)
+          return MoveEventResponse.IllegalMove;
+        movingPlayer.GemsSpent += info.PieceMoved.MidgameValue / 100;
+        return MoveEventResponse.Handled;
       }
-      if (movingPlayer.Gems < info.PieceMoved.MidgameValue / 100)
-      {
-        return MoveEventResponse.IllegalMove;
-      }
-      movingPlayer.GemsSpent += info.PieceMoved.MidgameValue / 100;
 			return MoveEventResponse.Handled;
     }
 
@@ -99,8 +112,8 @@ namespace ChessV.Games.Rules.Cards
 				Piece pieceInPocket = Board[pocketSquare];
 				if( pieceInPocket != null )
         {
-          Player movingPlayer = game.CurrentPlayer;
-          if (game.CurrentPlayer.Side != list.CurrentMove.Player)
+          Player movingPlayer = Game.CurrentPlayer;
+          if (Game.CurrentPlayer.Side != list.CurrentMove.Player)
           {
             movingPlayer = movingPlayer.Opponent;
           }

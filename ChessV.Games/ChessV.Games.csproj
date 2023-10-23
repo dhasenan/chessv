@@ -199,7 +199,6 @@
     <Compile Include="Rules\Alice\AliceEnPassantRule.cs" />
     <Compile Include="Rules\Alice\AliceFlexibleCastlingRule.cs" />
     <Compile Include="Rules\Alice\AliceRule.cs" />
-    <Compile Include="Rules\Apmw\ApmwMoveCompletionRule.cs" />
     <Compile Include="Rules\BareKingRule.cs" />
     <Compile Include="Rules\BasicPromotionRule.cs" />
     <Compile Include="Rules\Berolina\BerolinaEnPassantRule.cs" />
@@ -251,7 +250,9 @@
       <Name>ChessV.Base</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Rules\Apmw\" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>

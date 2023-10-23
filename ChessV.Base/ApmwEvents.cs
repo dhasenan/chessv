@@ -7,19 +7,19 @@ using System.Linq;
 
 namespace ChessV.Base
 {
-  public class Starter
+  public class ApmwCore
 	{
-		public static Starter _instance;
+		public static ApmwCore _instance;
 
-		public static Starter getInstance()
+		public static ApmwCore getInstance()
 		{
 			if (_instance == null)
 			{
-				lock (typeof(Starter))
+				lock (typeof(ApmwCore))
         {
           if (_instance == null)
 					{
-						_instance = new Starter();
+						_instance = new ApmwCore();
 					}
         }
 			}
@@ -39,7 +39,7 @@ namespace ChessV.Base
     /** Provides 0 if the player has found PlayAsWhite item, otherwise provides 1 */
     public List<Func<int>> GeriProvider = new List<Func<int>>();
     /** Provides 0 if the player has found PlayAsWhite item, otherwise provides 1 */
-    public List<Action<MoveInfo>> MoveCompletionHandler = new List<Action<MoveInfo>>();
+    public List<Action<Movement>> MoveCompletionHandler = new List<Action<Movement>>();
 
     public void seed(int[] seeds)
     {

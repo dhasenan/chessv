@@ -20,7 +20,6 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 using ChessV.Base;
 using ChessV.Games.Pieces.Berolina;
-using ChessV.Games.Rules.Apmw;
 using ChessV.Games.Rules.Cards;
 using System;
 using System.Collections.Generic;
@@ -91,7 +90,7 @@ namespace ChessV.Games
       AddRule(new CardDropRule());
       RemoveRule(typeof(Rules.CheckmateRule));
       AddRule(new Rules.Extinction.ExtinctionRule("K"));
-      AddRule(new ApmwMoveCompletionRule());
+      //AddRule(new ApmwMoveCompletionRule());
       // TODO(chesslogic): conditionally remove en passant for one player only. (the Apmw provider probably knows whether the player can en passant at this point)
 
     }
@@ -166,7 +165,7 @@ namespace ChessV.Games
     {
       base.SetOtherVariables();
 
-      Starter starter = Starter.getInstance();
+      ApmwCore starter = ApmwCore.getInstance();
       Dictionary<KeyValuePair<int, int>, PieceType> pieces =
         starter.PlayerPieceSetProvider.FirstOrDefault().Invoke();
 
