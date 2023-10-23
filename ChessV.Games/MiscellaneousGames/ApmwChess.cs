@@ -32,21 +32,12 @@ namespace ChessV.Games
 {
 	//**********************************************************************
 	//
-	//                           AliceChess
+	//                        Archipelago ChecksMate
 	//
-	//    This class implements Alice Chess.  This game is Chess with an 
-	//    extra board that starts off empty.  With each move, a piece is 
-	//    transferred to the other board.  A move must be legal on the 
-	//    board on which it is made and the corresponding destination 
-	//    square on the other board must be empty.  
-	//
-	//    This class, along with the AliceRule class (which handles the 
-	//    movement between boards with minimal fuss), and the TwoBoards
-	//    class (which handles the initialization and display of a pair 
-	//    of boards) demonstrate a number of techniques for extending 
-	//    ChessV for novel games.
+	//    Play against an AI with your friends! Get new pieces! Be confused!
+  //
 
-	[Game("Archipelago Multiworld", typeof(Geometry.Rectangular), 8, 8, 2,
+	[Game("Archipelago Multiworld", typeof(Geometry.Rectangular), 8, 8, 3,
 		  Invented = "2019",
 		  InventedBy = "Berserker", 
 		  Tags = "Chess Variant,Multiple Boards,Popular,Different Armies")]
