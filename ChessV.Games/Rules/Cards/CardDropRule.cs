@@ -60,8 +60,8 @@ namespace ChessV.Games.Rules.Pocket
 				{
 					PieceType type = Game.GetTypeByNotation( c.ToString() );
 					int player = Char.IsUpper( c ) ? 0 : 1;
-					Location loc = new Location( player, -files[player]++ ); // TODO: order of operations?
-					Piece piece = new Piece( Game, player, type, loc );
+					Location loc = new Location( player, -files[player]++ ); // TODO(chesslogic): order of operations?
+          Piece piece = new Piece( Game, player, type, loc );
 					Board.Game.AddPiece( piece );
 				}
 			}
@@ -69,7 +69,7 @@ namespace ChessV.Games.Rules.Pocket
 
 		public override MoveEventResponse MoveBeingMade(MoveInfo info, int something)
     {
-			// TODO: this probably sucks
+      // TODO(chesslogic): this probably sucks
       if (players[info.Player].Gems < info.PieceMoved.MidgameValue / 100)
       {
         return MoveEventResponse.IllegalMove;
@@ -93,7 +93,7 @@ namespace ChessV.Games.Rules.Pocket
 						return;
 					}
 
-					// TODO: square bounding based on apmw Pocket Forwardness
+          // TODO(chesslogic): square bounding based on apmw Pocket Forwardness
           for ( int square = 0; square < Board.NumSquares; square++ )
 					{
 						if( Board[square] == null )

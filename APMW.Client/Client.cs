@@ -22,7 +22,7 @@ namespace Archipelago.APChessV
 
       StartedEventHandler seHandler = (match) => this.match = match;
       Starter.getInstance().StartedEventHandlers.Add(((match) => seHandler((ChessV.Match)match)));
-      // TODO: PlayAsWhite
+      // TODO(chesslogic): PlayAsWhite
       Starter.getInstance().GeriProvider.Add(() => 1);
 
       loadPieces();

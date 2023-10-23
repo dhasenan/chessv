@@ -72,7 +72,7 @@ namespace ChessV
       }
     }
     public int GemsSpent { get; set; } = 0;
-    public int GemsGained { get; protected set; } = 0; // TODO: increased by losing a queen, and once by losing a minor piece and moving a pawn to rank 6
+    public int GemsGained { get; protected set; } = 0; // TODO(chesslogic): increased by losing a queen, and once by losing a minor piece and moving a pawn to rank 6
 
     //	true if the player is ready for input.  
     //	NOTE: when the player's state is \a Disconnected, this

@@ -102,13 +102,13 @@ namespace ChessV.Games
       AddRule(new CardDropRule());
       RemoveRule(typeof(Rules.CheckmateRule));
       AddRule(new Rules.Extinction.ExtinctionRule("K"));
-      // TODO: conditionally remove en passant for one player only. (the Apmw provider probably knows whether the player can en passant at this point)
+      // TODO(chesslogic): conditionally remove en passant for one player only. (the Apmw provider probably knows whether the player can en passant at this point)
 
     }
-		#endregion
+    #endregion
 
-		#region AddEvaluations
-		public override void AddEvaluations()
+    #region AddEvaluations
+    public override void AddEvaluations()
 		{
 			//	most, if not all, evaluations probably won't do the "right" thing 
 			//	in this game, so we'll override this function and do nothing
@@ -187,8 +187,8 @@ namespace ChessV.Games
       {
         (humanPrefix, cpuPrefix) = (cpuPrefix, humanPrefix);
 
-        // TODO: CPU gets 1 piece per checkmate (as location?), Goal is to checkmate a "full" CPU army
-        // TODO: CPU different armies
+        // TODO(chesslogic): CPU gets 1 piece per checkmate (as location?), Goal is to checkmate a "full" CPU army
+        // TODO(chesslogic): CPU different armies
         SetCustomProperty("BlackOuter", "8");
         SetCustomProperty("BlackPawns", "pppppppp");
         SetCustomProperty("BlackPieces", "rnbqkbnr");
