@@ -37,8 +37,11 @@ namespace ChessV
 	public delegate void PlayersReadyEventHandler();
 
 	public class Match
-	{
-		public Match( Game game, PGNGame pgn, IDebugMessageLog messageLog, TimerFactory timerFactory )
+  {
+    // TEST ONLY
+    public Match() { }
+
+    public Match( Game game, PGNGame pgn, IDebugMessageLog messageLog, TimerFactory timerFactory )
 		{
 			Game = game;
 			StartDelay = 0;
@@ -78,7 +81,7 @@ namespace ChessV
 		
 		public string ErrorString { get; set; }
 
-		public Player GetPlayer( int side )
+		public virtual Player GetPlayer( int side )
 		{
 			if( side != 0 && side != 1 )
 				throw new Exception( "ERROR in Match.GetPlayer: Cannot get null player" );

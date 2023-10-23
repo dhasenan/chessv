@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Archipelago.MultiClient.Net;
 using Archipelago.MultiClient.Net.Helpers;
 using ChessV;
+using ChessV.Base;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
@@ -14,10 +15,11 @@ namespace Archipelago.APChessV
   public class LocationHandlerUnitTests
   {
     LocationHandler handler;
-    Mock<LocationCheckHelper> locations;
+    Mock<ILocationCheckHelper> locations;
     Mock<ChessV.Match> match;
     Mock<Game> game;
     Mock<Board> board;
+    Mock<Player> player;
 
     Mock<Piece> firstPiece;
     Mock<Piece> secondPiece;
@@ -34,12 +36,16 @@ namespace Archipelago.APChessV
     [TestInitialize()]
     public void beforeEach()
     {
-      locations = new Mock<LocationCheckHelper>();
+      locations = new Mock<ILocationCheckHelper>();
+
+      player = new Mock<Player>();
+      player.SetupGet(mock => mock.IsHuman).Returns(true);
 
       board = new Mock<Board>();
       game = new Mock<Game>();
       match = new Mock<ChessV.Match>();
       match.SetupGet(mock => mock.Game).Returns(game.Object);
+      match.Setup(mock => mock.GetPlayer(0)).Returns(player.Object);
       game.SetupGet(mock => mock.Board).Returns(board.Object);
 
       firstPieceType = new Mock<PieceType>();
@@ -54,6 +60,8 @@ namespace Archipelago.APChessV
       //board.Setup(mock => mock.GetFile(1)).Returns(0);
 
       handler = new LocationHandler(locations.Object);
+
+      ApmwCore._instance.StartedEventHandlers.ForEach((handler) => handler(match.Object));
     }
 
     [TestMethod]

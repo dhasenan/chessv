@@ -67,10 +67,13 @@ namespace ChessV
 		{ get { return PieceType.EndgameValue; } }
 
 
-		// *** CONSTRUCTION *** //
+    // *** CONSTRUCTION *** //
 
-		#region Constructors
-		public Piece( Game game, GenericPiece genericPiece, int square ):
+    // TEST ONLY
+    public Piece() { }
+
+    #region Constructors
+    public Piece( Game game, GenericPiece genericPiece, int square ):
 			base( genericPiece )
 		{
 			Game = game;

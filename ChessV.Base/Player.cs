@@ -115,9 +115,12 @@ namespace ChessV
 		public MoveEvaluation Evaluation;
 
 
-		// *** CONSTRUCTION *** //
+    // *** CONSTRUCTION *** //
 
-		public Player( IDebugMessageLog messageLog, TimerFactory timerFactory )
+    // TEST ONLY
+    public Player() { }
+
+    public Player( IDebugMessageLog messageLog, TimerFactory timerFactory )
 		{
 			State = PlayerState.NotStarted;
 			this.timer = timerFactory.NewTimer();

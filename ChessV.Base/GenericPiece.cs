@@ -45,7 +45,10 @@ namespace ChessV
 
 		// *** CONSTRUCTION *** //
 
-		public GenericPiece( GenericPiece piece )
+    // TEST ONLY
+    public GenericPiece() { }
+
+    public GenericPiece( GenericPiece piece )
 		{
 			Player = piece.Player;
 			PieceType = piece.PieceType;

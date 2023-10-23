@@ -12,7 +12,7 @@ namespace Archipelago.APChessV
   public class LocationHandler
   {
 
-    public LocationHandler(LocationCheckHelper locationCheckHelper)
+    public LocationHandler(ILocationCheckHelper locationCheckHelper)
     {
       LocationCheckHelper = locationCheckHelper;
 
@@ -24,7 +24,7 @@ namespace Archipelago.APChessV
       ApmwCore.getInstance().StartedEventHandlers.Add(seHandler);
     }
 
-    public LocationCheckHelper LocationCheckHelper { get; private set; }
+    public ILocationCheckHelper LocationCheckHelper { get; private set; }
 
     private ChessV.Match match;
     private int humanPlayer;
