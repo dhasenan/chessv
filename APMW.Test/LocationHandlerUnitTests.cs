@@ -127,18 +127,6 @@ namespace Archipelago.APChessV
       locations.Verify(locs => locs.GetLocationIdFromName("ChecksMate", "Capture Piece C"));
     }
 
-    [TestMethod]
-    public void updateMoveState_findsMultiMovedPiece()
-    {
-
-    }
-
-    [TestMethod]
-    public void updateMoveState_findsCrisscrossedPiece()
-    {
-
-    }
-
     private MoveInfo GetMoveInfo() {
       MoveInfo info = new MoveInfo();
 

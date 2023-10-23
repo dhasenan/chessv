@@ -62,10 +62,10 @@ namespace Archipelago.APChessV
       if (info == null)
         return; // probably never happens
 
-      UpdateMoveState(info);
-
       // CPU can't emit locations - we've updated state, so return early
-      if (info.Player != humanPlayer) {
+      if (info.Player != humanPlayer)
+      {
+        UpdateMoveState(info);
         return;
       }
 
@@ -151,6 +151,8 @@ namespace Archipelago.APChessV
           LocationCheckHelper.CompleteLocationChecks(location);
         }
       }
+
+      UpdateMoveState(info);
     }
 
     public void UpdateMoveState(MoveInfo info)
