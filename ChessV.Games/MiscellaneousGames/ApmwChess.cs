@@ -21,6 +21,7 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 using ChessV.Base;
 using ChessV.Games.Pieces.Berolina;
 using ChessV.Games.Rules.Alice;
+using ChessV.Games.Rules.Pocket;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -98,7 +99,10 @@ namespace ChessV.Games
 		public override void AddRules()
 		{
 			base.AddRules();
-		}
+      AddRule(new CardDropRule());
+      RemoveRule(typeof(Rules.CheckmateRule));
+      AddRule(new Rules.Extinction.ExtinctionRule("K"));
+    }
 		#endregion
 
 		#region AddEvaluations
