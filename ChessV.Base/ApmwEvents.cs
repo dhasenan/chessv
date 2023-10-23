@@ -39,7 +39,7 @@ namespace ChessV.Base
     /** Provides 0 if the player has found PlayAsWhite item, otherwise provides 1 */
     public List<Func<int>> GeriProvider = new List<Func<int>>();
     /** Provides 0 if the player has found PlayAsWhite item, otherwise provides 1 */
-    public List<Action<Movement>> MoveCompletionHandler = new List<Action<Movement>>();
+    public List<Action<Movement>> MovePlayed = new List<Action<Movement>>();
 
     public void seed(int[] seeds)
     {
