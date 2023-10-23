@@ -57,6 +57,7 @@ namespace Archipelago.APChessV
 
     public void HandleMove(MoveInfo info)
     {
+      long location;
       if (info == null)
         return; // probably never happens
 
@@ -66,19 +67,45 @@ namespace Archipelago.APChessV
       else
         currentSquaresToOriginalSquares[currentSquaresToOriginalSquares[info.FromSquare]] = info.ToSquare;
       
+      // CPU can't emit locations - we've updated state, so return early
       if (info.Player != humanPlayer) {
         return;
       }
 
       Piece piece = info.PieceMoved;
       string pieceName = piece.PieceType.Name;
-      // check if move is not to border
-      if (match.Game.Board.GetFile(info.ToSquare) == 4 &&
-        match.Game.Board.GetRank(info.ToSquare) >= 1 && match.Game.Board.GetRank(info.ToSquare) <= 6)
+
+      //
+      // BEGIN various king moves ...
+      //
+
+      // check if move is early and is directly forward one step
+      if (match.Game.GameTurnNumber <= 2 &&
+        match.Game.Board.GetFile(info.ToSquare) == 4 &&
+        (match.Game.Board.GetRank(info.ToSquare) == 1 || match.Game.Board.GetRank(info.ToSquare) == 6))
       {
         if (pieceName.Equals("King"))
         {
-          var location = LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud Once");
+          location = LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud Once");
+          LocationCheckHelper.CompleteLocationChecks(location);
+        }
+      }
+      // check if move is to A file
+      if (match.Game.Board.GetFile(info.ToSquare) == 0)
+      {
+        if (pieceName.Equals("King"))
+        {
+          location = LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud A File");
+          LocationCheckHelper.CompleteLocationChecks(location);
+        }
+      }
+      // check if move is to distant rank
+      if ((info.Player == 1 && match.Game.Board.GetRank(info.ToSquare) == 0) ||
+        (info.Player == 0 && match.Game.Board.GetRank(info.ToSquare) == 7))
+      {
+        if (pieceName.Equals("King"))
+        {
+          location = LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud Promotion");
           LocationCheckHelper.CompleteLocationChecks(location);
         }
       }
@@ -87,13 +114,23 @@ namespace Archipelago.APChessV
       {
         if (pieceName.Equals("King"))
         {
-          var location = LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud Thrice");
+          location = LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud Thrice");
           LocationCheckHelper.CompleteLocationChecks(location);
         }
       }
+      //
+      // END various king moves ...
+      //
+
       // check if move is capture
       if ((info.MoveType & MoveType.CaptureProperty) != 0)
       {
+        // handle king captures
+        if (pieceName.Equals("King"))
+        {
+          location = LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud Capture");
+          LocationCheckHelper.CompleteLocationChecks(location);
+        }
         // handle specific piece
         int originalSquare = info.ToSquare;
         if (currentSquaresToOriginalSquares.ContainsKey(info.ToSquare))
@@ -107,7 +144,7 @@ namespace Archipelago.APChessV
           locationName = "Capture Piece " + fileNotation;
         else
           locationName = "Capture Pawn " + fileNotation;
-        var location = LocationCheckHelper.GetLocationIdFromName("ChecksMate", locationName);
+        location = LocationCheckHelper.GetLocationIdFromName("ChecksMate", locationName);
         LocationCheckHelper.CompleteLocationChecks(location);
         // handle piece sequence
         int captures;
