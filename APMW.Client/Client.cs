@@ -21,7 +21,7 @@ namespace Archipelago.APChessV
       nonSessionMessages = new List<string>();
 
       StartedEventHandler seHandler = (match) => this.match = match;
-      Starter.getInstance().StartedEventHandlers.Add(((match) => seHandler((ChessV.Match)match)));
+      Starter.getInstance().StartedEventHandlers.Add(seHandler);
       // TODO(chesslogic): PlayAsWhite
       Starter.getInstance().GeriProvider.Add(() => 1);
 
@@ -38,20 +38,20 @@ namespace Archipelago.APChessV
       var Knight = new Knight("Knight", "N", 325, 325);
 
       // Berolina
-      var BerolinaPawn = new BerolinaPawn("Berolina Pawn", "Ƥ / ƥ", 100, 125, preferredImageName: "Ferz");
+      var BerolinaPawn = new BerolinaPawn("Berolina Pawn", "Ƥ/ƥ", 100, 125, preferredImageName: "Ferz");
       // Cwda
       var Archbishop = new Archbishop("Archbishop", "A", 875, 875);
       var WarElephant = new WarElephant("War Elephant", "E", 475, 475);
       var Phoenix = new Phoenix("Phoenix", "X", 315, 315);
-      var Cleric = new Cleric("Cleric", "L", 450, 500);
+      var Cleric = new Cleric("Cleric", "Ċ/ċ", 450, 500);
       var Chancellor = new Chancellor("Chancellor", "C", 950, 950);
       var ShortRook = new ShortRook("Short Rook", "S", 400, 425);
       var Tower = new Tower("Tower", "T", 325, 325);
       var Lion = new Lion("Lion", "I", 500, 500);
-      var ChargingRook = new ChargingRook("Charging Rook", "HR", 495, 530);
-      var NarrowKnight = new NarrowKnight("Lancer", "LC", 325, 325);
-      var ChargingKnight = new ChargingKnight("Charging Knight", "HN", 365, 365);
-      var Colonel = new Colonel("Colonel", "CN", 950, 950);
+      var ChargingRook = new ChargingRook("Charging Rook", "Ṙ/ṙ", 495, 530);
+      var NarrowKnight = new NarrowKnight("Lancer", "L", 325, 325);
+      var ChargingKnight = new ChargingKnight("Charging Knight", "Ṅ/ṅ", 365, 365);
+      var Colonel = new Colonel("Colonel", "K̇/k̇", 950, 950);
       // Eurasian
       var Cannon = new Cannon("Cannon", "O", 400, 275);
       var Vao = new Vao("Vao", "V", 300, 175);
@@ -121,7 +121,7 @@ namespace Archipelago.APChessV
 
       connectionTask = new Task(() =>
       {
-        var result = session.TryConnectAndLogin("ChessV", slotName, itemsHandlingFlags: ItemsHandlingFlags.AllItems, new Version(4, 3, 0), tags: new string[] { "DeathLink" });
+        var result = session.TryConnectAndLogin("ChecksMate", slotName, itemsHandlingFlags: ItemsHandlingFlags.AllItems, new Version(4, 3, 0), tags: new string[] { "DeathLink" });
 
         if (!result.Successful)
         {

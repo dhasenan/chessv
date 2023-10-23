@@ -31,7 +31,7 @@ namespace ChessV.Base
     public int queenSeed = -1;
 
     /** ChessV.Base.Match */
-    public List<Action<object>> StartedEventHandlers = new List<Action<object>>();
+    public List<StartedEventHandler> StartedEventHandlers = new List<StartedEventHandler>();
     /** ChessV.Base.PieceType */
     public List<Func<Dictionary<KeyValuePair<int, int>, PieceType>>> PlayerPieceSetProvider = new List<Func<Dictionary<KeyValuePair<int, int>, PieceType>>>();
     /** Provides 0 if the player has found PlayAsWhite item, otherwise provides 1 */

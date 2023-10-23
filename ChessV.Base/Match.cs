@@ -66,9 +66,9 @@ namespace ChessV
 
 			HumanEnabled = delegate { };
 			Started = (match) => {
-				foreach (Action<Match> handler in Starter.getInstance().StartedEventHandlers)
+				foreach (StartedEventHandler handler in Starter.getInstance().StartedEventHandlers)
 				{
-					((Action<object>)handler).DynamicInvoke(match);
+					handler(match);
 				}
 			};
 			FENChanged = delegate { };

@@ -45,7 +45,7 @@ namespace ChessV.GUI
 
     private ArchipelagoClient archipelagoClient;
 		private MessageLogHelper messageLog;
-		private List<LogMessage> pastMessages;
+		private List<LogMessage> pastMessages = new List<LogMessage>();
     private int linesSeen = 0;
     private int nonSessionLinesSeen = 0;
 
