@@ -20,13 +20,11 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 using ChessV.Base;
 using ChessV.Games.Pieces.Berolina;
-using ChessV.Games.Rules.Alice;
-using ChessV.Games.Rules.Pocket;
+using ChessV.Games.Rules.Apmw;
+using ChessV.Games.Rules.Cards;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using System.Runtime.Remoting.Metadata;
 
 namespace ChessV.Games
 {
@@ -93,6 +91,7 @@ namespace ChessV.Games
       AddRule(new CardDropRule());
       RemoveRule(typeof(Rules.CheckmateRule));
       AddRule(new Rules.Extinction.ExtinctionRule("K"));
+      AddRule(new ApmwMoveCompletionRule());
       // TODO(chesslogic): conditionally remove en passant for one player only. (the Apmw provider probably knows whether the player can en passant at this point)
 
     }

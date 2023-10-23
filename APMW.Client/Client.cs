@@ -20,7 +20,6 @@ namespace Archipelago.APChessV
   {
     public ArchipelagoClient()
     {
-      LocationHandler = new LocationHandler();
       nonSessionMessages = new List<string>();
 
       StartedEventHandler seHandler = (match) => this.match = match;
@@ -85,7 +84,6 @@ namespace Archipelago.APChessV
     public ArchipelagoSession session { get; private set; }
     public List<String> nonSessionMessages { get; private set; }
 
-    public LocationCheckHelper LocationCheckHelper { get; private set; }
     public Dictionary<string, object> SlotData { get; private set; }
 
     private DataPackagePacket dataPackagePacket;
@@ -153,8 +151,8 @@ namespace Archipelago.APChessV
           //finalStageDeath = Convert.ToBoolean(stageDeathObject);
         }
 
+        LocationHandler = new LocationHandler(session);
         SlotData = session.DataStorage.GetSlotData();
-        LocationCheckHelper = session.Locations;
 
         var seeds = new int[] {
           Convert.ToInt32(SlotData["pocketSeed"]),

@@ -22,14 +22,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ChessV.Games.Rules.Pocket
+namespace ChessV.Games.Rules.Cards
 {
 	public class CardDropRule: Rule
   {
     protected int handSize;
     protected int[] pocketSquares;
 
-		protected static List<Player> players = new List<Player>(2);
+		protected static Game game;
 
 		public CardDropRule()
 		{
@@ -40,8 +40,6 @@ namespace ChessV.Games.Rules.Pocket
 			base.Initialize( game );
 			handSize = game.Board.NumSquares - game.Board.NumRanks * game.Board.NumFiles / 2;
       pocketSquares = new int[handSize * 2];
-      players[0] = game.CurrentPlayer;
-      players[1] = game.CurrentPlayer.Opponent;
       for ( int player = 0; player < game.NumPlayers; player++ )
       {
 				for (int card = 0; card < handSize; card++)
@@ -69,18 +67,27 @@ namespace ChessV.Games.Rules.Pocket
 
     public override MoveEventResponse MoveBeingUnmade(MoveInfo info, int ply)
     {
-      players[info.Player].GemsSpent += info.PieceMoved.MidgameValue / 100;
+			Player movingPlayer = game.CurrentPlayer;
+      if (game.CurrentPlayer.Side != info.Player)
+			{
+				movingPlayer = movingPlayer.Opponent;
+			}
+			movingPlayer.GemsSpent += info.PieceMoved.MidgameValue / 100;
 			return MoveEventResponse.Handled;
     }
 
     public override MoveEventResponse MoveBeingMade(MoveInfo info, int something)
     {
-      // TODO(chesslogic): this probably sucks
-      if (players[info.Player].Gems < info.PieceMoved.MidgameValue / 100)
+      Player movingPlayer = game.CurrentPlayer;
+      if (game.CurrentPlayer.Side != info.Player)
+      {
+        movingPlayer = movingPlayer.Opponent;
+      }
+      if (movingPlayer.Gems < info.PieceMoved.MidgameValue / 100)
       {
         return MoveEventResponse.IllegalMove;
       }
-      players[info.Player].GemsSpent += info.PieceMoved.MidgameValue / 100;
+      movingPlayer.GemsSpent += info.PieceMoved.MidgameValue / 100;
 			return MoveEventResponse.Handled;
     }
 
@@ -92,9 +99,12 @@ namespace ChessV.Games.Rules.Pocket
 				Piece pieceInPocket = Board[pocketSquare];
 				if( pieceInPocket != null )
         {
-					var player = Game.CurrentPlayer;
-					players[player.Side] = player;
-					if (player.Gems < pieceInPocket.MidgameValue / 100)
+          Player movingPlayer = game.CurrentPlayer;
+          if (game.CurrentPlayer.Side != list.CurrentMove.Player)
+          {
+            movingPlayer = movingPlayer.Opponent;
+          }
+					if (movingPlayer.Gems < pieceInPocket.MidgameValue / 100)
 					{
 						return;
 					}

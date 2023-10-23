@@ -172,7 +172,10 @@ namespace ChessV
 				State = PlayerState.Thinking;
 			else
 				State = PlayerState.Observing;
-		}
+
+      GemsGained = opponent.Opponent.GemsGained;
+      GemsSpent = opponent.Opponent.GemsSpent;
+    }
 
 		//	Tells the player that the game ended by result.
 		//	NOTE: Subclasses that reimplement this function must call
