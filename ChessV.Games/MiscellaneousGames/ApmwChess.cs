@@ -189,7 +189,8 @@ namespace ChessV.Games
         SetCustomProperty("WhitePieces", "RNBQKBNR");
       }
 
-      //	determine player's second-row pawns
+      //	determine player's board
+      // TODO(chesslogic): incorporate ApmwCore
       Dictionary<int, string> notations = new Dictionary<int, string>();
 
       for (int rank = 0; rank < this.NumRanks; rank++)
@@ -220,6 +221,10 @@ namespace ChessV.Games
           emptySpaceCount = 0;
         }
       }
+
+      // determine pockets
+      int foundPockets = ApmwCore.getInstance().foundPockets;
+      var pockets = ApmwCore.getInstance().generatePocketValues(foundPockets);
 
       SetCustomProperty(humanPrefix + "Outer", notations[0]);
       SetCustomProperty(humanPrefix + "Pawns", notations[1]);

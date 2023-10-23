@@ -88,6 +88,7 @@
   <ItemGroup>
     <Compile Include="Client.cs" />
     <Compile Include="Convenience.cs" />
+    <Compile Include="ItemHandler.cs" />
     <Compile Include="LocationHandler.cs" />
     <Compile Include="Progress.cs" />
     <Compile Include="Config.cs" />

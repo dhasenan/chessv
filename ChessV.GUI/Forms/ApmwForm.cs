@@ -106,6 +106,7 @@ namespace ChessV.GUI
 
     private void button1_Click(object sender, EventArgs e)
     {
+      // TODO(chesslogic): change to disconnect mode (for now, just close the program, lol)
 			button1.Enabled = false;
       timer2.Stop();
       timer2.Start();

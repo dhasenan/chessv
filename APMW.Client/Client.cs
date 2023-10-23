@@ -170,6 +170,8 @@ namespace Archipelago.APChessV
         // TODO(chesslogic): Check if mode is chaos, if so, set random seeds based on current time
         ApmwCore.getInstance().seed(seeds);
 
+        ItemHandler handler = new ItemHandler(session);
+
         //LocationCheckBar.ItemPickupStep = ItemLogic.ItemPickupStep;
 
         //session.Socket.PacketReceived += Session_PacketReceived;

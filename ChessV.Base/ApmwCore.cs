@@ -32,6 +32,12 @@ namespace ChessV.Base
     public int majorSeed = -1;
     public int queenSeed = -1;
 
+    public int foundPockets = -1;
+    public int foundPawns = -1;
+    public int foundPieces = -1;
+    public int foundMajors = -1;
+    public int foundQueens = -1;
+
     /** ChessV.Base.Match */
     public List<StartedEventHandler> StartedEventHandlers = new List<StartedEventHandler>();
     /** ChessV.Base.PieceType */
