@@ -127,7 +127,7 @@ namespace Archipelago.APChessV
         int originalFile = match.Game.Board.GetFile(originalSquare);
         string fileNotation = match.Game.Board.GetFileNotation(originalFile);
         fileNotation = fileNotation.ToUpper();
-        bool isPiece = !info.PieceMoved.PieceType.Name.Contains("Pawn");
+        bool isPiece = !info.PieceCaptured.PieceType.Name.Contains("Pawn");
         string locationName;
         if (isPiece)
           locationName = "Capture Piece " + fileNotation;
