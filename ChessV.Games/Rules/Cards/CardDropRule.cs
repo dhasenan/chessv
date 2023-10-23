@@ -56,6 +56,8 @@ namespace ChessV.Games.Rules.Cards
 
 		public override void PositionLoaded( FEN fen )
 		{
+			// TODO(chesslogic): load pockets from apmwcore, ignore FEN
+
 			/*
 			int[] files = { 1, 1 };
 			foreach( char c in fen["pieces in hand"].ToCharArray() )

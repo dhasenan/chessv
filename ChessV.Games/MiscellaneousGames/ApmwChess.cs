@@ -68,6 +68,11 @@ namespace ChessV.Games
     public PieceType Cannon;
     public PieceType Vao;
 
+    public HashSet<PieceType> pawns = new HashSet<PieceType>();
+    public HashSet<PieceType> minors = new HashSet<PieceType>();
+    public HashSet<PieceType> majors = new HashSet<PieceType>();
+    public HashSet<PieceType> queens = new HashSet<PieceType>();
+
     public ApmwChessGame()
 		{
     }
@@ -148,6 +153,30 @@ namespace ChessV.Games
       // Eurasian
       AddPieceType(Cannon = new Cannon("Cannon", "O", 400, 275));
       AddPieceType(Vao = new Vao("Vao", "V", 300, 175));
+
+      pawns.Add(Pawn);
+      pawns.Add(BerolinaPawn);
+
+      minors.Add(Bishop);
+      minors.Add(Knight);
+      minors.Add(Phoenix);
+      minors.Add(ShortRook); // unusually powerful
+      minors.Add(Tower);
+      minors.Add(NarrowKnight);
+      minors.Add(ChargingKnight);
+      minors.Add(Vao);
+      minors.Add(Cannon); // unusually powerful
+
+      majors.Add(Rook);
+      majors.Add(WarElephant);
+      majors.Add(Cleric);
+      majors.Add(Lion);
+      majors.Add(ChargingRook);
+
+      queens.Add(Queen);
+      queens.Add(Archbishop);
+      queens.Add(Chancellor);
+      queens.Add(Colonel);
 
       //	Army adjustment
       //if ((WhiteArmy.Value == "Fabulous FIDEs" && BlackArmy.Value == "Remarkable Rookies") ||
