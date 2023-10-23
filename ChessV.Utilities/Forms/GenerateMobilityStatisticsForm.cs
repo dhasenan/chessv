@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
 using System.Windows.Forms;
+using ChessV.Games;
 
 namespace ChessV.Utilities
 {
@@ -62,13 +63,13 @@ namespace ChessV.Utilities
 			addPieceType( typeof(Phoenix), "WA" );
 			addPieceType( typeof(Cleric), "BD" );
 			addPieceType( typeof(ShortRook), "R4" );
-			addPieceType( typeof(Bowman), "WD" );
+			//addPieceType( typeof(Bowman), "WD" );
 			addPieceType( typeof(NarrowKnight), "fbNF" );
 			addPieceType( typeof(ChargingRook), "frlRbK" );
 			addPieceType( typeof(ChargingKnight), "fhNrlbK" );
 			addPieceType( typeof(Colonel), "fhNfrlRbK" );
 
-			ChessV.Games.Abstract.UndefinedGame game = new Games.Abstract.UndefinedGame( 2, nFiles, nRanks );
+			ChessV.Games.Abstract.UndefinedGame game = new Games.Abstract.UndefinedGame( nFiles, nRanks );
 			game.Initialize( new GameAttribute( "", typeof(Geometry.Rectangular), nFiles, nRanks ), null, null );
 
 			StringBuilder str = new StringBuilder();

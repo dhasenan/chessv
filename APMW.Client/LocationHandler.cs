@@ -156,10 +156,10 @@ namespace Archipelago.APChessV
     public void UpdateMoveState(MoveInfo info)
     {
       // update original positions
-      if (!currentSquaresToOriginalSquares.ContainsKey(info.FromSquare))
-        currentSquaresToOriginalSquares[info.FromSquare] = info.ToSquare;
+      if (currentSquaresToOriginalSquares.ContainsKey(info.FromSquare))
+        currentSquaresToOriginalSquares[info.ToSquare] = currentSquaresToOriginalSquares[info.FromSquare];
       else
-        currentSquaresToOriginalSquares[currentSquaresToOriginalSquares[info.FromSquare]] = info.ToSquare;
+        currentSquaresToOriginalSquares[info.ToSquare] = info.FromSquare;
     }
   }
 }

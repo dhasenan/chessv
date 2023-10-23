@@ -143,11 +143,11 @@ namespace ChessV
 
         #region Public Inquiry Functions
         //	Lookup for the char notation of a given file
-		public string GetFileNotation( int nFile )
+		public virtual string GetFileNotation( int nFile )
 		{ return fileNotations[nFile].ToString(); }
 
 		//	Lookup for the char notation of a given rank
-		public string GetRankNotation( int nRank )
+		public virtual string GetRankNotation( int nRank )
 		{ return rankNotations[nRank].ToString(); }
 
 		//	Lookup for the notaiton of a square
@@ -159,7 +159,7 @@ namespace ChessV
 		{ return rankBySquare[square]; }
 
 		//	Find the File for a given square
-		public int GetFile( int square )
+		public virtual int GetFile( int square )
 		{ return fileBySquare[square]; }
 
 		//	Get the distance (in King-steps) between the two squares

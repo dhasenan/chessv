@@ -147,6 +147,7 @@
     <Compile Include="EngineOptions\EngineTextOption.cs" />
     <Compile Include="Exceptions\GameInitializationException.cs" />
     <Compile Include="GenericPiece.cs" />
+    <Compile Include="IPieceType.cs" />
     <Compile Include="MaterialHashEntry.cs" />
     <Compile Include="Search.cs" />
     <Compile Include="Hashtable.cs" />

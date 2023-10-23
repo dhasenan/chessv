@@ -47,6 +47,18 @@ namespace Archipelago.APChessV
       match.SetupGet(mock => mock.Game).Returns(game.Object);
       match.Setup(mock => mock.GetPlayer(0)).Returns(player.Object);
       game.SetupGet(mock => mock.Board).Returns(board.Object);
+      board.Setup(mock => mock.GetFile(0)).Returns(0);
+      board.Setup(mock => mock.GetFile(1)).Returns(1);
+      board.Setup(mock => mock.GetFile(2)).Returns(2);
+      board.Setup(mock => mock.GetFile(3)).Returns(3);
+      board.Setup(mock => mock.GetFile(4)).Returns(4);
+      board.Setup(mock => mock.GetFile(5)).Returns(5);
+      board.Setup(mock => mock.GetFileNotation(0)).Returns("a");
+      board.Setup(mock => mock.GetFileNotation(1)).Returns("b");
+      board.Setup(mock => mock.GetFileNotation(2)).Returns("c");
+      board.Setup(mock => mock.GetFileNotation(3)).Returns("d");
+      board.Setup(mock => mock.GetFileNotation(4)).Returns("e");
+      board.Setup(mock => mock.GetFileNotation(5)).Returns("f");
 
       firstPieceType = new Mock<PieceType>();
       firstPiece = new Mock<Piece>();
@@ -67,6 +79,7 @@ namespace Archipelago.APChessV
     [TestMethod]
     public void updateMoveState_findsNewPiece()
     {
+      locations.Setup(locs => locs.GetLocationIdFromName("ChecksMate", It.IsAny<string>()));
 
       MoveInfo info = GetMoveInfo();
       handler.UpdateMoveState(info);
@@ -75,19 +88,52 @@ namespace Archipelago.APChessV
       info.MoveType = MoveType.StandardCapture;
       handler.HandleMove(info);
 
-      locations.Verify(locs => locs.GetLocationIdFromName("ChecksMate", "Piece A"));
+      locations.Verify(locs => locs.GetLocationIdFromName("ChecksMate", "Capture Piece C"));
     }
 
+    [TestMethod]
+    public void updateMoveState_findsDifferentPiece()
+    {
+      locations.Setup(locs => locs.GetLocationIdFromName("ChecksMate", It.IsAny<string>()));
+
+      MoveInfo info = GetMoveInfo();
+      info.FromSquare = 0;
+      handler.UpdateMoveState(info);
+      info = GetMoveInfo();
+      info.FromSquare = 2;
+      info.MoveType = MoveType.StandardCapture;
+      handler.HandleMove(info);
+
+      locations.Verify(locs => locs.GetLocationIdFromName("ChecksMate", "Capture Piece A"));
+    }
+
+    [TestMethod]
     public void updateMoveState_findsMovedPiece()
     {
+      locations.Setup(locs => locs.GetLocationIdFromName("ChecksMate", It.IsAny<string>()));
 
+      MoveInfo info = GetMoveInfo();
+      handler.UpdateMoveState(info);
+      info = GetMoveInfo();
+      info.FromSquare = 3;
+      info.ToSquare = 5;
+      handler.UpdateMoveState(info);
+      info = GetMoveInfo();
+      info.FromSquare = 2;
+      info.ToSquare = 5;
+      info.MoveType = MoveType.StandardCapture;
+      handler.HandleMove(info);
+
+      locations.Verify(locs => locs.GetLocationIdFromName("ChecksMate", "Capture Piece C"));
     }
 
+    [TestMethod]
     public void updateMoveState_findsMultiMovedPiece()
     {
 
     }
 
+    [TestMethod]
     public void updateMoveState_findsCrisscrossedPiece()
     {
 
