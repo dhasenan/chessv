@@ -356,8 +356,8 @@ namespace ChessV.GUI
 			if (apmwForm == null || apmwForm.IsDisposed)
 			{
 				apmwForm = new ApmwForm();
-				apmwForm.FormClosed +=
-					(object _s, FormClosedEventArgs _e) => btnApmw.Enabled = true;
+				apmwForm.FormClosing +=
+					(object _s, FormClosingEventArgs _e) => btnApmw.Enabled = true;
       }
       apmwForm.Show();
 
