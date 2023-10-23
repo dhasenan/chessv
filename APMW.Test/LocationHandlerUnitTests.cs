@@ -88,7 +88,7 @@ namespace Archipelago.APChessV
       info.MoveType = MoveType.StandardCapture;
       handler.HandleMove(info);
 
-      locations.Verify(locs => locs.GetLocationIdFromName("ChecksMate", "Capture Piece C"));
+      locations.Verify(locs => locs.GetLocationIdFromName("ChecksMate", "Capture Piece B"));
     }
 
     [TestMethod]
@@ -124,7 +124,7 @@ namespace Archipelago.APChessV
       info.MoveType = MoveType.StandardCapture;
       handler.HandleMove(info);
 
-      locations.Verify(locs => locs.GetLocationIdFromName("ChecksMate", "Capture Piece C"));
+      locations.Verify(locs => locs.GetLocationIdFromName("ChecksMate", "Capture Piece B"));
     }
 
     private MoveInfo GetMoveInfo() {

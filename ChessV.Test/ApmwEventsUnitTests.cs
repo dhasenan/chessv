@@ -41,73 +41,73 @@ namespace ChessV.Test
     public void generatePocketValues_makesSeveralPockets()
     {
       tested.pocketSeed = 10001;
-      Assert.AreEqual(asList(0, 0, 0).ToString(), tested.generatePocketValues(0).ToString());
-      Assert.AreEqual(asList(0, 0, 1).ToString(), tested.generatePocketValues(1).ToString());
-      Assert.AreEqual(asList(1, 0, 1).ToString(), tested.generatePocketValues(2).ToString());
-      Assert.AreEqual(asList(1, 0, 2).ToString(), tested.generatePocketValues(3).ToString());
-      Assert.AreEqual(asList(2, 1, 1).ToString(), tested.generatePocketValues(4).ToString()); // demonstrates instability - the second item is called with different arguments due to the narrowed range via the first item
-      Assert.AreEqual(asList(2, 1, 2).ToString(), tested.generatePocketValues(5).ToString());
-      Assert.AreEqual(asList(2, 1, 3).ToString(), tested.generatePocketValues(6).ToString());
-      Assert.AreEqual(asList(2, 2, 3).ToString(), tested.generatePocketValues(7).ToString());
-      Assert.AreEqual(asList(2, 2, 4).ToString(), tested.generatePocketValues(8).ToString());
-      Assert.AreEqual(asList(3, 2, 4).ToString(), tested.generatePocketValues(9).ToString());
-      Assert.AreEqual(asList(3, 3, 4).ToString(), tested.generatePocketValues(10).ToString());
-      Assert.AreEqual(asList(4, 3, 4).ToString(), tested.generatePocketValues(11).ToString());
-      Assert.AreEqual(asList(4, 4, 4).ToString(), tested.generatePocketValues(12).ToString());
+      CollectionAssert.AreEqual(asList(0, 0, 0), tested.generatePocketValues(0));
+      CollectionAssert.AreEqual(asList(0, 0, 1), tested.generatePocketValues(1));
+      CollectionAssert.AreEqual(asList(1, 0, 1), tested.generatePocketValues(2));
+      CollectionAssert.AreEqual(asList(1, 0, 2), tested.generatePocketValues(3));
+      CollectionAssert.AreEqual(asList(2, 1, 1), tested.generatePocketValues(4)); // demonstrates instability - the second item is called with different arguments due to the narrowed range via the first item
+      CollectionAssert.AreEqual(asList(2, 1, 2), tested.generatePocketValues(5));
+      CollectionAssert.AreEqual(asList(2, 1, 3), tested.generatePocketValues(6));
+      CollectionAssert.AreEqual(asList(2, 2, 3), tested.generatePocketValues(7));
+      CollectionAssert.AreEqual(asList(2, 2, 4), tested.generatePocketValues(8));
+      CollectionAssert.AreEqual(asList(3, 2, 4), tested.generatePocketValues(9));
+      CollectionAssert.AreEqual(asList(3, 3, 4), tested.generatePocketValues(10));
+      CollectionAssert.AreEqual(asList(4, 3, 4), tested.generatePocketValues(11));
+      CollectionAssert.AreEqual(asList(4, 4, 4), tested.generatePocketValues(12));
     }
 
     [TestMethod]
     public void generatePocketValues_makesEmptyPockets()
     {
-      Assert.AreEqual(asList(0, 0, 0).ToString(), tested.generatePocketValues(0).ToString());
+      CollectionAssert.AreEqual(asList(0, 0, 0), tested.generatePocketValues(0));
     }
 
     [TestMethod]
     public void generatePocketValues_makesSimplePockets()
     {
-      Assert.AreEqual(asList(0, 0, 1).ToString(), tested.generatePocketValues(1).ToString());
+      CollectionAssert.AreEqual(asList(0, 0, 1), tested.generatePocketValues(1));
     }
 
     [TestMethod]
     public void generatePocketValues_makesSomePockets()
     {
-      Assert.AreEqual(asList(1, 0, 2).ToString(), tested.generatePocketValues(3).ToString());
+      CollectionAssert.AreEqual(asList(1, 0, 2), tested.generatePocketValues(3));
     }
 
     [TestMethod]
     public void generatePocketValues_makesMorePockets()
     {
-      Assert.AreEqual(asList(1, 0, 3).ToString(), tested.generatePocketValues(4).ToString());
+      CollectionAssert.AreEqual(asList(1, 0, 3), tested.generatePocketValues(4));
     }
 
     [TestMethod]
     public void generatePocketValues_makesHalfPockets()
     {
-      Assert.AreEqual(asList(2, 0, 4).ToString(), tested.generatePocketValues(6).ToString());
+      CollectionAssert.AreEqual(asList(2, 0, 4), tested.generatePocketValues(6));
     }
 
     [TestMethod]
     public void generatePocketValues_makesBigPockets()
     {
-      Assert.AreEqual(asList(2, 2, 4) .ToString(), tested.generatePocketValues(8).ToString());
+      CollectionAssert.AreEqual(asList(2, 2, 4), tested.generatePocketValues(8));
     }
 
     [TestMethod]
     public void generatePocketValues_makesHugePockets()
     {
-      Assert.AreEqual(asList(2, 3, 4).ToString(), tested.generatePocketValues(9).ToString());
+      CollectionAssert.AreEqual(asList(2, 3, 4), tested.generatePocketValues(9));
     }
 
     [TestMethod]
     public void generatePocketValues_makesGiantPockets()
     {
-      Assert.AreEqual(asList(3, 3, 4).ToString(), tested.generatePocketValues(10).ToString());
+      CollectionAssert.AreEqual(asList(3, 3, 4), tested.generatePocketValues(10));
     }
 
     [TestMethod]
     public void generatePocketValues_makesMaxPockets()
     {
-      Assert.AreEqual(asList(4, 4, 4).ToString(), tested.generatePocketValues(12).ToString());
+      CollectionAssert.AreEqual(asList(4, 4, 4), tested.generatePocketValues(12));
     }
 
     private List<int> asList(int Item1, int Item2, int Item3)
