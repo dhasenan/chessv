@@ -11,6 +11,8 @@ using ChessV.Games;
 using ChessV.Games.Pieces.Berolina;
 using ChessV.Base;
 using Archipelago.MultiClient.Net.MessageLog.Messages;
+using Archipelago.MultiClient.Net.Helpers;
+using System.ComponentModel;
 
 namespace Archipelago.APChessV
 {
@@ -18,6 +20,7 @@ namespace Archipelago.APChessV
   {
     public ArchipelagoClient()
     {
+      LocationHandler = new LocationHandler();
       nonSessionMessages = new List<string>();
 
       StartedEventHandler seHandler = (match) => this.match = match;
@@ -77,8 +80,13 @@ namespace Archipelago.APChessV
     public delegate void ClientDisconnected(ushort code, string reason, bool wasClean);
     public event ClientDisconnected OnClientDisconnect;
 
+    internal LocationHandler LocationHandler { get; private set; }
+
     public ArchipelagoSession session { get; private set; }
     public List<String> nonSessionMessages { get; private set; }
+
+    public LocationCheckHelper LocationCheckHelper { get; private set; }
+    public Dictionary<string, object> SlotData { get; private set; }
 
     private DataPackagePacket dataPackagePacket;
     private ConnectedPacket connectedPacket;
@@ -145,13 +153,22 @@ namespace Archipelago.APChessV
           //finalStageDeath = Convert.ToBoolean(stageDeathObject);
         }
 
+        SlotData = session.DataStorage.GetSlotData();
+        LocationCheckHelper = session.Locations;
+
+        var seeds = new int[] {
+          Convert.ToInt32(SlotData["pocketSeed"]),
+          Convert.ToInt32(SlotData["pawnSeed"]),
+          Convert.ToInt32(SlotData["minorSeed"]),
+          Convert.ToInt32(SlotData["majorSeed"]),
+          Convert.ToInt32(SlotData["queenSeed"]), };
+        // TODO(chesslogic): Check if mode is chaos, if so, set random seeds based on current time
+        Starter.getInstance().seed(seeds);
+
         //LocationCheckBar.ItemPickupStep = ItemLogic.ItemPickupStep;
 
         //session.Socket.PacketReceived += Session_PacketReceived;
-        //session.Socket.SocketClosed += Session_SocketClosed;
-        //ItemLogic.OnItemDropProcessed += ItemLogicHandler_ItemDropProcessed;
-
-        //new ArchipelagoStartMessage().Send(NetworkDestination.Clients);
+        session.Socket.SocketClosed += Session_SocketClosed;
       });
       connectionTask.Start();
     }
@@ -175,6 +192,18 @@ namespace Archipelago.APChessV
       //}
 
       session = null;
+    }
+
+    // TODO(chesslogic): warn user to reconnect
+    private void Session_SocketClosed(string reason)
+    {
+      Dispose();
+      // new ArchipelagoEndMessage().Send(NetworkDestination.Clients);
+
+      if (OnClientDisconnect != null)
+      {
+        //OnClientDisconnect(reason);
+      }
     }
   }
 }

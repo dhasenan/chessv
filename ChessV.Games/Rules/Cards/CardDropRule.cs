@@ -67,7 +67,13 @@ namespace ChessV.Games.Rules.Pocket
 			}
 		}
 
-		public override MoveEventResponse MoveBeingMade(MoveInfo info, int something)
+    public override MoveEventResponse MoveBeingUnmade(MoveInfo info, int ply)
+    {
+      players[info.Player].GemsSpent += info.PieceMoved.MidgameValue / 100;
+			return MoveEventResponse.Handled;
+    }
+
+    public override MoveEventResponse MoveBeingMade(MoveInfo info, int something)
     {
       // TODO(chesslogic): this probably sucks
       if (players[info.Player].Gems < info.PieceMoved.MidgameValue / 100)
@@ -75,7 +81,7 @@ namespace ChessV.Games.Rules.Pocket
         return MoveEventResponse.IllegalMove;
       }
       players[info.Player].GemsSpent += info.PieceMoved.MidgameValue / 100;
-			return MoveEventResponse.MoveOk;
+			return MoveEventResponse.Handled;
     }
 
 		public override void GenerateSpecialMoves( MoveList list, bool capturesOnly, int ply )

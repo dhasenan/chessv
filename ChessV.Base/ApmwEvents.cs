@@ -37,6 +37,15 @@ namespace ChessV.Base
     /** Provides 0 if the player has found PlayAsWhite item, otherwise provides 1 */
     public List<Func<int>> GeriProvider = new List<Func<int>>();
 
+    public void seed(int[] seeds)
+    {
+      pocketSeed = seeds[0];
+      pawnSeed = seeds[1];
+      minorSeed = seeds[2];
+      majorSeed = seeds[3];
+      queenSeed = seeds[4];
+    }
+
     /** Possibly not stable - will generate a different pocket distribution as the player progresses through different foundPockets - but it is uniform */
     public (int, int, int) generatePocketValues(int foundPockets)
     {
