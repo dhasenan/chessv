@@ -8,25 +8,26 @@ using System.Linq;
 namespace ChessV.Base
 {
   public class ApmwCore
-	{
-		public static ApmwCore _instance;
+  {
+    public static ApmwCore _instance;
 
-		public static ApmwCore getInstance()
-		{
-			if (_instance == null)
-			{
-				lock (typeof(ApmwCore))
+    public static ApmwCore getInstance()
+    {
+      if (_instance == null)
+      {
+        lock (typeof(ApmwCore))
         {
           if (_instance == null)
-					{
-						_instance = new ApmwCore();
-					}
+          {
+            _instance = new ApmwCore();
+          }
         }
-			}
-			return _instance;
+      }
+      return _instance;
     }
 
     public int pocketSeed = -1;
+    public List<int> pocketChoiceSeed { get; private set; }
     public int pawnSeed = -1;
     public int minorSeed = -1;
     public int majorSeed = -1;
@@ -57,16 +58,21 @@ namespace ChessV.Base
     }
 
     /** Possibly not stable - will generate a different pocket distribution as the player progresses through different foundPockets - but it is uniform */
-    public (int, int, int) generatePocketValues(int foundPockets)
+    public List<int> generatePocketValues(int foundPockets)
     {
-      if (foundPockets == 0) { return (0, 0, 0); }
+      if (foundPockets == 0) { return new List<int>() { 0, 0, 0 }; }
       if (pocketSeed == -1) { throw new InvalidOperationException("Please set Starter.pocketSeed"); }
 
+      // preserve choices separate from values
+      Random pocketRandom = new Random(pocketSeed);
+      pocketChoiceSeed = new List<int>() { pocketRandom.Next(), pocketRandom.Next(), pocketRandom.Next() };
+
+      // probably not uniform... but it's within range so it works for now. will break FEN later
       Random random = new Random(pocketSeed);
       var x = random.Next(Math.Max(0, foundPockets - 8), Math.Min(foundPockets, 5));
       if (x == foundPockets)
       {
-        return (x, 0, 0);
+        return new List<int>() { x, 0, 0 };
       }
       var y = random.Next(Math.Max(0, foundPockets - 4 - x), Math.Min(foundPockets, 5));
       var z = foundPockets - (y + x);
@@ -75,7 +81,7 @@ namespace ChessV.Base
         (x, y, z) = (4 - x, 4 - y, -z);
       }
 
-      return (x, y, z);
+      return new List<int>() { x, y, z };
     }
 
     public Dictionary<int, bool> generatePawnLocations(int pawns)

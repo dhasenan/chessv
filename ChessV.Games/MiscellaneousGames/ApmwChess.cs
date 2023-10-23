@@ -24,6 +24,7 @@ using ChessV.Games.Rules.Cards;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 
 namespace ChessV.Games
 {
@@ -68,13 +69,19 @@ namespace ChessV.Games
     public PieceType Cannon;
     public PieceType Vao;
 
-    public HashSet<PieceType> pawns = new HashSet<PieceType>();
-    public HashSet<PieceType> minors = new HashSet<PieceType>();
-    public HashSet<PieceType> majors = new HashSet<PieceType>();
-    public HashSet<PieceType> queens = new HashSet<PieceType>();
+    public HashSet<PieceType> pawns;
+    public HashSet<PieceType> minors;
+    public HashSet<PieceType> majors;
+    public HashSet<PieceType> queens;
+    public List<HashSet<PieceType>> pocketSets;
 
     public ApmwChessGame()
-		{
+    {
+      pawns = new HashSet<PieceType>();
+      minors = new HashSet<PieceType>();
+      majors = new HashSet<PieceType>();
+      queens = new HashSet<PieceType>();
+      pocketSets = new List<HashSet<PieceType>>() { pawns, minors, majors, queens };
     }
 
 
@@ -254,6 +261,23 @@ namespace ChessV.Games
       // determine pockets
       int foundPockets = ApmwCore.getInstance().foundPockets;
       var pockets = ApmwCore.getInstance().generatePocketValues(foundPockets);
+      List<PieceType> pocketPieces = new List<PieceType>();
+      List<string> pocketItems = new List<string>();
+      int empty = 0;
+      for (int i = 0; i < 3; i++)
+      {
+        //if (pockets[i] == 0)
+        //{
+        //  empty++;
+        //  pocketPieces.Add(null);
+        //}
+        var setOfPieceType = pocketSets[pockets[i]-1];
+        Random random = new Random(ApmwCore.getInstance().pocketChoiceSeed[i]);
+        int index = random.Next(setOfPieceType.Count);
+        pocketPieces.Add(setOfPieceType.ToList()[index]);
+      }
+      SetCustomProperty("pieces in pocket",
+        pocketPieces.Select((PieceType piece) => piece == null ? piece.Notation[humanPlayer] : "1").Aggregate("", (string piece, string notation) => notation + piece));
 
       SetCustomProperty(humanPrefix + "Outer", notations[0]);
       SetCustomProperty(humanPrefix + "Pawns", notations[1]);

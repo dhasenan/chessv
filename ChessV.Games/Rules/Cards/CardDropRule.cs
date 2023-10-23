@@ -58,7 +58,6 @@ namespace ChessV.Games.Rules.Cards
 		{
 			// TODO(chesslogic): load pockets from apmwcore, ignore FEN
 
-			/*
 			int[] files = { 1, 1 };
 			foreach( char c in fen["pieces in hand"].ToCharArray() )
 			{
@@ -71,7 +70,6 @@ namespace ChessV.Games.Rules.Cards
 					Board.Game.AddPiece( piece );
 				}
 			}
-			*/
 		}
 
     public override MoveEventResponse MoveBeingUnmade(MoveInfo info, int ply)
