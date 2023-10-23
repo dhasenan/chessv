@@ -102,6 +102,8 @@ namespace ChessV.Games
       AddRule(new CardDropRule());
       RemoveRule(typeof(Rules.CheckmateRule));
       AddRule(new Rules.Extinction.ExtinctionRule("K"));
+      // TODO: conditionally remove en passant for one player only. (the Apmw provider probably knows whether the player can en passant at this point)
+
     }
 		#endregion
 
@@ -178,8 +180,8 @@ namespace ChessV.Games
       Dictionary<KeyValuePair<int, int>, PieceType> pieces =
         starter.PlayerPieceSetProvider.FirstOrDefault().Invoke();
 
-      String humanPrefix = "Black";
-      String cpuPrefix = "White";
+      string humanPrefix = "Black";
+      string cpuPrefix = "White";
       int humanPlayer = starter.GeriProvider.First().Invoke();
       if (humanPlayer == 0)
       {

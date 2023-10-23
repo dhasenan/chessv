@@ -53,14 +53,14 @@ namespace ChessV.Games.Rules.Pocket
 
 		public override void PositionLoaded( FEN fen )
 		{
-			int file = 1;
+			int[] files = { 1, 1 };
 			foreach( char c in fen["pieces in hand"].ToCharArray() )
 			{
 				if( c != '-' && c != '@' )
 				{
 					PieceType type = Game.GetTypeByNotation( c.ToString() );
 					int player = Char.IsUpper( c ) ? 0 : 1;
-					Location loc = new Location( player, -file++ ); // TODO: order of operations?
+					Location loc = new Location( player, -files[player]++ ); // TODO: order of operations?
 					Piece piece = new Piece( Game, player, type, loc );
 					Board.Game.AddPiece( piece );
 				}
