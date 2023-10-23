@@ -55,7 +55,7 @@ namespace ChessV.GUI
 
 			//	call .NET Forms Designer-generated initialization
 			InitializeComponent();
-			// btnApmw_Click(this, new EventArgs());
+			btnApmw_Click(this, new EventArgs());
 		}
 		#endregion
 

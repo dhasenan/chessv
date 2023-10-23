@@ -150,6 +150,7 @@ namespace Archipelago.APChessV
         {
           //finalStageDeath = Convert.ToBoolean(stageDeathObject);
         }
+        Convenience.getInstance().success(url.Port.ToString(), slotName);
 
         LocationHandler = new LocationHandler(session);
         SlotData = session.DataStorage.GetSlotData();

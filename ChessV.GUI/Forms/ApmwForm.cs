@@ -44,7 +44,8 @@ namespace ChessV.GUI
     }
 
     private ArchipelagoClient archipelagoClient;
-		private MessageLogHelper messageLog;
+    private Convenience convenience;
+    private MessageLogHelper messageLog;
 		private List<LogMessage> pastMessages = new List<LogMessage>();
     private int linesSeen = 0;
     private int nonSessionLinesSeen = 0;
@@ -52,6 +53,9 @@ namespace ChessV.GUI
     private void ApmwForm_Load( object sender, EventArgs e )
 		{
 			timer.Start();
+      convenience = new Convenience();
+      textBox1.Text += convenience.getRecentUrl();
+      textBox2.Text += convenience.getRecentSlotName();
     }
 
 		private void timer_Tick( object sender, EventArgs e )
