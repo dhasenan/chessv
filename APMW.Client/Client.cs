@@ -127,7 +127,13 @@ namespace Archipelago.APChessV
 
       connectionTask = new Task(() =>
       {
-        var result = session.TryConnectAndLogin("ChecksMate", slotName, itemsHandlingFlags: ItemsHandlingFlags.AllItems, new Version(4, 3, 0), tags: new string[] { "DeathLink" });
+        var result = session.TryConnectAndLogin(
+          "ChecksMate",
+          slotName,
+          itemsHandlingFlags: ItemsHandlingFlags.AllItems,
+          new Version(4, 3, 0),
+          tags: new string[] { "DeathLink" },
+          password: password);
 
         if (!result.Successful)
         {
