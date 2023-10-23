@@ -80,44 +80,36 @@ namespace Archipelago.APChessV
       //
 
       // check if move is early and is directly forward one step
-      if (match.Game.GameTurnNumber <= 2 &&
-        match.Game.Board.GetFile(info.ToSquare) == 4 &&
-        (match.Game.Board.GetRank(info.ToSquare) == 1 || match.Game.Board.GetRank(info.ToSquare) == 6))
+      if (pieceName.Equals("King"))
       {
-        if (pieceName.Equals("King"))
+        if (match.Game.GameTurnNumber <= 2 &&
+          match.Game.Board.GetFile(info.ToSquare) == 4 &&
+          (match.Game.Board.GetRank(info.ToSquare) == 1 || match.Game.Board.GetRank(info.ToSquare) == 6))
         {
           location = LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud Once");
           LocationCheckHelper.CompleteLocationChecks(location);
         }
-      }
-      // check if move is to A file
-      if (match.Game.Board.GetFile(info.ToSquare) == 0)
-      {
-        if (pieceName.Equals("King"))
+        // check if move is to A file
+        if (match.Game.Board.GetFile(info.ToSquare) == 0)
         {
           location = LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud A File");
           LocationCheckHelper.CompleteLocationChecks(location);
         }
-      }
-      // check if move is to distant rank
-      if ((info.Player == 1 && match.Game.Board.GetRank(info.ToSquare) == 0) ||
-        (info.Player == 0 && match.Game.Board.GetRank(info.ToSquare) == 7))
-      {
-        if (pieceName.Equals("King"))
+        // check if move is to distant rank
+        if ((info.Player == 1 && match.Game.Board.GetRank(info.ToSquare) == 0) ||
+          (info.Player == 0 && match.Game.Board.GetRank(info.ToSquare) == 7))
         {
           location = LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud Promotion");
           LocationCheckHelper.CompleteLocationChecks(location);
         }
-      }
-      // check if move is to center
-      if (match.Game.Board.InSmallCenter(info.ToSquare) == 1)
-      {
-        if (pieceName.Equals("King"))
+        // check if move is to center
+        if (match.Game.Board.InSmallCenter(info.ToSquare) == 1)
         {
           location = LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud Thrice");
           LocationCheckHelper.CompleteLocationChecks(location);
         }
       }
+
       //
       // END various king moves ...
       //
