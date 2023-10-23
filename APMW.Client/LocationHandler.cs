@@ -12,9 +12,9 @@ namespace Archipelago.APChessV
   public class LocationHandler
   {
 
-    public LocationHandler(ArchipelagoSession session)
+    public LocationHandler(LocationCheckHelper locationCheckHelper)
     {
-      LocationCheckHelper = session.Locations;
+      LocationCheckHelper = locationCheckHelper;
 
       StartedEventHandler seHandler = (match) =>
       {
@@ -153,7 +153,7 @@ namespace Archipelago.APChessV
       }
     }
 
-    protected void UpdateMoveState(MoveInfo info)
+    public void UpdateMoveState(MoveInfo info)
     {
       // update original positions
       if (!currentSquaresToOriginalSquares.ContainsKey(info.FromSquare))

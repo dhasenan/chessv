@@ -158,7 +158,7 @@ namespace Archipelago.APChessV
         }
         Convenience.getInstance().success(url.Port.ToString(), slotName);
 
-        LocationHandler = new LocationHandler(session);
+        LocationHandler = new LocationHandler(session.Locations);
         SlotData = session.DataStorage.GetSlotData();
 
         var seeds = new int[] {

@@ -95,7 +95,7 @@ namespace ChessV
 
 		public PGNGame PGN { get; private set; } 
 
-		public Game Game { get; private set; }
+		public virtual Game Game { get; private set; }
 
 		public string StartingFen { get; set; }
 

@@ -40,7 +40,7 @@ namespace ChessV
 		// *** PUBLIC PROPERTIES *** //
 
 		public int Player { get; set; }
-		public PieceType PieceType { get; set; }
+		public virtual PieceType PieceType { get; set; }
 
 
 		// *** CONSTRUCTION *** //

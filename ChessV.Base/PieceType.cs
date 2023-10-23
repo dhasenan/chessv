@@ -42,7 +42,7 @@ namespace ChessV
 		public Board Board { get; private set; }
 
 		public string InternalName { get; private set; }
-		public string Name { get; set; }
+		public virtual string Name { get; set; }
 		public string[] Notation { get; protected set; }
 		public string[] NotationClean { get; protected set;  }
 		public List<string> ImagePreferenceList { get; protected set; }
@@ -89,8 +89,11 @@ namespace ChessV
 		public Double AverageSafeChecks { get; set; }
 		#endregion
 
-		
+
 		// *** CONSTRUCTION *** //
+
+		// TEST ONLY
+		public PieceType() { }
 
 		#region Constructor
 		protected PieceType( string internalName, string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null )

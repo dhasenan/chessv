@@ -271,13 +271,16 @@ namespace ChessV
         //  returns the total endgame material value for the player including endgame PST
 		public int GetEndgameMaterialEval( int player )
 		{ return endgameMaterialEval[player]; }
-        #endregion
+    #endregion
 
 
-        // *** CONSTRUCTION *** //
+    // *** CONSTRUCTION *** //
 
-        #region Construction
-        public Board( int nFiles, int nRanks): this( nFiles, nRanks, nRanks * nFiles )
+    // TEST ONLY
+    public Board() { }
+
+    #region Construction
+    public Board( int nFiles, int nRanks): this( nFiles, nRanks, nRanks * nFiles )
 		{ }
 
 		protected Board( int nFiles, int nRanks, int nSquaresExtended )

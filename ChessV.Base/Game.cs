@@ -54,7 +54,7 @@ namespace ChessV
 		public RegistryKey RegistryKey { get; set; }
 
 		//	The Board object (stores the pieces, position hash code, etc)
-		public Board Board { get; private set; }
+		public virtual Board Board { get; private set; }
 
 		//	The Symmetry controls how piece moves translate between players (mirror, rotational, etc.)
 		public Symmetry Symmetry { get; private set; }
@@ -239,6 +239,9 @@ namespace ChessV
 
 
 		// *** CONSTRUCTION and INITIALIZATION *** //
+
+		// TEST ONLY
+		public Game() { }
 
 		#region Constructor
 		public Game
