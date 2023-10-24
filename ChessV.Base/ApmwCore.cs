@@ -34,6 +34,8 @@ namespace ChessV.Base
     public int queenSeed = -1;
 
     public int foundPockets = -1;
+    public int foundPocketRange = -1;
+    public int foundPocketGems = -1;
     public int foundPawns = -1;
     public int foundMinors = -1;
     public int foundMajors = -1;

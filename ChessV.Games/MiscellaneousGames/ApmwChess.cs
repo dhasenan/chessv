@@ -106,7 +106,7 @@ namespace ChessV.Games
 		public override void AddRules()
 		{
 			base.AddRules();
-      AddRule(new CardDropRule());
+      AddRule(new CardDropRule(ApmwCore.getInstance().foundPocketRange));
       RemoveRule(typeof(Rules.CheckmateRule));
       AddRule(new Rules.Extinction.ExtinctionRule("K"));
       //AddRule(new ApmwMoveCompletionRule());

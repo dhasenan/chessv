@@ -70,7 +70,9 @@ namespace ChessV
 
 		public int Gems {
 			get {
-				return -1 + Side + Game.GameTurnNumber /* starts at 1 */ - GemsSpent + GemsGained;
+				return -1 + Side /* 0..1 */ + Game.GameTurnNumber /* starts at 1 */
+					- GemsSpent + GemsGained +
+					Math.Max(ApmwCore.getInstance().foundPocketGems, 0);
       }
     }
     public int GemsSpent { get; set; } = 0;

@@ -18,6 +18,7 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
+using ChessV.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,9 +32,12 @@ namespace ChessV.Games.Rules.Cards
 
 		protected static Game game;
 
-		public CardDropRule()
+    public int Range { get; }
+
+    public CardDropRule(int range = 6)
 		{
-		}
+      Range = range;
+    }
 
 		public override void Initialize( Game game )
 		{
@@ -81,6 +85,7 @@ namespace ChessV.Games.Rules.Cards
       Player movingPlayer = Game.CurrentPlayer;
       if (movingPlayer != null)
       {
+        movingPlayer = info.Player == movingPlayer.Side ? movingPlayer : movingPlayer.Opponent;
         if (info.FromSquare >= 0)
           return MoveEventResponse.NotHandled;
         if (movingPlayer.Side != info.Player)
@@ -94,9 +99,11 @@ namespace ChessV.Games.Rules.Cards
 
     public override MoveEventResponse MoveBeingMade(MoveInfo info, int something)
     {
-      Player movingPlayer = Game.CurrentPlayer;
-      if (movingPlayer != null) {
-				if (info.FromSquare >= 0)
+			Player movingPlayer = Game.CurrentPlayer;
+      if (movingPlayer != null)
+			{
+				movingPlayer = info.Player == movingPlayer.Side ? movingPlayer : movingPlayer.Opponent;
+        if (info.FromSquare >= 0)
           return MoveEventResponse.NotHandled;
         if (movingPlayer.Side != info.Player)
 					movingPlayer = movingPlayer.Opponent;
@@ -128,7 +135,7 @@ namespace ChessV.Games.Rules.Cards
           }
 					else
 					{
-						gems = list.CurrentMove.Player;
+						gems = list.CurrentMove.Player + ApmwCore.getInstance().foundPocketGems;
           }
           if (gems < pieceInPocket.MidgameValue / 100)
           {
@@ -138,7 +145,9 @@ namespace ChessV.Games.Rules.Cards
           // TODO(chesslogic): square bounding based on apmw Pocket Forwardness
           for ( int square = 0; square < Board.NumSquares; square++ )
 					{
-						if( Board[square] == null )
+						var rankFromPlayer = Game.CurrentSide == 0 ? Board.GetRank(square) : 7 - Board.GetRank(square);
+						var inRange = rankFromPlayer <= Range;
+            if ( inRange && Board[square] == null )
 						{
 							list.BeginMoveAdd( MoveType.Drop, pocketSquare, square );
 							Piece piece = list.AddPickup( pocketSquare );

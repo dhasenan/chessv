@@ -38,6 +38,10 @@ namespace Archipelago.APChessV
 
       ApmwCore.getInstance().foundPockets = items.Count(
         (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Pocket");
+      ApmwCore.getInstance().foundPocketRange = items.Count(
+        (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Pocket Range");
+      ApmwCore.getInstance().foundPocketGems = items.Count(
+        (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Pocket Gems");
       ApmwCore.getInstance().GeriProvider = () => items.Any(
         (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Play as White") ? 0 : 1;
       ApmwCore.getInstance().EngineWeakeningProvider = () => items.Count(
