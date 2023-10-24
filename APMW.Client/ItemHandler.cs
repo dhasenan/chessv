@@ -5,8 +5,10 @@ using ChessV.Base;
 using ChessV.Games;
 using System;
 using System.Collections.Generic;
+using System.IO.Ports;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using static Archipelago.MultiClient.Net.Helpers.ReceivedItemsHelper;
 
 namespace Archipelago.APChessV
@@ -40,7 +42,7 @@ namespace Archipelago.APChessV
         (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Pocket");
       ApmwCore.getInstance().foundPawns = items.Count(
         (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Pawn");
-      ApmwCore.getInstance().foundPieces = items.Count(
+      ApmwCore.getInstance().foundMinors = items.Count(
         (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Minor Piece");
       ApmwCore.getInstance().foundMajors = items.Count(
         (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Major Piece");
@@ -50,21 +52,55 @@ namespace Archipelago.APChessV
 
     public Dictionary<KeyValuePair<int, int>, PieceType> generatePlayerPieceSet()
     {
-      Dictionary<KeyValuePair<int, int>, PieceType> pieces = new Dictionary<KeyValuePair<int, int>, PieceType>();
       List<int> order;
+      // indices 0..7 are the back rank - 8..9 can be pieces if the first rank fills up
       List<PieceType> withMajors = GenerateMajors(out order);
+      // replace some or all majors with queens
       List<PieceType> withQueens = SubstituteQueens(withMajors, order);
+      // then add minor pieces until out of space
       List<PieceType> withMinors = GenerateMinors(withQueens);
       List<PieceType> withPawns = GeneratePawns(withQueens);
+
+      Dictionary<KeyValuePair<int, int>, PieceType> pieces = new Dictionary<KeyValuePair<int, int>, PieceType>();
+      for (int i = 0; i < 3; i++)
+      {
+        for (int j = 0; j < 8; j++)
+        {
+          pieces.Add(new KeyValuePair<int, int>(i, j), withPawns[i*8 + j]);
+        }
+      }
 
       return pieces;
     }
 
     public List<PieceType> GeneratePawns(List<PieceType> minors)
     {
-      List<PieceType> outer = new List<PieceType>() { null, null, null, null, null, null, null, null };
-      List<PieceType> inner = new List<PieceType>() { null, null, null, null, null, null, null, null };
+      List<PieceType> pawns = ApmwCore.getInstance().pawns.ToList();
+      List<PieceType> thirdRank = new List<PieceType>() { null, null, null, null, null, null, null, null };
+      List<PieceType> pawnRank = minors.Skip(7).ToList();
 
+      Random random = new Random(ApmwCore.getInstance().pawnSeed);
+
+      int startingPieces = pawnRank.Count((item) => item != null);
+      int totalChessmen = ApmwCore.getInstance().foundPawns + startingPieces;
+
+      for (int i = startingPieces; i < Math.Min(8, totalChessmen); i++)
+      {
+        var piece = pawns[random.Next(minors.Count)];
+        chooseIndexAndPlace(pawnRank, random, piece);
+      }
+      for (int i = 8; i < Math.Min(16, totalChessmen); i++)
+      {
+        var piece = pawns[random.Next(minors.Count)];
+        chooseIndexAndPlace(thirdRank, random, piece);
+      }
+
+      List<PieceType> output = new List<PieceType>();
+      output.AddRange(minors.Take(8));
+      output.AddRange(pawnRank);
+      output.AddRange(thirdRank);
+
+      return output;
     }
 
     public List<PieceType> GenerateMinors(List<PieceType> queens)
@@ -73,20 +109,26 @@ namespace Archipelago.APChessV
       List<PieceType> outer = queens.Skip(8).Take(2).ToList();
       List<PieceType> left = queens.Take(4).ToList();
       List<PieceType> right = queens.Skip(5).Take(3).ToList();
+      List<PieceType> temp = new List<PieceType>() { null, null, null, };
+      temp.AddRange(outer);
+      temp.AddRange(new List<PieceType>() { null, null, null, });
+      outer = temp;
 
       Random random = new Random(ApmwCore.getInstance().minorSeed);
 
+      int startingPieces = ApmwCore.getInstance().foundMajors;
+      int totalPieces = startingPieces + ApmwCore.getInstance().foundMinors;
+
       int parity = 0;
-      for (int i = 0; i < Math.Min(7, ApmwCore.getInstance().foundMajors); i++)
+      for (int i = startingPieces; i < Math.Min(7, totalPieces); i++)
       {
         var piece = minors[random.Next(minors.Count)];
         parity = placeInArray(new List<int>(), left, right, random, parity, i, piece);
       }
-      for (int i = 7; i < ApmwCore.getInstance().foundMajors; i++)
+      for (int i = 7; i < Math.Min(15, totalPieces); i++)
       {
-        parity = random.Next(2);
         var piece = minors[random.Next(minors.Count)];
-        outer[parity] = piece;
+        chooseIndexAndPlace(outer, random, piece);
       }
 
       List<PieceType> output = new List<PieceType>();
@@ -136,10 +178,8 @@ namespace Archipelago.APChessV
       }
       for (int i = 7; i < ApmwCore.getInstance().foundMajors; i++)
       {
-        parity = random.Next(2);
         var piece = majors[random.Next(majors.Count)];
-        outer[parity] = piece;
-        order.Add(parity + 8);
+        order.Add(chooseIndexAndPlace(outer, random, piece) + 8);
       }
 
       List<PieceType> output = new List<PieceType>();
@@ -160,8 +200,8 @@ namespace Archipelago.APChessV
       int i,
       PieceType piece)
     {
-      int side = 1;
-      if (i == 7)
+      int side;
+      if (i == 7) // there are 4 spaces on the left (queenside) vs 3 on right (kingside)
       {
         side = -1;
         parity = 0;
@@ -179,34 +219,29 @@ namespace Archipelago.APChessV
 
       if (side < 0)
       {
-        var index = 0;
-        var skips = random.Next(left.Count(item => item == null));
-        while (left[index] != null || skips > 0)
-        {
-          if (left[index] != null)
-            index++;
-          else
-            skips--;
-        }
-        left[index] = piece;
-        order.Add(index);
+        order.Add(chooseIndexAndPlace(left, random, piece));
       }
       else
       {
-        var index = 0;
-        var skips = random.Next(right.Count(item => item == null));
-        while (right[index] != null || skips > 0)
-        {
-          if (right[index] != null)
-            index++;
-          else
-            skips--;
-          order.Add(index + 4);
-        }
-        right[index] = piece;
+        order.Add(chooseIndexAndPlace(right, random, piece) + 4);
       }
 
       return parity;
+    }
+
+    private static int chooseIndexAndPlace(List<PieceType> items, Random random, PieceType piece)
+    {
+      var index = 0;
+      var skips = random.Next(items.Count(item => item == null));
+      while (items[index] != null || skips > 0)
+      {
+        if (items[index] != null)
+          index++;
+        else
+          skips--;
+      }
+      items[index] = piece;
+      return index;
     }
 
     public Dictionary<int, bool> generatePawnLocations(int pawns)
