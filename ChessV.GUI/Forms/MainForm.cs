@@ -544,8 +544,8 @@ namespace ChessV.GUI
 			//	sides, engines, time controls, etc.
 			if (game.GetType() == typeof(ApmwChessGame))
 			{
-        //StartChecksMate( game );
-				//return;
+        StartChecksMate( game );
+				return;
       }
 			GameSettingsForm gameSettingsForm = new GameSettingsForm( game );
 			DialogResult result = gameSettingsForm.ShowDialog();
@@ -648,7 +648,9 @@ namespace ChessV.GUI
 			int player = ApmwCore.getInstance().GeriProvider.Invoke();
       game.AddHuman(player);
       game.AddInternalEngine(player ^ 1);
-			game.TTSizeInMB = 256;
+      game.ComputerControlled[player] = false;
+      game.ComputerControlled[player ^ 1] = true;
+      game.TTSizeInMB = 256;
       game.Variation = 1;
 			game.Weakening = Math.Min(15, ApmwCore.getInstance().EngineWeakeningProvider.Invoke());
 
