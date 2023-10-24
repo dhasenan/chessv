@@ -67,7 +67,7 @@ namespace Archipelago.APChessV
 
     public void HandleMove(MoveInfo info)
     {
-      long location;
+      List<long> locations = new List<long>();
       if (info == null)
         return; // probably never happens
 
@@ -92,27 +92,23 @@ namespace Archipelago.APChessV
           match.Game.Board.GetFile(info.ToSquare) == 4 &&
           (match.Game.Board.GetRank(info.ToSquare) == 1 || match.Game.Board.GetRank(info.ToSquare) == 6))
         {
-          location = LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud Once");
-          LocationCheckHelper.CompleteLocationChecks(location);
+          locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud Once"));
         }
         // check if move is to A file
         if (match.Game.Board.GetFile(info.ToSquare) == 0)
         {
-          location = LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud A File");
-          LocationCheckHelper.CompleteLocationChecks(location);
+          locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud A File"));
         }
         // check if move is to distant rank
         if ((info.Player == 1 && match.Game.Board.GetRank(info.ToSquare) == 0) ||
           (info.Player == 0 && match.Game.Board.GetRank(info.ToSquare) == 7))
         {
-          location = LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud Promotion");
-          LocationCheckHelper.CompleteLocationChecks(location);
+          locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud Promotion"));
         }
         // check if move is to center
         if (match.Game.Board.InSmallCenter(info.ToSquare) == 1)
         {
-          location = LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud Thrice");
-          LocationCheckHelper.CompleteLocationChecks(location);
+          locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud Thrice"));
         }
       }
 
@@ -126,8 +122,7 @@ namespace Archipelago.APChessV
         // handle king captures
         if (pieceName.Equals("King"))
         {
-          location = LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud Capture");
-          LocationCheckHelper.CompleteLocationChecks(location);
+          locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud Capture"));
         }
         // handle specific piece
         int originalSquare = info.ToSquare;
@@ -142,8 +137,7 @@ namespace Archipelago.APChessV
           locationName = "Capture Piece " + fileNotation;
         else
           locationName = "Capture Pawn " + fileNotation;
-        location = LocationCheckHelper.GetLocationIdFromName("ChecksMate", locationName);
-        LocationCheckHelper.CompleteLocationChecks(location);
+        locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", locationName));
         // handle piece sequence
         int captures;
         if (isPiece)
@@ -153,13 +147,31 @@ namespace Archipelago.APChessV
         if (captures > 1)
         {
           if (isPiece)
+          {
             locationName = "Capture " + captures + " Pieces";
+            if (capturedPawns >= captures)
+            {
+              locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", locationName));
+              locationName = "Capture " + captures + " Of Each";
+            }
+          }
           else
+          {
             locationName = "Capture " + captures + " Pawns";
-          location = LocationCheckHelper.GetLocationIdFromName("ChecksMate", locationName);
-          LocationCheckHelper.CompleteLocationChecks(location);
+            if (capturedPieces >= captures)
+            {
+              locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", locationName));
+              locationName = "Capture " + captures + " Of Each";
+            }
+          }
+          locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", locationName));
+          if (capturedPieces >= 7 && capturedPawns >= 8)
+          {
+            locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Capture Everything"));
+          }
         }
       }
+      LocationCheckHelper.CompleteLocationChecks(locations.ToArray());
 
       UpdateMoveState(info);
     }
