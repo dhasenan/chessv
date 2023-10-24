@@ -198,11 +198,17 @@ namespace Archipelago.APChessV
           {
             locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Pawn Threat"));
           }
-          if (ApmwCore.getInstance().minors.Contains(attackedPiece.PieceType) ||
-            ApmwCore.getInstance().majors.Contains(attackedPiece.PieceType) ||
-            ApmwCore.getInstance().queens.Contains(attackedPiece.PieceType))
+          if (ApmwCore.getInstance().minors.Contains(attackedPiece.PieceType))
           {
-            locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Piece Threat"));
+            locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Minor Threat"));
+          }
+          if (ApmwCore.getInstance().majors.Contains(attackedPiece.PieceType))
+          {
+            locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Major Threat"));
+          }
+          if (ApmwCore.getInstance().queens.Contains(attackedPiece.PieceType))
+          {
+            locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Queen Threat"));
           }
           if (ApmwCore.getInstance().king == attackedPiece.PieceType)
           {
