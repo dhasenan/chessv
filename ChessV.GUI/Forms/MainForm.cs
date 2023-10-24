@@ -645,14 +645,14 @@ namespace ChessV.GUI
       timeControl.NodeLimit = Convert.ToInt64(2000);
       game.Match.SetTimeControl(timeControl);
 
-			int player = ApmwCore.getInstance().GeriProvider.Invoke();
+			int player = ApmwCore.getInstance().GeriProvider();
       game.AddHuman(player);
       game.AddInternalEngine(player ^ 1);
       game.ComputerControlled[player] = false;
       game.ComputerControlled[player ^ 1] = true;
       game.TTSizeInMB = 256;
       game.Variation = 1;
-			game.Weakening = Math.Min(15, ApmwCore.getInstance().EngineWeakeningProvider.Invoke());
+			game.Weakening = Math.Min(15, ApmwCore.getInstance().EngineWeakeningProvider());
 
       GameForm gameForm = new GameForm(game);
       gameForm.Show();

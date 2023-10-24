@@ -134,7 +134,8 @@ namespace Archipelago.APChessV
       info.FromSquare = 1;
       info.ToSquare = 3;
       info.MoveType = MoveType.StandardMove;
-      info.PieceMoved = firstPiece.Object;
+      info.PieceMoved = secondPiece.Object;
+      info.PieceCaptured = firstPiece.Object;
       return info;
     }
   }

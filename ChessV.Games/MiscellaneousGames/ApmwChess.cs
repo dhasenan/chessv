@@ -82,6 +82,13 @@ namespace ChessV.Games
       majors = new HashSet<PieceType>();
       queens = new HashSet<PieceType>();
       pocketSets = new List<HashSet<PieceType>>() { pawns, minors, majors, queens };
+
+      ApmwCore apmwCore = ApmwCore.getInstance();
+      apmwCore.pawns = pawns;
+      apmwCore.minors = minors;
+      apmwCore.majors = majors;
+      apmwCore.queens = queens;
+      apmwCore.pocketSets = pocketSets;
     }
 
 
@@ -187,6 +194,8 @@ namespace ChessV.Games
       queens.Add(Chancellor);
       queens.Add(Colonel);
 
+      ApmwCore.getInstance().king = King;
+
       //	Army adjustment
       //if ((WhiteArmy.Value == "Fabulous FIDEs" && BlackArmy.Value == "Remarkable Rookies") ||
       //  (BlackArmy.Value == "Fabulous FIDEs" && WhiteArmy.Value == "Remarkable Rookies"))
@@ -205,11 +214,11 @@ namespace ChessV.Games
 
       ApmwCore starter = ApmwCore.getInstance();
       Dictionary<KeyValuePair<int, int>, PieceType> pieces =
-        starter.PlayerPieceSetProvider.FirstOrDefault().Invoke();
+        starter.PlayerPieceSetProvider();
 
       string humanPrefix = "Black";
       string cpuPrefix = "White";
-      int humanPlayer = starter.GeriProvider.Invoke();
+      int humanPlayer = starter.GeriProvider();
       if (humanPlayer == 0)
       {
         (humanPrefix, cpuPrefix) = (cpuPrefix, humanPrefix);
@@ -261,27 +270,10 @@ namespace ChessV.Games
       }
 
       // determine pockets
-      int foundPockets = ApmwCore.getInstance().foundPockets;
-      var pockets = ApmwCore.getInstance().generatePocketValues(foundPockets);
-      List<PieceType> pocketPieces = new List<PieceType>();
-      List<string> pocketItems = new List<string>();
-      int empty = 0;
-      for (int i = 0; i < 3; i++)
-      {
-        if (pockets[i] == 0)
-        {
-          empty++;
-          pocketPieces.Add(null);
-          continue;
-        }
-        var setOfPieceType = pocketSets[pockets[i]-1];
-        Random random = new Random(ApmwCore.getInstance().pocketChoiceSeed[i]);
-        int index = random.Next(setOfPieceType.Count);
-        pocketPieces.Add(setOfPieceType.ToList()[index]);
-      }
       SetCustomProperty("PocketPieces",
         (humanPlayer == 1 ? "3" : "") +
-        pocketPieces.Select((PieceType piece) => piece == null ? "1" : piece.Notation[humanPlayer])
+        ApmwCore.getInstance().PlayerPocketPiecesProvider()
+          .Select((PieceType piece) => piece == null ? "1" : piece.Notation[humanPlayer])
           .Aggregate("", (string piece, string notation) => notation + piece)
           + (humanPlayer == 0 ? "3" : ""));
 

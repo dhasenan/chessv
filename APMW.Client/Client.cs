@@ -59,7 +59,7 @@ namespace Archipelago.APChessV
       var Vao = new Vao("Vao", "V", 300, 175);
 
       var starters = new Dictionary<KeyValuePair<int, int>, PieceType>();
-      ApmwCore.getInstance().PlayerPieceSetProvider.Add(() => starters);
+      ApmwCore.getInstance().PlayerPieceSetProvider = () => starters;
       for (int i = 0; i < 8; i++)
       {
         starters.Add(new KeyValuePair<int, int>(1, i), Pawn);
@@ -171,7 +171,7 @@ namespace Archipelago.APChessV
         // TODO(chesslogic): Check if mode is chaos, if so, set random seeds based on current time
         ApmwCore.getInstance().seed(seeds);
 
-        ItemHandler handler = new ItemHandler(session);
+        ItemHandler handler = new ItemHandler(session.Items);
 
         //LocationCheckBar.ItemPickupStep = ItemLogic.ItemPickupStep;
 

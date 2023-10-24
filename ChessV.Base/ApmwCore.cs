@@ -39,10 +39,19 @@ namespace ChessV.Base
     public int foundMajors = -1;
     public int foundQueens = -1;
 
+    public PieceType king;
+    public HashSet<PieceType> pawns;
+    public HashSet<PieceType> minors;
+    public HashSet<PieceType> majors;
+    public HashSet<PieceType> queens;
+    public List<HashSet<PieceType>> pocketSets;
+
+
     /** ChessV.Base.Match */
     public List<StartedEventHandler> StartedEventHandlers = new List<StartedEventHandler>();
     /** ChessV.Base.PieceType */
-    public List<Func<Dictionary<KeyValuePair<int, int>, PieceType>>> PlayerPieceSetProvider = new List<Func<Dictionary<KeyValuePair<int, int>, PieceType>>>();
+    public Func<Dictionary<KeyValuePair<int, int>, PieceType>> PlayerPieceSetProvider;
+    public Func<List<PieceType>> PlayerPocketPiecesProvider;
     /** Provides 0 if the player has found PlayAsWhite item, otherwise provides 1 */
     public Func<int> GeriProvider = () => 1;
     /** Provides 0 if the player has found PlayAsWhite item, otherwise provides 1 */
@@ -83,18 +92,6 @@ namespace ChessV.Base
       }
 
       return new List<int>() { x, y, z };
-    }
-
-    public Dictionary<int, bool> generatePawnLocations(int pawns)
-    {
-      for (int file = 0; file < 8; file++)
-      {
-        for (int rank = 0; rank < 2; rank++)
-        {
-
-        }
-      }
-      return new Dictionary<int, bool>();
     }
 
     /**
