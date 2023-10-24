@@ -38,6 +38,7 @@ namespace Archipelago.APChessV
       //match.Game.MovePlayed += (move) => this.HandleMove(move);
       ApmwCore.getInstance().MovePlayed.Add((move) => this.HandleMove(move));
       this.humanPlayer = this.match.GetPlayer(0).IsHuman ? 0 : 1;
+      // TODO(chesslogic): why does this continue to increment between games?
       this.capturedPawns = 0;
       this.capturedPieces = 0;
     }

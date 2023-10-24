@@ -116,15 +116,24 @@ namespace ChessV.Games.Rules.Cards
 				Piece pieceInPocket = Board[pocketSquare];
 				if( pieceInPocket != null )
         {
-          Player movingPlayer = Game.CurrentPlayer;
-          if (Game.CurrentPlayer.Side != list.CurrentMove.Player)
-          {
-            movingPlayer = movingPlayer.Opponent;
-          }
-					if (movingPlayer.Gems < pieceInPocket.MidgameValue / 100)
+          int gems;
+					if (Game.Match != null)
 					{
-						return;
-					}
+						Player movingPlayer = Game.Match.GetPlayer(list.CurrentMove.Player);
+						if (Game.CurrentPlayer.Side != list.CurrentMove.Player)
+						{
+							movingPlayer = movingPlayer.Opponent;
+						}
+						gems = movingPlayer.Gems;
+          }
+					else
+					{
+						gems = list.CurrentMove.Player;
+          }
+          if (gems < pieceInPocket.MidgameValue / 100)
+          {
+            return;
+          }
 
           // TODO(chesslogic): square bounding based on apmw Pocket Forwardness
           for ( int square = 0; square < Board.NumSquares; square++ )
