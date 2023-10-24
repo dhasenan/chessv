@@ -80,6 +80,7 @@ namespace Archipelago.APChessV
     public event ClientConnected OnConnect;
 
     internal LocationHandler LocationHandler { get; private set; }
+    internal ItemHandler ItemHandler { get; private set; }
 
     public ArchipelagoSession session { get; private set; }
     public List<String> nonSessionMessages { get; private set; }
@@ -104,7 +105,7 @@ namespace Archipelago.APChessV
     private bool finishedAllChecks = false;
     private ulong seed;
     private string lastServerUrl;
-    private Task connectionTask;
+    private static Task connectionTask;
 
     private bool IsInGame
     {
@@ -116,6 +117,11 @@ namespace Archipelago.APChessV
 
     public void Connect(Uri url, string slotName, string password = null)
     {
+      if (connectionTask != null && !connectionTask.IsCompleted && !connectionTask.IsFaulted)
+      {
+        return;
+      }
+
       //ChatMessage.SendColored($"Attempting to connect to Archipelago at ${url}.", Color.green);
       Dispose();
 
@@ -170,7 +176,7 @@ namespace Archipelago.APChessV
         // TODO(chesslogic): Check if mode is chaos, if so, set random seeds based on current time
         ApmwCore.getInstance().seed(seeds);
 
-        ItemHandler handler = new ItemHandler(session.Items);
+        this.ItemHandler = new ItemHandler(session.Items);
 
         //LocationCheckBar.ItemPickupStep = ItemLogic.ItemPickupStep;
 
@@ -184,7 +190,14 @@ namespace Archipelago.APChessV
 
     public void Reload()
     {
-      LocationHandler.Unhook();
+      if (LocationHandler != null)
+      {
+        LocationHandler.Unhook();
+      }
+      if (ItemHandler != null)
+      {
+        ItemHandler.Unhook();
+      }
     }
 
     public void Dispose()
@@ -193,10 +206,7 @@ namespace Archipelago.APChessV
       {
         session.Socket.DisconnectAsync();
       }
-      if (LocationHandler != null)
-      {
-        LocationHandler.Unhook();
-      }
+      this.Reload();
 
       //if (ItemLogic != null)
       //{

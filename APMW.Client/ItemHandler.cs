@@ -21,13 +21,16 @@ namespace Archipelago.APChessV
       ReceivedItemsHelper = receivedItemsHelper;
 
       this.Hook();
-      ItemReceivedHandler irHandler = (helper) => this.Hook();
+      irHandler = (helper) => this.Hook();
       ReceivedItemsHelper.ItemReceived += irHandler;
+
+      // overwrite global state
       ApmwCore.getInstance().PlayerPieceSetProvider = () => generatePlayerPieceSet();
       ApmwCore.getInstance().PlayerPocketPiecesProvider = () => generatePocketItems();
     }
 
     private ReceivedItemsHelper ReceivedItemsHelper;
+    private ItemReceivedHandler irHandler;
 
     public void Hook()
     {
@@ -49,6 +52,11 @@ namespace Archipelago.APChessV
         (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Major Piece");
       ApmwCore.getInstance().foundQueens = items.Count(
         (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Major To Queen");
+    }
+
+    public void Unhook()
+    {
+      ReceivedItemsHelper.ItemReceived -= irHandler;
     }
 
     public (Dictionary<KeyValuePair<int, int>, PieceType>, string) generatePlayerPieceSet()
