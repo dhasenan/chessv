@@ -35,6 +35,7 @@ namespace ChessV.Boards
 			}*/
 		}
 
+		/*
 		public override Location SquareToLocation( int square )
 		{
 			if( square < NumSquares )
@@ -50,5 +51,6 @@ namespace ChessV.Boards
 			else
 				return NumSquares + location.Rank;
 		}
+		*/
 	}
 }

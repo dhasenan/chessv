@@ -47,7 +47,7 @@ namespace ChessV.Boards
 				return new Location(rankBySquare[square], fileBySquare[square]);
 			else {
 				int offset = square - NumSquares;
-				return new Location(offset / HandSize, -offset % HandSize) ;
+				return new Location(offset / HandSize, -(offset % HandSize) - 1);
 			}
 		}
 

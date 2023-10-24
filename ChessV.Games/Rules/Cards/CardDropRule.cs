@@ -38,13 +38,14 @@ namespace ChessV.Games.Rules.Cards
 		public override void Initialize( Game game )
 		{
 			base.Initialize( game );
-      handSize = game.Board.NumSquares - game.Board.NumRanks * game.Board.NumFiles / 2;
+			handSize = (game.Board.NumSquaresExtended - game.Board.NumSquares) / 2;
       pocketSquares = new int[handSize * 2];
       for ( int player = 0; player < game.NumPlayers; player++ )
       {
-				for (int card = 0; card < handSize; card++)
+				for (int card = 1; card < handSize; card++)
 				{
-					pocketSquares[player] = Board.LocationToSquare(new Location(player, -card));
+					int index = player * handSize + card - 1;
+          pocketSquares[index] = Board.LocationToSquare(new Location(player, -card));
 				}
       }
 		}
