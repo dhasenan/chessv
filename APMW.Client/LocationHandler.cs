@@ -80,6 +80,8 @@ namespace Archipelago.APChessV
 
       Piece piece = info.PieceMoved;
       string pieceName = piece.PieceType.Name;
+      
+      // TODO(chesslogic): refactor these, extract into individual methods, probably reduce them to 7 lines
 
       //
       // BEGIN various king moves ...
@@ -114,6 +116,10 @@ namespace Archipelago.APChessV
 
       //
       // END various king moves ...
+      //
+
+      //
+      // START captures ...
       //
 
       // check if move is capture
@@ -171,6 +177,44 @@ namespace Archipelago.APChessV
           }
         }
       }
+
+      //
+      // END captures ...
+      //
+
+      //
+      // BEGIN threats ...
+      //
+
+      for (int square = 0; square < match.Game.Board.NumSquares; square++)
+      {
+        if (match.Game.IsSquareAttacked(square, humanPlayer))
+        {
+          var loc = match.Game.Board.SquareToLocation(square);
+          Piece attackedPiece = match.Game.Board[square];
+
+          if (attackedPiece == null) { continue; }
+          if (ApmwCore.getInstance().pawns.Contains(attackedPiece.PieceType))
+          {
+            locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Pawn Threat"));
+          }
+          if (ApmwCore.getInstance().minors.Contains(attackedPiece.PieceType) ||
+            ApmwCore.getInstance().majors.Contains(attackedPiece.PieceType) ||
+            ApmwCore.getInstance().queens.Contains(attackedPiece.PieceType))
+          {
+            locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Piece Threat"));
+          }
+          if (ApmwCore.getInstance().king == attackedPiece.PieceType)
+          {
+            locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "King Threat"));
+          }
+        }
+      }
+
+      //
+      // END threats ...
+      //
+
       LocationCheckHelper.CompleteLocationChecks(locations.ToArray());
 
       UpdateMoveState(info);
