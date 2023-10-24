@@ -564,6 +564,7 @@ namespace ChessV.GUI
 		{
 			debugForm.Close();
 			Game.AbortSearch();
+			Game.Match.Finished();
 		}
 		#endregion
 

@@ -16,7 +16,7 @@ namespace Archipelago.APChessV
     {
       LocationCheckHelper = locationCheckHelper;
 
-      StartedEventHandler seHandler = (match) =>
+      seHandler = (match) =>
       {
         this.match = match;
         this.Hook();
@@ -26,6 +26,7 @@ namespace Archipelago.APChessV
 
     public ILocationCheckHelper LocationCheckHelper { get; private set; }
 
+    private StartedEventHandler seHandler;
     private ChessV.Match match;
     private int humanPlayer;
     private int capturedPieces;
@@ -41,6 +42,12 @@ namespace Archipelago.APChessV
       // TODO(chesslogic): why does this continue to increment between games?
       this.capturedPawns = 0;
       this.capturedPieces = 0;
+    }
+
+    public void Unhook()
+    {
+      ApmwCore.getInstance().StartedEventHandlers.Remove(seHandler);
+      seHandler = null;
     }
 
     public void HandleMove(Movement move)

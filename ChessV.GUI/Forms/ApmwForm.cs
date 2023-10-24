@@ -81,7 +81,7 @@ namespace ChessV.GUI
       }
       for (int x = nonSessionLinesSeen; x < archipelagoClient.nonSessionMessages.Count; x++)
         append.Append(archipelagoClient.nonSessionMessages[nonSessionLinesSeen++] + "\r\n");
-      txtApmwOutput.Text += append.ToString();
+      txtApmwOutput.AppendText(append.ToString());
     }
 
 		private void ApmwForm_FormClosing( object sender, FormClosingEventArgs e )
@@ -158,6 +158,7 @@ namespace ChessV.GUI
     {
       Game game = mainForm.Manager.CreateGame("Archipelago Multiworld", null);
       game.StartMatch();
+      game.Match.Finished += (match) => { archipelagoClient.Reload(); };
       mainForm.StartChecksMate(game);
     }
   }

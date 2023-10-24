@@ -50,7 +50,7 @@ namespace ChessV.Base
     /** ChessV.Base.Match */
     public List<StartedEventHandler> StartedEventHandlers = new List<StartedEventHandler>();
     /** ChessV.Base.PieceType */
-    public Func<Dictionary<KeyValuePair<int, int>, PieceType>> PlayerPieceSetProvider;
+    public Func<(Dictionary<KeyValuePair<int, int>, PieceType>, string)> PlayerPieceSetProvider;
     public Func<List<PieceType>> PlayerPocketPiecesProvider;
     /** Provides 0 if the player has found PlayAsWhite item, otherwise provides 1 */
     public Func<int> GeriProvider = () => 1;

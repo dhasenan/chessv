@@ -57,20 +57,20 @@ namespace Archipelago.APChessV
       var Cannon = new Cannon("Cannon", "O", 400, 275);
       var Vao = new Vao("Vao", "V", 300, 175);
 
-      var starters = new Dictionary<KeyValuePair<int, int>, PieceType>();
+      var starters = (new Dictionary<KeyValuePair<int, int>, PieceType>(), "QRNB");
       ApmwCore.getInstance().PlayerPieceSetProvider = () => starters;
       for (int i = 0; i < 8; i++)
       {
-        starters.Add(new KeyValuePair<int, int>(1, i), Pawn);
+        starters.Item1.Add(new KeyValuePair<int, int>(1, i), Pawn);
       }
-      starters.Add(new KeyValuePair<int, int>(2, 0), Rook);
-      starters.Add(new KeyValuePair<int, int>(2, 1), Knight);
-      starters.Add(new KeyValuePair<int, int>(2, 2), Bishop);
-      starters.Add(new KeyValuePair<int, int>(2, 3), Queen);
-      starters.Add(new KeyValuePair<int, int>(2, 4), King);
-      starters.Add(new KeyValuePair<int, int>(2, 5), Bishop);
-      starters.Add(new KeyValuePair<int, int>(2, 6), Knight);
-      starters.Add(new KeyValuePair<int, int>(2, 7), Rook);
+      starters.Item1.Add(new KeyValuePair<int, int>(2, 0), Rook);
+      starters.Item1.Add(new KeyValuePair<int, int>(2, 1), Knight);
+      starters.Item1.Add(new KeyValuePair<int, int>(2, 2), Bishop);
+      starters.Item1.Add(new KeyValuePair<int, int>(2, 3), Queen);
+      starters.Item1.Add(new KeyValuePair<int, int>(2, 4), King);
+      starters.Item1.Add(new KeyValuePair<int, int>(2, 5), Bishop);
+      starters.Item1.Add(new KeyValuePair<int, int>(2, 6), Knight);
+      starters.Item1.Add(new KeyValuePair<int, int>(2, 7), Rook);
     }
 
     public delegate void ClientDisconnected(ushort code, string reason, bool wasClean);
@@ -182,11 +182,20 @@ namespace Archipelago.APChessV
       connectionTask.Start();
     }
 
+    public void Reload()
+    {
+      LocationHandler.Unhook();
+    }
+
     public void Dispose()
     {
       if (session != null && session.Socket.Connected)
       {
         session.Socket.DisconnectAsync();
+      }
+      if (LocationHandler != null)
+      {
+        LocationHandler.Unhook();
       }
 
       //if (ItemLogic != null)

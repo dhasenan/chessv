@@ -51,15 +51,16 @@ namespace Archipelago.APChessV
         (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Major To Queen");
     }
 
-    public Dictionary<KeyValuePair<int, int>, PieceType> generatePlayerPieceSet()
+    public (Dictionary<KeyValuePair<int, int>, PieceType>, string) generatePlayerPieceSet()
     {
+      List<string> promotions = new List<string>();
       List<int> order;
       // indices 0..7 are the back rank - 8..9 can be pieces if the first rank fills up
-      List<PieceType> withMajors = GenerateMajors(out order);
+      List<PieceType> withMajors = GenerateMajors(out order, promotions);
       // replace some or all majors with queens
-      List<PieceType> withQueens = SubstituteQueens(withMajors, order);
+      List<PieceType> withQueens = SubstituteQueens(withMajors, order, promotions);
       // then add minor pieces until out of space
-      List<PieceType> withMinors = GenerateMinors(withQueens);
+      List<PieceType> withMinors = GenerateMinors(withQueens, promotions);
       List<PieceType> withPawns = GeneratePawns(withMinors);
 
       Dictionary<KeyValuePair<int, int>, PieceType> pieces = new Dictionary<KeyValuePair<int, int>, PieceType>();
@@ -68,7 +69,7 @@ namespace Archipelago.APChessV
           if (withPawns[i * 8 + j] != null)
             pieces.Add(new KeyValuePair<int, int>(2-i, j), withPawns[i*8 + j]);
 
-      return pieces;
+      return (pieces, String.Join("", promotions));
     }
 
     public List<PieceType> GeneratePawns(List<PieceType> minors)
@@ -101,8 +102,9 @@ namespace Archipelago.APChessV
       return output;
     }
 
-    public List<PieceType> GenerateMinors(List<PieceType> queens)
+    public List<PieceType> GenerateMinors(List<PieceType> queens, List<string> promotions)
     {
+      HashSet<string> promoPieces = new HashSet<string>();
       List<PieceType> minors = ApmwCore.getInstance().minors.ToList();
       List<PieceType> outer = queens.Skip(8).Take(2).ToList();
       List<PieceType> left = queens.Take(4).ToList();
@@ -121,11 +123,13 @@ namespace Archipelago.APChessV
       for (int i = startingPieces; i < Math.Min(7, totalPieces); i++)
       {
         var piece = minors[random.Next(minors.Count)];
+        promoPieces.Add(piece.Notation[ApmwCore.getInstance().GeriProvider()]);
         parity = placeInArray(new List<int>(), left, right, random, parity, i, piece);
       }
       for (int i = 7; i < Math.Min(15, totalPieces); i++)
       {
         var piece = minors[random.Next(minors.Count)];
+        promoPieces.Add(piece.Notation[ApmwCore.getInstance().GeriProvider()]);
         chooseIndexAndPlace(outer, random, piece);
       }
 
@@ -134,11 +138,12 @@ namespace Archipelago.APChessV
       output.Add(ApmwCore.getInstance().king);
       output.AddRange(right);
       output.AddRange(outer);
+      promotions.Add(String.Join("", promoPieces));
 
       return output;
     }
 
-    public List<PieceType> SubstituteQueens(List<PieceType> majors, List<int> order)
+    public List<PieceType> SubstituteQueens(List<PieceType> majors, List<int> order, List<string> promotions)
     {
       /*
       IEnumerable<int> majorIndexes =
@@ -146,6 +151,7 @@ namespace Archipelago.APChessV
             .Where(index => index != -1);
       */
 
+      HashSet<string> promoPieces = new HashSet<string>();
       List<PieceType> queens = ApmwCore.getInstance().queens.ToList();
 
       Random random = new Random(ApmwCore.getInstance().queenSeed);
@@ -153,13 +159,16 @@ namespace Archipelago.APChessV
       for (int i = 0; i < ApmwCore.getInstance().foundQueens && i < order.Count; i++)
       {
         var piece = queens[random.Next(queens.Count)];
+        promoPieces.Add(piece.Notation[ApmwCore.getInstance().GeriProvider()]);
         majors[order[i]] = piece;
       }
+      promotions.Add(String.Join("", promoPieces));
       return majors;
     }
 
-    public List<PieceType> GenerateMajors(out List<int> order)
+    public List<PieceType> GenerateMajors(out List<int> order, List<string> promotions)
     {
+      HashSet<string> promoPieces = new HashSet<string>();
       order = new List<int>();
       List<PieceType> majors = ApmwCore.getInstance().majors.ToList();
       List<PieceType> outer = new List<PieceType>() { null, null };
@@ -172,11 +181,13 @@ namespace Archipelago.APChessV
       for (int i = 0; i < Math.Min(7, ApmwCore.getInstance().foundMajors); i++)
       {
         var piece = majors[random.Next(majors.Count)];
+        promoPieces.Add(piece.Notation[ApmwCore.getInstance().GeriProvider()]);
         parity = placeInArray(order, left, right, random, parity, i, piece);
       }
       for (int i = 7; i < ApmwCore.getInstance().foundMajors; i++)
       {
         var piece = majors[random.Next(majors.Count)];
+        promoPieces.Add(piece.Notation[ApmwCore.getInstance().GeriProvider()]);
         order.Add(chooseIndexAndPlace(outer, random, piece) + 8);
       }
 
@@ -185,6 +196,7 @@ namespace Archipelago.APChessV
       output.Add(ApmwCore.getInstance().king);
       output.AddRange(right);
       output.AddRange(outer);
+      promotions.Add(String.Join("", promoPieces));
 
       return output;
     }

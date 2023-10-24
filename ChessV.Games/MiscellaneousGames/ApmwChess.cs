@@ -109,8 +109,6 @@ namespace ChessV.Games
       AddRule(new CardDropRule());
       RemoveRule(typeof(Rules.CheckmateRule));
       AddRule(new Rules.Extinction.ExtinctionRule("K"));
-      RemoveRule(typeof(Rules.CastlingRule));
-      AddRule(new Rules.FlexibleCastlingRule());
       //AddRule(new ApmwMoveCompletionRule());
       // TODO(chesslogic): conditionally remove en passant for one player only. (the Apmw provider probably knows whether the player can en passant at this point)
 
@@ -185,8 +183,11 @@ namespace ChessV.Games
 
       ApmwCore starter = ApmwCore.getInstance();
       earlyPopulatePieceTypes();
-      Dictionary<KeyValuePair<int, int>, PieceType> pieces =
+      (Dictionary<KeyValuePair<int, int>, PieceType>, string) pieceSet =
         starter.PlayerPieceSetProvider();
+      Dictionary<KeyValuePair<int, int>, PieceType> pieces = pieceSet.Item1;
+      string promotions = pieceSet.Item2;
+      PromotionTypes += promotions;
 
       string humanPrefix = "Black";
       string cpuPrefix = "White";
@@ -200,12 +201,14 @@ namespace ChessV.Games
         SetCustomProperty("BlackOuter", "8");
         SetCustomProperty("BlackPawns", "pppppppp");
         SetCustomProperty("BlackPieces", "rnbqkbnr");
+        PromotionTypes += "qrbn";
       }
       else
       {
         SetCustomProperty("WhiteOuter", "8");
         SetCustomProperty("WhitePawns", "PPPPPPPP");
         SetCustomProperty("WhitePieces", "RNBQKBNR");
+        PromotionTypes += "QRBN";
       }
 
       //	determine player's board
