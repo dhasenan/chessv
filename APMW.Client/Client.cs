@@ -25,7 +25,7 @@ namespace Archipelago.APChessV
       StartedEventHandler seHandler = (match) => this.match = match;
       ApmwCore.getInstance().StartedEventHandlers.Add(seHandler);
       // TODO(chesslogic): PlayAsWhite
-      ApmwCore.getInstance().GeriProvider.Add(() => 1);
+      ApmwCore.getInstance().GeriProvider = () => 1;
 
       loadPieces();
     }

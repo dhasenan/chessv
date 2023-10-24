@@ -3,6 +3,7 @@ using Archipelago.MultiClient.Net.Helpers;
 using ChessV;
 using ChessV.Base;
 using ChessV.Games;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using static Archipelago.MultiClient.Net.Helpers.ReceivedItemsHelper;
@@ -27,6 +28,10 @@ namespace Archipelago.APChessV
 
       ApmwCore.getInstance().foundPockets = items.Count(
         (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Pocket");
+      ApmwCore.getInstance().GeriProvider = () => items.Any(
+        (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Play as White") ? 0 : 1;
+      ApmwCore.getInstance().EngineWeakeningProvider = () => items.Count(
+        (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Engine ELO Lobotomy");
     }
 
     public void Process(ReceivedItemsHelper ReceivedItemsHelper)

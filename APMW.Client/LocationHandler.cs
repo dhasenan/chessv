@@ -53,6 +53,7 @@ namespace Archipelago.APChessV
       info.FromSquare = move.FromSquare;
       info.ToSquare = move.ToSquare;
       info.PieceMoved = match.Game.Board[move.FromSquare];
+      info.PieceCaptured = match.Game.Board[move.ToSquare];
       HandleMove(info);
     }
 

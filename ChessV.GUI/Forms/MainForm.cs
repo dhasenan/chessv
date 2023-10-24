@@ -26,6 +26,9 @@ using System.Windows.Forms;
 using System.Text;
 using Microsoft.Win32;
 using Archipelago.APChessV;
+using ChessV.Games;
+using ChessV.Base;
+using System.Linq;
 
 namespace ChessV.GUI
 {
@@ -355,7 +358,7 @@ namespace ChessV.GUI
       btnApmw.Enabled = false;
 			if (apmwForm == null || apmwForm.IsDisposed)
 			{
-				apmwForm = new ApmwForm();
+				apmwForm = new ApmwForm(this);
 				apmwForm.FormClosing +=
 					(object _s, FormClosingEventArgs _e) => btnApmw.Enabled = true;
       }
@@ -539,6 +542,11 @@ namespace ChessV.GUI
 		{
 			//	Create and show a GameSettingsForm so the user can specify 
 			//	sides, engines, time controls, etc.
+			if (game.GetType() == typeof(ApmwChessGame))
+			{
+        //StartChecksMate( game );
+				//return;
+      }
 			GameSettingsForm gameSettingsForm = new GameSettingsForm( game );
 			DialogResult result = gameSettingsForm.ShowDialog();
 			TimeControl timeControl = gameSettingsForm.TimeControl;
@@ -629,6 +637,24 @@ namespace ChessV.GUI
 		}
 		#endregion
 
+		public void StartChecksMate(Game game)
+    {
+      //	Configure the "Match" object with the time control
+      TimeControl timeControl = new TimeControl();
+      timeControl.Infinite = true;
+      timeControl.NodeLimit = Convert.ToInt64(2000);
+      game.Match.SetTimeControl(timeControl);
+
+			int player = ApmwCore.getInstance().GeriProvider.Invoke();
+      game.AddHuman(player);
+      game.AddInternalEngine(player ^ 1);
+			game.TTSizeInMB = 256;
+      game.Variation = 1;
+			game.Weakening = Math.Min(15, ApmwCore.getInstance().EngineWeakeningProvider.Invoke());
+
+      GameForm gameForm = new GameForm(game);
+      gameForm.Show();
+    }
 
 		// *** PRIVATE DATA MEMBERS *** //
 

@@ -35,12 +35,13 @@ namespace ChessV.GUI
 {
 	public partial class ApmwForm: Form
 	{
-    public ApmwForm()
+    public ApmwForm(MainForm mainForm)
 		{
 			linesSeen = 0;
 
 			InitializeComponent();
       archipelagoClient = new ArchipelagoClient();
+      this.mainForm = mainForm;
     }
 
     private ArchipelagoClient archipelagoClient;
@@ -49,6 +50,7 @@ namespace ChessV.GUI
 		private List<LogMessage> pastMessages = new List<LogMessage>();
     private int linesSeen = 0;
     private int nonSessionLinesSeen = 0;
+    private readonly MainForm mainForm;
 
     private void ApmwForm_Load( object sender, EventArgs e )
 		{
@@ -136,6 +138,13 @@ namespace ChessV.GUI
     private void textBox2_TextChanged(object sender, EventArgs e)
     {
 
+    }
+
+    private void button2_Click(object sender, EventArgs e)
+    {
+      Game game = mainForm.Manager.CreateGame("Archipelago Multiworld", null);
+      game.StartMatch();
+      mainForm.StartChecksMate(game);
     }
   }
 }

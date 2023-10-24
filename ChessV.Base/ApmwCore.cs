@@ -44,9 +44,10 @@ namespace ChessV.Base
     /** ChessV.Base.PieceType */
     public List<Func<Dictionary<KeyValuePair<int, int>, PieceType>>> PlayerPieceSetProvider = new List<Func<Dictionary<KeyValuePair<int, int>, PieceType>>>();
     /** Provides 0 if the player has found PlayAsWhite item, otherwise provides 1 */
-    public List<Func<int>> GeriProvider = new List<Func<int>>();
+    public Func<int> GeriProvider = () => 1;
     /** Provides 0 if the player has found PlayAsWhite item, otherwise provides 1 */
     public List<Action<Movement>> MovePlayed = new List<Action<Movement>>();
+    public Func<int> EngineWeakeningProvider = () => 0;
 
     public void seed(int[] seeds)
     {

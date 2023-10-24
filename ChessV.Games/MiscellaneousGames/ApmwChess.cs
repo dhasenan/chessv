@@ -209,7 +209,7 @@ namespace ChessV.Games
 
       string humanPrefix = "Black";
       string cpuPrefix = "White";
-      int humanPlayer = starter.GeriProvider.First().Invoke();
+      int humanPlayer = starter.GeriProvider.Invoke();
       if (humanPlayer == 0)
       {
         (humanPrefix, cpuPrefix) = (cpuPrefix, humanPrefix);
