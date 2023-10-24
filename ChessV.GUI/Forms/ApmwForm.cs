@@ -62,6 +62,17 @@ namespace ChessV.GUI
 
 		private void timer_Tick( object sender, EventArgs e )
     {
+      try
+      {
+        if (archipelagoClient.session != null
+          && archipelagoClient.session.ConnectionInfo != null
+          && archipelagoClient.session.ConnectionInfo.Slot != -1)
+        {
+          button2.Enabled = true;
+          // TODO(chesslogic): disable while a game is active, enable once it ends
+        }
+      } catch (NullReferenceException ex) { }
+
       StringBuilder append = new StringBuilder(10000);
       if (pastMessages != null)
       {
@@ -97,7 +108,22 @@ namespace ChessV.GUI
 			timer1.Start();
     }
 
+    private void textBox2_TextChanged(object sender, EventArgs e)
+    {
+      timer1.Stop();
+      timer1.Start();
+    }
+
     private void textBox1_KeyDown(object sender, KeyEventArgs e)
+    {
+      if (e.KeyCode == Keys.Enter)
+      {
+        timer1.Stop();
+        button1_Click(sender, e);
+      }
+    }
+
+    private void textBox2_KeyDown(object sender, KeyEventArgs e)
     {
       if (e.KeyCode == Keys.Enter)
       {
@@ -117,27 +143,15 @@ namespace ChessV.GUI
       nonSessionLinesSeen = 0;
       var url = new Uri("wss://" + textBox1.Text.Split('/').Last());
       var slot = textBox2.Text;
+      var password = textBox3.Text ?? null;
       //messageLog.OnMessageReceived -= (message) => pastMessages.Add(message);
-      archipelagoClient.Connect(url, slot);
+      //archipelagoClient.OnConnect += (session) => button2.Enabled = true;
+      archipelagoClient.Connect(url, slot, password);
       if (messageLog != archipelagoClient.session.MessageLog)
       {
         messageLog = archipelagoClient.session.MessageLog;
         messageLog.OnMessageReceived += (message) => pastMessages.Add(message);
       }
-    }
-
-    private void textBox2_KeyDown(object sender, KeyEventArgs e)
-    {
-      if (e.KeyCode == Keys.Enter)
-      {
-        timer1.Stop();
-        button1_Click(sender, e);
-      }
-    }
-
-    private void textBox2_TextChanged(object sender, EventArgs e)
-    {
-
     }
 
     private void button2_Click(object sender, EventArgs e)

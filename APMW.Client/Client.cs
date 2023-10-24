@@ -74,10 +74,11 @@ namespace Archipelago.APChessV
       starters.Add(new KeyValuePair<int, int>(2, 7), Rook);
     }
 
-
-
     public delegate void ClientDisconnected(ushort code, string reason, bool wasClean);
     public event ClientDisconnected OnClientDisconnect;
+
+    public delegate void ClientConnected(ArchipelagoSession session);
+    public event ClientConnected OnConnect;
 
     internal LocationHandler LocationHandler { get; private set; }
 
@@ -176,6 +177,8 @@ namespace Archipelago.APChessV
 
         //session.Socket.PacketReceived += Session_PacketReceived;
         session.Socket.SocketClosed += Session_SocketClosed;
+
+        //OnConnect(session);
       });
       connectionTask.Start();
     }

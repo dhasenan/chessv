@@ -60,18 +60,20 @@ namespace ChessV.GUI
       this.textBox2 = new System.Windows.Forms.TextBox();
       this.label3 = new System.Windows.Forms.Label();
       this.button2 = new System.Windows.Forms.Button();
+      this.textBox3 = new System.Windows.Forms.TextBox();
+      this.label4 = new System.Windows.Forms.Label();
       this.SuspendLayout();
       // 
       // txtApmwOutput
       // 
       this.txtApmwOutput.BackColor = System.Drawing.Color.White;
-      this.txtApmwOutput.Location = new System.Drawing.Point(12, 51);
+      this.txtApmwOutput.Location = new System.Drawing.Point(12, 63);
       this.txtApmwOutput.MaxLength = 8388352;
       this.txtApmwOutput.Multiline = true;
       this.txtApmwOutput.Name = "txtApmwOutput";
       this.txtApmwOutput.ReadOnly = true;
       this.txtApmwOutput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-      this.txtApmwOutput.Size = new System.Drawing.Size(598, 328);
+      this.txtApmwOutput.Size = new System.Drawing.Size(598, 316);
       this.txtApmwOutput.TabIndex = 0;
       // 
       // timer
@@ -80,9 +82,9 @@ namespace ChessV.GUI
       // 
       // textBox1
       // 
-      this.textBox1.Location = new System.Drawing.Point(12, 25);
+      this.textBox1.Location = new System.Drawing.Point(12, 24);
       this.textBox1.Name = "textBox1";
-      this.textBox1.Size = new System.Drawing.Size(125, 20);
+      this.textBox1.Size = new System.Drawing.Size(132, 20);
       this.textBox1.TabIndex = 1;
       this.textBox1.Text = "archipelago.gg:";
       this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
@@ -100,7 +102,7 @@ namespace ChessV.GUI
       // label2
       // 
       this.label2.AutoSize = true;
-      this.label2.Location = new System.Drawing.Point(143, 8);
+      this.label2.Location = new System.Drawing.Point(147, 8);
       this.label2.Name = "label2";
       this.label2.Size = new System.Drawing.Size(109, 13);
       this.label2.TabIndex = 4;
@@ -119,16 +121,18 @@ namespace ChessV.GUI
       // timer1
       // 
       this.timer1.Interval = 300;
+      this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
       // 
       // timer2
       // 
       this.timer2.Interval = 410;
+      this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
       // 
       // textBox2
       // 
-      this.textBox2.Location = new System.Drawing.Point(143, 25);
+      this.textBox2.Location = new System.Drawing.Point(150, 24);
       this.textBox2.Name = "textBox2";
-      this.textBox2.Size = new System.Drawing.Size(280, 20);
+      this.textBox2.Size = new System.Drawing.Size(132, 20);
       this.textBox2.TabIndex = 7;
       this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
       this.textBox2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox2_KeyDown);
@@ -137,7 +141,7 @@ namespace ChessV.GUI
       // 
       this.label3.AutoSize = true;
       this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F);
-      this.label3.Location = new System.Drawing.Point(258, 9);
+      this.label3.Location = new System.Drawing.Point(133, 47);
       this.label3.Name = "label3";
       this.label3.Size = new System.Drawing.Size(165, 13);
       this.label3.TabIndex = 8;
@@ -145,20 +149,41 @@ namespace ChessV.GUI
       // 
       // button2
       // 
+      this.button2.Enabled = false;
       this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+      this.button2.Image = global::ChessV.GUI.Properties.Resources.icon_apmw;
+      this.button2.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
       this.button2.Location = new System.Drawing.Point(508, 8);
       this.button2.Name = "button2";
       this.button2.Size = new System.Drawing.Size(102, 37);
       this.button2.TabIndex = 9;
-      this.button2.Text = "Start a game!";
+      this.button2.Text = "        Start a game!";
       this.button2.UseVisualStyleBackColor = true;
       this.button2.Click += new System.EventHandler(this.button2_Click);
+      // 
+      // textBox3
+      // 
+      this.textBox3.Location = new System.Drawing.Point(288, 24);
+      this.textBox3.Name = "textBox3";
+      this.textBox3.Size = new System.Drawing.Size(132, 20);
+      this.textBox3.TabIndex = 10;
+      // 
+      // label4
+      // 
+      this.label4.AutoSize = true;
+      this.label4.Location = new System.Drawing.Point(285, 8);
+      this.label4.Name = "label4";
+      this.label4.Size = new System.Drawing.Size(112, 13);
+      this.label4.TabIndex = 11;
+      this.label4.Text = "Archipelago Password";
       // 
       // ApmwForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(622, 391);
+      this.Controls.Add(this.label4);
+      this.Controls.Add(this.textBox3);
       this.Controls.Add(this.button2);
       this.Controls.Add(this.label3);
       this.Controls.Add(this.textBox2);
@@ -189,5 +214,7 @@ namespace ChessV.GUI
     private System.Windows.Forms.TextBox textBox2;
     private System.Windows.Forms.Label label3;
     private System.Windows.Forms.Button button2;
+    private System.Windows.Forms.TextBox textBox3;
+    private System.Windows.Forms.Label label4;
   }
 }

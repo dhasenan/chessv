@@ -18,6 +18,7 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
+using ChessV.Games;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -106,6 +107,9 @@ namespace ChessV.GUI
 			if( Game.ComputerControlled[0] )
 				listThinking1.Items.Clear();
 			labelTime0.Text = timeInMillisecondsToString( timeleft );
+			if (Game.GetType() == typeof(ApmwChessGame)) {
+				gems_label.Text = "Gems: " + Game.CurrentPlayer.Gems;
+			}
 			timer.Start();
 		}
 		#endregion
@@ -118,7 +122,11 @@ namespace ChessV.GUI
 			if( Game.ComputerControlled[1] )
 				listThinking1.Items.Clear();
 			labelTime1.Text = timeInMillisecondsToString( timeleft );
-			timer.Start();
+      if (Game.GetType() == typeof(ApmwChessGame))
+      {
+        gems_label.Text = "Gems: " + Game.CurrentPlayer.Gems;
+      }
+      timer.Start();
 		}
 		#endregion
 
