@@ -48,7 +48,7 @@ namespace Archipelago.APChessV
       ApmwCore.getInstance().foundMajors = items.Count(
         (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Major Piece");
       ApmwCore.getInstance().foundQueens = items.Count(
-        (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Major to Queen");
+        (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Major To Queen");
     }
 
     public Dictionary<KeyValuePair<int, int>, PieceType> generatePlayerPieceSet()
@@ -152,7 +152,7 @@ namespace Archipelago.APChessV
 
       for (int i = 0; i < ApmwCore.getInstance().foundQueens && i < order.Count; i++)
       {
-        var piece = queens[random.Next(majors.Count)];
+        var piece = queens[random.Next(queens.Count)];
         majors[order[i]] = piece;
       }
       return majors;

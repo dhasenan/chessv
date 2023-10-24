@@ -109,6 +109,8 @@ namespace ChessV.Games
       AddRule(new CardDropRule());
       RemoveRule(typeof(Rules.CheckmateRule));
       AddRule(new Rules.Extinction.ExtinctionRule("K"));
+      RemoveRule(typeof(Rules.CastlingRule));
+      AddRule(new Rules.FlexibleCastlingRule());
       //AddRule(new ApmwMoveCompletionRule());
       // TODO(chesslogic): conditionally remove en passant for one player only. (the Apmw provider probably knows whether the player can en passant at this point)
 

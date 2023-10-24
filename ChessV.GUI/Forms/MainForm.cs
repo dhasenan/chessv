@@ -642,7 +642,7 @@ namespace ChessV.GUI
       //	Configure the "Match" object with the time control
       TimeControl timeControl = new TimeControl();
       timeControl.Infinite = true;
-      timeControl.NodeLimit = Convert.ToInt64(2000);
+      timeControl.NodeLimit = Convert.ToInt64(2000 - (100 * ApmwCore.getInstance().EngineWeakeningProvider()));
       game.Match.SetTimeControl(timeControl);
 
 			int player = ApmwCore.getInstance().GeriProvider();
