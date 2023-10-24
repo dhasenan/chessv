@@ -26,7 +26,7 @@ namespace ChessV.Games.Rules.Cards
 {
 	public class CardDropRule: Rule
   {
-    protected int handSize;
+    protected int handSize; // TODO(chesslogic): why is this 32
     protected int[] pocketSquares;
 
 		protected static Game game;

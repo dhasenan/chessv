@@ -27,8 +27,9 @@ using ChessV.GUI.Attributes;
 
 namespace ChessV.GUI.BoardPresentations
 {
-	[PresentsBoard(typeof(BoardWithPockets))]
-	public class BoardWithPocketsPresentation: BoardPresentation
+  [PresentsBoard(typeof(BoardWithPockets))]
+  [PresentsBoard(typeof(BoardWithCards))]
+  public class BoardWithPocketsPresentation: BoardPresentation
 	{
 		public BoardWithPocketsPresentation( Board board, Theme theme, bool smallPreview = false ) : 
 			base( board, theme, smallPreview )
@@ -48,14 +49,14 @@ namespace ChessV.GUI.BoardPresentations
 
 		public override Rectangle MapLocation( Location location, bool rotateBoard = false )
 		{
-			if( location.File == -1 )
+			if( location.File <= -1 )
 			{
 				if( (location.Rank == 0 && !rotateBoard) || (location.Rank == 1 && rotateBoard) )
 					return new Rectangle( BorderSize * 2 + Board.NumFiles * SquareSize,
-						BorderSize + (Board.NumRanks - 1) * SquareSize, SquareSize, SquareSize );
+						BorderSize + (Board.NumRanks + location.File) * SquareSize, SquareSize, SquareSize );
 				else if( (location.Rank == 1 && !rotateBoard) || (location.Rank == 0 && rotateBoard) )
 					return new Rectangle( BorderSize * 2 + Board.NumFiles * SquareSize,
-						BorderSize, SquareSize, SquareSize );
+						BorderSize - (1 + location.File) * SquareSize, SquareSize, SquareSize );
 				else
 					throw new Exception( "not implemented" );
 			}

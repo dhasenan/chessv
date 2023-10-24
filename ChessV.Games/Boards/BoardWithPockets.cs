@@ -27,12 +27,12 @@ namespace ChessV.Boards
 	{
 		public BoardWithPockets( int nFiles, int nRanks, int nPlayers ): base( nFiles, nRanks, 1, nPlayers )
 		{
-			for( int player = 0; player < nPlayers; player++ )
+			/*for( int player = 0; player < nPlayers; player++ )
 			{
 				int square = NumSquares + player;
 				fileBySquare[square] = -1;
 				rankBySquare[square] = player;
-			}
+			}*/
 		}
 
 		public override Location SquareToLocation( int square )

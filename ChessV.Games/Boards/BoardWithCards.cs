@@ -32,9 +32,9 @@ namespace ChessV.Boards
 			HandSize = handSize;
 			for( int player = 0; player < numPlayers; player++ )
 			{
-				for (int handIndex = 0; handIndex < handSize; handIndex++)
+				for (int handIndex = 1; handIndex <= handSize; handIndex++)
 				{
-					int square = NumSquares + handIndex * (1 + player);
+					int square = NumSquares - 1 + handIndex + (handSize * player);
 					rankBySquare[square] = player;
           fileBySquare[square] = -handIndex;
         }
@@ -51,12 +51,12 @@ namespace ChessV.Boards
 			}
 		}
 
-		public override int LocationToSquare( Location location )
+		public override int LocationToSquare(Location location)
 		{
-			if( location.File >= 0 )
+			if (location.File >= 0)
 				return location.File * NumRanks + location.Rank;
 			else
-				return NumSquares + location.Rank;
+				return NumSquares + location.Rank * HandSize - location.File - 1;
 		}
 	}
 }
