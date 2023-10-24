@@ -117,22 +117,22 @@ namespace Archipelago.APChessV
 
     public void Connect(Uri url, string slotName, string password = null)
     {
-      if (connectionTask != null && !connectionTask.IsCompleted && !connectionTask.IsFaulted)
+      lock (typeof(ArchipelagoClient))
       {
-        return;
-      }
+        if (connectionTask != null && !connectionTask.IsCompleted && !connectionTask.IsFaulted)
+        {
+          return;
+        }
 
-      //ChatMessage.SendColored($"Attempting to connect to Archipelago at ${url}.", Color.green);
-      Dispose();
+        //ChatMessage.SendColored($"Attempting to connect to Archipelago at ${url}.", Color.green);
+        Dispose();
 
-      //LastServerUrl = url;
+        //LastServerUrl = url;
 
-      session = ArchipelagoSessionFactory.CreateSession(url);
-      //ItemLogic = new ArchipelagoItemLogicController(session);
-      //LocationCheckBar = new ArchipelagoLocationCheckProgressBarUI();
+        session = ArchipelagoSessionFactory.CreateSession(url);
+        //ItemLogic = new ArchipelagoItemLogicController(session);
+        //LocationCheckBar = new ArchipelagoLocationCheckProgressBarUI();
 
-      connectionTask = new Task(() =>
-      {
         var result = session.TryConnectAndLogin(
           "ChecksMate",
           slotName,
@@ -162,17 +162,16 @@ namespace Archipelago.APChessV
         {
           //finalStageDeath = Convert.ToBoolean(stageDeathObject);
         }
-        Convenience.getInstance().success(url.Port.ToString(), slotName);
 
         LocationHandler = new LocationHandler(session.Locations);
         SlotData = session.DataStorage.GetSlotData();
 
         var seeds = new int[] {
-          Convert.ToInt32(SlotData["pocketSeed"]),
-          Convert.ToInt32(SlotData["pawnSeed"]),
-          Convert.ToInt32(SlotData["minorSeed"]),
-          Convert.ToInt32(SlotData["majorSeed"]),
-          Convert.ToInt32(SlotData["queenSeed"]), };
+        Convert.ToInt32(SlotData["pocketSeed"]),
+        Convert.ToInt32(SlotData["pawnSeed"]),
+        Convert.ToInt32(SlotData["minorSeed"]),
+        Convert.ToInt32(SlotData["majorSeed"]),
+        Convert.ToInt32(SlotData["queenSeed"]), };
         // TODO(chesslogic): Check if mode is chaos, if so, set random seeds based on current time
         ApmwCore.getInstance().seed(seeds);
 
@@ -184,8 +183,8 @@ namespace Archipelago.APChessV
         session.Socket.SocketClosed += Session_SocketClosed;
 
         //OnConnect(session);
-      });
-      connectionTask.Start();
+        Convenience.getInstance().success(url.Port.ToString(), slotName);
+      }
     }
 
     public void Reload()

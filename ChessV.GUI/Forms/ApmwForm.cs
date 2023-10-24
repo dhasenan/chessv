@@ -51,6 +51,7 @@ namespace ChessV.GUI
     private int linesSeen = 0;
     private int nonSessionLinesSeen = 0;
     private readonly MainForm mainForm;
+    private MessageLogHelper.MessageReceivedHandler mrHandler;
 
     private void ApmwForm_Load( object sender, EventArgs e )
 		{
@@ -135,22 +136,38 @@ namespace ChessV.GUI
     private void button1_Click(object sender, EventArgs e)
     {
       // TODO(chesslogic): change to disconnect mode (for now, just close the program, lol)
+      if (button1.Enabled == false)
+      {
+        return;
+      }
 			button1.Enabled = false;
       timer2.Stop();
       timer2.Start();
 
       linesSeen = 0;
       nonSessionLinesSeen = 0;
-      var url = new Uri("wss://" + textBox1.Text.Split('/').Last());
+      Uri url;
+      try
+      {
+        url = new Uri("wss://" + textBox1.Text.Split('/').Last());
+      } catch (UriFormatException ex)
+      {
+        return;
+      }
       var slot = textBox2.Text;
       var password = textBox3.Text ?? null;
       //messageLog.OnMessageReceived -= (message) => pastMessages.Add(message);
-      //archipelagoClient.OnConnect += (session) => button2.Enabled = true;
+      archipelagoClient.OnConnect += (session) => button2.Enabled = true;
       archipelagoClient.Connect(url, slot, password);
-      if (messageLog != archipelagoClient.session.MessageLog)
+      if (archipelagoClient.session != null && messageLog != archipelagoClient.session.MessageLog)
       {
+        if (mrHandler != null)
+        {
+          messageLog.OnMessageReceived -= mrHandler;
+        }
+        mrHandler = (message) => pastMessages.Add(message);
         messageLog = archipelagoClient.session.MessageLog;
-        messageLog.OnMessageReceived += (message) => pastMessages.Add(message);
+        messageLog.OnMessageReceived += mrHandler;
       }
     }
 

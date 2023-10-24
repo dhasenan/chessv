@@ -34,11 +34,14 @@ namespace Archipelago.APChessV
       this.url = url;
       this.slotName = slotName;
       if (!this.url.Equals(url) || !this.slotName.Equals(slotName)) {
-        using (StreamWriter writetext = new StreamWriter("apmw.txt", false))
+        new Task(() =>
         {
-          writetext.WriteLine(url);
-          writetext.WriteLine(slotName);
-        }
+          using (StreamWriter writetext = new StreamWriter("apmw.txt", false))
+          {
+            writetext.WriteLine(url);
+            writetext.WriteLine(slotName);
+          }
+        }).Start();
       }
     }
 
