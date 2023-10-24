@@ -143,58 +143,27 @@ namespace ChessV.Games
     #region AddPieceTypes
     public override void AddPieceTypes()
     {
-      base.AddPieceTypes();
+      CastlingType = King;
 
       // We can load all the piece types, I don't think the engine cares if some pieces are never used
 
-      // Berolina
-      AddPieceType(BerolinaPawn = new BerolinaPawn("Berolina Pawn", "Ƥ/ƥ", 100, 125, preferredImageName: "Ferz"));
-      // Cwda
-      //AddPieceType(Queen = new Queen("Queen", "Q", 950, 1000));
-      //AddPieceType(Rook = new Rook("Rook", "R", 500, 550));
-      //AddPieceType(Bishop = new Bishop("Bishop", "B", 325, 350));
-      //AddPieceType(Knight = new Knight("Knight", "N", 325, 325));
-      AddPieceType(Archbishop = new Archbishop("Archbishop", "A", 875, 875));
-      AddPieceType(WarElephant = new WarElephant("War Elephant", "E", 475, 475));
-      AddPieceType(Phoenix = new Phoenix("Phoenix", "X", 315, 315));
-      AddPieceType(Cleric = new Cleric("Cleric", "Ċ/ċ", 450, 500));
-      AddPieceType(Chancellor = new Chancellor("Chancellor", "C", 950, 950));
-      AddPieceType(ShortRook = new ShortRook("Short Rook", "S", 400, 425));
-      AddPieceType(Tower = new Tower("Tower", "T", 325, 325));
-      AddPieceType(Lion = new Lion("Lion", "I", 500, 500));
-      AddPieceType(ChargingRook = new ChargingRook("Charging Rook", "Ṙ/ṙ", 495, 530));
-      AddPieceType(NarrowKnight = new NarrowKnight("Lancer", "L", 325, 325));
-      AddPieceType(ChargingKnight = new ChargingKnight("Charging Knight", "Ṅ/ṅ", 365, 365));
-      AddPieceType(Colonel = new Colonel("Colonel", "K̇/k̇", 950, 950));
-      // Eurasian
-      AddPieceType(Cannon = new Cannon("Cannon", "O", 400, 275));
-      AddPieceType(Vao = new Vao("Vao", "V", 300, 175));
-
-      pawns.Add(Pawn);
-      pawns.Add(BerolinaPawn);
-
-      minors.Add(Bishop);
-      minors.Add(Knight);
-      minors.Add(Phoenix);
-      minors.Add(ShortRook); // unusually powerful
-      minors.Add(Tower);
-      minors.Add(NarrowKnight);
-      minors.Add(ChargingKnight);
-      minors.Add(Vao);
-      minors.Add(Cannon); // unusually powerful
-
-      majors.Add(Rook);
-      majors.Add(WarElephant);
-      majors.Add(Cleric);
-      majors.Add(Lion);
-      majors.Add(ChargingRook);
-
-      queens.Add(Queen);
-      queens.Add(Archbishop);
-      queens.Add(Chancellor);
-      queens.Add(Colonel);
-
-      ApmwCore.getInstance().king = King;
+      foreach (PieceType piece in pawns)
+      {
+        AddPieceType(piece);
+      }
+      foreach (PieceType piece in minors)
+      {
+        AddPieceType(piece);
+      }
+      foreach (PieceType piece in majors)
+      {
+        AddPieceType(piece);
+      }
+      foreach (PieceType piece in queens)
+      {
+        AddPieceType(piece);
+      }
+      AddPieceType(King);
 
       //	Army adjustment
       //if ((WhiteArmy.Value == "Fabulous FIDEs" && BlackArmy.Value == "Remarkable Rookies") ||
@@ -213,6 +182,7 @@ namespace ChessV.Games
       base.SetOtherVariables();
 
       ApmwCore starter = ApmwCore.getInstance();
+      earlyPopulatePieceTypes();
       Dictionary<KeyValuePair<int, int>, PieceType> pieces =
         starter.PlayerPieceSetProvider();
 
@@ -282,5 +252,65 @@ namespace ChessV.Games
       SetCustomProperty(humanPrefix + "Pieces", notations[2]);
     }
     #endregion
+
+    public void earlyPopulatePieceTypes()
+    {
+      // Unused: wudfj
+
+      King = new King("Queen", "K", 0, 0);
+      Pawn = new Pawn("Pawn", "P", 100, 125);
+      Rook = new Rook("Rook", "R", 500, 550);
+      Bishop = new Bishop("Bishop", "B", 325, 350);
+      Knight = new Knight("Knight", "N", 325, 325);
+      Queen = new Queen("Queen", "Q", 950, 1000);
+      // Berolina
+      BerolinaPawn = new BerolinaPawn("Berolina Pawn", "Z", 100, 125, preferredImageName: "Ferz");
+      // Cwda
+      //AddPieceType(Queen = new Queen("Queen", "Q", 950, 1000));
+      //AddPieceType(Rook = new Rook("Rook", "R", 500, 550));
+      //AddPieceType(Bishop = new Bishop("Bishop", "B", 325, 350));
+      //AddPieceType(Knight = new Knight("Knight", "N", 325, 325));
+      Archbishop = new Archbishop("Archbishop", "A", 875, 875);
+      WarElephant = new WarElephant("War Elephant", "E", 475, 475);
+      Phoenix = new Phoenix("Phoenix", "X", 315, 315);
+      Cleric = new Cleric("Cleric", "G", 450, 500);
+      Chancellor = new Chancellor("Chancellor", "C", 950, 950);
+      ShortRook = new ShortRook("Short Rook", "S", 400, 425);
+      Tower = new Tower("Tower", "T", 325, 325);
+      Lion = new Lion("Lion", "I", 500, 500);
+      ChargingRook = new ChargingRook("Charging Rook", "H", 495, 530);
+      NarrowKnight = new NarrowKnight("Lancer", "L", 325, 325);
+      ChargingKnight = new ChargingKnight("Charging Knight", "M", 365, 365);
+      Colonel = new Colonel("Colonel", "Y", 950, 950);
+      // Eurasian
+      Cannon = new Cannon("Cannon", "O", 400, 275);
+      Vao = new Vao("Vao", "V", 300, 175);
+
+      pawns.Add(Pawn);
+      pawns.Add(BerolinaPawn);
+
+      minors.Add(Bishop);
+      minors.Add(Knight);
+      minors.Add(Phoenix);
+      minors.Add(ShortRook); // unusually powerful
+      minors.Add(Tower);
+      minors.Add(NarrowKnight);
+      minors.Add(ChargingKnight);
+      minors.Add(Vao);
+      minors.Add(Cannon); // unusually powerful
+
+      majors.Add(Rook);
+      majors.Add(WarElephant);
+      majors.Add(Cleric);
+      majors.Add(Lion);
+      majors.Add(ChargingRook);
+
+      queens.Add(Queen);
+      queens.Add(Archbishop);
+      queens.Add(Chancellor);
+      queens.Add(Colonel);
+
+      ApmwCore.getInstance().king = King;
+    }
   }
 }

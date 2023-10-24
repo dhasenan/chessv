@@ -24,6 +24,7 @@ namespace Archipelago.APChessV
       ItemReceivedHandler irHandler = (helper) => this.Hook();
       ReceivedItemsHelper.ItemReceived += irHandler;
       ApmwCore.getInstance().PlayerPieceSetProvider = () => generatePlayerPieceSet();
+      ApmwCore.getInstance().PlayerPocketPiecesProvider = () => generatePocketItems();
     }
 
     private ReceivedItemsHelper ReceivedItemsHelper;
@@ -59,16 +60,13 @@ namespace Archipelago.APChessV
       List<PieceType> withQueens = SubstituteQueens(withMajors, order);
       // then add minor pieces until out of space
       List<PieceType> withMinors = GenerateMinors(withQueens);
-      List<PieceType> withPawns = GeneratePawns(withQueens);
+      List<PieceType> withPawns = GeneratePawns(withMinors);
 
       Dictionary<KeyValuePair<int, int>, PieceType> pieces = new Dictionary<KeyValuePair<int, int>, PieceType>();
       for (int i = 0; i < 3; i++)
-      {
         for (int j = 0; j < 8; j++)
-        {
-          pieces.Add(new KeyValuePair<int, int>(i, j), withPawns[i*8 + j]);
-        }
-      }
+          if (withPawns[i * 8 + j] != null)
+            pieces.Add(new KeyValuePair<int, int>(2-i, j), withPawns[i*8 + j]);
 
       return pieces;
     }
@@ -77,7 +75,7 @@ namespace Archipelago.APChessV
     {
       List<PieceType> pawns = ApmwCore.getInstance().pawns.ToList();
       List<PieceType> thirdRank = new List<PieceType>() { null, null, null, null, null, null, null, null };
-      List<PieceType> pawnRank = minors.Skip(7).ToList();
+      List<PieceType> pawnRank = minors.Skip(8).ToList();
 
       Random random = new Random(ApmwCore.getInstance().pawnSeed);
 
@@ -86,12 +84,12 @@ namespace Archipelago.APChessV
 
       for (int i = startingPieces; i < Math.Min(8, totalChessmen); i++)
       {
-        var piece = pawns[random.Next(minors.Count)];
+        var piece = pawns[random.Next(pawns.Count)];
         chooseIndexAndPlace(pawnRank, random, piece);
       }
       for (int i = 8; i < Math.Min(16, totalChessmen); i++)
       {
-        var piece = pawns[random.Next(minors.Count)];
+        var piece = pawns[random.Next(pawns.Count)];
         chooseIndexAndPlace(thirdRank, random, piece);
       }
 
@@ -244,19 +242,7 @@ namespace Archipelago.APChessV
       return index;
     }
 
-    public Dictionary<int, bool> generatePawnLocations(int pawns)
-    {
-      for (int file = 0; file < 8; file++)
-      {
-        for (int rank = 0; rank < 2; rank++)
-        {
-
-        }
-      }
-      return new Dictionary<int, bool>();
-    }
-
-    public void generatePocketItems()
+    public List<PieceType> generatePocketItems()
     {
       int foundPockets = ApmwCore.getInstance().foundPockets;
       var pockets = ApmwCore.getInstance().generatePocketValues(foundPockets);
@@ -276,7 +262,7 @@ namespace Archipelago.APChessV
         int index = random.Next(setOfPieceType.Count);
         pocketPieces.Add(setOfPieceType.ToList()[index]);
       }
-      ApmwCore.getInstance().PlayerPocketPiecesProvider = () => pocketPieces;
+      return pocketPieces;
     }
   }
 }

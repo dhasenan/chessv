@@ -26,10 +26,9 @@ namespace Archipelago.APChessV
       ApmwCore.getInstance().StartedEventHandlers.Add(seHandler);
       // TODO(chesslogic): PlayAsWhite
       ApmwCore.getInstance().GeriProvider = () => 1;
-
-      loadPieces();
     }
 
+    /** Currently not used - could be used for a book layout */
     public void loadPieces()
     {
       var King = new King("King", "K", 0, 0);
