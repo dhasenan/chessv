@@ -119,7 +119,7 @@ namespace ChessV.Games.Rules.Cards
 		{
 			if( !capturesOnly )
 			{
-				for (int card = 0; card < handSize; card++)
+				for (int card = 1; card <= handSize; card++)
 				{
 					int pocketSquare = pocketSquares[Game.CurrentSide * handSize + card];
 					Piece pieceInPocket = Board[pocketSquare];
