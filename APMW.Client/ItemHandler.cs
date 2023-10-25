@@ -258,9 +258,8 @@ namespace Archipelago.APChessV
       var skips = random.Next(items.Count(item => item == null));
       while (items[index] != null || skips > 0)
       {
-        if (items[index] != null)
-          index++;
-        else
+        index++;
+        if (items[index] == null)
           skips--;
       }
       items[index] = piece;

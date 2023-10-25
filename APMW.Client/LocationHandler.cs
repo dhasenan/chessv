@@ -184,6 +184,8 @@ namespace Archipelago.APChessV
           }
         }
       }
+      if ((info.MoveType & MoveType.EnPassant) != 0)
+        locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "French Move"));
 
       //
       // END captures ...
