@@ -46,7 +46,7 @@ namespace ChessV.Games.Rules.Cards
       pocketSquares = new int[handSize * 2];
       for ( int player = 0; player < game.NumPlayers; player++ )
       {
-				for (int card = 1; card < handSize; card++)
+				for (int card = 1; card <= handSize; card++)
 				{
 					int index = player * handSize + card - 1;
           pocketSquares[index] = Board.LocationToSquare(new Location(player, -card));
@@ -119,7 +119,7 @@ namespace ChessV.Games.Rules.Cards
 		{
 			if( !capturesOnly )
 			{
-				for (int card = 1; card <= handSize; card++)
+				for (int card = 0; card < handSize; card++)
 				{
 					int pocketSquare = pocketSquares[Game.CurrentSide * handSize + card];
 					Piece pieceInPocket = Board[pocketSquare];

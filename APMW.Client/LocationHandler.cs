@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 
 namespace Archipelago.APChessV
 {
@@ -248,7 +249,7 @@ namespace Archipelago.APChessV
 
       if (locations.Count > 0)
       {
-        LocationCheckHelper.CompleteLocationChecks(locations.ToArray());
+        new Task(() => LocationCheckHelper.CompleteLocationChecks(locations.ToArray())).Start();
       }
 
       UpdateMoveState(info);
