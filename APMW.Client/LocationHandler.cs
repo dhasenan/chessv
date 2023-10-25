@@ -194,8 +194,8 @@ namespace Archipelago.APChessV
       //
 
       Dictionary<Piece, int> forkers = new Dictionary<Piece, int>();
-      bool kingAttacked = false;
-      bool queenAttacked = false;
+      Dictionary<Piece, bool> kingAttacked = new Dictionary<Piece, bool>();
+      Dictionary<Piece, bool> queenAttacked = new Dictionary<Piece, bool>();
       for (int square = 0; square < match.Game.Board.NumSquares; square++)
       {
         List<Piece> attackers;
@@ -222,12 +222,10 @@ namespace Archipelago.APChessV
           if (ApmwCore.getInstance().queens.Contains(attackedPiece.PieceType))
           {
             locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Threaten Queen"));
-            queenAttacked = true;
           }
           if (ApmwCore.getInstance().king == attackedPiece.PieceType)
           {
             locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Threaten King"));
-            kingAttacked = true;
           }
 
           // check if a single piece threatens two non-pawns, call it a "fork"
@@ -237,11 +235,22 @@ namespace Archipelago.APChessV
               forkers[attackers[i]] = 0;
             if (++forkers[attackers[i]] > 1)
               locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Fork"));
+            if (ApmwCore.getInstance().king == attackedPiece.PieceType) {
+              kingAttacked[attackers[i]] = true;
+              if (queenAttacked[attackers[i]])
+                locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Royal Fork"));
+            }
+            if (ApmwCore.getInstance().queens.Contains(attackedPiece.PieceType))
+            {
+              queenAttacked[attackers[i]] = true;
+              if (kingAttacked[attackers[i]])
+                locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Royal Fork"));
+            }
           }
+          
+          // TODO(chesslogic): pin??? how would??? maybe check if target has no moves...
         }
       }
-      if (kingAttacked && queenAttacked)
-        locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Royal Fork"));
 
       //
       // END threats ...
