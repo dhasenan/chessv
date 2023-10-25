@@ -151,7 +151,7 @@ namespace Archipelago.APChessV
       int startingPieces = ApmwCore.getInstance().foundMajors;
       int totalPieces = startingPieces + ApmwCore.getInstance().foundMinors;
 
-      int parity = 0;
+      int parity = left.Count((piece) => piece != null) - right.Count((piece) => piece != null);
       for (int i = startingPieces; i < Math.Min(7, totalPieces); i++)
       {
         var piece = minors[random.Next(minors.Count)];
@@ -280,9 +280,9 @@ namespace Archipelago.APChessV
       var skips = random.Next(items.Count(item => item == null));
       while (items[index] != null || skips > 0)
       {
-        index++;
         if (items[index] == null)
           skips--;
+        index++;
       }
       items[index] = piece;
       return index;

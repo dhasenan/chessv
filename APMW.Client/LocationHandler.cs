@@ -236,15 +236,18 @@ namespace Archipelago.APChessV
             if (!forkers.ContainsKey(attackers[i]))
               forkers[attackers[i]] = 0;
             if (++forkers[attackers[i]] > 1)
+            {
               locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Fork"));
-            if (forkers[attackers[i]] > 2)
-              locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Triple Fork"));
-            if (ApmwCore.getInstance().king == attackedPiece.PieceType)
-              kingAttacked[attackers[i]] = true;
-            if (ApmwCore.getInstance().queens.Contains(attackedPiece.PieceType))
-              queenAttacked[attackers[i]] = true;
-            if (kingAttacked[attackers[i]] && queenAttacked[attackers[i]])
-              locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Royal Fork"));
+              if (forkers[attackers[i]] > 2)
+                locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Triple Fork"));
+              if (ApmwCore.getInstance().king == attackedPiece.PieceType)
+                kingAttacked[attackers[i]] = true;
+              if (ApmwCore.getInstance().queens.Contains(attackedPiece.PieceType))
+                queenAttacked[attackers[i]] = true;
+              if (kingAttacked.ContainsKey(attackers[i]) && queenAttacked.ContainsKey(attackers[i]))
+                if (kingAttacked[attackers[i]] && queenAttacked[attackers[i]])
+                  locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Royal Fork"));
+            }
           }
           
           // TODO(chesslogic): pin??? how would??? maybe check if target has no moves...
