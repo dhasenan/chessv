@@ -139,6 +139,12 @@ namespace Archipelago.APChessV
         {
           locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud Capture"));
         }
+        if (info.PieceCaptured.PieceType.Name.Equals("King"))
+        {
+          locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Checkmate Maxima"));
+          // TODO(chesslogic): count # of pieces and pawns, emit corresponding checkmate
+        }
+
         // handle specific piece
         int originalSquare = info.ToSquare;
         if (currentSquaresToOriginalSquares.ContainsKey(info.ToSquare))
@@ -153,6 +159,7 @@ namespace Archipelago.APChessV
         else
           locationName = "Capture Pawn " + fileNotation;
         locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", locationName));
+
         // handle piece sequence
         int captures;
         if (isPiece)
