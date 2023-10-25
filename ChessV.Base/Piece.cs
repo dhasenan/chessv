@@ -130,7 +130,7 @@ namespace ChessV
 		}
 
 		public override int GetHashCode()
-		{ throw new NotImplementedException(); }
+		{ return this.Square + this.TypeNumber << 10 + MoveCount << 17; }
 		#endregion
 
 

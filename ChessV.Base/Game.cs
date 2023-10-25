@@ -2216,11 +2216,18 @@ namespace ChessV
 				side = side ^ 1;
 			}
 		}
-		#endregion
+    #endregion
 
-		#region IsSquareAttacked
-		public bool IsSquareAttacked( int square, int player )
+    #region IsSquareAttacked
+    public bool IsSquareAttacked(int square, int player)
 		{
+			return IsSquareAttacked(square, player, out _, false);
+		}
+
+    public bool IsSquareAttacked(int square, int player, out List<Piece> attackers, bool findAttackers = false )
+		{
+			attackers = new List<Piece>();
+			bool result = false;
 			//	validate inputs - this can often go bad, for example, in a game with a 
 			//	checkmate rule where the king has been allowed to be captured for some reason
 			if( square < 0 || square >= Board.NumSquares || player < 0 || player > 1 )
@@ -2261,14 +2268,26 @@ namespace ChessV
 									}
 									if( move != null && move.ConditionalBySquare != null && !move.ConditionalBySquare[player][nextSquare] )
 										break;
-									if( !pieceOnSquare.PieceType.HasMovesWithPaths )
-										return true;
+									if (!pieceOnSquare.PieceType.HasMovesWithPaths)
+									{
+										attackers.Add(pieceOnSquare);
+										if (!findAttackers)
+											return true;
+										result = true;
+										break;
+									}
 									//	we have encountered a piece that might attack this square, but 
 									//	it has moves with paths so we need to check to see if there are 
 									//	any clear paths
-									if( move.PathInfo == null )
-										return true;
-									foreach( List<int> stepDirList in move.PathInfo.PathNDirections )
+									if (move.PathInfo == null)
+									{
+										attackers.Add(pieceOnSquare);
+										if (!findAttackers)
+											return true;
+										result = true;
+										break;
+									}
+									foreach ( List<int> stepDirList in move.PathInfo.PathNDirections )
 									{
 										int sq = square;
 										bool blocked = false;
@@ -2278,11 +2297,17 @@ namespace ChessV
 											if( sq == NOT_CONNECTED || Board[sq] != null )
 											{
 												blocked = true;
-												break;
-											}
+                        break;
+                      }
 										}
-										if( !blocked )
-											return true;
+										if( !blocked)
+                    {
+                      attackers.Add(pieceOnSquare);
+                      if (!findAttackers)
+                        return true;
+                      result = true;
+                      break;
+                    }
 									}
 								}
 							}
@@ -2328,23 +2353,43 @@ namespace ChessV
 									if( move != null && move.ConditionalBySquare != null && !move.ConditionalBySquare[player][nextSquare] )
 										//	move conditional by square and this square isn't one
 										break;
-									if( !pieceOnSquare.PieceType.HasMovesWithPaths )
+									if (!pieceOnSquare.PieceType.HasMovesWithPaths)
+									{
+										attackers.Add(pieceOnSquare);
 										//	the piece doesn't have paths so this square is attacked
-										return true;
-									if( move.PathInfo == null )
-										return true;
-									//	we have encountered a piece that might attack this square, but 
-									//	it has moves with paths so we need to check to see if there are 
-									//	any clear paths
-									foreach( List<int> stepDirList in move.PathInfo.PathNDirections )
+										if (!findAttackers)
+											return true;
+										result = true;
+                    nextSquare = Board.NextSquare(dir, nextSquare);
+                    continue;
+									}
+                  if ( move.PathInfo == null)
+                  {
+                    attackers.Add(pieceOnSquare);
+                    if (!findAttackers)
+                      return true;
+                    result = true;
+                    nextSquare = Board.NextSquare(dir, nextSquare);
+                    continue;
+                  }
+                  //	we have encountered a piece that might attack this square, but 
+                  //	it has moves with paths so we need to check to see if there are 
+                  //	any clear paths
+                  foreach ( List<int> stepDirList in move.PathInfo.PathNDirections )
 									{
 										int sq = nextSquare;
 										bool blocked = false;
 										foreach( int stepDir in stepDirList )
 										{
 											sq = Board.NextSquare( PlayerDirection( player, stepDir ), sq );
-											if( sq == square )
-												return true;
+											if (sq == square)
+											{
+												attackers.Add(pieceOnSquare);
+												if (!findAttackers)
+													return true;
+												result = true;
+												break;
+											}
 											if( sq == NOT_CONNECTED || Board[sq] != null )
 											{
 												blocked = true;
@@ -2352,7 +2397,13 @@ namespace ChessV
 											}
 										}
 										if( !blocked )
-											return true;
+                    {
+                      attackers.Add(pieceOnSquare);
+                      if (!findAttackers)
+                        return true;
+                      result = true;
+                      break;
+                    }
 									}
 								}
 							}
@@ -2378,7 +2429,7 @@ namespace ChessV
 				if( rule.IsSquareAttacked( square, player ) )
 					return true;
 			//	if we made it here, the square is not attacked
-			return false;
+			return result;
 		}
 		#endregion
 
