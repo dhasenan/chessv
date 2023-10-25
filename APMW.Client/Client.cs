@@ -132,58 +132,66 @@ namespace Archipelago.APChessV
         session = ArchipelagoSessionFactory.CreateSession(url);
         //ItemLogic = new ArchipelagoItemLogicController(session);
         //LocationCheckBar = new ArchipelagoLocationCheckProgressBarUI();
-
-        var result = session.TryConnectAndLogin(
-          "ChecksMate",
-          slotName,
-          itemsHandlingFlags: ItemsHandlingFlags.AllItems,
-          new Version(4, 3, 0),
-          tags: new string[] { "DeathLink" },
-          password: password);
-
-        if (!result.Successful)
+        connectionTask = new Task(() =>
         {
-          LoginFailure failureResult = (LoginFailure)result;
-          foreach (var errCode in failureResult.ErrorCodes)
+          var result = session.TryConnectAndLogin(
+            "ChecksMate",
+            slotName,
+            itemsHandlingFlags: ItemsHandlingFlags.AllItems,
+            new Version(4, 3, 0),
+            tags: new string[] { "DeathLink" },
+            password: password);
+
+          if (!result.Successful)
           {
-            nonSessionMessages.Add("Error code: " + errCode.ToString());
+            LoginFailure failureResult = (LoginFailure)result;
+            foreach (var errCode in failureResult.ErrorCodes)
+            {
+              nonSessionMessages.Add("Error code: " + errCode.ToString());
+            }
+            foreach (var err in failureResult.Errors)
+            {
+              nonSessionMessages.Add(err);
+              //ChatMessage.SendColored(err, Color.red);
+              //Log.LogError(err);
+            }
+            return;
           }
-          foreach (var err in failureResult.Errors)
+
+          LoginSuccessful successResult = (LoginSuccessful)result;
+          if (successResult.SlotData.TryGetValue("FinalStageDeath", out var stageDeathObject))
           {
-            nonSessionMessages.Add(err);
-            //ChatMessage.SendColored(err, Color.red);
-            //Log.LogError(err);
+            //finalStageDeath = Convert.ToBoolean(stageDeathObject);
           }
-          return;
-        }
 
-        LoginSuccessful successResult = (LoginSuccessful)result;
-        if (successResult.SlotData.TryGetValue("FinalStageDeath", out var stageDeathObject))
-        {
-          //finalStageDeath = Convert.ToBoolean(stageDeathObject);
-        }
+          //if (connectionTask.IsFaulted || session == null)
+          //{
+          //  return;
+          //}
 
-        LocationHandler = new LocationHandler(session.Locations);
-        SlotData = session.DataStorage.GetSlotData();
+          LocationHandler = new LocationHandler(session.Locations);
+          SlotData = session.DataStorage.GetSlotData();
 
-        var seeds = new int[] {
-        Convert.ToInt32(SlotData["pocketSeed"]),
-        Convert.ToInt32(SlotData["pawnSeed"]),
-        Convert.ToInt32(SlotData["minorSeed"]),
-        Convert.ToInt32(SlotData["majorSeed"]),
-        Convert.ToInt32(SlotData["queenSeed"]), };
-        // TODO(chesslogic): Check if mode is chaos, if so, set random seeds based on current time
-        ApmwCore.getInstance().seed(seeds);
+          var seeds = new int[] {
+          Convert.ToInt32(SlotData["pocketSeed"]),
+          Convert.ToInt32(SlotData["pawnSeed"]),
+          Convert.ToInt32(SlotData["minorSeed"]),
+          Convert.ToInt32(SlotData["majorSeed"]),
+          Convert.ToInt32(SlotData["queenSeed"]), };
+          // TODO(chesslogic): Check if mode is chaos, if so, set random seeds based on current time
+          ApmwCore.getInstance().seed(seeds);
 
-        this.ItemHandler = new ItemHandler(session.Items);
+          this.ItemHandler = new ItemHandler(session.Items);
 
-        //LocationCheckBar.ItemPickupStep = ItemLogic.ItemPickupStep;
+          //LocationCheckBar.ItemPickupStep = ItemLogic.ItemPickupStep;
 
-        //session.Socket.PacketReceived += Session_PacketReceived;
-        session.Socket.SocketClosed += Session_SocketClosed;
+          //session.Socket.PacketReceived += Session_PacketReceived;
+          session.Socket.SocketClosed += Session_SocketClosed;
 
-        //OnConnect(session);
-        Convenience.getInstance().success(url.Port.ToString(), slotName);
+          //OnConnect(session);
+          Convenience.getInstance().success(url.Port.ToString(), slotName);
+        });
+        connectionTask.Start();
       }
     }
 

@@ -262,7 +262,7 @@ namespace ChessV.Games
     {
       // Unused: wudfj
 
-      King = new King("Queen", "K", 0, 0);
+      King = new King("King", "K", 0, 0);
       Pawn = new Pawn("Pawn", "P", 100, 125);
       Rook = new Rook("Rook", "R", 500, 550);
       Bishop = new Bishop("Bishop", "B", 325, 350);
