@@ -57,6 +57,8 @@ namespace Archipelago.APChessV
         (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Major Piece");
       ApmwCore.getInstance().foundQueens = items.Count(
         (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Major To Queen");
+      ApmwCore.getInstance().foundPawnForwardness = items.Count(
+        (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Pawn Forwardness");
     }
 
     public void Unhook()
@@ -105,6 +107,23 @@ namespace Archipelago.APChessV
       {
         var piece = pawns[random.Next(pawns.Count)];
         chooseIndexAndPlace(thirdRank, random, piece);
+      }
+
+      int remainingForwardness = ApmwCore.getInstance().foundPawnForwardness;
+      HashSet<int> possibleForwardPawnPositions = new HashSet<int>();
+      for (int i = 0; i < thirdRank.Count; i++)
+        if (thirdRank[i] == null && pawnRank[i] != null && pawnRank[i].Name.Contains("Pawn"))
+          possibleForwardPawnPositions.Add(i);
+      for (
+        int i = random.Next(possibleForwardPawnPositions.Count);
+        remainingForwardness-- > 0 && possibleForwardPawnPositions.Count > 0;
+        i = random.Next(possibleForwardPawnPositions.Count))
+      {
+        // swap backward with forward
+        thirdRank[i] = pawnRank[i];
+        pawnRank[i] = null;
+        // setup for next iteration (TODO(chesslogic): could move this into the for loop syntax)
+        possibleForwardPawnPositions.Remove(i);
       }
 
       List<PieceType> output = new List<PieceType>();
@@ -224,16 +243,19 @@ namespace Archipelago.APChessV
       PieceType piece)
     {
       int side;
-      if (i == 7) // there are 4 spaces on the left (queenside) vs 3 on right (kingside)
+      // there are 4 spaces on the left (queenside) vs 3 on right (kingside)
+      if (i > right.Count * 2 || i > left.Count * 2)
       {
-        side = -1;
+        side = right.Count - left.Count; // 3 - 4 = -1
         parity = 0;
       }
+      // if we need to choose a side, it should be random
       else if (parity == 0)
       {
         parity = random.Next(2) * 2 - 1;
         side = -parity;
       }
+      // we chose the other side last time, let's go somewhere new
       else
       {
         side = parity;
@@ -246,7 +268,7 @@ namespace Archipelago.APChessV
       }
       else
       {
-        order.Add(chooseIndexAndPlace(right, random, piece) + 4);
+        order.Add(chooseIndexAndPlace(right, random, piece) + left.Count); // left.Count == 4
       }
 
       return parity;
