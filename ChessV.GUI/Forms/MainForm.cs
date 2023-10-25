@@ -642,7 +642,7 @@ namespace ChessV.GUI
       //	Configure the "Match" object with the time control
       TimeControl timeControl = new TimeControl();
       timeControl.Infinite = true;
-      timeControl.NodeLimit = Convert.ToInt64(2000 - (100 * ApmwCore.getInstance().EngineWeakeningProvider()));
+      timeControl.NodeLimit = Math.Max(125, Convert.ToInt64(2500 - (500 * ApmwCore.getInstance().EngineWeakeningProvider())));
       game.Match.SetTimeControl(timeControl);
 
 			int player = ApmwCore.getInstance().GeriProvider();
@@ -652,7 +652,7 @@ namespace ChessV.GUI
       game.ComputerControlled[player ^ 1] = true;
       game.TTSizeInMB = 256;
       game.Variation = 1;
-			game.Weakening = Math.Min(15, ApmwCore.getInstance().EngineWeakeningProvider());
+			game.Weakening = Math.Min(15, 3 * ApmwCore.getInstance().EngineWeakeningProvider());
 
       GameForm gameForm = new GameForm(game);
       gameForm.Show();

@@ -46,7 +46,7 @@ namespace Archipelago.APChessV
 
     public void EndMatch()
     {
-      ApmwCore.getInstance().MovePlayed.Remove((move) => this.HandleMove(move));
+      ApmwCore.getInstance().MovePlayed.Remove(mpHandler);
       mpHandler = null;
       // ApmwCore.getInstance().StartedEventHandlers.Remove(seHandler);
       // seHandler = null;

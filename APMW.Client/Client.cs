@@ -22,7 +22,11 @@ namespace Archipelago.APChessV
     {
       nonSessionMessages = new List<string>();
 
-      StartedEventHandler seHandler = (match) => this.match = match;
+      StartedEventHandler seHandler = (match) =>
+      {
+        this.match = match;
+        match.Finished += (Match m) => this.UnloadMatch();
+      };
       ApmwCore.getInstance().StartedEventHandlers.Add(seHandler);
       // TODO(chesslogic): PlayAsWhite
       ApmwCore.getInstance().GeriProvider = () => 1;
