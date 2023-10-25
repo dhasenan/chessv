@@ -119,40 +119,43 @@ namespace ChessV.Games.Rules.Cards
 		{
 			if( !capturesOnly )
 			{
-				int pocketSquare = pocketSquares[Game.CurrentSide];
-				Piece pieceInPocket = Board[pocketSquare];
-				if( pieceInPocket != null )
-        {
-          int gems;
-					if (Game.Match != null)
+				for (int card = 0; card < handSize; card++)
+				{
+					int pocketSquare = pocketSquares[Game.CurrentSide * handSize + card];
+					Piece pieceInPocket = Board[pocketSquare];
+					if (pieceInPocket != null)
 					{
-						Player movingPlayer = Game.Match.GetPlayer(list.CurrentMove.Player);
-						//if (Game.CurrentPlayer.Side != list.CurrentMove.Player)
-						//{
-						//	movingPlayer = movingPlayer.Opponent;
-						//}
-						gems = movingPlayer.Gems;
-          }
-					else
-					{
-						gems = list.CurrentMove.Player + ApmwCore.getInstance().foundPocketGems;
-          }
-          if (gems < pieceInPocket.MidgameValue / 100)
-          {
-            return;
-          }
-
-          // TODO(chesslogic): square bounding based on apmw Pocket Forwardness
-          for ( int square = 0; square < Board.NumSquares; square++ )
-					{
-						var rankFromPlayer = Game.CurrentSide == 0 ? Board.GetRank(square) : 7 - Board.GetRank(square);
-						var inRange = rankFromPlayer <= Range;
-            if ( inRange && Board[square] == null )
+						int gems;
+						if (Game.Match != null)
 						{
-							list.BeginMoveAdd( MoveType.Drop, pocketSquare, square );
-							Piece piece = list.AddPickup( pocketSquare );
-							list.AddDrop( piece, square, pieceInPocket.PieceType );
-              list.EndMoveAdd( piece.PieceType.GetMidgamePST( square ) - 10 );
+							Player movingPlayer = Game.Match.GetPlayer(list.CurrentMove.Player);
+							//if (Game.CurrentPlayer.Side != list.CurrentMove.Player)
+							//{
+							//	movingPlayer = movingPlayer.Opponent;
+							//}
+							gems = movingPlayer.Gems;
+						}
+						else
+						{
+							gems = list.CurrentMove.Player + ApmwCore.getInstance().foundPocketGems;
+						}
+						if (gems < pieceInPocket.MidgameValue / 100)
+						{
+							return;
+						}
+
+						// TODO(chesslogic): square bounding based on apmw Pocket Forwardness
+						for (int square = 0; square < Board.NumSquares; square++)
+						{
+							var rankFromPlayer = Game.CurrentSide == 0 ? Board.GetRank(square) : 7 - Board.GetRank(square);
+							var inRange = rankFromPlayer <= Range;
+							if (inRange && Board[square] == null)
+							{
+								list.BeginMoveAdd(MoveType.Drop, pocketSquare, square);
+								Piece piece = list.AddPickup(pocketSquare);
+								list.AddDrop(piece, square, pieceInPocket.PieceType);
+								list.EndMoveAdd(piece.PieceType.GetMidgamePST(square) - 10);
+							}
 						}
 					}
 				}
