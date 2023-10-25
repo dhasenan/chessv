@@ -112,6 +112,9 @@ namespace ChessV.Games
       //AddRule(new ApmwMoveCompletionRule());
       // TODO(chesslogic): conditionally remove en passant for one player only. (the Apmw provider probably knows whether the player can en passant at this point)
 
+      // *** BEROLINA PAWN PROMOTION *** //
+      List<PieceType> availablePromotionTypes = ParseTypeListFromString(PromotionTypes);
+      AddBasicPromotionRule(BerolinaPawn, availablePromotionTypes, (loc) => loc.Rank == Board.NumRanks - 1);
     }
     #endregion
 

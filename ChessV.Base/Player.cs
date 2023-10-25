@@ -412,8 +412,7 @@ namespace ChessV
 				forfeit( ResultType.Timeout );
 				return;
 			}
-
-      // ApmwCore.getInstance().MovePlayed.ForEach((handler) => handler(moves.First()));
+			
       MoveMade( this, moves );
 		}
 

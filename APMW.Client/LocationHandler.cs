@@ -38,7 +38,7 @@ namespace Archipelago.APChessV
       this.match = match;
       //match.Game.MovePlayed += (move) => this.HandleMove(move);
       mpHandler = (move) => this.HandleMove(move);
-      ApmwCore.getInstance().MovePlayed.Add(mpHandler);
+      ApmwCore.getInstance().NewMovePlayed.Add(mpHandler);
       this.humanPlayer = this.match.GetPlayer(0).IsHuman ? 0 : 1;
       // TODO(chesslogic): why does this continue to increment between games?
       this.capturedPawns = 0;
@@ -47,7 +47,7 @@ namespace Archipelago.APChessV
 
     public void EndMatch()
     {
-      ApmwCore.getInstance().MovePlayed.Remove(mpHandler);
+      ApmwCore.getInstance().NewMovePlayed.Remove(mpHandler);
       mpHandler = null;
       // ApmwCore.getInstance().StartedEventHandlers.Remove(seHandler);
       // seHandler = null;
@@ -111,6 +111,8 @@ namespace Archipelago.APChessV
         if ((info.Player == 1 && match.Game.Board.GetRank(info.ToSquare) == 0) ||
           (info.Player == 0 && match.Game.Board.GetRank(info.ToSquare) == 7))
         {
+          // TODO(chesslogic): info.ToSquare probably isn't based on Board.PlayerSquare (used for PST eval)
+          // TODO(chesslogic): ... but if it is, just check info.GetRank==7, ignore info.Player
           locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud Promotion"));
         }
         // check if move is to center
@@ -249,8 +251,21 @@ namespace Archipelago.APChessV
                   locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Royal Fork"));
             }
           }
-          
-          // TODO(chesslogic): pin??? how would??? maybe check if target has no moves...
+
+          // TODO(chesslogic): pin??? how would??? maybe check if target has no moves... for king pins?
+          // TODO(chesslogic): wait, this uses extinction not checkmate, so that won't even work!
+          /*
+          MoveList moveList = new MoveList(
+            match.Game.Board, new ChessV.SearchStack[] { },
+            new uint[] { }, new uint[] { }, new uint[,,] { }, new uint[,,] { }, 1);
+          piece.GenerateMoves(moveList, false);
+          if (moveList.Count > 0)
+          {
+            locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Pin"));
+            // all pieces matter?? I don't know ... this only detects pins to king...
+            locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Skewer"));
+          }
+          */
         }
       }
 

@@ -57,7 +57,7 @@ namespace ChessV.Base
     public Func<List<PieceType>> PlayerPocketPiecesProvider;
     /** Provides 0 if the player has found PlayAsWhite item, otherwise provides 1 */
     public Func<int> GeriProvider = () => 1;
-    public List<Action<MoveInfo>> MovePlayed = new List<Action<MoveInfo>>();
+    public List<Action<MoveInfo>> NewMovePlayed = new List<Action<MoveInfo>>();
     public Func<int> EngineWeakeningProvider = () => 0;
 
     public void seed(int[] seeds)

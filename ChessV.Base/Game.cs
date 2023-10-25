@@ -1517,7 +1517,7 @@ namespace ChessV
 			MovePlayed( move );
 			if (move != lastMove)
 			{
-				ApmwCore.getInstance().MovePlayed.ForEach((handler) => handler(move));
+				ApmwCore.getInstance().NewMovePlayed.ForEach((handler) => handler(move));
 				lastMove = move;
       }
 
