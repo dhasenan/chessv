@@ -228,24 +228,21 @@ namespace Archipelago.APChessV
             locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Threaten King"));
           }
 
-          // check if a single piece threatens two non-pawns, call it a "fork"
+          // check if a single piece threatens two non-pawns, call it a "fork" and stick it done (that's a joke)
           for (int i = 0; i < attackers.Count; i++)
           {
             if (!forkers.ContainsKey(attackers[i]))
               forkers[attackers[i]] = 0;
             if (++forkers[attackers[i]] > 1)
               locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Fork"));
-            if (ApmwCore.getInstance().king == attackedPiece.PieceType) {
+            if (forkers[attackers[i]] > 2)
+              locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Triple Fork"));
+            if (ApmwCore.getInstance().king == attackedPiece.PieceType)
               kingAttacked[attackers[i]] = true;
-              if (queenAttacked[attackers[i]])
-                locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Royal Fork"));
-            }
             if (ApmwCore.getInstance().queens.Contains(attackedPiece.PieceType))
-            {
               queenAttacked[attackers[i]] = true;
-              if (kingAttacked[attackers[i]])
-                locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Royal Fork"));
-            }
+            if (kingAttacked[attackers[i]] && queenAttacked[attackers[i]])
+              locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Royal Fork"));
           }
           
           // TODO(chesslogic): pin??? how would??? maybe check if target has no moves...
