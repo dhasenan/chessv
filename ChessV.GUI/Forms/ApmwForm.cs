@@ -175,7 +175,7 @@ namespace ChessV.GUI
     {
       Game game = mainForm.Manager.CreateGame("Archipelago Multiworld", null);
       game.StartMatch();
-      game.Match.Finished += (match) => { archipelagoClient.Reload(); };
+      game.Match.Finished += (match) => { archipelagoClient.UnloadMatch(); };
       mainForm.StartChecksMate(game);
     }
   }

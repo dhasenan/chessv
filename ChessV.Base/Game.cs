@@ -27,6 +27,7 @@ using System.Reflection;
 using System.Diagnostics;
 using Microsoft.Win32;
 using System.Text.RegularExpressions;
+using ChessV.Base;
 
 namespace ChessV
 {
@@ -1514,8 +1515,13 @@ namespace ChessV
 			//	raise MoveBeingPlayed event first, then MovePlayed event
 			MoveBeingPlayed?.Invoke( move );
 			MovePlayed( move );
+			if (move != lastMove)
+			{
+				ApmwCore.getInstance().MovePlayed.ForEach((handler) => handler(move));
+				lastMove = move;
+      }
 
-			if( Result.IsNone )
+      if ( Result.IsNone )
 			{
 				//	generate moves for new position
 				moveLists[1].Reset();
@@ -1541,10 +1547,13 @@ namespace ChessV
 			}
 		}
 
+		/** used to prevent emitting extra moves for the same action, which keeps happening */
+		MoveInfo lastMove;
+
 		//	Version of PerformMove for when only a Movement is available, 
 		//	not a MoveInfo.  This finds the appropriate MoveInfo from the 
 		//	root MoveList and passes it to the other overload.
-		public void MakeMove( Movement move, bool computer )
+		public void MakeMove( Movement move, bool highlightMove )
 		{
 			MoveInfo[] moves;
 			int nMoves = moveLists[1].GetMoves( out moves );
@@ -1552,8 +1561,8 @@ namespace ChessV
 			{
 				if( moves[x].Hash == move.Hash )
 				{
-					MakeMove( moves[x], computer );
-					return;
+					MakeMove( moves[x], highlightMove );
+          return;
 				}
 			}
 			throw new Exception( "Attempt to execute an illegal move in Game::MakeMove" );

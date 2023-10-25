@@ -413,7 +413,7 @@ namespace ChessV
 				return;
 			}
 
-      ApmwCore.getInstance().MovePlayed.ForEach((handler) => handler(moves.First()));
+      // ApmwCore.getInstance().MovePlayed.ForEach((handler) => handler(moves.First()));
       MoveMade( this, moves );
 		}
 

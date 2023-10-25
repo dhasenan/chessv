@@ -35,6 +35,7 @@ namespace Archipelago.APChessV
     public void Hook()
     {
       var items = ReceivedItemsHelper.AllItemsReceived;
+      ReceivedItemsHelper.ItemReceived += irHandler;
 
       ApmwCore.getInstance().foundPockets = items.Count(
         (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Pocket");

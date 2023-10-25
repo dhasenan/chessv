@@ -3,6 +3,7 @@ using Archipelago.MultiClient.Net.Helpers;
 using ChessV;
 using ChessV.Base;
 using ChessV.Games;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
@@ -16,17 +17,14 @@ namespace Archipelago.APChessV
     {
       LocationCheckHelper = locationCheckHelper;
 
-      seHandler = (match) =>
-      {
-        this.match = match;
-        this.Hook();
-      };
+      seHandler = (match) => this.StartMatch(match);
       ApmwCore.getInstance().StartedEventHandlers.Add(seHandler);
     }
 
     public ILocationCheckHelper LocationCheckHelper { get; private set; }
 
     private StartedEventHandler seHandler;
+    private Action<MoveInfo> mpHandler;
     private ChessV.Match match;
     private int humanPlayer;
     private int capturedPieces;
@@ -34,36 +32,43 @@ namespace Archipelago.APChessV
 
     private Dictionary<int, int> currentSquaresToOriginalSquares = new Dictionary<int, int>();
 
-    public void Hook()
+    public void StartMatch(Match match)
     {
+      this.match = match;
       //match.Game.MovePlayed += (move) => this.HandleMove(move);
-      ApmwCore.getInstance().MovePlayed.Add((move) => this.HandleMove(move));
+      mpHandler = (move) => this.HandleMove(move);
+      ApmwCore.getInstance().MovePlayed.Add(mpHandler);
       this.humanPlayer = this.match.GetPlayer(0).IsHuman ? 0 : 1;
       // TODO(chesslogic): why does this continue to increment between games?
       this.capturedPawns = 0;
       this.capturedPieces = 0;
     }
 
-    public void Unhook()
+    public void EndMatch()
     {
-      ApmwCore.getInstance().StartedEventHandlers.Remove(seHandler);
-      seHandler = null;
+      ApmwCore.getInstance().MovePlayed.Remove((move) => this.HandleMove(move));
+      mpHandler = null;
+      // ApmwCore.getInstance().StartedEventHandlers.Remove(seHandler);
+      // seHandler = null;
+      this.capturedPawns = 0;
+      this.capturedPieces = 0;
     }
 
-    public void HandleMove(Movement move)
-    {
-      if (move == null)
-        return; // probably never happens
+    /** unused */
+    //public void HandleMove(Movement move)
+    //{
+    //  if (move == null)
+    //    return; // probably never happens
 
-      MoveInfo info = new MoveInfo();
-      info.Player = move.Player;
-      info.MoveType = move.MoveType;
-      info.FromSquare = move.FromSquare;
-      info.ToSquare = move.ToSquare;
-      info.PieceMoved = match.Game.Board[move.FromSquare];
-      info.PieceCaptured = match.Game.Board[move.ToSquare];
-      HandleMove(info);
-    }
+    //  MoveInfo info = new MoveInfo();
+    //  info.Player = move.Player;
+    //  info.MoveType = move.MoveType;
+    //  info.FromSquare = move.FromSquare;
+    //  info.ToSquare = move.ToSquare;
+    //  info.PieceMoved = match.Game.Board[move.FromSquare];
+    //  info.PieceCaptured = match.Game.Board[move.ToSquare];
+    //  HandleMove(info);
+    //}
 
     public void HandleMove(MoveInfo info)
     {
@@ -108,9 +113,10 @@ namespace Archipelago.APChessV
           locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud Promotion"));
         }
         // check if move is to center
-        if (match.Game.Board.InSmallCenter(info.ToSquare) == 1)
+        if ((match.Game.Board.GetFile(info.ToSquare) == 3 || match.Game.Board.GetFile(info.ToSquare) == 4) &&
+          (match.Game.Board.GetRank(info.ToSquare) == 3 || match.Game.Board.GetRank(info.ToSquare) == 4))
         {
-          locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud Thrice"));
+          locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud Center"));
         }
       }
 
@@ -193,26 +199,26 @@ namespace Archipelago.APChessV
           var loc = match.Game.Board.SquareToLocation(square);
           Piece attackedPiece = match.Game.Board[square];
 
-          if (attackedPiece == null) { continue; }
+          if (attackedPiece == null || attackedPiece.Player == humanPlayer) { continue; }
           if (ApmwCore.getInstance().pawns.Contains(attackedPiece.PieceType))
           {
-            locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Pawn Threat"));
+            locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Threaten Pawn"));
           }
           if (ApmwCore.getInstance().minors.Contains(attackedPiece.PieceType))
           {
-            locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Minor Threat"));
+            locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Threaten Minor"));
           }
           if (ApmwCore.getInstance().majors.Contains(attackedPiece.PieceType))
           {
-            locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Major Threat"));
+            locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Threaten Major"));
           }
           if (ApmwCore.getInstance().queens.Contains(attackedPiece.PieceType))
           {
-            locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Queen Threat"));
+            locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Threaten Queen"));
           }
           if (ApmwCore.getInstance().king == attackedPiece.PieceType)
           {
-            locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "King Threat"));
+            locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Threaten King"));
           }
         }
       }
@@ -221,7 +227,10 @@ namespace Archipelago.APChessV
       // END threats ...
       //
 
-      LocationCheckHelper.CompleteLocationChecks(locations.ToArray());
+      if (locations.Count > 0)
+      {
+        LocationCheckHelper.CompleteLocationChecks(locations.ToArray());
+      }
 
       UpdateMoveState(info);
     }

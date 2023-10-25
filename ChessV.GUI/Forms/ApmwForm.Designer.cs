@@ -49,6 +49,7 @@ namespace ChessV.GUI
     private void InitializeComponent()
     {
       this.components = new System.ComponentModel.Container();
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ApmwForm));
       this.txtApmwOutput = new System.Windows.Forms.TextBox();
       this.timer = new System.Windows.Forms.Timer(this.components);
       this.textBox1 = new System.Windows.Forms.TextBox();
@@ -192,6 +193,7 @@ namespace ChessV.GUI
       this.Controls.Add(this.label1);
       this.Controls.Add(this.textBox1);
       this.Controls.Add(this.txtApmwOutput);
+      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.Name = "ApmwForm";
       this.Text = "ApmwForm";
       this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ApmwForm_FormClosing);

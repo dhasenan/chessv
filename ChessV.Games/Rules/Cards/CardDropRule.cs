@@ -127,10 +127,10 @@ namespace ChessV.Games.Rules.Cards
 					if (Game.Match != null)
 					{
 						Player movingPlayer = Game.Match.GetPlayer(list.CurrentMove.Player);
-						if (Game.CurrentPlayer.Side != list.CurrentMove.Player)
-						{
-							movingPlayer = movingPlayer.Opponent;
-						}
+						//if (Game.CurrentPlayer.Side != list.CurrentMove.Player)
+						//{
+						//	movingPlayer = movingPlayer.Opponent;
+						//}
 						gems = movingPlayer.Gems;
           }
 					else

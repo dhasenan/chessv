@@ -195,15 +195,11 @@ namespace Archipelago.APChessV
       }
     }
 
-    public void Reload()
+    public void UnloadMatch()
     {
       if (LocationHandler != null)
       {
-        LocationHandler.Unhook();
-      }
-      if (ItemHandler != null)
-      {
-        ItemHandler.Unhook();
+        LocationHandler.EndMatch();
       }
     }
 
@@ -213,7 +209,11 @@ namespace Archipelago.APChessV
       {
         session.Socket.DisconnectAsync();
       }
-      this.Reload();
+      this.UnloadMatch();
+      if (ItemHandler != null)
+      {
+        ItemHandler.Unhook();
+      }
 
       //if (ItemLogic != null)
       //{

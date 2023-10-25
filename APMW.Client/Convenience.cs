@@ -31,9 +31,8 @@ namespace Archipelago.APChessV
 
     public void success(string url, string slotName)
     {
-      this.url = url;
-      this.slotName = slotName;
-      if (!this.url.Equals(url) || !this.slotName.Equals(slotName)) {
+      if (this.url == null || !this.url.Equals(url) ||
+        this.slotName == null || !this.slotName.Equals(slotName)) {
         new Task(() =>
         {
           using (StreamWriter writetext = new StreamWriter("apmw.txt", false))
@@ -43,6 +42,8 @@ namespace Archipelago.APChessV
           }
         }).Start();
       }
+      this.url = url;
+      this.slotName = slotName;
     }
 
     public string getRecentUrl()
