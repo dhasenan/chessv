@@ -254,6 +254,7 @@ namespace Archipelago.APChessV
 
           // TODO(chesslogic): pin??? how would??? maybe check if target has no moves... for king pins?
           // TODO(chesslogic): wait, this uses extinction not checkmate, so that won't even work!
+          // TODO(chesslogic): maybe temporarily add CannonMove?? can a cannon pin?????
           /*
           MoveList moveList = new MoveList(
             match.Game.Board, new ChessV.SearchStack[] { },

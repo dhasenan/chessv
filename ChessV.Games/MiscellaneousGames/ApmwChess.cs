@@ -115,6 +115,28 @@ namespace ChessV.Games
       // *** BEROLINA PAWN PROMOTION *** //
       List<PieceType> availablePromotionTypes = ParseTypeListFromString(PromotionTypes);
       AddBasicPromotionRule(BerolinaPawn, availablePromotionTypes, (loc) => loc.Rank == Board.NumRanks - 1);
+
+      // *** BEROLINA PAWN DOUBLE MOVE *** //
+      if (PawnDoubleMove && BerolinaPawn.Enabled)
+      {
+        MoveCapability doubleMoveNE = new MoveCapability();
+        doubleMoveNE.MinSteps = 2;
+        doubleMoveNE.MaxSteps = 2;
+        doubleMoveNE.MustCapture = false;
+        doubleMoveNE.CanCapture = false;
+        doubleMoveNE.Direction = new Direction(1, 1);
+        doubleMoveNE.Condition = location => location.Rank == 1; // TODO(chesslogic): why does this use PlayerSquare?
+        BerolinaPawn.AddMoveCapability(doubleMoveNE);
+
+        MoveCapability doubleMoveNW = new MoveCapability();
+        doubleMoveNW.MinSteps = 2;
+        doubleMoveNW.MaxSteps = 2;
+        doubleMoveNW.MustCapture = false;
+        doubleMoveNW.CanCapture = false;
+        doubleMoveNW.Direction = new Direction(1, -1);
+        doubleMoveNW.Condition = location => location.Rank == 1;
+        BerolinaPawn.AddMoveCapability(doubleMoveNW);
+      }
     }
     #endregion
 
