@@ -147,7 +147,9 @@ namespace ChessV.Games.Rules
 			if( Game.CurrentSide == Game.NextSide )
 				return MoveEventResponse.NotHandled;
 			if( move.PieceMoved != null && move.PieceMoved.PieceType == PawnType )
-				if( Board.DirectionLookup( move.FromSquare, move.ToSquare ) == Game.PlayerDirection( move.Player, NDirection ) && 
+				if (move.FromSquare >= Board.NumSquares) // pocket pawns would check outside of board
+          return MoveEventResponse.NotHandled;
+				else if( Board.DirectionLookup( move.FromSquare, move.ToSquare ) == Game.PlayerDirection( move.Player, NDirection ) && 
 					Board.GetDistance( move.FromSquare, move.ToSquare ) > 1 )
 				{
 					//	check to see if there are any pawn attackers - even if a pawn makes a 

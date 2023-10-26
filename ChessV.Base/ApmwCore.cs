@@ -47,6 +47,7 @@ namespace ChessV.Base
     public HashSet<PieceType> minors;
     public HashSet<PieceType> majors;
     public HashSet<PieceType> queens;
+    public HashSet<PieceType> colorbound;
     public List<HashSet<PieceType>> pocketSets;
 
 

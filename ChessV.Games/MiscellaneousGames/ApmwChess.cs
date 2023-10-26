@@ -24,18 +24,21 @@ using ChessV.Games.Rules.Cards;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Runtime.ExceptionServices;
+using System.Text;
 
 namespace ChessV.Games
 {
-	//**********************************************************************
-	//
-	//                        Archipelago ChecksMate
-	//
-	//    Play against an AI with your friends! Get new pieces! Be confused!
+  //**********************************************************************
   //
+  //                        Archipelago ChecksMate
+  //
+  //    Play against an AI with your friends! Get new pieces! Be confused!
+  //
+  //**********************************************************************
 
-	[Game("Archipelago Multiworld", typeof(Geometry.Rectangular), 8, 8, 3,
+  [Game("Archipelago Multiworld", typeof(Geometry.Rectangular), 8, 8, 3,
 		  Invented = "2019",
 		  InventedBy = "Berserker", 
 		  Tags = "Chess Variant,Multiple Boards,Popular,Different Armies")]
@@ -73,7 +76,11 @@ namespace ChessV.Games
     public HashSet<PieceType> minors;
     public HashSet<PieceType> majors;
     public HashSet<PieceType> queens;
+    public HashSet<PieceType> colorbound;
     public List<HashSet<PieceType>> pocketSets;
+
+    private Dictionary<KeyValuePair<int, int>, PieceType> startingPosition;
+    private string promotions;
 
     public ApmwChessGame()
     {
@@ -81,6 +88,7 @@ namespace ChessV.Games
       minors = new HashSet<PieceType>();
       majors = new HashSet<PieceType>();
       queens = new HashSet<PieceType>();
+      colorbound = new HashSet<PieceType>();
       pocketSets = new List<HashSet<PieceType>>() { pawns, minors, majors, queens };
 
       ApmwCore apmwCore = ApmwCore.getInstance();
@@ -88,6 +96,7 @@ namespace ChessV.Games
       apmwCore.minors = minors;
       apmwCore.majors = majors;
       apmwCore.queens = queens;
+      apmwCore.colorbound = colorbound;
       apmwCore.pocketSets = pocketSets;
     }
 
@@ -137,6 +146,48 @@ namespace ChessV.Games
         doubleMoveNW.Condition = location => location.Rank == 1;
         BerolinaPawn.AddMoveCapability(doubleMoveNW);
       }
+
+      // *** 480 CASTLING NO SCOPE ***
+      AddCastlingRule();
+      Dictionary<string, string> majorsFromAndTo = new Dictionary<string, string>();
+      int humanPlayer = ApmwCore.getInstance().GeriProvider();
+      int rank = humanPlayer * 7;
+      Location kingFrom = new Location(rank, 3);
+      for (int i = 0; i < 8; i++) {
+        var direction = i < 4 ? -2 : 2;
+        Location kingTo = new Location(rank, 3 + direction);
+        Location rookFrom = new Location(rank, i);
+        Location rookTo = new Location(rank, kingTo.File - (direction / 2));
+        var rookFromPair = new KeyValuePair<int, int>(rank, rookFrom.File);
+        if (!startingPosition.ContainsKey(rookFromPair))
+          continue;
+        PieceType rookPiece = startingPosition[rookFromPair];
+        if (majors.Contains(rookPiece))
+        {
+          char privChar = (char)('a' + i);
+          if (humanPlayer == 0)
+            privChar = Char.ToUpper(privChar);
+          castlingMove(humanPlayer,
+            Board.LocationToSquare(kingFrom),
+            Board.LocationToSquare(kingTo),
+            Board.LocationToSquare(rookFrom),
+            Board.LocationToSquare(rookTo),
+            privChar);
+        }
+      }
+      // TODO(chesslogic): support CPU different armies
+      // computer is black
+      if (humanPlayer == 0)
+      {
+        CastlingMove(1, "e8", "g8", "h8", "f8", 'k');
+        CastlingMove(1, "e8", "c8", "a8", "d8", 'q');
+      }
+      // computer is white
+      else
+      {
+        CastlingMove(0, "e1", "g1", "h1", "f1", 'K');
+        CastlingMove(0, "e1", "c1", "a1", "d1", 'Q');
+      }
     }
     #endregion
 
@@ -155,7 +206,7 @@ namespace ChessV.Games
     {
       base.SetGameVariables();
       FENFormat = "{array} {current player} {pieces in hand} {castling} {en-passant} {half-move clock} {turn number}";
-      FENStart = "#{Array} w #{PocketPieces} KQkq - 0 1";
+      FENStart = "#{Array} w #{PocketPieces} #{CastleRooks} - 0 1";
       Array = "#{BlackPieces}/#{BlackPawns}/#{BlackOuter}/8/8/#{WhiteOuter}/#{WhitePawns}/#{WhitePieces}";
       Castling.RemoveChoice("Flexible");
       PawnDoubleMove = true;
@@ -210,8 +261,8 @@ namespace ChessV.Games
       earlyPopulatePieceTypes();
       (Dictionary<KeyValuePair<int, int>, PieceType>, string) pieceSet =
         starter.PlayerPieceSetProvider();
-      Dictionary<KeyValuePair<int, int>, PieceType> pieces = pieceSet.Item1;
-      string promotions = pieceSet.Item2;
+      startingPosition = pieceSet.Item1;
+      promotions = pieceSet.Item2;
       PromotionTypes += promotions;
 
       string humanPrefix = "Black";
@@ -239,6 +290,15 @@ namespace ChessV.Games
       //	determine player's board
       // TODO(chesslogic): incorporate ApmwCore
       Dictionary<int, string> notations = new Dictionary<int, string>();
+      StringBuilder CastleRooks = new StringBuilder();
+      if (humanPlayer == 0)
+      {
+        CastleRooks.Append("kq");
+      }
+      else
+      {
+        CastleRooks.Append("KQ");
+      }
 
       for (int rank = 0; rank < this.NumRanks; rank++)
       {
@@ -247,7 +307,7 @@ namespace ChessV.Games
         for (int file = 0; file < this.NumFiles; file++)
         {
           var place = new KeyValuePair<int, int>(rank, file);
-          if (pieces.ContainsKey(place))
+          if (startingPosition.ContainsKey(place))
           {
             if (emptySpaceCount > 0)
             {
@@ -255,7 +315,17 @@ namespace ChessV.Games
               emptySpaceCount = 0;
             }
 
-            notations[rank] += pieces[place].Notation[humanPlayer];
+            PieceType pieceType = startingPosition[place];
+            notations[rank] += pieceType.Notation[humanPlayer];
+            if (rank == 0 && majors.Contains(pieceType))
+            {
+              var newCastlingRook = (char)('a' + file);
+              if (rank  == 0)
+              {
+                newCastlingRook = Char.ToUpper(newCastlingRook);
+              }
+              CastleRooks.Append(newCastlingRook);
+            }
           }
           else
           {
@@ -268,6 +338,7 @@ namespace ChessV.Games
           emptySpaceCount = 0;
         }
       }
+      SetCustomProperty("CastleRooks", CastleRooks.ToString());
 
       // determine pockets
       SetCustomProperty("PocketPieces",
@@ -339,6 +410,10 @@ namespace ChessV.Games
       queens.Add(Archbishop);
       queens.Add(Chancellor);
       queens.Add(Colonel);
+
+      colorbound.Add(Bishop);
+      colorbound.Add(WarElephant);
+      colorbound.Add(Cleric);
 
       ApmwCore.getInstance().king = King;
     }

@@ -185,6 +185,7 @@ namespace Archipelago.APChessV
 
       HashSet<string> promoPieces = new HashSet<string>();
       List<PieceType> queens = ApmwCore.getInstance().queens.ToList();
+      int kingIndex = 4; // king is on E file
 
       Random random = new Random(ApmwCore.getInstance().queenSeed);
 
@@ -192,7 +193,10 @@ namespace Archipelago.APChessV
       {
         var piece = queens[random.Next(queens.Count)];
         promoPieces.Add(piece.Notation[ApmwCore.getInstance().GeriProvider()]);
-        majors[order[i]] = piece;
+        if (order[i] < kingIndex)
+          majors[order[i]] = piece;
+        else
+          majors[order[i]+1] = piece;
       }
       promotions.Add(String.Join("", promoPieces));
       return majors;
@@ -262,7 +266,7 @@ namespace Archipelago.APChessV
         parity = 0;
       }
 
-      if (side < 0)
+      if (side <= 0)
       {
         order.Add(chooseIndexAndPlace(left, random, piece));
       }
