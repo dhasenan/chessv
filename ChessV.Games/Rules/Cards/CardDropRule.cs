@@ -61,16 +61,18 @@ namespace ChessV.Games.Rules.Cards
 
 		public override void PositionLoaded( FEN fen )
 		{
-			// TODO(chesslogic): load pockets from apmwcore, ignore FEN
-
-			int[] files = { 1, 1 };
+			int squares = 0;
 			foreach( char c in fen["pieces in hand"].ToCharArray() )
 			{
-				if( c != '-' && c != '@' )
+				if ( c >= '0' && c <= '9' )
+					squares += (int)(c - '0');
+				else if( c != '-' && c != '@' )
 				{
 					PieceType type = Game.GetTypeByNotation( c.ToString() );
-					int player = Char.IsUpper( c ) ? 0 : 1;
-					Location loc = new Location( player, -files[player]++ ); // TODO(chesslogic): order of operations?
+					int player = squares / handSize;
+					int file = -(squares % handSize + 1);
+					squares++;
+					Location loc = new Location( player, file ); // TODO(chesslogic): order of operations?
 					if (type != null)
 					{
 						Piece piece = new Piece(Game, player, type, loc);

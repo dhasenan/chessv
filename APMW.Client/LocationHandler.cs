@@ -19,29 +19,26 @@ namespace Archipelago.APChessV
     {
       if (_instance == null)
         lock(typeof(LocationHandler))
-        {
-          if (null == _instance)
+          if (_instance == null)
             _instance = new LocationHandler();
-        }
       return _instance;
     }
 
     protected LocationHandler()
     {
+      seHandler = (match) => this.StartMatch(match);
+      ApmwCore.getInstance().StartedEventHandlers.Add(seHandler);
+      mpHandler = (move) => this.HandleMove(move);
+      ApmwCore.getInstance().NewMovePlayed.Add(mpHandler);
       Initialized = false;
     }
 
     public void Initialize(ILocationCheckHelper locationCheckHelper)
     {
-      if (Initialized)
-        throw new InvalidOperationException("Cannot reinitialize LocationHandler");
+      //if (Initialized)
+      //  throw new InvalidOperationException("Cannot reinitialize LocationHandler");
       this.LocationCheckHelper = locationCheckHelper;
       Initialized = true;
-
-      seHandler = (match) => this.StartMatch(match);
-      ApmwCore.getInstance().StartedEventHandlers.Add(seHandler);
-      mpHandler = (move) => this.HandleMove(move);
-      ApmwCore.getInstance().NewMovePlayed.Add(mpHandler);
     }
 
     public ILocationCheckHelper LocationCheckHelper { get; private set; }

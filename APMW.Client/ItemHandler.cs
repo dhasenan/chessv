@@ -151,17 +151,18 @@ namespace Archipelago.APChessV
       int startingPieces = ApmwCore.getInstance().foundMajors;
       int totalPieces = startingPieces + ApmwCore.getInstance().foundMinors;
 
+      int player = ApmwCore.getInstance().GeriProvider();
       int parity = left.Count((piece) => piece != null) - right.Count((piece) => piece != null);
       for (int i = startingPieces; i < Math.Min(7, totalPieces); i++)
       {
         var piece = minors[random.Next(minors.Count)];
-        promoPieces.Add(piece.Notation[ApmwCore.getInstance().GeriProvider()]);
+        promoPieces.Add(piece.Notation[player]);
         parity = placeInArray(new List<int>(), left, right, random, parity, i, piece);
       }
       for (int i = 7; i < Math.Min(15, totalPieces); i++)
       {
         var piece = minors[random.Next(minors.Count)];
-        promoPieces.Add(piece.Notation[ApmwCore.getInstance().GeriProvider()]);
+        promoPieces.Add(piece.Notation[player]);
         chooseIndexAndPlace(outer, random, piece);
       }
 
@@ -189,10 +190,11 @@ namespace Archipelago.APChessV
 
       Random random = new Random(ApmwCore.getInstance().queenSeed);
 
+      int player = ApmwCore.getInstance().GeriProvider();
       for (int i = 0; i < ApmwCore.getInstance().foundQueens && i < order.Count; i++)
       {
         var piece = queens[random.Next(queens.Count)];
-        promoPieces.Add(piece.Notation[ApmwCore.getInstance().GeriProvider()]);
+        promoPieces.Add(piece.Notation[player]);
         if (order[i] < kingIndex)
           majors[order[i]] = piece;
         else
@@ -213,17 +215,18 @@ namespace Archipelago.APChessV
 
       Random random = new Random(ApmwCore.getInstance().majorSeed);
 
+      int player = ApmwCore.getInstance().GeriProvider();
       int parity = 0;
       for (int i = 0; i < Math.Min(7, ApmwCore.getInstance().foundMajors); i++)
       {
         var piece = majors[random.Next(majors.Count)];
-        promoPieces.Add(piece.Notation[ApmwCore.getInstance().GeriProvider()]);
+        promoPieces.Add(piece.Notation[player]);
         parity = placeInArray(order, left, right, random, parity, i, piece);
       }
       for (int i = 7; i < ApmwCore.getInstance().foundMajors; i++)
       {
         var piece = majors[random.Next(majors.Count)];
-        promoPieces.Add(piece.Notation[ApmwCore.getInstance().GeriProvider()]);
+        promoPieces.Add(piece.Notation[player]);
         order.Add(chooseIndexAndPlace(outer, random, piece) + 8);
       }
 

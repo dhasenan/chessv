@@ -175,10 +175,7 @@ namespace Archipelago.APChessV
           //}
 
           LocationHandler = LocationHandler.GetInstance();
-          if (!LocationHandler.Initialized)
-          {
-            LocationHandler.Initialize(session.Locations);
-          }
+          LocationHandler.Initialize(session.Locations);
           SlotData = session.DataStorage.GetSlotData();
 
           var seeds = new int[] {
