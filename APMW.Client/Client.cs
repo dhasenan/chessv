@@ -133,12 +133,12 @@ namespace Archipelago.APChessV
           nonSessionMessages.Add("Reconnect attempt prevented. If you don't successfully connect, try restarting this client");
           return;
         }
-        lastServerUrl = url;
 
         //ChatMessage.SendColored($"Attempting to connect to Archipelago at ${url}.", Color.green);
         Dispose();
 
 
+        lastServerUrl = url;
         Session = ArchipelagoSessionFactory.CreateSession(url);
         ArchipelagoSession session = Session;
         //ItemLogic = new ArchipelagoItemLogicController(session);
@@ -168,6 +168,7 @@ namespace Archipelago.APChessV
             }
             return;
           }
+          lastServerUrl = url;
 
           LoginSuccessful successResult = (LoginSuccessful)result;
           if (successResult.SlotData.TryGetValue("FinalStageDeath", out var stageDeathObject))
@@ -229,6 +230,7 @@ namespace Archipelago.APChessV
       }
 
       Session = null;
+      lastServerUrl = null;
     }
 
     // TODO(chesslogic): warn user to reconnect

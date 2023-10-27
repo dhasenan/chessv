@@ -338,10 +338,10 @@ namespace ChessV.Games
 
             PieceType pieceType = startingPosition[place];
             notations[rank] += pieceType.Notation[humanPlayer];
-            if (rank == 0 && Majors.Contains(pieceType))
+            if (rank == 2 && Majors.Contains(pieceType))
             {
               var newCastlingRook = (char)('a' + file);
-              if (rank  == 0)
+              if (humanPlayer == 0)
               {
                 newCastlingRook = Char.ToUpper(newCastlingRook);
               }
