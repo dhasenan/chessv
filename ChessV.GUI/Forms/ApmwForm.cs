@@ -65,9 +65,9 @@ namespace ChessV.GUI
     {
       try
       {
-        if (archipelagoClient.session != null
-          && archipelagoClient.session.ConnectionInfo != null
-          && archipelagoClient.session.ConnectionInfo.Slot != -1)
+        if (archipelagoClient.Session != null
+          && archipelagoClient.Session.ConnectionInfo != null
+          && archipelagoClient.Session.ConnectionInfo.Slot != -1)
         {
           button2.Enabled = true;
           // TODO(chesslogic): disable while a game is active, enable once it ends
@@ -135,7 +135,7 @@ namespace ChessV.GUI
 
     private void button1_Click(object sender, EventArgs e)
     {
-      // TODO(chesslogic): change to disconnect mode (for now, just close the program, lol)
+      // TODO(chesslogic): change to disconnect mode (for now, players just close the program, lol)
       if (button1.Enabled == false)
       {
         return;
@@ -159,14 +159,14 @@ namespace ChessV.GUI
       //messageLog.OnMessageReceived -= (message) => pastMessages.Add(message);
       archipelagoClient.OnConnect += (session) => button2.Enabled = true;
       archipelagoClient.Connect(url, slot, password);
-      if (archipelagoClient.session != null && messageLog != archipelagoClient.session.MessageLog)
+      if (archipelagoClient.Session != null && messageLog != archipelagoClient.Session.MessageLog)
       {
         if (mrHandler != null)
         {
           messageLog.OnMessageReceived -= mrHandler;
         }
         mrHandler = (message) => pastMessages.Add(message);
-        messageLog = archipelagoClient.session.MessageLog;
+        messageLog = archipelagoClient.Session.MessageLog;
         messageLog.OnMessageReceived += mrHandler;
       }
     }
@@ -175,7 +175,7 @@ namespace ChessV.GUI
     {
       Game game = mainForm.Manager.CreateGame("Archipelago Multiworld", null);
       game.StartMatch();
-      game.Match.Finished += (match) => { archipelagoClient.UnloadMatch(); };
+      game.Match.Finished += (match) => { archipelagoClient.EndMatch(); };
       mainForm.StartChecksMate(game);
     }
   }

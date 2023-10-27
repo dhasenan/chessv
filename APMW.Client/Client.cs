@@ -25,7 +25,7 @@ namespace Archipelago.APChessV
       StartedEventHandler seHandler = (match) =>
       {
         this.match = match;
-        match.Finished += (Match m) => this.UnloadMatch();
+        match.Finished += (Match m) => this.EndMatch();
       };
       ApmwCore.getInstance().StartedEventHandlers.Add(seHandler);
       // TODO(chesslogic): PlayAsWhite
@@ -86,7 +86,7 @@ namespace Archipelago.APChessV
     internal LocationHandler LocationHandler { get; private set; }
     internal ItemHandler ItemHandler { get; private set; }
 
-    public ArchipelagoSession session { get; private set; }
+    public ArchipelagoSession Session { get; private set; }
     public List<String> nonSessionMessages { get; private set; }
 
     public Dictionary<string, object> SlotData { get; private set; }
@@ -133,12 +133,13 @@ namespace Archipelago.APChessV
 
         //LastServerUrl = url;
 
-        session = ArchipelagoSessionFactory.CreateSession(url);
+        Session = ArchipelagoSessionFactory.CreateSession(url);
+        ArchipelagoSession session = Session;
         //ItemLogic = new ArchipelagoItemLogicController(session);
         //LocationCheckBar = new ArchipelagoLocationCheckProgressBarUI();
         connectionTask = new Task(() =>
         {
-          var result = session.TryConnectAndLogin(
+          var result = Session.TryConnectAndLogin(
             "ChecksMate",
             slotName,
             itemsHandlingFlags: ItemsHandlingFlags.AllItems,
@@ -190,7 +191,7 @@ namespace Archipelago.APChessV
           //LocationCheckBar.ItemPickupStep = ItemLogic.ItemPickupStep;
 
           //session.Socket.PacketReceived += Session_PacketReceived;
-          session.Socket.SocketClosed += Session_SocketClosed;
+          session.Socket.SocketClosed += (reason) => Session_SocketClosed(reason, session);
 
           //OnConnect(session);
           Convenience.getInstance().success(url.Port.ToString(), slotName);
@@ -199,7 +200,7 @@ namespace Archipelago.APChessV
       }
     }
 
-    public void UnloadMatch()
+    public void EndMatch()
     {
       if (LocationHandler != null)
       {
@@ -209,33 +210,24 @@ namespace Archipelago.APChessV
 
     public void Dispose()
     {
-      if (session != null && session.Socket.Connected)
+      if (Session != null && Session.Socket.Connected)
       {
-        session.Socket.DisconnectAsync();
+        Session.Socket.DisconnectAsync();
       }
-      this.UnloadMatch();
+      this.EndMatch();
       if (ItemHandler != null)
       {
         ItemHandler.Unhook();
       }
 
-      //if (ItemLogic != null)
-      //{
-      //  ItemLogic.OnItemDropProcessed -= ItemLogicHandler_ItemDropProcessed;
-      //  ItemLogic.Dispose();
-      //}
-
-      //if (LocationCheckBar != null)
-      //{
-      //  LocationCheckBar.Dispose();
-      //}
-
-      session = null;
+      Session = null;
     }
 
     // TODO(chesslogic): warn user to reconnect
-    private void Session_SocketClosed(string reason)
+    private void Session_SocketClosed(string reason, ArchipelagoSession session)
     {
+      if (this.Session != session)
+        return;
       Dispose();
       // new ArchipelagoEndMessage().Send(NetworkDestination.Clients);
 

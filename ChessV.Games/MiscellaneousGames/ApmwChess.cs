@@ -20,12 +20,11 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 using ChessV.Base;
 using ChessV.Games.Pieces.Berolina;
+using ChessV.Games.Rules.Apmw;
 using ChessV.Games.Rules.Cards;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.NetworkInformation;
-using System.Runtime.ExceptionServices;
 using System.Text;
 
 namespace ChessV.Games
@@ -43,7 +42,7 @@ namespace ChessV.Games
 		  InventedBy = "Berserker", 
 		  Tags = "Chess Variant,Multiple Boards,Popular,Different Armies")]
 	[Appearance(ColorScheme = "Sublimation")]
-	public class ApmwChessGame: Chess
+	public class ApmwChessGame: Chess, IMultipawnGame
   {
     // *** PIECE TYPES *** //
 
@@ -72,32 +71,32 @@ namespace ChessV.Games
     public PieceType Cannon;
     public PieceType Vao;
 
-    public HashSet<PieceType> pawns;
-    public HashSet<PieceType> minors;
-    public HashSet<PieceType> majors;
-    public HashSet<PieceType> queens;
-    public HashSet<PieceType> colorbound;
-    public List<HashSet<PieceType>> pocketSets;
+    public HashSet<PieceType> Pawns { get; set; }
+    public HashSet<PieceType> Minors;
+    public HashSet<PieceType> Majors;
+    public HashSet<PieceType> Queens;
+    public HashSet<PieceType> Colorbounds;
+    public List<HashSet<PieceType>> PocketSets;
 
     private Dictionary<KeyValuePair<int, int>, PieceType> startingPosition;
     private string promotions;
 
     public ApmwChessGame()
     {
-      pawns = new HashSet<PieceType>();
-      minors = new HashSet<PieceType>();
-      majors = new HashSet<PieceType>();
-      queens = new HashSet<PieceType>();
-      colorbound = new HashSet<PieceType>();
-      pocketSets = new List<HashSet<PieceType>>() { pawns, minors, majors, queens };
+      Pawns = new HashSet<PieceType>();
+      Minors = new HashSet<PieceType>();
+      Majors = new HashSet<PieceType>();
+      Queens = new HashSet<PieceType>();
+      Colorbounds = new HashSet<PieceType>();
+      PocketSets = new List<HashSet<PieceType>>() { Pawns, Minors, Majors, Queens };
 
       ApmwCore apmwCore = ApmwCore.getInstance();
-      apmwCore.pawns = pawns;
-      apmwCore.minors = minors;
-      apmwCore.majors = majors;
-      apmwCore.queens = queens;
-      apmwCore.colorbound = colorbound;
-      apmwCore.pocketSets = pocketSets;
+      apmwCore.pawns = Pawns;
+      apmwCore.minors = Minors;
+      apmwCore.majors = Majors;
+      apmwCore.queens = Queens;
+      apmwCore.colorbound = Colorbounds;
+      apmwCore.pocketSets = PocketSets;
     }
 
 
@@ -147,6 +146,14 @@ namespace ChessV.Games
         BerolinaPawn.AddMoveCapability(doubleMoveNW);
       }
 
+      // *** BEROLINA PAWN EN PASSANT *** //
+
+      // We want all kinds of pawns to be able to en passant. Add the MixedEnPassantRule, which gives the pawns
+      // additional capture moves corresponding to the others' type.
+      Rule enPassantRule = FindRule(typeof(Rules.EnPassantRule));
+      if (enPassantRule != null)
+        ReplaceRule(enPassantRule, new MixedEnPassantRule((Rules.EnPassantRule)enPassantRule));
+
       // *** 480 CASTLING NO SCOPE ***
       AddCastlingRule();
       Dictionary<string, string> majorsFromAndTo = new Dictionary<string, string>();
@@ -162,8 +169,10 @@ namespace ChessV.Games
         if (!startingPosition.ContainsKey(rookFromPair))
           continue;
         PieceType rookPiece = startingPosition[rookFromPair];
-        if (majors.Contains(rookPiece))
+        if (Majors.Contains(rookPiece))
         {
+          if (Colorbounds.Contains(rookPiece) && direction < 0)
+            rookTo = new Location(rookTo.Rank, rookTo.File + 1);
           char privChar = (char)('a' + i);
           if (humanPlayer == 0)
             privChar = Char.ToUpper(privChar);
@@ -223,19 +232,19 @@ namespace ChessV.Games
 
       // We can load all the piece types, I don't think the engine cares if some pieces are never used
 
-      foreach (PieceType piece in pawns)
+      foreach (PieceType piece in Pawns)
       {
         AddPieceType(piece);
       }
-      foreach (PieceType piece in minors)
+      foreach (PieceType piece in Minors)
       {
         AddPieceType(piece);
       }
-      foreach (PieceType piece in majors)
+      foreach (PieceType piece in Majors)
       {
         AddPieceType(piece);
       }
-      foreach (PieceType piece in queens)
+      foreach (PieceType piece in Queens)
       {
         AddPieceType(piece);
       }
@@ -317,7 +326,7 @@ namespace ChessV.Games
 
             PieceType pieceType = startingPosition[place];
             notations[rank] += pieceType.Notation[humanPlayer];
-            if (rank == 0 && majors.Contains(pieceType))
+            if (rank == 0 && Majors.Contains(pieceType))
             {
               var newCastlingRook = (char)('a' + file);
               if (rank  == 0)
@@ -387,33 +396,33 @@ namespace ChessV.Games
       Cannon = new Cannon("Cannon", "O", 400, 275);
       Vao = new Vao("Vao", "V", 300, 175);
 
-      pawns.Add(Pawn);
-      pawns.Add(BerolinaPawn);
+      Pawns.Add(Pawn);
+      Pawns.Add(BerolinaPawn);
 
-      minors.Add(Bishop);
-      minors.Add(Knight);
-      minors.Add(Phoenix);
-      minors.Add(ShortRook); // unusually powerful
-      minors.Add(Tower);
-      minors.Add(NarrowKnight);
-      minors.Add(ChargingKnight);
-      minors.Add(Vao);
-      minors.Add(Cannon); // unusually powerful
+      Minors.Add(Bishop);
+      Minors.Add(Knight);
+      Minors.Add(Phoenix);
+      Minors.Add(ShortRook); // unusually powerful
+      Minors.Add(Tower);
+      Minors.Add(NarrowKnight);
+      Minors.Add(ChargingKnight);
+      Minors.Add(Vao);
+      Minors.Add(Cannon); // unusually powerful
 
-      majors.Add(Rook);
-      majors.Add(WarElephant);
-      majors.Add(Cleric);
-      majors.Add(Lion);
-      majors.Add(ChargingRook);
+      Majors.Add(Rook);
+      Majors.Add(WarElephant);
+      Majors.Add(Cleric);
+      Majors.Add(Lion);
+      Majors.Add(ChargingRook);
 
-      queens.Add(Queen);
-      queens.Add(Archbishop);
-      queens.Add(Chancellor);
-      queens.Add(Colonel);
+      Queens.Add(Queen);
+      Queens.Add(Archbishop);
+      Queens.Add(Chancellor);
+      Queens.Add(Colonel);
 
-      colorbound.Add(Bishop);
-      colorbound.Add(WarElephant);
-      colorbound.Add(Cleric);
+      Colorbounds.Add(Bishop);
+      Colorbounds.Add(WarElephant);
+      Colorbounds.Add(Cleric);
 
       ApmwCore.getInstance().king = King;
     }

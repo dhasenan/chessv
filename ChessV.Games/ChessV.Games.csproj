@@ -175,7 +175,9 @@
     <Compile Include="10x8\NewChancellorChess.cs" />
     <Compile Include="10x10\OpulentChess.cs" />
     <Compile Include="Evaluations\DevelopmentEvaluation.cs" />
+    <Compile Include="Abstract\IMultipawnGame.cs" />
     <Compile Include="MiscellaneousGames\VikingChess.cs" />
+    <Compile Include="Rules\Apmw\MixedEnPassantRule.cs" />
     <Compile Include="Pieces\Berolina\BerolinaPawn.cs" />
     <Compile Include="Pieces\Chess.cs" />
     <Compile Include="Pieces\ChessMissingCompounds.cs" />
@@ -250,9 +252,7 @@
       <Name>ChessV.Base</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Rules\Apmw\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
