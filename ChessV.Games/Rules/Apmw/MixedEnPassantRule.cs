@@ -10,6 +10,7 @@ namespace ChessV.Games.Rules.Apmw
   {
     public MixedEnPassantRule(EnPassantRule templateRule) : base(templateRule)
     {
+      // TODO(chesslogic): maybe this doesn't work
     }
 
     #region Initialize

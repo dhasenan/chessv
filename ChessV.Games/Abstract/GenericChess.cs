@@ -253,18 +253,19 @@ namespace ChessV.Games.Abstract
 			AddRule( castlingRule );
 		}
 
-		public void castlingMove( int player, int kingFrom, int kingTo, int otherFrom, int otherTo, char privChar )
+    /** privChar: A character representing one privilege to castle, e.g. K for white's kingside castle */
+    public void castlingMove( int player, int kingFrom, int kingTo, int otherFrom, int otherTo, char privChar )
 		{
 			castlingRule.AddCastlingMove( player, kingFrom, kingTo, otherFrom, otherTo, privChar );
 		}
 
-		public void CastlingMove( int player, string kingFrom, string kingTo, string otherFrom, string otherTo, char privChar )
+    public void CastlingMove( int player, string kingFrom, string kingTo, string otherFrom, string otherTo, char privChar )
 		{
 			castlingMove( player, NotationToSquare( kingFrom ), NotationToSquare( kingTo ),
 				NotationToSquare( otherFrom ), NotationToSquare( otherTo ), privChar );
 		}
 
-		public void FlexibleCastlingMove( int player, string kingFrom, string kingTo, string otherFrom, char privChar, bool allowMoveOntoCastlingPiece = false )
+    public void FlexibleCastlingMove( int player, string kingFrom, string kingTo, string otherFrom, char privChar, bool allowMoveOntoCastlingPiece = false )
 		{
 			castlingMove( player, NotationToSquare( kingFrom ), NotationToSquare( kingTo ),
 				NotationToSquare( otherFrom ), allowMoveOntoCastlingPiece ? 1 : 0, privChar );

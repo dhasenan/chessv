@@ -155,24 +155,36 @@ namespace ChessV.Games
         ReplaceRule(enPassantRule, new MixedEnPassantRule((Rules.EnPassantRule)enPassantRule));
 
       // *** 480 CASTLING NO SCOPE ***
-      AddCastlingRule();
+      AddFlexibleCastlingRule();
       Dictionary<string, string> majorsFromAndTo = new Dictionary<string, string>();
       int humanPlayer = ApmwCore.getInstance().GeriProvider();
       int rank = humanPlayer * 7;
-      Location kingFrom = new Location(rank, 3);
+      // TODO(chesslogic): the starting position dict chesslogic made uses rank=2 for back line. why? u ever heard front to back?
+      int positionRank = 2; 
+      Location kingFrom = new Location(rank, 4);
       for (int i = 0; i < 8; i++) {
-        var direction = i < 4 ? -2 : 2;
-        Location kingTo = new Location(rank, 3 + direction);
-        Location rookFrom = new Location(rank, i);
-        Location rookTo = new Location(rank, kingTo.File - (direction / 2));
-        var rookFromPair = new KeyValuePair<int, int>(rank, rookFrom.File);
+        var rookFromPair = new KeyValuePair<int, int>(positionRank, i);
         if (!startingPosition.ContainsKey(rookFromPair))
           continue;
         PieceType rookPiece = startingPosition[rookFromPair];
         if (Majors.Contains(rookPiece))
         {
-          if (Colorbounds.Contains(rookPiece) && direction < 0)
-            rookTo = new Location(rookTo.Rank, rookTo.File + 1);
+          var kingMoveAmt = i < 4 ? -2 : 2;
+          Location kingTo = new Location(rank, kingFrom.File + kingMoveAmt);
+          Location rookFrom = new Location(rank, i);
+          Location rookTo = new Location(rank, kingFrom.File + (kingMoveAmt / 2));
+          if (Colorbounds.Contains(rookPiece))
+          {
+            int parity = rookFrom.File % 2;
+            if (parity != rookTo.File % 2)
+              rookTo = new Location(rookTo.Rank, kingFrom.File);
+          }
+          if (kingTo == rookTo)
+          {
+            throw new InvalidOperationException(
+              string.Format("chesslogic fucked up some castling math: {0}, {1}, {2}, {3}, {4}",
+                  humanPlayer, kingFrom, kingTo, rookFrom, rookTo));
+          }
           char privChar = (char)('a' + i);
           if (humanPlayer == 0)
             privChar = Char.ToUpper(privChar);

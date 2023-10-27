@@ -35,6 +35,7 @@ namespace ChessV.Games.Rules
 			public int OtherFromSquare;
 			public int OtherToSquare;
 			public int RequiredPriv;
+			/** A character representing one privilege to castle, e.g. K for white's kingside castle */
 			public char PrivChar;
 
 			public CastlingMove( int kingfrom, int kingto, int otherfrom, int otherto, int priv, char privChar )

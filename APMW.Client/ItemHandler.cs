@@ -171,7 +171,7 @@ namespace Archipelago.APChessV
       output.Add(ApmwCore.getInstance().king);
       output.AddRange(right);
       output.AddRange(outer);
-      promotions.Add(String.Join("", promoPieces));
+      promotions.Add(string.Join("", promoPieces));
 
       return output;
     }
