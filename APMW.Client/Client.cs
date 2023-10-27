@@ -108,7 +108,7 @@ namespace Archipelago.APChessV
     private int totalLocations;
     private bool finishedAllChecks = false;
     private ulong seed;
-    private string lastServerUrl;
+    private Uri lastServerUrl;
     private static Task connectionTask;
 
     private bool IsInGame
@@ -125,13 +125,19 @@ namespace Archipelago.APChessV
       {
         if (connectionTask != null && !connectionTask.IsCompleted && !connectionTask.IsFaulted)
         {
+          nonSessionMessages.Add("Connection task currently processing");
           return;
         }
+        if (url == lastServerUrl)
+        {
+          nonSessionMessages.Add("Reconnect attempt prevented. If you don't successfully connect, try restarting this client");
+          return;
+        }
+        lastServerUrl = url;
 
         //ChatMessage.SendColored($"Attempting to connect to Archipelago at ${url}.", Color.green);
         Dispose();
 
-        //LastServerUrl = url;
 
         Session = ArchipelagoSessionFactory.CreateSession(url);
         ArchipelagoSession session = Session;
