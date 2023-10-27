@@ -155,7 +155,7 @@ namespace ChessV.Games
         ReplaceRule(enPassantRule, new MixedEnPassantRule((Rules.EnPassantRule)enPassantRule));
 
       // *** 480 CASTLING NO SCOPE ***
-      AddFlexibleCastlingRule();
+      AddCastlingRule();
       Dictionary<string, string> majorsFromAndTo = new Dictionary<string, string>();
       int humanPlayer = ApmwCore.getInstance().GeriProvider();
       int rank = humanPlayer * 7;
