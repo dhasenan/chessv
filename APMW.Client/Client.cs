@@ -25,7 +25,7 @@ namespace Archipelago.APChessV
       StartedEventHandler seHandler = (match) =>
       {
         this.match = match;
-        match.Finished += (Match m) => this.EndMatch();
+        match.Finished += (Match m) => this.UnloadMatch();
       };
       ApmwCore.getInstance().StartedEventHandlers.Add(seHandler);
       // TODO(chesslogic): PlayAsWhite
@@ -174,7 +174,11 @@ namespace Archipelago.APChessV
           //  return;
           //}
 
-          LocationHandler = new LocationHandler(session.Locations);
+          LocationHandler = LocationHandler.GetInstance();
+          if (!LocationHandler.Initialized)
+          {
+            LocationHandler.Initialize(session.Locations);
+          }
           SlotData = session.DataStorage.GetSlotData();
 
           var seeds = new int[] {
@@ -200,7 +204,7 @@ namespace Archipelago.APChessV
       }
     }
 
-    public void EndMatch()
+    public void UnloadMatch()
     {
       if (LocationHandler != null)
       {
@@ -210,11 +214,12 @@ namespace Archipelago.APChessV
 
     public void Dispose()
     {
+      nonSessionMessages.Add("Disconnecting from Archipelago, disposing of evidence");
       if (Session != null && Session.Socket.Connected)
       {
         Session.Socket.DisconnectAsync();
       }
-      this.EndMatch();
+      this.UnloadMatch();
       if (ItemHandler != null)
       {
         ItemHandler.Unhook();

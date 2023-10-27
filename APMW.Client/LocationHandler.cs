@@ -13,17 +13,40 @@ namespace Archipelago.APChessV
 {
   public class LocationHandler
   {
+    public static LocationHandler _instance;
 
-    public LocationHandler(ILocationCheckHelper locationCheckHelper)
+    public static LocationHandler GetInstance()
     {
-      LocationCheckHelper = locationCheckHelper;
+      if (_instance == null)
+        lock(typeof(LocationHandler))
+        {
+          if (null == _instance)
+            _instance = new LocationHandler();
+        }
+      return _instance;
+    }
+
+    protected LocationHandler()
+    {
+      Initialized = false;
+    }
+
+    public void Initialize(ILocationCheckHelper locationCheckHelper)
+    {
+      if (Initialized)
+        throw new InvalidOperationException("Cannot reinitialize LocationHandler");
+      this.LocationCheckHelper = locationCheckHelper;
+      Initialized = true;
 
       seHandler = (match) => this.StartMatch(match);
       ApmwCore.getInstance().StartedEventHandlers.Add(seHandler);
+      mpHandler = (move) => this.HandleMove(move);
+      ApmwCore.getInstance().NewMovePlayed.Add(mpHandler);
     }
 
     public ILocationCheckHelper LocationCheckHelper { get; private set; }
 
+    public bool Initialized { get; private set; }
     private StartedEventHandler seHandler;
     private Action<MoveInfo> mpHandler;
     private ChessV.Match match;
@@ -35,10 +58,10 @@ namespace Archipelago.APChessV
 
     public void StartMatch(Match match)
     {
+      if (!Initialized)
+        throw new InvalidOperationException("LocationHandler has not been initialized");
       this.match = match;
       //match.Game.MovePlayed += (move) => this.HandleMove(move);
-      mpHandler = (move) => this.HandleMove(move);
-      ApmwCore.getInstance().NewMovePlayed.Add(mpHandler);
       this.humanPlayer = this.match.GetPlayer(0).IsHuman ? 0 : 1;
       // TODO(chesslogic): why does this continue to increment between games?
       this.capturedPawns = 0;
@@ -47,8 +70,10 @@ namespace Archipelago.APChessV
 
     public void EndMatch()
     {
-      ApmwCore.getInstance().NewMovePlayed.Remove(mpHandler);
-      mpHandler = null;
+      if (!Initialized)
+        throw new InvalidOperationException("LocationHandler has not been initialized");
+      //ApmwCore.getInstance().NewMovePlayed.Remove(mpHandler);
+      //mpHandler = null;
       // ApmwCore.getInstance().StartedEventHandlers.Remove(seHandler);
       // seHandler = null;
       this.capturedPawns = 0;
@@ -73,6 +98,8 @@ namespace Archipelago.APChessV
 
     public void HandleMove(MoveInfo info)
     {
+      if (!Initialized)
+        throw new InvalidOperationException("LocationHandler has not been initialized");
       List<long> locations = new List<long>();
       if (info == null)
         return; // probably never happens
@@ -289,7 +316,7 @@ namespace Archipelago.APChessV
       UpdateMoveState(info);
     }
 
-    public void UpdateMoveState(MoveInfo info)
+    protected void UpdateMoveState(MoveInfo info)
     {
       // update original positions
       if (currentSquaresToOriginalSquares.ContainsKey(info.FromSquare))

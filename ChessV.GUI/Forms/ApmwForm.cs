@@ -63,16 +63,18 @@ namespace ChessV.GUI
 
 		private void timer_Tick( object sender, EventArgs e )
     {
+      var enableButton = false;
       try
       {
         if (archipelagoClient.Session != null
-          && archipelagoClient.Session.ConnectionInfo != null
-          && archipelagoClient.Session.ConnectionInfo.Slot != -1)
+          && archipelagoClient.Session.ConnectionInfo != null)
         {
-          button2.Enabled = true;
+          enableButton = archipelagoClient.Session.ConnectionInfo.Slot != -1;
           // TODO(chesslogic): disable while a game is active, enable once it ends
         }
       } catch (NullReferenceException ex) { }
+      if (button2.Enabled != enableButton)
+        button2.Enabled = enableButton;
 
       StringBuilder append = new StringBuilder(10000);
       if (pastMessages != null)
@@ -83,6 +85,8 @@ namespace ChessV.GUI
       for (int x = nonSessionLinesSeen; x < archipelagoClient.nonSessionMessages.Count; x++)
         append.Append(archipelagoClient.nonSessionMessages[nonSessionLinesSeen++] + "\r\n");
       txtApmwOutput.AppendText(append.ToString());
+      pastMessages = new List<LogMessage>();
+      linesSeen = 0;
     }
 
 		private void ApmwForm_FormClosing( object sender, FormClosingEventArgs e )
@@ -144,8 +148,8 @@ namespace ChessV.GUI
       timer2.Stop();
       timer2.Start();
 
-      linesSeen = 0;
-      nonSessionLinesSeen = 0;
+      //linesSeen = 0;
+      //nonSessionLinesSeen = 0;
       Uri url;
       try
       {
@@ -175,7 +179,7 @@ namespace ChessV.GUI
     {
       Game game = mainForm.Manager.CreateGame("Archipelago Multiworld", null);
       game.StartMatch();
-      game.Match.Finished += (match) => { archipelagoClient.EndMatch(); };
+      game.Match.Finished += (match) => { archipelagoClient.UnloadMatch(); };
       mainForm.StartChecksMate(game);
     }
   }
