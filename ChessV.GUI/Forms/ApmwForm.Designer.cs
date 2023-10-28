@@ -163,9 +163,10 @@ namespace ChessV.GUI
       button2.Location = new System.Drawing.Point(594, 7);
       button2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
       button2.Name = "button2";
+      button2.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
       button2.Size = new System.Drawing.Size(119, 43);
       button2.TabIndex = 9;
-      button2.Text = "      Start a game!";
+      button2.Text = "       Start a game!";
       button2.UseVisualStyleBackColor = true;
       button2.Click += button2_Click;
       // 
