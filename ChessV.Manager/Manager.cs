@@ -23,6 +23,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
 using System.Threading;
+using ChessV.Compiler;
+using System.Reflection.Emit;
 
 namespace ChessV.Manager
 {
@@ -156,7 +158,7 @@ namespace ChessV.Manager
 				AppDomain myDomain = Thread.GetDomain();
 				AssemblyName assemblyName = new AssemblyName();
 				assemblyName.Name = "DynamicGamesAssembly";
-				System.Reflection.Emit.AssemblyBuilder assemblyBuilder = myDomain.DefineDynamicAssembly( assemblyName, System.Reflection.Emit.AssemblyBuilderAccess.RunAndSave );
+				System.Reflection.Emit.AssemblyBuilder assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly( assemblyName, System.Reflection.Emit.AssemblyBuilderAccess.Run );
 				System.Reflection.Emit.ModuleBuilder dynamicModule = assemblyBuilder.DefineDynamicModule( "ChessVDynamicGames" );
 				Compiler.Compiler compiler = new Compiler.Compiler( assemblyBuilder, dynamicModule, Environment );
 				string[] includeFiles = Directory.GetFiles( includePath, "*.cvc" );

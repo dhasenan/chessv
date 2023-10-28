@@ -28,9 +28,9 @@ namespace ChessV.Compiler
 {
 	public class VerboseErrorListener: BaseErrorListener
 	{
-		public override void SyntaxError( IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e )
+		public override void SyntaxError( TextWriter textWriter, IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e )
 		{
-			base.SyntaxError( recognizer, offendingSymbol, line, charPositionInLine, msg, e );
+			base.SyntaxError(textWriter, recognizer, offendingSymbol, line, charPositionInLine, msg, e );
 		}
 	}
 
