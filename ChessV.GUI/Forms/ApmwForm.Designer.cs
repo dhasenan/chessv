@@ -48,159 +48,168 @@ namespace ChessV.GUI
     /// </summary>
     private void InitializeComponent()
     {
-      this.components = new System.ComponentModel.Container();
+      components = new System.ComponentModel.Container();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ApmwForm));
-      this.txtApmwOutput = new System.Windows.Forms.TextBox();
-      this.timer = new System.Windows.Forms.Timer(this.components);
-      this.textBox1 = new System.Windows.Forms.TextBox();
-      this.label1 = new System.Windows.Forms.Label();
-      this.label2 = new System.Windows.Forms.Label();
-      this.button1 = new System.Windows.Forms.Button();
-      this.timer1 = new System.Windows.Forms.Timer(this.components);
-      this.timer2 = new System.Windows.Forms.Timer(this.components);
-      this.textBox2 = new System.Windows.Forms.TextBox();
-      this.label3 = new System.Windows.Forms.Label();
-      this.button2 = new System.Windows.Forms.Button();
-      this.textBox3 = new System.Windows.Forms.TextBox();
-      this.label4 = new System.Windows.Forms.Label();
-      this.SuspendLayout();
+      txtApmwOutput = new System.Windows.Forms.TextBox();
+      timer = new System.Windows.Forms.Timer(components);
+      textBox1 = new System.Windows.Forms.TextBox();
+      label1 = new System.Windows.Forms.Label();
+      label2 = new System.Windows.Forms.Label();
+      button1 = new System.Windows.Forms.Button();
+      timer1 = new System.Windows.Forms.Timer(components);
+      timer2 = new System.Windows.Forms.Timer(components);
+      textBox2 = new System.Windows.Forms.TextBox();
+      label3 = new System.Windows.Forms.Label();
+      button2 = new System.Windows.Forms.Button();
+      textBox3 = new System.Windows.Forms.TextBox();
+      label4 = new System.Windows.Forms.Label();
+      SuspendLayout();
       // 
       // txtApmwOutput
       // 
-      this.txtApmwOutput.BackColor = System.Drawing.Color.White;
-      this.txtApmwOutput.Location = new System.Drawing.Point(12, 63);
-      this.txtApmwOutput.MaxLength = 8388352;
-      this.txtApmwOutput.Multiline = true;
-      this.txtApmwOutput.Name = "txtApmwOutput";
-      this.txtApmwOutput.ReadOnly = true;
-      this.txtApmwOutput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-      this.txtApmwOutput.Size = new System.Drawing.Size(598, 316);
-      this.txtApmwOutput.TabIndex = 0;
+      txtApmwOutput.BackColor = System.Drawing.Color.White;
+      txtApmwOutput.Location = new System.Drawing.Point(10, 69);
+      txtApmwOutput.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+      txtApmwOutput.MaxLength = 8388352;
+      txtApmwOutput.Multiline = true;
+      txtApmwOutput.Name = "txtApmwOutput";
+      txtApmwOutput.ReadOnly = true;
+      txtApmwOutput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+      txtApmwOutput.Size = new System.Drawing.Size(703, 370);
+      txtApmwOutput.TabIndex = 0;
       // 
       // timer
       // 
-      this.timer.Tick += new System.EventHandler(this.timer_Tick);
+      timer.Tick += timer_Tick;
       // 
       // textBox1
       // 
-      this.textBox1.Location = new System.Drawing.Point(12, 24);
-      this.textBox1.Name = "textBox1";
-      this.textBox1.Size = new System.Drawing.Size(132, 20);
-      this.textBox1.TabIndex = 1;
-      this.textBox1.Text = "archipelago.gg:";
-      this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
-      this.textBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox1_KeyDown);
+      textBox1.Location = new System.Drawing.Point(13, 27);
+      textBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+      textBox1.Name = "textBox1";
+      textBox1.Size = new System.Drawing.Size(154, 23);
+      textBox1.TabIndex = 1;
+      textBox1.Text = "archipelago.gg:";
+      textBox1.TextChanged += textBox1_TextChanged;
+      textBox1.KeyDown += textBox1_KeyDown;
       // 
       // label1
       // 
-      this.label1.AutoSize = true;
-      this.label1.Location = new System.Drawing.Point(12, 8);
-      this.label1.Name = "label1";
-      this.label1.Size = new System.Drawing.Size(94, 13);
-      this.label1.TabIndex = 2;
-      this.label1.Text = "Archipelago Room";
+      label1.AutoSize = true;
+      label1.Location = new System.Drawing.Point(13, 9);
+      label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+      label1.Name = "label1";
+      label1.Size = new System.Drawing.Size(106, 15);
+      label1.TabIndex = 2;
+      label1.Text = "Archipelago Room";
       // 
       // label2
       // 
-      this.label2.AutoSize = true;
-      this.label2.Location = new System.Drawing.Point(147, 8);
-      this.label2.Name = "label2";
-      this.label2.Size = new System.Drawing.Size(109, 13);
-      this.label2.TabIndex = 4;
-      this.label2.Text = "Archipelago User Slot";
+      label2.AutoSize = true;
+      label2.Location = new System.Drawing.Point(175, 9);
+      label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+      label2.Name = "label2";
+      label2.Size = new System.Drawing.Size(120, 15);
+      label2.TabIndex = 4;
+      label2.Text = "Archipelago User Slot";
       // 
       // button1
       // 
-      this.button1.Location = new System.Drawing.Point(429, 8);
-      this.button1.Name = "button1";
-      this.button1.Size = new System.Drawing.Size(73, 37);
-      this.button1.TabIndex = 6;
-      this.button1.Text = "Where\'s the \'Any\' key?";
-      this.button1.UseVisualStyleBackColor = true;
-      this.button1.Click += new System.EventHandler(this.button1_Click);
+      button1.Location = new System.Drawing.Point(501, 7);
+      button1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+      button1.Name = "button1";
+      button1.Size = new System.Drawing.Size(85, 43);
+      button1.TabIndex = 6;
+      button1.Text = "Where's the 'Any' key?";
+      button1.UseVisualStyleBackColor = true;
+      button1.Click += button1_Click;
       // 
       // timer1
       // 
-      this.timer1.Interval = 300;
-      this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+      timer1.Interval = 300;
+      timer1.Tick += timer1_Tick;
       // 
       // timer2
       // 
-      this.timer2.Interval = 410;
-      this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
+      timer2.Interval = 410;
+      timer2.Tick += timer2_Tick;
       // 
       // textBox2
       // 
-      this.textBox2.Location = new System.Drawing.Point(150, 24);
-      this.textBox2.Name = "textBox2";
-      this.textBox2.Size = new System.Drawing.Size(132, 20);
-      this.textBox2.TabIndex = 7;
-      this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
-      this.textBox2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox2_KeyDown);
+      textBox2.Location = new System.Drawing.Point(175, 27);
+      textBox2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+      textBox2.Name = "textBox2";
+      textBox2.Size = new System.Drawing.Size(154, 23);
+      textBox2.TabIndex = 7;
+      textBox2.TextChanged += textBox2_TextChanged;
+      textBox2.KeyDown += textBox2_KeyDown;
       // 
       // label3
       // 
-      this.label3.AutoSize = true;
-      this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F);
-      this.label3.Location = new System.Drawing.Point(9, 47);
-      this.label3.Name = "label3";
-      this.label3.Size = new System.Drawing.Size(165, 13);
-      this.label3.TabIndex = 8;
-      this.label3.Text = "to connect, press enter or any key";
+      label3.AutoSize = true;
+      label3.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+      label3.Location = new System.Drawing.Point(13, 53);
+      label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+      label3.Name = "label3";
+      label3.Size = new System.Drawing.Size(135, 12);
+      label3.TabIndex = 8;
+      label3.Text = "to connect, press enter or any key";
       // 
       // button2
       // 
-      this.button2.Enabled = false;
-      this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-      this.button2.Image = global::ChessV.GUI.Properties.Resources.icon_apmw;
-      this.button2.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-      this.button2.Location = new System.Drawing.Point(508, 8);
-      this.button2.Name = "button2";
-      this.button2.Size = new System.Drawing.Size(102, 37);
-      this.button2.TabIndex = 9;
-      this.button2.Text = "        Start a game!";
-      this.button2.UseVisualStyleBackColor = true;
-      this.button2.Click += new System.EventHandler(this.button2_Click);
+      button2.Enabled = false;
+      button2.Image = Properties.Resources.icon_apmw;
+      button2.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      button2.Location = new System.Drawing.Point(594, 7);
+      button2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+      button2.Name = "button2";
+      button2.Size = new System.Drawing.Size(119, 43);
+      button2.TabIndex = 9;
+      button2.Text = "      Start a game!";
+      button2.UseVisualStyleBackColor = true;
+      button2.Click += button2_Click;
       // 
       // textBox3
       // 
-      this.textBox3.Location = new System.Drawing.Point(288, 24);
-      this.textBox3.Name = "textBox3";
-      this.textBox3.Size = new System.Drawing.Size(132, 20);
-      this.textBox3.TabIndex = 10;
+      textBox3.Location = new System.Drawing.Point(337, 27);
+      textBox3.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+      textBox3.Name = "textBox3";
+      textBox3.Size = new System.Drawing.Size(154, 23);
+      textBox3.TabIndex = 10;
       // 
       // label4
       // 
-      this.label4.AutoSize = true;
-      this.label4.Location = new System.Drawing.Point(285, 8);
-      this.label4.Name = "label4";
-      this.label4.Size = new System.Drawing.Size(112, 13);
-      this.label4.TabIndex = 11;
-      this.label4.Text = "Archipelago Password";
+      label4.AutoSize = true;
+      label4.Location = new System.Drawing.Point(337, 9);
+      label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+      label4.Name = "label4";
+      label4.Size = new System.Drawing.Size(124, 15);
+      label4.TabIndex = 11;
+      label4.Text = "Archipelago Password";
       // 
       // ApmwForm
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(622, 391);
-      this.Controls.Add(this.label4);
-      this.Controls.Add(this.textBox3);
-      this.Controls.Add(this.button2);
-      this.Controls.Add(this.label3);
-      this.Controls.Add(this.textBox2);
-      this.Controls.Add(this.button1);
-      this.Controls.Add(this.label2);
-      this.Controls.Add(this.label1);
-      this.Controls.Add(this.textBox1);
-      this.Controls.Add(this.txtApmwOutput);
-      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-      this.Name = "ApmwForm";
-      this.Text = "ApmwForm";
-      this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ApmwForm_FormClosing);
-      this.Load += new System.EventHandler(this.ApmwForm_Load);
-      this.ResumeLayout(false);
-      this.PerformLayout();
-
+      AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+      AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      ClientSize = new System.Drawing.Size(726, 451);
+      Controls.Add(label4);
+      Controls.Add(textBox3);
+      Controls.Add(button2);
+      Controls.Add(label3);
+      Controls.Add(textBox2);
+      Controls.Add(button1);
+      Controls.Add(label2);
+      Controls.Add(label1);
+      Controls.Add(textBox1);
+      Controls.Add(txtApmwOutput);
+      Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
+      Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+      Name = "ApmwForm";
+      Text = "ApmwForm";
+      FormClosing += ApmwForm_FormClosing;
+      Load += ApmwForm_Load;
+      ResumeLayout(false);
+      PerformLayout();
     }
 
     #endregion

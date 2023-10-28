@@ -33,13 +33,13 @@ using System.Linq;
 
 namespace ChessV.GUI
 {
-	public partial class ApmwForm: Form
-	{
+  public partial class ApmwForm : Form
+  {
     public ApmwForm(MainForm mainForm)
-		{
-			linesSeen = 0;
+    {
+      linesSeen = 0;
 
-			InitializeComponent();
+      InitializeComponent();
       archipelagoClient = new ArchipelagoClient();
       this.mainForm = mainForm;
     }
@@ -47,21 +47,21 @@ namespace ChessV.GUI
     private ArchipelagoClient archipelagoClient;
     private Convenience convenience;
     private MessageLogHelper messageLog;
-		private List<LogMessage> pastMessages = new List<LogMessage>();
+    private List<LogMessage> pastMessages = new List<LogMessage>();
     private int linesSeen = 0;
     private int nonSessionLinesSeen = 0;
     private readonly MainForm mainForm;
     private MessageLogHelper.MessageReceivedHandler mrHandler;
 
-    private void ApmwForm_Load( object sender, EventArgs e )
-		{
-			timer.Start();
+    private void ApmwForm_Load(object sender, EventArgs e)
+    {
+      timer.Start();
       convenience = new Convenience();
       textBox1.Text += convenience.getRecentUrl();
       textBox2.Text += convenience.getRecentSlotName();
     }
 
-		private void timer_Tick( object sender, EventArgs e )
+    private void timer_Tick(object sender, EventArgs e)
     {
       var enableButton = false;
       try
@@ -72,7 +72,8 @@ namespace ChessV.GUI
           enableButton = archipelagoClient.Session.ConnectionInfo.Slot != -1;
           // TODO(chesslogic): disable while a game is active, enable once it ends
         }
-      } catch (NullReferenceException ex) { }
+      }
+      catch (NullReferenceException ex) { }
       if (button2.Enabled != enableButton)
         button2.Enabled = enableButton;
 
@@ -89,11 +90,11 @@ namespace ChessV.GUI
       linesSeen = 0;
     }
 
-		private void ApmwForm_FormClosing( object sender, FormClosingEventArgs e )
-		{
-			Visible = false;
-			e.Cancel = true;
-		}
+    private void ApmwForm_FormClosing(object sender, FormClosingEventArgs e)
+    {
+      Visible = false;
+      e.Cancel = true;
+    }
 
     private void timer1_Tick(object sender, EventArgs e)
     {
@@ -109,8 +110,8 @@ namespace ChessV.GUI
 
     private void textBox1_TextChanged(object sender, EventArgs e)
     {
-			//timer1.Stop();
-			//timer1.Start();
+      //timer1.Stop();
+      //timer1.Start();
     }
 
     private void textBox2_TextChanged(object sender, EventArgs e)
@@ -144,7 +145,7 @@ namespace ChessV.GUI
       {
         return;
       }
-			button1.Enabled = false;
+      button1.Enabled = false;
       timer2.Stop();
       timer2.Start();
 
@@ -154,7 +155,8 @@ namespace ChessV.GUI
       try
       {
         url = new Uri("wss://" + textBox1.Text.Split('/').Last());
-      } catch (UriFormatException ex)
+      }
+      catch (UriFormatException ex)
       {
         return;
       }
