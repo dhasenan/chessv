@@ -146,7 +146,6 @@ namespace ChessV.Games.Rules.Cards
 							return;
 						}
 
-						// TODO(chesslogic): square bounding based on apmw Pocket Forwardness
 						for (int square = 0; square < Board.NumSquares; square++)
 						{
 							var rankFromPlayer = Game.CurrentSide == 0 ? Board.GetRank(square) : 7 - Board.GetRank(square);

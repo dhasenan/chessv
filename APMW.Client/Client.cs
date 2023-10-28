@@ -99,12 +99,10 @@ namespace Archipelago.APChessV
     private Dictionary<int, string> itemLookupById;
     private Dictionary<int, string> locationLookupById;
     private Dictionary<int, string> playerNameById;
-    private ArchipelagoProgress apmwProgress;
 
     private ChessV.Match match;
 
     private Queue<string> itemReceivedQueue = new Queue<string>();
-    private ArchipelagoConfig apmwConfig;
     private int totalLocations;
     private bool finishedAllChecks = false;
     private ulong seed;

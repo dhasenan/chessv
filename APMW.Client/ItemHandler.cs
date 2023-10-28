@@ -110,7 +110,7 @@ namespace Archipelago.APChessV
       }
 
       int remainingForwardness = ApmwCore.getInstance().foundPawnForwardness;
-      HashSet<int> possibleForwardPawnPositions = new HashSet<int>();
+      List<int> possibleForwardPawnPositions = new List<int>();
       for (int i = 0; i < thirdRank.Count; i++)
         if (thirdRank[i] == null && pawnRank[i] != null && pawnRank[i].Name.Contains("Pawn"))
           possibleForwardPawnPositions.Add(i);
@@ -120,10 +120,10 @@ namespace Archipelago.APChessV
         i = random.Next(possibleForwardPawnPositions.Count))
       {
         // swap backward with forward
-        thirdRank[i] = pawnRank[i];
-        pawnRank[i] = null;
+        thirdRank[possibleForwardPawnPositions[i]] = pawnRank[possibleForwardPawnPositions[i]];
+        pawnRank[possibleForwardPawnPositions[i]] = null;
         // setup for next iteration (TODO(chesslogic): could move this into the for loop syntax)
-        possibleForwardPawnPositions.Remove(i);
+        possibleForwardPawnPositions.RemoveAt(i);
       }
 
       List<PieceType> output = new List<PieceType>();
