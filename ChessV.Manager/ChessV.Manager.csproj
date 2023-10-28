@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net7.0-windows</TargetFramework>
+    <TargetFramework>net7.0-windows7.0</TargetFramework>
     <OutputType>Library</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWindowsForms>true</UseWindowsForms>
@@ -8,7 +8,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\ChessV.Base\ChessV.Base.csproj" />
-    <ProjectReference Include="..\ChessV.Compiler\ChessV.Compiler.csproj" />
+    <!--ProjectReference Include="..\ChessV.Compiler\ChessV.Compiler.csproj" /-->
     <ProjectReference Include="..\ChessV.Games\ChessV.Games.csproj" />
   </ItemGroup>
   <ItemGroup>

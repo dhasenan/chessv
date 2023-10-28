@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net7.0-windows</TargetFramework>
+    <TargetFramework>net7.0-windows7.0</TargetFramework>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <OutputType>WinExe</OutputType>
     <AssemblyName>ChessV</AssemblyName>
@@ -90,7 +90,7 @@
   <ItemGroup>
     <ProjectReference Include="..\APMW.Client\APMW.Client.csproj" />
     <ProjectReference Include="..\ChessV.Base\ChessV.Base.csproj" />
-    <ProjectReference Include="..\ChessV.Compiler\ChessV.Compiler.csproj" />
+    <!--ProjectReference Include="..\ChessV.Compiler\ChessV.Compiler.csproj" /-->
     <ProjectReference Include="..\ChessV.Games\ChessV.Games.csproj" />
     <ProjectReference Include="..\ChessV.Manager\ChessV.Manager.csproj" />
   </ItemGroup>
@@ -117,6 +117,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Antlr" Version="3.5.0.2" />
     <PackageReference Include="Svg" Version="3.4.4" />
   </ItemGroup>
 </Project>
