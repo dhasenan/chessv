@@ -107,9 +107,26 @@ jobs:
     - name: Remove the pfx
       run: Remove-Item -path $env:Wap_Project_Directory\GitHubActionsWorkflow.pfx
 
+    # Add the piecesets and other graphics
+    - name: Gather resources
+      run: |
+        mkdir Resources
+        mv Graphics/* Resources/Graphics/
+
     # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: MSIX Package
-        path: ${{ env.Wap_Project_Directory }}\bin\${{ matrix.configuration }}
+        name: APMW ChessV ${{github.run_number}}
+        path: \
+          ${{ env.Wap_Project_Directory }}\bin\${{ matrix.configuration }}
+          Resources
+
+   # - name: Release with Notes
+   #   uses: softprops/action-gh-release@v1
+   #   with:
+   #     files: |
+   #       app/build/outputs/apk/release/app-release-unsigned.apk
+   #   env:
+   #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
