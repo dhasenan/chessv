@@ -1,14 +1,13 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessV.GUI", "ChessV.GUI\ChessV.GUI.csproj", "{FB1668A1-9003-470D-8D97-2EDFF2702EB3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChessV.GUI", "ChessV.GUI\ChessV.GUI.csproj", "{FB1668A1-9003-470D-8D97-2EDFF2702EB3}"
 	ProjectSection(ProjectDependencies) = postProject
 		{2138BBF5-286A-470D-AEBD-42ADDB527ED1} = {2138BBF5-286A-470D-AEBD-42ADDB527ED1}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessV.Games", "ChessV.Games\ChessV.Games.csproj", "{24E2D77A-3F2C-4DBA-8A89-82EAC43C5211}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChessV.Games", "ChessV.Games\ChessV.Games.csproj", "{24E2D77A-3F2C-4DBA-8A89-82EAC43C5211}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B43EB082-5ED0-4431-BE32-0624C14480E6}"
 	ProjectSection(SolutionItems) = preProject
@@ -17,30 +16,30 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessV.Test", "ChessV.Test\ChessV.Test.csproj", "{9074057D-20C2-47E7-A688-9C1F024F6780}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChessV.Test", "ChessV.Test\ChessV.Test.csproj", "{9074057D-20C2-47E7-A688-9C1F024F6780}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessV.Utilities", "ChessV.Utilities\ChessV.Utilities.csproj", "{68BAC989-4E0A-4647-9A4F-111C7EA53354}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChessV.Utilities", "ChessV.Utilities\ChessV.Utilities.csproj", "{68BAC989-4E0A-4647-9A4F-111C7EA53354}"
 	ProjectSection(ProjectDependencies) = postProject
 		{2138BBF5-286A-470D-AEBD-42ADDB527ED1} = {2138BBF5-286A-470D-AEBD-42ADDB527ED1}
 		{65F1F23C-B75F-4CC8-8F6E-34E3B1485203} = {65F1F23C-B75F-4CC8-8F6E-34E3B1485203}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessV.Compiler", "ChessV.Compiler\ChessV.Compiler.csproj", "{65F1F23C-B75F-4CC8-8F6E-34E3B1485203}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChessV.Compiler", "ChessV.Compiler\ChessV.Compiler.csproj", "{65F1F23C-B75F-4CC8-8F6E-34E3B1485203}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessV.Manager", "ChessV.Manager\ChessV.Manager.csproj", "{2138BBF5-286A-470D-AEBD-42ADDB527ED1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChessV.Manager", "ChessV.Manager\ChessV.Manager.csproj", "{2138BBF5-286A-470D-AEBD-42ADDB527ED1}"
 	ProjectSection(ProjectDependencies) = postProject
 		{24E2D77A-3F2C-4DBA-8A89-82EAC43C5211} = {24E2D77A-3F2C-4DBA-8A89-82EAC43C5211}
 		{41D4C8DC-6052-4D5E-BEA8-F8565BD49575} = {41D4C8DC-6052-4D5E-BEA8-F8565BD49575}
 		{65F1F23C-B75F-4CC8-8F6E-34E3B1485203} = {65F1F23C-B75F-4CC8-8F6E-34E3B1485203}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessV.Base", "ChessV.Base\ChessV.Base.csproj", "{41D4C8DC-6052-4D5E-BEA8-F8565BD49575}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChessV.Base", "ChessV.Base\ChessV.Base.csproj", "{41D4C8DC-6052-4D5E-BEA8-F8565BD49575}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessV.Engine", "ChessV.Engine\ChessV.Engine.csproj", "{C63DDB5D-6C6C-4EBF-8388-293014EB4970}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChessV.Engine", "ChessV.Engine\ChessV.Engine.csproj", "{C63DDB5D-6C6C-4EBF-8388-293014EB4970}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APMW.Client", "APMW.Client\APMW.Client.csproj", "{40788B95-CFAF-4922-984E-DB38859F3362}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APMW.Client", "APMW.Client\APMW.Client.csproj", "{40788B95-CFAF-4922-984E-DB38859F3362}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APMW.Test", "APMW.Test\APMW.Test.csproj", "{E0A264CD-3B7C-4408-A57D-12CC34719A44}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APMW.Test", "APMW.Test\APMW.Test.csproj", "{E0A264CD-3B7C-4408-A57D-12CC34719A44}"
 	ProjectSection(ProjectDependencies) = postProject
 		{40788B95-CFAF-4922-984E-DB38859F3362} = {40788B95-CFAF-4922-984E-DB38859F3362}
 	EndProjectSection
@@ -101,8 +100,8 @@ Global
 		{9074057D-20C2-47E7-A688-9C1F024F6780}.Release|x64.ActiveCfg = Release|Any CPU
 		{9074057D-20C2-47E7-A688-9C1F024F6780}.Release|x86.ActiveCfg = Release|Any CPU
 		{68BAC989-4E0A-4647-9A4F-111C7EA53354}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{68BAC989-4E0A-4647-9A4F-111C7EA53354}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{68BAC989-4E0A-4647-9A4F-111C7EA53354}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{68BAC989-4E0A-4647-9A4F-111C7EA53354}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{68BAC989-4E0A-4647-9A4F-111C7EA53354}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{68BAC989-4E0A-4647-9A4F-111C7EA53354}.Debug|x64.ActiveCfg = Debug|x86
 		{68BAC989-4E0A-4647-9A4F-111C7EA53354}.Debug|x86.ActiveCfg = Debug|x86
 		{68BAC989-4E0A-4647-9A4F-111C7EA53354}.Debug|x86.Build.0 = Debug|x86
@@ -154,8 +153,8 @@ Global
 		{41D4C8DC-6052-4D5E-BEA8-F8565BD49575}.Release|x86.Build.0 = Release|x86
 		{C63DDB5D-6C6C-4EBF-8388-293014EB4970}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C63DDB5D-6C6C-4EBF-8388-293014EB4970}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C63DDB5D-6C6C-4EBF-8388-293014EB4970}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{C63DDB5D-6C6C-4EBF-8388-293014EB4970}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{C63DDB5D-6C6C-4EBF-8388-293014EB4970}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{C63DDB5D-6C6C-4EBF-8388-293014EB4970}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{C63DDB5D-6C6C-4EBF-8388-293014EB4970}.Debug|x64.ActiveCfg = Debug|x86
 		{C63DDB5D-6C6C-4EBF-8388-293014EB4970}.Debug|x86.ActiveCfg = Debug|x86
 		{C63DDB5D-6C6C-4EBF-8388-293014EB4970}.Debug|x86.Build.0 = Debug|x86
