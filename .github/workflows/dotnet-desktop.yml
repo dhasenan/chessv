@@ -111,7 +111,7 @@ jobs:
     - name: Gather resources
       run: |
         mkdir net7.0-windows7.0
-        mv Graphics\* ${{ env.Wap_Project_Directory }}\bin\${{ matrix.configuration }}\net7.0-windows7.0\Graphics\
+        mv Graphics ${{ env.Wap_Project_Directory }}\bin\${{ matrix.configuration }}\net7.0-windows7.0\
     # TODO(chesslogic): Get "net7.0-windows7.0" from some environmental variable
 
     # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
