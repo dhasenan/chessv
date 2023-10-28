@@ -109,7 +109,7 @@ jobs:
 
     # Add the piecesets and other graphics
     - name: Gather resources
-      run: \
+      run: |
         mv Graphics\* ${{ env.Wap_Project_Directory }}\bin\${{ matrix.configuration }}\Graphics\
 
     # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
@@ -117,8 +117,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: APMW ChessV ${{ matrix.configuration }} ${{github.run_number}}
-        path: \
-          ${{ env.Wap_Project_Directory }}\bin\${{ matrix.configuration }}
+        path: ${{ env.Wap_Project_Directory }}\bin\${{ matrix.configuration }}
 
    # - name: Release with Notes
    #   uses: softprops/action-gh-release@v1
