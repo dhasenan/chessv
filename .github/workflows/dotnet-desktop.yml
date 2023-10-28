@@ -121,11 +121,11 @@ jobs:
         name: APMW ChessV ${{ matrix.configuration }} ${{github.run_number}}
         path: ${{ env.Wap_Project_Directory }}\bin\${{ matrix.configuration }}
 
-   # - name: Release with Notes
-   #   uses: softprops/action-gh-release@v1
-   #   with:
-   #     files: |
-   #       app/build/outputs/apk/release/app-release-unsigned.apk
-   #   env:
-   #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Release with Notes
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          ${{ env.Wap_Project_Directory }}\bin\Release\net7.0-windows7.0\*
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
