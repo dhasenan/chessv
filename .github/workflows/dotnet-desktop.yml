@@ -118,7 +118,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: APMW ChessV ${{github.run_number}}
-        path: \
+        path: |
           ${{ env.Wap_Project_Directory }}\bin\${{ matrix.configuration }}
           Resources
 
