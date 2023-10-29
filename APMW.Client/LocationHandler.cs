@@ -63,6 +63,7 @@ namespace Archipelago.APChessV
       // TODO(chesslogic): why does this continue to increment between games?
       this.capturedPawns = 0;
       this.capturedPieces = 0;
+      this.currentSquaresToOriginalSquares = new Dictionary<int, int>();
     }
 
     public void EndMatch()
