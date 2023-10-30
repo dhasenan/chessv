@@ -8,14 +8,16 @@ In addition to the 6 ordinary chessmen, you may find yourself in control of fair
 
 As you complete the following objectives, you will gain access to additional material.
 
- - Capture each individual enemy piece and pawn (e.g. capture pawn E, the pawn that begins on the E file)
- - Capture multiple enemy pieces and pawns in 1 match (e.g. capture 2 pawns), including sequences of pairs (e.g. both 2 pieces and 2 pawns)
+ - Capture individual enemy pieces and pawns (e.g. capture pawn E, the pawn that begins on the E file)
+ - Capture multiple enemy pieces and pawns in 1 match (e.g. capture any 2 pawns), including sequences of pairs (e.g. both 2 pieces and 2 pawns)
  - Attack any opposing pawn, minor piece, major piece, or queen
  - Attack multiple opposing pieces with a single piece (even if it is itself attacked): two pieces, three pieces, and the King and Queen
  - Move your King each of: forward one space; to the A file; to the center 4 squares; to the opposing home rank; and to capture a piece
  - Perform the French move
 
 This client implements the ChecksMate protocol for ArchipelagoMW by modifying the ChessV 2.2 client by Greg Strong.
+
+Unlike ordinary Chess, the victory condition in this client is King extinction, not checkmate. This means when a player has had their last King captured, they lose. (A player ordinarily has 1 King piece.)
 
 ## ChessV
 
