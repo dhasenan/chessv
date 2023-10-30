@@ -639,10 +639,11 @@ namespace ChessV.GUI
 
 		public void StartChecksMate(Game game)
     {
-      //	Configure the "Match" object with the time control
+			var difficulty = Math.Pow(7, 6 - ApmwCore.getInstance().EngineWeakeningProvider());
+
       TimeControl timeControl = new TimeControl();
       timeControl.Infinite = true;
-      timeControl.NodeLimit = Math.Max(125, Convert.ToInt64(2500 - (500 * ApmwCore.getInstance().EngineWeakeningProvider())));
+      timeControl.NodeLimit = Math.Min(25000, Convert.ToInt64(difficulty));
       game.Match.SetTimeControl(timeControl);
 
 			int player = ApmwCore.getInstance().GeriProvider();
