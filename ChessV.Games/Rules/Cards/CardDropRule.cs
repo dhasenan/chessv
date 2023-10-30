@@ -88,11 +88,11 @@ namespace ChessV.Games.Rules.Cards
       if (movingPlayer != null)
       {
         movingPlayer = info.Player == movingPlayer.Side ? movingPlayer : movingPlayer.Opponent;
-        if (info.FromSquare >= 0)
+        if (!pocketSquares.Contains(info.FromSquare))
           return MoveEventResponse.NotHandled;
         if (movingPlayer.Side != info.Player)
           movingPlayer = movingPlayer.Opponent;
-				movingPlayer.GemsSpent += info.PieceMoved.MidgameValue / 100;
+				movingPlayer.GemsSpent -= info.PieceMoved.MidgameValue / 100;
 				return MoveEventResponse.Handled;
 			}
 			// TODO(chesslogic): try NotHandled
@@ -105,7 +105,7 @@ namespace ChessV.Games.Rules.Cards
       if (movingPlayer != null)
 			{
 				movingPlayer = info.Player == movingPlayer.Side ? movingPlayer : movingPlayer.Opponent;
-        if (info.FromSquare >= 0)
+        if (!pocketSquares.Contains(info.FromSquare))
           return MoveEventResponse.NotHandled;
         if (movingPlayer.Side != info.Player)
 					movingPlayer = movingPlayer.Opponent;
