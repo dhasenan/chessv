@@ -78,6 +78,8 @@ namespace ChessV.Games
     public HashSet<PieceType> Colorbounds;
     public List<HashSet<PieceType>> PocketSets;
 
+    public List<HashSet<PieceType>> Armies;
+
     private Dictionary<KeyValuePair<int, int>, PieceType> startingPosition;
     private string promotions;
 
@@ -411,6 +413,7 @@ namespace ChessV.Games
       Pawns.Add(Pawn);
       Pawns.Add(BerolinaPawn);
 
+
       Minors.Add(Bishop);
       Minors.Add(Knight);
       Minors.Add(Phoenix);
@@ -435,6 +438,16 @@ namespace ChessV.Games
       Colorbounds.Add(Bishop);
       Colorbounds.Add(WarElephant);
       Colorbounds.Add(Cleric);
+
+      Armies = new List<HashSet<PieceType>>
+      {
+        new HashSet<PieceType>() { Bishop, Knight, Rook, Queen },
+        new HashSet<PieceType>() { WarElephant, Phoenix, Cleric, Archbishop },
+        new HashSet<PieceType>() { Lion, Tower, ShortRook, Chancellor },
+        new HashSet<PieceType>() { ChargingKnight, NarrowKnight, ChargingRook, Colonel }
+      };
+      // TODO(chesslogic): Decide breadth of Eurasian army
+      // Armies.Add(new HashSet<PieceType>() { Vao, Cannon, Rook, Colonel });
 
       ApmwCore.getInstance().king = King;
     }
