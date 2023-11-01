@@ -10,9 +10,12 @@ namespace ChessV.Games.Rules.Apmw
 	{
 		public ApmwStalemateRule( PieceType royalPieceType ) : base( royalPieceType ) { }
 
-		public override MoveEventResponse MoveBeingMade( MoveInfo move, int ply )
-		{
-			return MoveEventResponse.NotHandled;
-		}
+    public override MoveEventResponse MoveBeingMade( MoveInfo move, int ply )
+    {
+      Player player = Game.Match.GetPlayer(move.Player);
+      if (player is HumanPlayer)
+        return MoveEventResponse.NotHandled;
+			return base.MoveBeingMade(move, ply);
+    }
 	}
 }
