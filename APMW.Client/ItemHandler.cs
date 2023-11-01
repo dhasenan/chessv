@@ -251,7 +251,7 @@ namespace Archipelago.APChessV
     {
       int side;
       // there are 4 spaces on the left (queenside) vs 3 on right (kingside)
-      if (i > right.Count * 2 || i > left.Count * 2)
+      if (i >= right.Count * 2 || i >= left.Count * 2)
       {
         side = right.Count - left.Count; // 3 - 4 = -1
         parity = 0;

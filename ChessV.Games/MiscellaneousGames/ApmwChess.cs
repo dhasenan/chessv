@@ -117,13 +117,13 @@ namespace ChessV.Games
 		{
 			base.AddRules();
       AddRule(new CardDropRule(ApmwCore.getInstance().foundPocketRange));
-      RemoveRule(typeof(Rules.CheckmateRule));
-      AddRule(new Rules.Extinction.ExtinctionRule("K"));
+      ReplaceRule(FindRule(typeof(Rules.CheckmateRule), true), new Rules.Extinction.ExtinctionRule("K"));
+      AddRule(new ApmwStalemateRule(King));
       //AddRule(new ApmwMoveCompletionRule());
       // TODO(chesslogic): conditionally remove en passant for one player only. (the Apmw provider probably knows whether the player can en passant at this point)
 
       // *** BEROLINA PAWN PROMOTION *** //
-      List<PieceType> availablePromotionTypes = ParseTypeListFromString(PromotionTypes);
+      List <PieceType> availablePromotionTypes = ParseTypeListFromString(PromotionTypes);
       AddBasicPromotionRule(BerolinaPawn, availablePromotionTypes, (loc) => loc.Rank == Board.NumRanks - 1);
 
       // *** BEROLINA PAWN DOUBLE MOVE *** //
