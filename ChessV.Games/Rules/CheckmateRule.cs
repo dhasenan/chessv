@@ -69,21 +69,26 @@ namespace ChessV.Games.Rules
 		}
 
 		public override MoveEventResponse MoveBeingMade( MoveInfo move, int ply )
-		{
-			//	Assert that this move doesn't capture a royal piece, 
-			//	otherwise we have a fundamental problem!
-			if( move.PieceCaptured != null &&
-				(move.PieceCaptured == royalPieces[0] || move.PieceCaptured == royalPieces[1]) )
-				throw new Exception( "Fatal error in CheckmateRule - Royal piece captured" );
-			//	Make sure that as a result of this move, the moving player's
-			//	royal piece isn't attacked.  If it is, this move is illegal.
-			Piece royalPiece = royalPieces[move.Player];
-			if( royalPiece != null && Game.IsSquareAttacked( royalPiece.Square, move.Player ^ 1 ) )
-				return MoveEventResponse.IllegalMove;
-			return MoveEventResponse.NotHandled;
-		}
+    {
+      //	Assert that this move doesn't capture a royal piece, 
+      //	otherwise we have a fundamental problem!
+      if (move.PieceCaptured != null &&
+        (move.PieceCaptured == royalPieces[0] || move.PieceCaptured == royalPieces[1]))
+        throw new Exception("Fatal error in CheckmateRule - Royal piece captured");
+      return IllegalCheckMoves(move);
+    }
 
-		public override MoveEventResponse NoMovesResult( int currentPlayer, int ply )
+    protected MoveEventResponse IllegalCheckMoves(MoveInfo move)
+    {
+      //	Make sure that as a result of this move, the moving player's
+      //	royal piece isn't attacked.  If it is, this move is illegal.
+      Piece royalPiece = royalPieces[move.Player];
+      if (royalPiece != null && Game.IsSquareAttacked(royalPiece.Square, move.Player ^ 1))
+        return MoveEventResponse.IllegalMove;
+      return MoveEventResponse.NotHandled;
+    }
+
+    public override MoveEventResponse NoMovesResult( int currentPlayer, int ply )
 		{
 			Piece royalPiece = royalPieces[currentPlayer];
 			//	No moves - if the royal piece is attacked, the game is lost;

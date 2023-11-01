@@ -12,10 +12,12 @@ namespace ChessV.Games.Rules.Apmw
 
     public override MoveEventResponse MoveBeingMade( MoveInfo move, int ply )
     {
+      if (Game == null || Game.Match == null)
+        return base.IllegalCheckMoves(move);
       Player player = Game.Match.GetPlayer(move.Player);
       if (player is HumanPlayer)
         return MoveEventResponse.NotHandled;
-			return base.MoveBeingMade(move, ply);
+			return base.IllegalCheckMoves(move);
     }
 	}
 }
