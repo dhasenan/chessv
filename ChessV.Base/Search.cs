@@ -393,7 +393,7 @@ namespace ChessV
 				if( movesToExclude != null && movesToExclude.Contains( currentMove ) )
 				{
 					moveLists[1].UnmakeMove();
-					nodesPerMove.Add( currentMove.Hash, 0 );
+					nodesPerMove.TryAdd( currentMove.Hash, 0 );
 					continue;
 				}
 				//	Store current node count so we can determine how many total 
@@ -443,7 +443,7 @@ namespace ChessV
 					break;
 
 				//	store the number of nodes considered for this move
-				nodesPerMove.Add( currentMove.Hash, (int) ((Statistics.Nodes - startNodeCount) / depth) );
+				nodesPerMove.TryAdd( currentMove.Hash, (int) ((Statistics.Nodes - startNodeCount) / depth) );
 
 				//	if this move is better than alpha, we have a new PV
 				if( score > alpha )

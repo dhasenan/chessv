@@ -37,7 +37,7 @@ namespace ChessV
 
 		#region Constants
 		public const int MAX_DIRECTIONS = 48;
-		public const int MAX_PIECE_TYPES = 28;
+		public const int MAX_PIECE_TYPES = 24; // necessary maximum when hashing MoveInfo Tag functionality
 		public const int MAX_PIECES = 64;
 		public const int MAX_PLY = 128;
 		//	Internal indicator for movement matrices that a square is disconnected

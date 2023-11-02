@@ -82,6 +82,7 @@ namespace ChessV.Games
 
     private Dictionary<KeyValuePair<int, int>, PieceType> startingPosition;
     private string promotions;
+    public int HumanPlayer;
 
     public ApmwChessGame()
     {
@@ -245,25 +246,24 @@ namespace ChessV.Games
     {
       CastlingType = King;
 
-      // We can load all the piece types, I don't think the engine cares if some pieces are never used
+      string loadableTypes = "KQRBNP" + promotions;
+      if (HumanPlayer == 0)
+        loadableTypes = loadableTypes.ToUpper();
+      else
+        loadableTypes = loadableTypes.ToLower();
 
-      foreach (PieceType piece in Pawns)
-      {
-        AddPieceType(piece);
-      }
-      foreach (PieceType piece in Minors)
-      {
-        AddPieceType(piece);
-      }
-      foreach (PieceType piece in Majors)
-      {
-        AddPieceType(piece);
-      }
-      foreach (PieceType piece in Queens)
-      {
-        AddPieceType(piece);
-      }
       AddPieceType(King);
+      foreach (PieceType piece in Pawns)
+        AddPieceType(piece);
+      foreach (PieceType piece in Minors)
+        if (loadableTypes.Contains(piece.Notation[HumanPlayer]))
+          AddPieceType(piece);
+      foreach (PieceType piece in Majors)
+        if (loadableTypes.Contains(piece.Notation[HumanPlayer]))
+          AddPieceType(piece);
+      foreach (PieceType piece in Queens)
+        if (loadableTypes.Contains(piece.Notation[HumanPlayer]))
+          AddPieceType(piece);
 
       //	Army adjustment
       //if ((WhiteArmy.Value == "Fabulous FIDEs" && BlackArmy.Value == "Remarkable Rookies") ||
@@ -301,14 +301,14 @@ namespace ChessV.Games
         SetCustomProperty("BlackOuter", "8");
         SetCustomProperty("BlackPawns", "pppppppp");
         SetCustomProperty("BlackPieces", "rnbqkbnr");
-        PromotionTypes += "QRBN";
+        PromotionTypes += "qrbn";
       }
       else
       {
         SetCustomProperty("WhiteOuter", "8");
         SetCustomProperty("WhitePawns", "PPPPPPPP");
         SetCustomProperty("WhitePieces", "RNBQKBNR");
-        PromotionTypes += "qrbn";
+        PromotionTypes += "QRBN";
       }
 
       //	determine player's board
