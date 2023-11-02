@@ -444,7 +444,7 @@ namespace ChessV
 					break;
 
 				//	store the number of nodes considered for this move
-				nodesPerMove[currentMove.Hash] = Math.Max(nodesPerMove.GetValueOrDefault(currentMove.Hash), (int) ((Statistics.Nodes - startNodeCount) / depth) ));
+				nodesPerMove[currentMove.Hash] = Math.Max(nodesPerMove.GetValueOrDefault(currentMove.Hash), (int) ((Statistics.Nodes - startNodeCount) / depth) );
 				// TODO(chesslogic): why is this recording an identical ToSquare, FromSquare, and PromotionType?
 
 				//	if this move is better than alpha, we have a new PV
