@@ -564,7 +564,7 @@ namespace ChessV
 				Result = result;
 
 			Stop();
-}
+		}
 
 		private void onPlayerReady( Player sender )
 		{

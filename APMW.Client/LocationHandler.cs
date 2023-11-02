@@ -45,6 +45,7 @@ namespace Archipelago.APChessV
 
     public bool Initialized { get; private set; }
     private StartedEventHandler seHandler;
+    private FinishedEventHandler feHandler;
     private Action<MoveInfo> mpHandler;
     private ChessV.Match match;
     private int humanPlayer;
@@ -64,6 +65,8 @@ namespace Archipelago.APChessV
       this.capturedPawns = 0;
       this.capturedPieces = 0;
       this.currentSquaresToOriginalSquares = new Dictionary<int, int>();
+
+      this.match.Finished += HandleMatch;
     }
 
     public void EndMatch()
@@ -76,6 +79,7 @@ namespace Archipelago.APChessV
       // seHandler = null;
       this.capturedPawns = 0;
       this.capturedPieces = 0;
+      this.match.Finished -= HandleMatch;
     }
 
     /** unused */
@@ -102,16 +106,32 @@ namespace Archipelago.APChessV
       if (info == null)
         return; // probably never happens
 
+      //
+      // BEGIN victory ...
+      //
+
+      // I could join all of these with a &&, but this is more dramatic.
+      if (match.Result != null)
+        if (match.Result.Type == ResultType.Win)
+          if (match.Result.Winner == this.humanPlayer)
+            locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Checkmate Maxima"));
+
+      //
+      // END victory ...
+      //
+
       // CPU can't emit locations - we've updated state, so return early
       if (info.Player != humanPlayer)
       {
+        if (locations.Count > 0)
+          new Task(() => LocationCheckHelper.CompleteLocationChecks(locations.ToArray())).Start();
         UpdateMoveState(info);
         return;
       }
 
       Piece piece = info.PieceMoved;
       string pieceName = piece.PieceType.Name;
-      
+
       // TODO(chesslogic): refactor these, extract into individual methods, probably reduce them to 7 lines
 
       //
@@ -164,11 +184,13 @@ namespace Archipelago.APChessV
         {
           locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud Capture"));
         }
+        /*
         if (info.PieceCaptured.PieceType.Name.Equals("King"))
         {
           locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Checkmate Maxima"));
           // TODO(chesslogic): count # of pieces and pawns, emit corresponding checkmate
         }
+        */
 
         // handle specific piece
         int originalSquare = info.ToSquare;
@@ -307,9 +329,7 @@ namespace Archipelago.APChessV
       //
 
       if (locations.Count > 0)
-      {
         new Task(() => LocationCheckHelper.CompleteLocationChecks(locations.ToArray())).Start();
-      }
 
       UpdateMoveState(info);
     }
@@ -321,6 +341,22 @@ namespace Archipelago.APChessV
         currentSquaresToOriginalSquares[info.ToSquare] = currentSquaresToOriginalSquares[info.FromSquare];
       else
         currentSquaresToOriginalSquares[info.ToSquare] = info.FromSquare;
+    }
+
+    public void HandleMatch(Match match)
+    {
+      List<long> locations = new List<long>();
+      if (match == null) return;
+      if (match.Result == null) return;
+      if (match.Result.Type == ResultType.Win && match.Result.Winner == this.humanPlayer)
+      {
+        locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Checkmate Maxima"));
+      }
+
+      if (locations.Count > 0)
+      {
+        new Task(() => LocationCheckHelper.CompleteLocationChecks(locations.ToArray())).Start();
+      }
     }
   }
 }
