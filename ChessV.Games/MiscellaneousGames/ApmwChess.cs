@@ -118,7 +118,8 @@ namespace ChessV.Games
 			base.AddRules();
       AddRule(new CardDropRule(ApmwCore.getInstance().foundPocketRange));
       ReplaceRule(FindRule(typeof(Rules.CheckmateRule), true), new Rules.Extinction.ExtinctionRule("K"));
-      AddRule(new ApmwStalemateRule(King));
+      // TODO(chesslogic): this seems to cause more problems than it solves. I guess the AI can be stupid
+      //AddRule(new ApmwStalemateRule(King));
       //AddRule(new ApmwMoveCompletionRule());
       // TODO(chesslogic): conditionally remove en passant for one player only. (the Apmw provider probably knows whether the player can en passant at this point)
 
@@ -135,7 +136,7 @@ namespace ChessV.Games
         doubleMoveNE.MustCapture = false;
         doubleMoveNE.CanCapture = false;
         doubleMoveNE.Direction = new Direction(1, 1);
-        doubleMoveNE.Condition = location => location.Rank == 1; // TODO(chesslogic): why does this use PlayerSquare?
+        doubleMoveNE.Condition = location => location.Rank <= 1; // TODO(chesslogic): why does this use PlayerSquare?
         BerolinaPawn.AddMoveCapability(doubleMoveNE);
 
         MoveCapability doubleMoveNW = new MoveCapability();
@@ -144,7 +145,7 @@ namespace ChessV.Games
         doubleMoveNW.MustCapture = false;
         doubleMoveNW.CanCapture = false;
         doubleMoveNW.Direction = new Direction(1, -1);
-        doubleMoveNW.Condition = location => location.Rank == 1;
+        doubleMoveNW.Condition = location => location.Rank <= 1;
         BerolinaPawn.AddMoveCapability(doubleMoveNW);
       }
 
@@ -300,14 +301,14 @@ namespace ChessV.Games
         SetCustomProperty("BlackOuter", "8");
         SetCustomProperty("BlackPawns", "pppppppp");
         SetCustomProperty("BlackPieces", "rnbqkbnr");
-        PromotionTypes += "qrbn";
+        PromotionTypes += "QRBN";
       }
       else
       {
         SetCustomProperty("WhiteOuter", "8");
         SetCustomProperty("WhitePawns", "PPPPPPPP");
         SetCustomProperty("WhitePieces", "RNBQKBNR");
-        PromotionTypes += "QRBN";
+        PromotionTypes += "qrbn";
       }
 
       //	determine player's board

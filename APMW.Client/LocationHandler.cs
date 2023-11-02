@@ -141,7 +141,8 @@ namespace Archipelago.APChessV
       // check if move is early and is directly forward one step
       if (pieceName.Equals("King"))
       {
-        if (match.Game.GameTurnNumber <= 2 &&
+        // TODO(chesslogic): Math.min(match.Game.Board pieces count, 4) 
+        if (match.Game.GameTurnNumber <= 4 &&
           match.Game.Board.GetFile(info.ToSquare) == 4 &&
           (match.Game.Board.GetRank(info.ToSquare) == 1 || match.Game.Board.GetRank(info.ToSquare) == 6))
         {
