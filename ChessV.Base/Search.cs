@@ -394,7 +394,8 @@ namespace ChessV
 				{
 					moveLists[1].UnmakeMove();
 					nodesPerMove.TryAdd( currentMove.Hash, 0 );
-					continue;
+          // TODO(chesslogic): why is this recording an identical ToSquare, FromSquare, and PromotionType?
+          continue;
 				}
 				//	Store current node count so we can determine how many total 
 				//	nodes were used during consideration of this move.  We will 
@@ -444,6 +445,7 @@ namespace ChessV
 
 				//	store the number of nodes considered for this move
 				nodesPerMove.TryAdd( currentMove.Hash, (int) ((Statistics.Nodes - startNodeCount) / depth) );
+				// TODO(chesslogic): why is this recording an identical ToSquare, FromSquare, and PromotionType?
 
 				//	if this move is better than alpha, we have a new PV
 				if( score > alpha )
