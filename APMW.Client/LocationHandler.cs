@@ -1,5 +1,7 @@
 ﻿using Archipelago.MultiClient.Net;
+using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.Helpers;
+using Archipelago.MultiClient.Net.Packets;
 using ChessV;
 using ChessV.Base;
 using ChessV.Games;
@@ -9,6 +11,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using static System.Collections.Specialized.BitVector32;
 
 namespace Archipelago.APChessV
 {
@@ -36,12 +39,13 @@ namespace Archipelago.APChessV
       Initialized = false;
     }
 
-    public void Initialize(ILocationCheckHelper locationCheckHelper)
+    public void Initialize(ILocationCheckHelper locationCheckHelper, ArchipelagoSession session)
     {
       //if (Initialized)
       //  throw new InvalidOperationException("Cannot reinitialize LocationHandler");
       this.LocationCheckHelper = locationCheckHelper;
       Initialized = true;
+      this.victory = () => new Task(() => this.Victory(session)).Start();
     }
 
     public ILocationCheckHelper LocationCheckHelper { get; private set; }
@@ -50,6 +54,7 @@ namespace Archipelago.APChessV
     private StartedEventHandler seHandler;
     private Action<Match> feHandler;
     private Action<MoveInfo> mpHandler;
+    private Action victory;
     private ChessV.Match match;
     private int humanPlayer;
     private int capturedPieces;
@@ -117,7 +122,7 @@ namespace Archipelago.APChessV
       if (match.Result != null && !match.Result.IsNone)
         if (match.Result.Type == ResultType.Win)
           if (match.Result.Winner == this.humanPlayer)
-            locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Checkmate Maxima"));
+            victory();
 
       //
       // END victory ...
@@ -364,13 +369,16 @@ namespace Archipelago.APChessV
       if (match.Result == null) return;
       if (match.Result.Type == ResultType.Win && match.Result.Winner == this.humanPlayer)
       {
-        locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Checkmate Maxima"));
+        victory();
       }
+    }
 
-      if (locations.Count > 0)
-      {
-        new Task(() => LocationCheckHelper.CompleteLocationChecks(locations.ToArray())).Start();
-      }
+    public void Victory(ArchipelagoSession session)
+    {
+      LocationCheckHelper.CompleteLocationChecks(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Checkmate Maxima"));
+      var statusUpdatePacket = new StatusUpdatePacket();
+      statusUpdatePacket.Status = ArchipelagoClientState.ClientGoal;
+      session.Socket.SendPacket(statusUpdatePacket);
     }
   }
 }
