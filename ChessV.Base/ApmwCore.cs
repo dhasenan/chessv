@@ -61,6 +61,7 @@ namespace ChessV.Base
     /** Provides 0 if the player has found PlayAsWhite item, otherwise provides 1 */
     public Func<int> GeriProvider = () => 1;
     public List<Action<MoveInfo>> NewMovePlayed = new List<Action<MoveInfo>>();
+    public List<Action<Match>> MatchFinished = new List<Action<Match>>();
     public Func<int> EngineWeakeningProvider = () => 0;
 
     public void seed(int[] seeds)

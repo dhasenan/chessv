@@ -119,8 +119,7 @@ namespace ChessV.Games
 			base.AddRules();
       AddRule(new CardDropRule(ApmwCore.getInstance().foundPocketRange));
       ReplaceRule(FindRule(typeof(Rules.CheckmateRule), true), new Rules.Extinction.ExtinctionRule("K"));
-      // TODO(chesslogic): this seems to cause more problems than it solves. I guess the AI can be stupid
-      //AddRule(new ApmwStalemateRule(King));
+      AddRule(new ApmwStalemateRule(King));
       //AddRule(new ApmwMoveCompletionRule());
       // TODO(chesslogic): conditionally remove en passant for one player only. (the Apmw provider probably knows whether the player can en passant at this point)
 

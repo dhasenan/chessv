@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,5 +20,23 @@ namespace ChessV.Games.Rules.Apmw
         return MoveEventResponse.NotHandled;
 			return base.IllegalCheckMoves(move);
     }
-	}
+
+    public override MoveEventResponse NoMovesResult(int currentPlayer, int ply)
+    {
+      MoveEventResponse response = base.NoMovesResult(currentPlayer, ply);
+      if (response != StalemateResult)
+        return response;
+      Player player = Game.Match.GetPlayer(currentPlayer);
+      if (player is HumanPlayer)
+        return MoveEventResponse.GameLost;
+      return MoveEventResponse.GameWon;
+    }
+
+    public override int PositionalSearchExtension(int currentPlayer, int ply)
+    {
+      if (ply < 20)
+        return base.PositionalSearchExtension(currentPlayer, ply);
+      return 0;
+    }
+  }
 }

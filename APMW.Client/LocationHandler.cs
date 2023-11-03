@@ -6,6 +6,7 @@ using ChessV.Games;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
@@ -30,6 +31,8 @@ namespace Archipelago.APChessV
       ApmwCore.getInstance().StartedEventHandlers.Add(seHandler);
       mpHandler = (move) => this.HandleMove(move);
       ApmwCore.getInstance().NewMovePlayed.Add(mpHandler);
+      feHandler = (match) => this.HandleMatch(match);
+      ApmwCore.getInstance().MatchFinished.Add(feHandler);
       Initialized = false;
     }
 
@@ -45,7 +48,7 @@ namespace Archipelago.APChessV
 
     public bool Initialized { get; private set; }
     private StartedEventHandler seHandler;
-    private FinishedEventHandler feHandler;
+    private Action<Match> feHandler;
     private Action<MoveInfo> mpHandler;
     private ChessV.Match match;
     private int humanPlayer;
@@ -111,7 +114,7 @@ namespace Archipelago.APChessV
       //
 
       // I could join all of these with a &&, but this is more dramatic.
-      if (match.Result != null)
+      if (match.Result != null && !match.Result.IsNone)
         if (match.Result.Type == ResultType.Win)
           if (match.Result.Winner == this.humanPlayer)
             locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Checkmate Maxima"));

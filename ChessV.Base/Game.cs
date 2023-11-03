@@ -1515,10 +1515,10 @@ namespace ChessV
 			//	raise MoveBeingPlayed event first, then MovePlayed event
 			MoveBeingPlayed?.Invoke( move );
 			MovePlayed( move );
-			if (move != lastMove)
-			{
-				ApmwCore.getInstance().NewMovePlayed.ForEach((handler) => handler(move));
-				lastMove = move;
+      if (move != lastMove)
+      {
+        ApmwCore.getInstance().NewMovePlayed.ForEach((handler) => handler(move));
+        lastMove = move;
       }
 
       if ( Result.IsNone )
@@ -1538,14 +1538,16 @@ namespace ChessV
 						Result = new Result( ResultType.Win, CurrentSide );
 					if( result == MoveEventResponse.GameLost )
 						Result = new Result( ResultType.Win, CurrentSide ^ 1 );
-				}
+
+          ApmwCore.getInstance().MatchFinished.ForEach((handler) => handler(Match));
+        }
 			}
 			else
 			{
 				//	perform some cleanup
 				cleanup();
 			}
-		}
+    }
 
 		/** used to prevent emitting extra moves for the same action, which keeps happening */
 		MoveInfo lastMove;
