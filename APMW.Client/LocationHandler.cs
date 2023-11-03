@@ -295,7 +295,7 @@ namespace Archipelago.APChessV
             if (++forkers[attackers[i]] > 1)
             {
               locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Fork, Sacrificial"));
-              bool isTrueFork = match.Game.IsSquareAttacked(attackers[i].Square, humanPlayer ^ 1);
+              bool isTrueFork = !match.Game.IsSquareAttacked(attackers[i].Square, humanPlayer ^ 1);
               if (isTrueFork)
                 locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Fork, True"));
               if (forkers[attackers[i]] > 2)
