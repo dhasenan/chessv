@@ -93,7 +93,7 @@ namespace Archipelago.APChessV
       List<PieceType> thirdRank = new List<PieceType>() { null, null, null, null, null, null, null, null };
       List<PieceType> pawnRank = minors.Skip(8).ToList();
 
-      Random random = new Random(ApmwCore.getInstance().pawnSeed);
+      Random random = new Random(ApmwConfig.getInstance().pawnSeed);
 
       int startingPieces = pawnRank.Count((item) => item != null);
       int totalChessmen = ApmwCore.getInstance().foundPawns + startingPieces;
@@ -146,7 +146,7 @@ namespace Archipelago.APChessV
       temp.AddRange(new List<PieceType>() { null, null, null, });
       outer = temp;
 
-      Random random = new Random(ApmwCore.getInstance().minorSeed);
+      Random random = new Random(ApmwConfig.getInstance().minorSeed);
 
       int startingPieces = ApmwCore.getInstance().foundMajors;
       int totalPieces = startingPieces + ApmwCore.getInstance().foundMinors;
@@ -188,7 +188,7 @@ namespace Archipelago.APChessV
       List<PieceType> queens = ApmwCore.getInstance().queens.ToList();
       int kingIndex = 4; // king is on E file
 
-      Random random = new Random(ApmwCore.getInstance().queenSeed);
+      Random random = new Random(ApmwConfig.getInstance().queenSeed);
 
       int player = ApmwCore.getInstance().GeriProvider();
       for (int i = 0; i < ApmwCore.getInstance().foundQueens && i < order.Count; i++)
@@ -213,7 +213,7 @@ namespace Archipelago.APChessV
       List<PieceType> left = new List<PieceType>() { null, null, null, null };
       List<PieceType> right = new List<PieceType>() { null, null, null };
 
-      Random random = new Random(ApmwCore.getInstance().majorSeed);
+      Random random = new Random(ApmwConfig.getInstance().majorSeed);
 
       int player = ApmwCore.getInstance().GeriProvider();
       int parity = 0;
@@ -298,7 +298,7 @@ namespace Archipelago.APChessV
     public List<PieceType> generatePocketItems()
     {
       int foundPockets = ApmwCore.getInstance().foundPockets;
-      var pockets = ApmwCore.getInstance().generatePocketValues(foundPockets);
+      var pockets = ApmwConfig.getInstance().generatePocketValues(foundPockets);
       List<PieceType> pocketPieces = new List<PieceType>();
       List<string> pocketItems = new List<string>();
       int empty = 0;
@@ -311,7 +311,7 @@ namespace Archipelago.APChessV
           continue;
         }
         var setOfPieceType = ApmwCore.getInstance().pocketSets[pockets[i] - 1];
-        Random random = new Random(ApmwCore.getInstance().pocketChoiceSeed[i]);
+        Random random = new Random(ApmwConfig.getInstance().pocketChoiceSeed[i]);
         int index = random.Next(setOfPieceType.Count);
         pocketPieces.Add(setOfPieceType.ToList()[index]);
       }

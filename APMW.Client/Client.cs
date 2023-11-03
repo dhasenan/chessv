@@ -89,8 +89,6 @@ namespace Archipelago.APChessV
     public ArchipelagoSession Session { get; private set; }
     public List<String> nonSessionMessages { get; private set; }
 
-    public Dictionary<string, object> SlotData { get; private set; }
-
     private DataPackagePacket dataPackagePacket;
     private ConnectedPacket connectedPacket;
     private LocationInfoPacket locationInfoPacket;
@@ -181,16 +179,7 @@ namespace Archipelago.APChessV
 
           LocationHandler = LocationHandler.GetInstance();
           LocationHandler.Initialize(session.Locations, session);
-          SlotData = session.DataStorage.GetSlotData();
-
-          var seeds = new int[] {
-          Convert.ToInt32(SlotData["pocketSeed"]),
-          Convert.ToInt32(SlotData["pawnSeed"]),
-          Convert.ToInt32(SlotData["minorSeed"]),
-          Convert.ToInt32(SlotData["majorSeed"]),
-          Convert.ToInt32(SlotData["queenSeed"]), };
-          // TODO(chesslogic): Check if mode is chaos, if so, set random seeds based on current time
-          ApmwCore.getInstance().seed(seeds);
+          ApmwConfig.getInstance().Instantiate(session.DataStorage.GetSlotData());
 
           this.ItemHandler = new ItemHandler(session.Items);
 

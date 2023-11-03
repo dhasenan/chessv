@@ -1,0 +1,114 @@
+﻿using ChessV.Base;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Archipelago.APChessV
+{
+  internal class ApmwConfig
+  {
+    public static ApmwConfig _instance;
+    public static ApmwConfig getInstance()
+    {
+      if (_instance == null)
+      {
+        lock (typeof(ApmwConfig))
+        {
+          if (_instance == null)
+          {
+            _instance = new ApmwConfig();
+          }
+        }
+      }
+      return _instance;
+    }
+
+    public Dictionary<string, object> SlotData { get; private set; }
+
+    public int pocketSeed = -1;
+    public List<int> pocketChoiceSeed { get; private set; }
+    public int pawnSeed = -1;
+    public int minorSeed = -1;
+    public int majorSeed = -1;
+    public int queenSeed = -1;
+
+    public void Instantiate(Dictionary<string, object> slotData)
+    {
+      SlotData = slotData;
+
+      // TODO(chesslogic): Check if mode is chaos, if so, set random seeds based on current time
+      var seeds = new int[] {
+          Convert.ToInt32(SlotData["pocketSeed"]),
+          Convert.ToInt32(SlotData["pawnSeed"]),
+          Convert.ToInt32(SlotData["minorSeed"]),
+          Convert.ToInt32(SlotData["majorSeed"]),
+          Convert.ToInt32(SlotData["queenSeed"]), };
+      this.seed(seeds);
+    }
+
+    public void seed(int[] seeds)
+    {
+      pocketSeed = seeds[0];
+      pawnSeed = seeds[1];
+      minorSeed = seeds[2];
+      majorSeed = seeds[3];
+      queenSeed = seeds[4];
+    }
+
+    /** Possibly not stable - will generate a different pocket distribution as the player progresses through different foundPockets - but it is uniform */
+    public List<int> generatePocketValues(int foundPockets)
+    {
+      if (foundPockets == 0) { return new List<int>() { 0, 0, 0 }; }
+      if (pocketSeed == -1) { throw new InvalidOperationException("Please set Starter.pocketSeed"); }
+
+      // preserve choices separate from values
+      Random pocketRandom = new Random(pocketSeed);
+      pocketChoiceSeed = new List<int>() { pocketRandom.Next(), pocketRandom.Next(), pocketRandom.Next() };
+
+      // probably not uniform... but it's within range so it works for now. will break FEN later
+      Random random = new Random(pocketSeed);
+      var x = random.Next(Math.Max(0, foundPockets - 8), Math.Min(foundPockets, 5));
+      if (x == foundPockets)
+      {
+        return new List<int>() { x, 0, 0 };
+      }
+      var y = random.Next(Math.Max(0, foundPockets - 4 - x), Math.Min(foundPockets, 5));
+      var z = foundPockets - (y + x);
+      if (z < 0)
+      {
+        (x, y, z) = (4 - x, 4 - y, -z);
+      }
+
+      return new List<int>() { x, y, z };
+    }
+
+    /**
+     * arg spaces should be TOTAL spaces not EMPTY spaces
+     * 
+     * vaguely inspired by this cacophanous suggestion:
+     * https://stackoverflow.com/questions/28544808/random-distribution-of-items-in-list-with-exact-number-of-occurences
+     */
+    public static Dictionary<int, Item> distribute<Item>(List<Item> items, int spaces)
+    {
+      // Create list of items * z
+      Dictionary<int, Item> allItems = new Dictionary<int, Item>();
+      for (int i = 0; i < items.Count; i++)
+        allItems.Add(i, items[i]);
+      for (int i = items.Count; i < spaces; i++)
+        allItems.Add(i, default(Item));
+
+      Random random = new Random();
+      int n = allItems.Count;
+      while (n > 1)
+      {
+        n--;
+        int k = random.Next(n + 1);
+        (allItems[k], allItems[n]) = (allItems[n], allItems[k]);
+      }
+
+      return allItems;
+    }
+  }
+}

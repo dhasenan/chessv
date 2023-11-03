@@ -11,7 +11,7 @@ As you complete the following objectives, you will gain access to additional mat
  - Capture individual enemy pieces and pawns (e.g. capture pawn E, the pawn that begins on the E file)
  - Capture multiple enemy pieces and pawns in 1 match (e.g. capture any 2 pawns), including sequences of pairs (e.g. both 2 pieces and 2 pawns)
  - Attack any opposing pawn, minor piece, major piece, or queen
- - Attack multiple opposing pieces with a single piece (even if it is itself attacked): two pieces, three pieces, and the King and Queen
+ - Attack multiple opposing pieces with a single piece (Sacrificial if it is itself attacked, True otherwise): two pieces, three pieces, and the King and Queen
  - Move your King each of: forward one space; to the A file; to the center 4 squares; to the opposing home rank; and to capture a piece
  - Perform the French move
 
@@ -44,7 +44,6 @@ https://archipelago.gg/
 
 Locations:
 
- - "True Fork" where the forking piece is not attacked.
  - "Discovered Attack" where a piece which was not under attack becomes under attack but not by the piece you moved
  - "Pin" and "Skewer" where a piece would be under attack if not for another piece on the same side. If the higher value piece is attacked, it's a skewer, otheerwise it's a pin
  - Short/Long "Castle" where you castle. Unless excluded (and thus only providing filler or trap items), this move will require a firmer guarantee that a user can castle (that its major pieces have not turned into queens).

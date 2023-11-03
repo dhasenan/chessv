@@ -76,9 +76,9 @@ namespace ChessV.Games
     public HashSet<PieceType> Majors;
     public HashSet<PieceType> Queens;
     public HashSet<PieceType> Colorbounds;
+    public List<HashSet<PieceType>> Armies;
     public List<HashSet<PieceType>> PocketSets;
 
-    public List<HashSet<PieceType>> Armies;
 
     private Dictionary<KeyValuePair<int, int>, PieceType> startingPosition;
     private string promotions;
@@ -91,6 +91,7 @@ namespace ChessV.Games
       Majors = new HashSet<PieceType>();
       Queens = new HashSet<PieceType>();
       Colorbounds = new HashSet<PieceType>();
+      Armies = new List<HashSet<PieceType>>();
       PocketSets = new List<HashSet<PieceType>>() { Pawns, Minors, Majors, Queens };
 
       ApmwCore apmwCore = ApmwCore.getInstance();
@@ -99,6 +100,7 @@ namespace ChessV.Games
       apmwCore.majors = Majors;
       apmwCore.queens = Queens;
       apmwCore.colorbound = Colorbounds;
+      apmwCore.armies = Armies;
       apmwCore.pocketSets = PocketSets;
     }
 
@@ -439,13 +441,12 @@ namespace ChessV.Games
       Colorbounds.Add(WarElephant);
       Colorbounds.Add(Cleric);
 
-      Armies = new List<HashSet<PieceType>>
-      {
+      Armies.AddRange(new HashSet<PieceType>[] {
         new HashSet<PieceType>() { Bishop, Knight, Rook, Queen },
         new HashSet<PieceType>() { WarElephant, Phoenix, Cleric, Archbishop },
         new HashSet<PieceType>() { Lion, Tower, ShortRook, Chancellor },
         new HashSet<PieceType>() { ChargingKnight, NarrowKnight, ChargingRook, Colonel }
-      };
+      });
       // TODO(chesslogic): Decide breadth of Eurasian army
       // Armies.Add(new HashSet<PieceType>() { Vao, Cannon, Rook, Colonel });
 
