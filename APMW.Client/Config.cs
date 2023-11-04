@@ -38,16 +38,29 @@ namespace Archipelago.APChessV
     public void Instantiate(Dictionary<string, object> slotData)
     {
       SlotData = slotData;
-      //SlotData["goal"]
-      //SlotData["piece_locations"]
-      //SlotData["piece_types"]
-      //SlotData["enemy_piece_types"]
-      //SlotData["early_material"]
+
+      // Implemented
       //SlotData["max_material"]
       //SlotData["min_material"]
-      //SlotData["fairy_chess_pieces"]
+      //SlotData["early_material"]
+
+      // Progressive Goal
+      //SlotData["goal"]
+      //SlotData["enemy_piece_types"]
+
+      // Chaotic Material Randomization
+      // Non-Progressive Material
+      //SlotData["piece_locations"]
+      //SlotData["piece_types"]
+
+      // Army-Constrained Material
       //SlotData["fairy_chess_army"]
+
+      // Non-Fairy Chess
+      //SlotData["fairy_chess_pieces"]
       //SlotData["fairy_chess_pawns"]
+
+      // Piece Limits
       //SlotData["minor_piece_limit_by_type"]
       //SlotData["major_piece_limit_by_type"]
       //SlotData["queen_piece_limit_by_type"]
