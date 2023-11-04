@@ -61,6 +61,10 @@ namespace Archipelago.APChessV
     public int majorSeed = -1;
     public int queenSeed = -1;
 
+    public int minorTypeLimit = -1;
+    public int majorTypeLimit = -1;
+    public int queenTypeLimit = -1;
+
     private Goal goal;
     public Goal Goal { get { return goal; } }
     public int GoalInt
@@ -97,50 +101,91 @@ namespace Archipelago.APChessV
         enemyTypes = (PieceTypes)value;
       }
     }
+    private FairyTypes fairy;
+    public FairyTypes Fairy { get { return fairy; } }
+    public int FairyInt
+    {
+      set
+      {
+        fairy = (FairyTypes)value;
+      }
+    }
+    private FairyArmy army;
+    public FairyArmy Army { get { return army; } }
+    public int ArmyInt
+    {
+      set
+      {
+        army = (FairyArmy)value;
+      }
+    }
+    private FairyPawns pawns;
+    public FairyPawns Pawns { get { return pawns; } }
+    public int PawnsInt
+    {
+      set
+      {
+        pawns = (FairyPawns)value;
+      }
+    }
 
     public void Instantiate(Dictionary<string, object> slotData)
     {
       SlotData = slotData;
 
-      // Implemented
+      seed();
+
+      // Implemented by ChecksMate protocol
       //SlotData["max_material"]
       //SlotData["min_material"]
       //SlotData["early_material"]
+      //SlotData["queen_piece_limit"]
 
       // Progressive Goal
-      //SlotData["goal"]
-      //SlotData["enemy_piece_types"]
+      GoalInt = Convert.ToInt32(SlotData["goal"]);
+      EnemyTypesInt = Convert.ToInt32(SlotData["enemy_piece_types"]);
 
       // Chaotic Material Randomization
       // Non-Progressive Material
-      //SlotData["piece_locations"]
-      //SlotData["piece_types"]
+      LocsInt = Convert.ToInt32(SlotData["piece_locations"]);
+      TypesInt = Convert.ToInt32(SlotData["piece_types"]);
 
       // Army-Constrained Material
-      //SlotData["fairy_chess_army"]
+      ArmyInt = Convert.ToInt32(SlotData["fairy_chess_army"]);
 
       // Non-Fairy Chess
-      //SlotData["fairy_chess_pieces"]
-      //SlotData["fairy_chess_pawns"]
+      FairyInt = Convert.ToInt32(SlotData["fairy_chess_pieces"]);
+      PawnsInt = Convert.ToInt32(SlotData["fairy_chess_pawns"]);
 
       // Piece Limits
-      //SlotData["minor_piece_limit_by_type"]
-      //SlotData["major_piece_limit_by_type"]
-      //SlotData["queen_piece_limit_by_type"]
-      //SlotData["queen_piece_limit"]
-
-      // TODO(chesslogic): Check if mode is chaos, if so, set random seeds based on current time
-      this.seed();
+      minorTypeLimit = Convert.ToInt32(SlotData["minor_piece_limit_by_type"]);
+      majorTypeLimit = Convert.ToInt32(SlotData["major_piece_limit_by_type"]);
+      queenTypeLimit = Convert.ToInt32(SlotData["queen_piece_limit_by_type"]);
     }
 
-    private void seed()
+    public void seed()
     {
-      var seeds = new int[] {
+      int[] seeds;
+      if (this.Types == PieceTypes.Chaos)
+      {
+        Random random = new Random();
+        seeds = new int[]
+          {
+            random.Next(),
+            random.Next(),
+            random.Next(),
+            random.Next(),
+            random.Next(),
+          };
+      }
+      else
+        seeds = new int[] {
           Convert.ToInt32(SlotData["pocketSeed"]),
           Convert.ToInt32(SlotData["pawnSeed"]),
           Convert.ToInt32(SlotData["minorSeed"]),
           Convert.ToInt32(SlotData["majorSeed"]),
-          Convert.ToInt32(SlotData["queenSeed"]), };
+          Convert.ToInt32(SlotData["queenSeed"]),
+        };
 
       pocketSeed = seeds[0];
       pawnSeed = seeds[1];
@@ -189,7 +234,7 @@ namespace Archipelago.APChessV
       for (int i = 0; i < items.Count; i++)
         allItems.Add(i, items[i]);
       for (int i = items.Count; i < spaces; i++)
-        allItems.Add(i, default(Item));
+        allItems.Add(i, default);
 
       Random random = new Random();
       int n = allItems.Count;

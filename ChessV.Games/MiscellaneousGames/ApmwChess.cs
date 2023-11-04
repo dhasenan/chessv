@@ -415,7 +415,6 @@ namespace ChessV.Games
       Pawns.Add(Pawn);
       Pawns.Add(BerolinaPawn);
 
-
       Minors.Add(Bishop);
       Minors.Add(Knight);
       Minors.Add(Phoenix);
@@ -443,8 +442,8 @@ namespace ChessV.Games
 
       Armies.AddRange(new HashSet<PieceType>[] {
         new HashSet<PieceType>() { Bishop, Knight, Rook, Queen },
-        new HashSet<PieceType>() { WarElephant, Phoenix, Cleric, Archbishop },
-        new HashSet<PieceType>() { Lion, Tower, ShortRook, Chancellor },
+        new HashSet<PieceType>() { WarElephant, Phoenix, Cleric, Archbishop }, // has 2 major pieces and 1 minor piece
+        new HashSet<PieceType>() { Tower, ShortRook, Lion, Chancellor },
         new HashSet<PieceType>() { ChargingKnight, NarrowKnight, ChargingRook, Colonel }
       });
       // TODO(chesslogic): Decide breadth of Eurasian army

@@ -19,6 +19,10 @@ Unlike ordinary Chess, the victory condition in this client is King extinction, 
 
 This client implements the ChecksMate protocol for ArchipelagoMW by modifying the ChessV 2.2 client by Greg Strong.
 
+### Supported Options
+
+ - Chaotic Material Randomization. Every game, you get new pieces in new places! Who needs an opening book?
+
 ## ChessV
 
 ChessV is a free, open-source universal chess program with a graphical user interface, sophisticated AI engine, and other features of traditional Chess programs. As a "universal" chess program, it not only plays orthodox Chess, it is also capable of playing games reasonbly similar to Chess. It currently plays over 100 different chess variants, and can be programmed to play additional variants.
@@ -42,18 +46,22 @@ https://archipelago.gg/
 
 ## Not implemented yet (TODO)
 
+Bugs:
+
+ - The current Castling rule allows the King (of both CPU and player) to castle while the King is under attack.
+   - This Castling rule has been the source of many trials and tribulations of late.
+
 Locations:
 
  - "Discovered Attack" where a piece which was not under attack becomes under attack but not by the piece you moved
  - "Pin" and "Skewer" where a piece would be under attack if not for another piece on the same side. If the higher value piece is attacked, it's a skewer, otheerwise it's a pin
  - Short/Long "Castle" where you castle. Unless excluded (and thus only providing filler or trap items), this move will require a firmer guarantee that a user can castle (that its major pieces have not turned into queens).
- 
+
 Randomizer options:
 
  - Piece Limits. Under some mindsets, it can be taxing to find 6 minor pieces and no Queen. By adding certain rails to the experience, one can have a more personalized approach to a Chess randomizer, where one's army bears some semblance of a traditional game.
  - Progressive Goal. Your enemy's pieces are also scattered across the multiworld! (The current design can make progression too easy.)
  - Non-Progressive Material. Pieces will not be selected progressively from a set, but instead placed with specific names in your world. This means you would find a Bishop or Cleric rather than a Progressive Minor Piece or Progressive Major Piece. (They are unlikely to come with pre-determined locations.)
- - Chaotic Material Randomization. Every game, you get new pieces in new places! Who needs an opening book?
  - Army-Constrained Material. The material you get will always be related to each other (in that they belong in the same army): If you find a Bishop you won't find a Cannon; if you find a Cleric you won't find a Lion.
    - It may be inconvenient to exclude certain pieces under this mode...
  - Non-Fairy Chess. Your major pieces will always be Rooks, your minor pieces will always be Bishops and Knights, and your queens will always slay. Also, no more dumb Berolina Pawns. Who even thought mixing those was a good idea?
