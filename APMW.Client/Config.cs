@@ -8,6 +8,32 @@ using System.Threading.Tasks;
 
 namespace Archipelago.APChessV
 {
+  internal enum Goal
+  {
+    Single = 0, Progressive = 1, OrderedProgressive = 2,
+  }
+  internal enum PieceLocations
+  {
+    Chaos = 0, Stable = 1, Ordered = 2,
+  }
+  /** Applies to Player and Enemy */
+  internal enum PieceTypes
+  {
+    Chaos = 0, Stable = 1, Book = 2,
+  }
+  internal enum FairyTypes
+  {
+    Vanilla = 0, Full = 1, CwDA = 2, Cannon = 3, Eurasian = 4,
+  }
+  internal enum FairyArmy
+  {
+    Chaos = 0, Limited = 1, Fair = 2,
+  }
+  internal enum FairyPawns
+  {
+    Vanilla = 0, Mixed = 1, Berolina = 2,
+  }
+
   internal class ApmwConfig
   {
     public static ApmwConfig _instance;
@@ -34,6 +60,43 @@ namespace Archipelago.APChessV
     public int minorSeed = -1;
     public int majorSeed = -1;
     public int queenSeed = -1;
+
+    private Goal goal;
+    public Goal Goal { get { return goal; } }
+    public int GoalInt
+    {
+      set
+      {
+        goal = (Goal)value;
+      }
+    }
+    private PieceLocations locs;
+    public PieceLocations Locs { get { return locs; } }
+    public int LocsInt
+    {
+      set
+      {
+        locs = (PieceLocations)value;
+      }
+    }
+    private PieceTypes types;
+    public PieceTypes Types { get { return types; } }
+    public int TypesInt
+    {
+      set
+      {
+        types = (PieceTypes)value;
+      }
+    }
+    private PieceTypes enemyTypes;
+    public PieceTypes EnemyTypes { get { return enemyTypes; } }
+    public int EnemyTypesInt
+    {
+      set
+      {
+        enemyTypes = (PieceTypes)value;
+      }
+    }
 
     public void Instantiate(Dictionary<string, object> slotData)
     {
