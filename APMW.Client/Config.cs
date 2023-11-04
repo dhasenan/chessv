@@ -1,4 +1,5 @@
-﻿using ChessV.Base;
+﻿using ChessV;
+using ChessV.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,19 +38,34 @@ namespace Archipelago.APChessV
     public void Instantiate(Dictionary<string, object> slotData)
     {
       SlotData = slotData;
+      //SlotData["goal"]
+      //SlotData["piece_locations"]
+      //SlotData["piece_types"]
+      //SlotData["enemy_piece_types"]
+      //SlotData["early_material"]
+      //SlotData["max_material"]
+      //SlotData["min_material"]
+      //SlotData["fairy_chess_pieces"]
+      //SlotData["fairy_chess_army"]
+      //SlotData["fairy_chess_pawns"]
+      //SlotData["minor_piece_limit_by_type"]
+      //SlotData["major_piece_limit_by_type"]
+      //SlotData["queen_piece_limit_by_type"]
+      //SlotData["queen_piece_limit"]
 
       // TODO(chesslogic): Check if mode is chaos, if so, set random seeds based on current time
+      this.seed();
+    }
+
+    private void seed()
+    {
       var seeds = new int[] {
           Convert.ToInt32(SlotData["pocketSeed"]),
           Convert.ToInt32(SlotData["pawnSeed"]),
           Convert.ToInt32(SlotData["minorSeed"]),
           Convert.ToInt32(SlotData["majorSeed"]),
           Convert.ToInt32(SlotData["queenSeed"]), };
-      this.seed(seeds);
-    }
 
-    public void seed(int[] seeds)
-    {
       pocketSeed = seeds[0];
       pawnSeed = seeds[1];
       minorSeed = seeds[2];
