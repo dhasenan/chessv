@@ -25,7 +25,7 @@ This client implements the ChecksMate protocol for ArchipelagoMW by modifying th
  - Chaotic Material Randomization. Every game, you get new pieces in new places! Who needs an opening book?
  - Army-Constrained Material. The material you get will always be related to each other (in that they belong in the same army): If you find a Bishop you won't find a Cannon; if you find a Cleric you won't find a Lion.
    - It may be inconvenient to exclude certain pieces under this mode...
- - Piece Limits. Under some mindsets, it can be taxing to find 6 minor pieces and no Queen. By adding certain rails to the experience, one can have a more personalized approach to a Chess randomizer, where one's army bears some semblance of a traditional game.
+ - Piece Limits. Under some mindsets, it can be taxing to find 6 minor pieces and no Queen. By adding certain rails to the experience, one can have a more personalized approach to a Chess randomizer, where one's army bears some resemblance to a traditional game.
 
 ## ChessV
 
