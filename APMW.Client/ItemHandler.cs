@@ -95,11 +95,7 @@ namespace Archipelago.APChessV
       List<PieceType> pawnRank = minors.Skip(8).ToList();
 
       Random randomPieces = new Random(ApmwConfig.getInstance().pawnSeed);
-      Random randomLocations;
-      if (ApmwConfig.getInstance().Locs == PieceLocations.Chaos)
-        randomLocations = new Random();
-      else
-        randomLocations = randomPieces;
+      Random randomLocations = new Random(ApmwConfig.getInstance().pawnLocSeed);
 
       int startingPieces = pawnRank.Count((item) => item != null);
       int totalChessmen = ApmwCore.getInstance().foundPawns + startingPieces;
@@ -161,11 +157,7 @@ namespace Archipelago.APChessV
       outer = temp; // full row: 3 empty spaces, then 2 potential major pieces, then 3 empty spaces
 
       Random randomPieces = new Random(ApmwConfig.getInstance().minorSeed);
-      Random randomLocations;
-      if (ApmwConfig.getInstance().Locs == PieceLocations.Chaos)
-        randomLocations = new Random();
-      else
-        randomLocations = randomPieces;
+      Random randomLocations = new Random(ApmwConfig.getInstance().minorLocSeed);
 
       int startingPieces = ApmwCore.getInstance().foundMajors;
       int totalPieces = startingPieces + ApmwCore.getInstance().foundMinors;
@@ -238,11 +230,7 @@ namespace Archipelago.APChessV
       List<PieceType> right = new List<PieceType>() { null, null, null };
 
       Random randomPieces = new Random(ApmwConfig.getInstance().majorSeed);
-      Random randomLocations;
-      if (ApmwConfig.getInstance().Locs == PieceLocations.Chaos)
-        randomLocations = new Random();
-      else
-        randomLocations = randomPieces;
+      Random randomLocations = new Random(ApmwConfig.getInstance().majorLocSeed);
 
       int limit = ApmwConfig.getInstance().majorTypeLimit;
       int queensToBe = ApmwCore.getInstance().foundQueens;
@@ -252,7 +240,7 @@ namespace Archipelago.APChessV
       for (int i = 0; i < Math.Min(7, ApmwCore.getInstance().foundMajors); i++)
       {
         PieceType piece = null;
-        if (i > queensToBe)
+        if (i >= queensToBe)
         {
           piece = choosePiece(ref majors, randomPieces, chosenPieces, limit);
           promoPieces.Add(piece.Notation[player]);
@@ -263,14 +251,8 @@ namespace Archipelago.APChessV
       }
       for (int i = 7; i < ApmwCore.getInstance().foundMajors; i++)
       {
-        PieceType piece = null;
-        if (i > queensToBe)
-        {
-          piece = choosePiece(ref majors, randomPieces, chosenPieces, limit);
-          promoPieces.Add(piece.Notation[player]);
-        }
-        else
-          randomPieces.Next();
+        PieceType piece = choosePiece(ref majors, randomPieces, chosenPieces, limit);
+        promoPieces.Add(piece.Notation[player]);
         order.Add(chooseIndexAndPlace(outer, randomLocations, piece) + 8);
       }
 

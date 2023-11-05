@@ -57,9 +57,13 @@ namespace Archipelago.APChessV
     public int pocketSeed = -1;
     public List<int> pocketChoiceSeed { get; private set; }
     public int pawnSeed = -1;
+    public int pawnLocSeed = -1;
     public int minorSeed = -1;
+    public int minorLocSeed = -1;
     public int majorSeed = -1;
+    public int majorLocSeed = -1;
     public int queenSeed = -1;
+    public int queenLocSeed = -1;
 
     public int minorTypeLimit = -1;
     public int majorTypeLimit = -1;
@@ -165,33 +169,41 @@ namespace Archipelago.APChessV
 
     public void seed()
     {
-      int[] seeds;
-      if (this.Types == PieceTypes.Chaos)
-      {
-        Random random = new Random();
-        seeds = new int[]
-          {
-            random.Next(),
-            random.Next(),
-            random.Next(),
-            random.Next(),
-            random.Next(),
-          };
-      }
-      else
-        seeds = new int[] {
+      Random random = new Random();
+      int[] seeds = new int[] {
           Convert.ToInt32(SlotData["pocketSeed"]),
           Convert.ToInt32(SlotData["pawnSeed"]),
           Convert.ToInt32(SlotData["minorSeed"]),
           Convert.ToInt32(SlotData["majorSeed"]),
           Convert.ToInt32(SlotData["queenSeed"]),
         };
-
       pocketSeed = seeds[0];
       pawnSeed = seeds[1];
+      pawnLocSeed = seeds[1];
       minorSeed = seeds[2];
+      minorLocSeed = seeds[2];
       majorSeed = seeds[3];
+      majorLocSeed = seeds[3];
       queenSeed = seeds[4];
+      queenLocSeed = seeds[4];
+      // TODO(chesslogic): I thought about it for a moment, and I think this is fine
+      // But maybe Mersenne twister is happier with some sort of offset
+      
+      if (this.Types == PieceTypes.Chaos)
+      {
+        pocketSeed = random.Next();
+        pawnSeed = random.Next();
+        minorSeed = random.Next();
+        majorSeed = random.Next();
+        queenSeed = random.Next();
+      }
+      if (this.Locs == PieceLocations.Chaos)
+      {
+        pawnLocSeed = random.Next();
+        minorLocSeed = random.Next();
+        majorLocSeed = random.Next();
+        queenLocSeed = random.Next();
+      }
     }
 
     /** Possibly not stable - will generate a different pocket distribution as the player progresses through different foundPockets - but it is uniform */
