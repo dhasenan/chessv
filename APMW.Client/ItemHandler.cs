@@ -148,6 +148,7 @@ namespace Archipelago.APChessV
       HashSet<string> promoPieces = new HashSet<string>();
       Dictionary<PieceType, int> chosenPieces = new Dictionary<PieceType, int>();
       List<PieceType> minors = ApmwCore.getInstance().minors.ToList();
+      minors = filterPiecesByArmy(minors);
       List<PieceType> outer = queens.Skip(8).Take(2).ToList();
       List<PieceType> left = queens.Take(4).ToList();
       List<PieceType> right = queens.Skip(5).Take(3).ToList();
@@ -200,6 +201,7 @@ namespace Archipelago.APChessV
       HashSet<string> promoPieces = new HashSet<string>();
       Dictionary<PieceType, int> chosenPieces = new Dictionary<PieceType, int>();
       List<PieceType> queens = ApmwCore.getInstance().queens.ToList();
+      queens = filterPiecesByArmy(queens);
       int kingIndex = 4; // king is on E file
 
       Random random = new Random(ApmwConfig.getInstance().queenSeed);
@@ -225,6 +227,7 @@ namespace Archipelago.APChessV
       Dictionary<PieceType, int> chosenPieces = new Dictionary<PieceType, int>();
       order = new List<int>();
       List<PieceType> majors = ApmwCore.getInstance().majors.ToList();
+      majors = filterPiecesByArmy(majors);
       List<PieceType> outer = new List<PieceType>() { null, null };
       List<PieceType> left = new List<PieceType>() { null, null, null, null };
       List<PieceType> right = new List<PieceType>() { null, null, null };
@@ -355,6 +358,21 @@ namespace Archipelago.APChessV
         pocketPieces.Add(setOfPieceType.ToList()[index]);
       }
       return pocketPieces;
+    }
+
+    private List<PieceType> filterPiecesByArmy(List<PieceType> pieces)
+    {
+      List<PieceType> newPieces = new List<PieceType>();
+      int army = ApmwConfig.getInstance().Army;
+      if (army == -1)
+        return pieces;
+      for (int i = 0; i < pieces.Count; i++)
+      {
+        if (ApmwCore.getInstance().armies[army].Contains(pieces[i])) {
+          newPieces.Add(pieces[i]);
+        }
+      }
+      return newPieces;
     }
   }
 }
