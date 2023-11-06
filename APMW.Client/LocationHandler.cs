@@ -81,6 +81,12 @@ namespace Archipelago.APChessV
     {
       if (!Initialized)
         throw new InvalidOperationException("LocationHandler has not been initialized");
+      if (this.match == null)
+      {
+        // TODO(chesslogic): mention "no match to end" in logger
+        return;
+      }
+
       //ApmwCore.getInstance().NewMovePlayed.Remove(mpHandler);
       //mpHandler = null;
       // ApmwCore.getInstance().StartedEventHandlers.Remove(seHandler);

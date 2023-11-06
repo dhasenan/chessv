@@ -25,30 +25,43 @@ namespace Archipelago.APChessV
       return _instance;
     }
 
-    string url;
+    string DEFAULT_HOST = "archipelago.gg";
+
+    string port;
     string slotName;
+    string host;
 
-
-    public void success(string url, string slotName)
+    string Url
     {
-      if (this.url == null || !this.url.Equals(url) ||
+      get
+      {
+        return (host ?? "") + ":" + (port ?? "");
+      }
+    }
+
+    public void success(string port, string slotName, string hostName)
+    {
+      if (this.port == null || !this.port.Equals(port) ||
         this.slotName == null || !this.slotName.Equals(slotName)) {
         new Task(() =>
         {
           using (StreamWriter writetext = new StreamWriter("apmw.txt", false))
           {
-            writetext.WriteLine(url);
+            writetext.WriteLine(port);
             writetext.WriteLine(slotName);
+            if (!hostName.Equals("archipelago.gg"))
+              writetext.WriteLine(hostName);
           }
         }).Start();
       }
-      this.url = url;
+      this.port = port;
       this.slotName = slotName;
+      this.host = hostName;
     }
 
     public string getRecentUrl()
     {
-      if (url == null)
+      if (port == null)
       {
         try
         {
@@ -56,20 +69,22 @@ namespace Archipelago.APChessV
           {
             if (!readtext.EndOfStream)
             {
-              url = readtext.ReadLine();
+              port = readtext.ReadLine();
               slotName = readtext.ReadLine();
+              if (readtext.EndOfStream)
+                host = DEFAULT_HOST;
+              else
+                host = readtext.ReadLine();
             }
-            return url ?? "";
+            return Url;
           }
         }
         catch (FileNotFoundException ex)
         {
           File.Create("apmw.txt");
-          url = "";
-          slotName = "";
         }
       }
-      return url ?? "";
+      return Url;
     }
 
     public string getRecentSlotName()
@@ -82,8 +97,10 @@ namespace Archipelago.APChessV
           {
             if (!readtext.EndOfStream)
             {
-              url = readtext.ReadLine();
+              port = readtext.ReadLine();
               slotName = readtext.ReadLine();
+              if (!readtext.EndOfStream)
+                host = readtext.ReadLine();
             }
             return slotName ?? "";
           } 
@@ -91,8 +108,9 @@ namespace Archipelago.APChessV
         catch (FileNotFoundException ex)
         {
           File.Create("apmw.txt");
-          url = "";
+          port = "";
           slotName = "";
+          host = DEFAULT_HOST;
         }
       }
       return slotName ?? "";

@@ -89,7 +89,6 @@ namespace ChessV.GUI
       textBox1.Name = "textBox1";
       textBox1.Size = new System.Drawing.Size(154, 23);
       textBox1.TabIndex = 1;
-      textBox1.Text = "archipelago.gg:";
       textBox1.TextChanged += textBox1_TextChanged;
       textBox1.KeyDown += textBox1_KeyDown;
       // 

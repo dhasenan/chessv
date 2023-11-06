@@ -104,7 +104,7 @@ namespace Archipelago.APChessV
     private int totalLocations;
     private bool finishedAllChecks = false;
     private ulong seed;
-    private Uri lastServerUrl;
+    private (string, int) lastServerUrl;
     private static Task connectionTask;
 
     private bool IsInGame
@@ -115,7 +115,7 @@ namespace Archipelago.APChessV
       }
     }
 
-    public void Connect(Uri url, string slotName, string password = null)
+    public void Connect(string hostName, int port, string slotName, string password = null)
     {
       lock (typeof(ArchipelagoClient))
       {
@@ -124,7 +124,7 @@ namespace Archipelago.APChessV
           nonSessionMessages.Add("Connection task currently processing");
           return;
         }
-        if (url == lastServerUrl)
+        if ((hostName, port) == lastServerUrl)
         {
           nonSessionMessages.Add("Reconnect attempt prevented. If you don't successfully connect, try restarting this client");
           return;
@@ -134,8 +134,8 @@ namespace Archipelago.APChessV
         Dispose();
 
 
-        lastServerUrl = url;
-        Session = ArchipelagoSessionFactory.CreateSession(url);
+        lastServerUrl = (hostName, port);
+        Session = ArchipelagoSessionFactory.CreateSession(hostName, port);
         ArchipelagoSession session = Session;
         //ItemLogic = new ArchipelagoItemLogicController(session);
         //LocationCheckBar = new ArchipelagoLocationCheckProgressBarUI();
@@ -164,7 +164,7 @@ namespace Archipelago.APChessV
             }
             return;
           }
-          lastServerUrl = url;
+          lastServerUrl = (hostName, port);
 
           LoginSuccessful successResult = (LoginSuccessful)result;
           if (successResult.SlotData.TryGetValue("FinalStageDeath", out var stageDeathObject))
@@ -189,7 +189,7 @@ namespace Archipelago.APChessV
           session.Socket.SocketClosed += (reason) => Session_SocketClosed(reason, session);
 
           //OnConnect(session);
-          Convenience.getInstance().success(url.Port.ToString(), slotName);
+          Convenience.getInstance().success(port.ToString(), slotName, hostName);
         });
         connectionTask.Start();
       }
@@ -217,7 +217,7 @@ namespace Archipelago.APChessV
       }
 
       Session = null;
-      lastServerUrl = null;
+      lastServerUrl = ("", -1);
     }
 
     // TODO(chesslogic): warn user to reconnect

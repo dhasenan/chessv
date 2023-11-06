@@ -54,7 +54,6 @@ Bugs:
 
  - The current Castling rule allows the King (of both CPU and player) to castle while the King is under attack.
    - This Castling rule has been the source of many trials and tribulations of late.
- - Support local servers (ones that don't start with archipelago.gg). (not really a bug I guess)
 
 Locations:
 

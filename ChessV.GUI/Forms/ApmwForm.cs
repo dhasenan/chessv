@@ -151,20 +151,27 @@ namespace ChessV.GUI
 
       //linesSeen = 0;
       //nonSessionLinesSeen = 0;
-      Uri url;
+      string host;
+      int port;
       try
       {
-        url = new Uri("wss://" + textBox1.Text.Split('/').Last());
+        string[] interpreting = textBox1.Text.Split('/');
+        // we want a port and host, which we assume is the last item with a colon.
+        // Maybe some weird private server doesn't use a specific port. What a wild world that would be.
+        UriBuilder urlBuilder = new UriBuilder("wss://" + textBox1.Text.Split('/').Last(item => item.Contains(":")));
+        host = urlBuilder.Host;
+        port = urlBuilder.Port;
       }
       catch (UriFormatException ex)
       {
+        archipelagoClient.nonSessionMessages.Add(ex.Message);
         return;
       }
       var slot = textBox2.Text;
       var password = textBox3.Text ?? null;
       //messageLog.OnMessageReceived -= (message) => pastMessages.Add(message);
       archipelagoClient.OnConnect += (session) => button2.Enabled = true;
-      archipelagoClient.Connect(url, slot, password);
+      archipelagoClient.Connect(host, port, slot, password);
       if (archipelagoClient.Session != null && messageLog != archipelagoClient.Session.MessageLog)
       {
         if (mrHandler != null)
