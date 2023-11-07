@@ -13,6 +13,7 @@ using ChessV.Base;
 using Archipelago.MultiClient.Net.MessageLog.Messages;
 using Archipelago.MultiClient.Net.Helpers;
 using System.ComponentModel;
+using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
 
 namespace Archipelago.APChessV
 {
@@ -180,6 +181,17 @@ namespace Archipelago.APChessV
           LocationHandler = LocationHandler.GetInstance();
           LocationHandler.Initialize(session.Locations, session);
           ApmwConfig.getInstance().Instantiate(session.DataStorage.GetSlotData());
+          var deathLinkService = session.CreateDeathLinkService();
+          var isDeathLink = 0 < Convert.ToInt32(session.DataStorage.GetSlotData()["death_link"]);
+          if (isDeathLink)
+          {
+            deathLinkService.EnableDeathLink();
+            deathLinkService.OnDeathLinkReceived += (DeathLink deathLink) =>
+            {
+              this.match.Stop();
+              this.nonSessionMessages.Add(deathLink.Cause);
+            };
+          }
 
           this.ItemHandler = new ItemHandler(session.Items);
 
@@ -230,7 +242,7 @@ namespace Archipelago.APChessV
 
       if (OnClientDisconnect != null)
       {
-        //OnClientDisconnect(reason);
+        nonSessionMessages.Add($"{reason}");
       }
     }
   }

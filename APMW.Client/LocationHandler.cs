@@ -1,4 +1,5 @@
 ﻿using Archipelago.MultiClient.Net;
+using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
 using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.Helpers;
 using Archipelago.MultiClient.Net.Packets;
@@ -46,6 +47,7 @@ namespace Archipelago.APChessV
       this.LocationCheckHelper = locationCheckHelper;
       Initialized = true;
       this.victory = () => new Task(() => this.Victory(session)).Start();
+      this.deathlink = () => new Task(() => this.Deathlink(session)).Start();
     }
 
     public ILocationCheckHelper LocationCheckHelper { get; private set; }
@@ -55,7 +57,9 @@ namespace Archipelago.APChessV
     private Action<Match> feHandler;
     private Action<MoveInfo> mpHandler;
     private Action victory;
+    private Action deathlink;
     private ChessV.Match match;
+    private HashSet<Match> deathlinkedMatches = new HashSet<Match>();
     private int humanPlayer;
     private int capturedPieces;
     private int capturedPawns;
@@ -129,6 +133,8 @@ namespace Archipelago.APChessV
         if (match.Result.Type == ResultType.Win)
           if (match.Result.Winner == this.humanPlayer)
             victory();
+          else
+            deathlink();
 
       //
       // END victory ...
@@ -385,6 +391,22 @@ namespace Archipelago.APChessV
       var statusUpdatePacket = new StatusUpdatePacket();
       statusUpdatePacket.Status = ArchipelagoClientState.ClientGoal;
       session.Socket.SendPacket(statusUpdatePacket);
+    }
+
+    public void Deathlink(ArchipelagoSession session)
+    {
+      var deathLinkService = session.CreateDeathLinkService();
+      if (session.ConnectionInfo.Tags.Contains("DeathLink"))
+      {
+        lock (deathlinkedMatches)
+        {
+          if (deathlinkedMatches.Contains(match))
+            return;
+          deathlinkedMatches.Add(match);
+        }
+        var deathLink = new DeathLink(session.Players.GetPlayerName(session.ConnectionInfo.Slot));
+        deathLinkService.SendDeathLink(deathLink);
+      }
     }
   }
 }
