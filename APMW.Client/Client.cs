@@ -182,7 +182,7 @@ namespace Archipelago.APChessV
           LocationHandler.Initialize(session.Locations, session);
           ApmwConfig.getInstance().Instantiate(session.DataStorage.GetSlotData());
           var deathLinkService = session.CreateDeathLinkService();
-          var isDeathLink = 0 < Convert.ToInt32(session.DataStorage.GetSlotData()["death_link"]);
+          var isDeathLink = 0 < Convert.ToInt32(session.DataStorage.GetSlotData().GetValueOrDefault("death_link", "0"));
           if (isDeathLink)
           {
             deathLinkService.EnableDeathLink();
@@ -240,10 +240,7 @@ namespace Archipelago.APChessV
       Dispose();
       // new ArchipelagoEndMessage().Send(NetworkDestination.Clients);
 
-      if (OnClientDisconnect != null)
-      {
-        nonSessionMessages.Add($"{reason}");
-      }
+      nonSessionMessages.Add($"{reason}");
     }
   }
 }
