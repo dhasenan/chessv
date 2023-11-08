@@ -147,7 +147,7 @@ namespace Archipelago.APChessV
             slotName,
             itemsHandlingFlags: ItemsHandlingFlags.AllItems,
             new Version(4, 3, 0),
-            tags: new string[] { "DeathLink" },
+            tags: new string[] { "ChecksMate V" },
             password: password);
 
           if (!result.Successful)
