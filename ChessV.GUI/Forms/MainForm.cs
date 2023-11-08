@@ -639,7 +639,7 @@ namespace ChessV.GUI
 
 		public void StartChecksMate(Game game)
     {
-			var difficulty = Math.Pow(7, 6 - ApmwCore.getInstance().EngineWeakeningProvider());
+			var difficulty = Math.Pow(3, 10 - ApmwCore.getInstance().EngineWeakeningProvider());
 
       TimeControl timeControl = new TimeControl();
       timeControl.Infinite = true;
