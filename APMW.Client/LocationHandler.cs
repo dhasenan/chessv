@@ -273,8 +273,9 @@ namespace Archipelago.APChessV
       //
 
       Dictionary<Piece, int> forkers = new Dictionary<Piece, int>();
-      Dictionary<Piece, bool> kingAttacked = new Dictionary<Piece, bool>();
-      Dictionary<Piece, bool> queenAttacked = new Dictionary<Piece, bool>();
+      Dictionary<Piece, int> trueForkers = new Dictionary<Piece, int>();
+      Dictionary<Piece, (bool, bool)> kingAttacked = new Dictionary<Piece, (bool, bool)>();
+      Dictionary<Piece, (bool, bool)> queenAttacked = new Dictionary<Piece, (bool, bool)>();
       for (int square = 0; square < match.Game.Board.NumSquares; square++)
       {
         List<Piece> attackers;
@@ -315,23 +316,30 @@ namespace Archipelago.APChessV
             if (++forkers[attackers[i]] > 1)
             {
               locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Fork, Sacrificial"));
-              bool isTrueFork = !match.Game.IsSquareAttacked(attackers[i].Square, humanPlayer ^ 1);
+              bool isTrueFork = !match.Game.IsSquareAttacked(attackers[i].Square, humanPlayer ^ 1) &&
+                !match.Game.IsSquareAttacked(square, humanPlayer ^ 1);
               if (isTrueFork)
+              {
+                if (!trueForkers.ContainsKey(attackers[i]))
+                  trueForkers[attackers[i]] = 0;
+                trueForkers[attackers[i]]++;
+              }
+              if (trueForkers[attackers[i]] > 2)
                 locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Fork, True"));
               if (forkers[attackers[i]] > 2)
               {
                 locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Fork, Sacrificial Triple"));
-                if (isTrueFork)
+                if (trueForkers[attackers[i]] > 2)
                   locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Fork, True Triple"));
               }
               if (ApmwCore.getInstance().king == attackedPiece.PieceType)
-                kingAttacked[attackers[i]] = true;
+                kingAttacked[attackers[i]] = (true, isTrueFork);
               if (ApmwCore.getInstance().queens.Contains(attackedPiece.PieceType))
-                queenAttacked[attackers[i]] = true;
+                queenAttacked[attackers[i]] = (true, isTrueFork);
               if (kingAttacked.ContainsKey(attackers[i]) && queenAttacked.ContainsKey(attackers[i]))
-                if (kingAttacked[attackers[i]] && queenAttacked[attackers[i]]) {
+                if (kingAttacked[attackers[i]].Item1 && queenAttacked[attackers[i]].Item1) {
                   locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Fork, Sacrificial Royal"));
-                  if (isTrueFork)
+                  if (kingAttacked[attackers[i]].Item2 && queenAttacked[attackers[i]].Item2)
                     locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Fork, True Royal"));
                 }
             }
