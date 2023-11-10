@@ -212,7 +212,7 @@ namespace Archipelago.APChessV
     public List<int> generatePocketValues(int foundPockets)
     {
       if (foundPockets == 0) { return new List<int>() { 0, 0, 0 }; }
-      if (pocketSeed == -1) { throw new InvalidOperationException("Please set Starter.pocketSeed"); }
+      if (pocketSeed == -1) { throw new InvalidOperationException("Please set Starter.pocket_seed"); }
 
       // preserve choices separate from values
       Random pocketRandom = new Random(pocketSeed);

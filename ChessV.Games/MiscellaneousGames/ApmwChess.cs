@@ -274,8 +274,8 @@ namespace ChessV.Games
           AddPieceType(piece);
 
       if (promotions.Contains("W") || promotions.Contains("w"))
-      {
-      }
+        if (ApmwCore.getInstance().foundKingPromotions > 0)
+          AddPieceType(Kings[ApmwCore.getInstance().foundKingPromotions]);
 
       //	Army adjustment
       //if ((WhiteArmy.Value == "Fabulous FIDEs" && BlackArmy.Value == "Remarkable Rookies") ||

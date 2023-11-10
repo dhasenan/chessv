@@ -38,6 +38,7 @@ namespace ChessV.Base
     public int foundPawnForwardness = -1;
 
     public PieceType king;
+    public List<PieceType> kings;
     public HashSet<PieceType> pawns;
     public HashSet<PieceType> minors;
     public HashSet<PieceType> majors;

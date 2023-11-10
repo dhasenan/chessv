@@ -284,7 +284,7 @@ namespace Archipelago.APChessV
 
       List<PieceType> output = new List<PieceType>();
       output.AddRange(left);
-      output.Add(ApmwCore.getInstance().kings[0]);
+      output.Add(ApmwCore.getInstance().kings[ApmwCore.getInstance().foundKingPromotions]);
       output.AddRange(right);
       output.AddRange(outer);
       promotions.Add(string.Join("", promoPieces));
