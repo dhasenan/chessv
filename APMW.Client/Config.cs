@@ -173,11 +173,11 @@ namespace Archipelago.APChessV
     {
       Random random = new Random();
       int[] seeds = new int[] {
-          Convert.ToInt32(SlotData["pocketSeed"]),
-          Convert.ToInt32(SlotData["pawnSeed"]),
-          Convert.ToInt32(SlotData["minorSeed"]),
-          Convert.ToInt32(SlotData["majorSeed"]),
-          Convert.ToInt32(SlotData["queenSeed"]),
+          Convert.ToInt32(SlotData["pocket_seed"]),
+          Convert.ToInt32(SlotData["pawn_seed"]),
+          Convert.ToInt32(SlotData["minor_seed"]),
+          Convert.ToInt32(SlotData["major_seed"]),
+          Convert.ToInt32(SlotData["queen_seed"]),
         };
       pocketSeed = seeds[0];
       pawnSeed = seeds[1];
