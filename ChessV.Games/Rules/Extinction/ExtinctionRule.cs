@@ -58,11 +58,11 @@ namespace ChessV.Games.Rules.Extinction
 		public override MoveEventResponse TestForWinLossDraw( int currentPlayer, int ply )
 		{
 			foreach( int typeNumber in extinctionTypeNumbers )
-			{
-				if( Board.GetPieceTypeBitboard( currentPlayer, typeNumber ).BitCount == 0 )
+      {
+        if ( Board.GetPieceTypeBitboard(currentPlayer ^ 1, typeNumber).BitCount == 0 )
+          return MoveEventResponse.GameWon;
+        if ( Board.GetPieceTypeBitboard( currentPlayer, typeNumber ).BitCount == 0 )
 					return MoveEventResponse.GameLost;
-				if( Board.GetPieceTypeBitboard( currentPlayer ^ 1, typeNumber ).BitCount == 0 )
-					return MoveEventResponse.GameWon;
 			}
 			return MoveEventResponse.NotHandled;
 		}

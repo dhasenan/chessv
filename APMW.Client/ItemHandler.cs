@@ -59,6 +59,10 @@ namespace Archipelago.APChessV
         (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Major To Queen");
       ApmwCore.getInstance().foundPawnForwardness = items.Count(
         (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Pawn Forwardness");
+      ApmwCore.getInstance().foundConsuls = items.Count(
+        (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Consul");
+      ApmwCore.getInstance().foundKingPromotions = items.Count(
+        (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive King Promotion");
     }
 
     public void Unhook()
@@ -152,10 +156,10 @@ namespace Archipelago.APChessV
       List<PieceType> outer = queens.Skip(8).Take(2).ToList();
       List<PieceType> left = queens.Take(4).ToList();
       List<PieceType> right = queens.Skip(5).Take(3).ToList();
-      List<PieceType> temp = new List<PieceType>() { null, null, null, };
+      List<PieceType> temp = new List<PieceType>() { null, null, };
       temp.AddRange(outer);
-      temp.AddRange(new List<PieceType>() { null, null, null, });
-      outer = temp; // full row: 3 empty spaces, then 2 potential major pieces, then 3 empty spaces
+      temp.AddRange(new List<PieceType>() { null, null, });
+      outer = temp; // full row: 2 empty spaces, then 4 potential major pieces, then 2 empty spaces
 
       Random randomPieces = new Random(ApmwConfig.getInstance().minorSeed);
       Random randomLocations = new Random(ApmwConfig.getInstance().minorLocSeed);
@@ -182,7 +186,7 @@ namespace Archipelago.APChessV
 
       List<PieceType> output = new List<PieceType>();
       output.AddRange(left);
-      output.Add(ApmwCore.getInstance().king);
+      output.Add(ApmwCore.getInstance().kings[0]);
       output.AddRange(right);
       output.AddRange(outer);
       promotions.Add(string.Join("", promoPieces));
@@ -208,7 +212,7 @@ namespace Archipelago.APChessV
 
       int limit = ApmwConfig.getInstance().queenTypeLimit;
       int player = ApmwCore.getInstance().GeriProvider();
-      for (int i = 0; i < ApmwCore.getInstance().foundQueens && i < order.Count; i++)
+      for (int i = order.Count - 1; i > order.Count - 1 - ApmwCore.getInstance().foundQueens && i >= 0; i++)
       {
         var piece = choosePiece(ref queens, random, chosenPieces, limit);
         promoPieces.Add(piece.Notation[player]);
@@ -228,7 +232,7 @@ namespace Archipelago.APChessV
       order = new List<int>();
       List<PieceType> majors = ApmwCore.getInstance().majors.ToList();
       majors = filterPiecesByArmy(majors);
-      List<PieceType> outer = new List<PieceType>() { null, null };
+      List<PieceType> outer = new List<PieceType>() { null, null, null, null };
       List<PieceType> left = new List<PieceType>() { null, null, null, null };
       List<PieceType> right = new List<PieceType>() { null, null, null };
 
@@ -239,11 +243,24 @@ namespace Archipelago.APChessV
       int queensToBe = ApmwCore.getInstance().foundQueens;
       int player = ApmwCore.getInstance().GeriProvider();
       int parity = 0;
-      // this ends at 7 instead of 8 because the King occupies 1 space, thus 0..6 not 0..7
-      for (int i = 0; i < Math.Min(7, ApmwCore.getInstance().foundMajors); i++)
+
+      int numKings = ApmwCore.getInstance().foundConsuls;
+      if (numKings > 0)
+      {
+        List<PieceType> kings = ApmwCore.getInstance().kings;
+        left[3] = kings[0];
+        if (numKings > 1)
+        {
+          right[0] = kings[0];
+          parity = -1; // pick left side first!
+        }
+      }
+
+      // this ends at 7 instead of 8 because the King always occupies 1 space, thus 0..6 not 0..7
+      for (int i = 0; i < Math.Min(7, ApmwCore.getInstance().foundMajors) - numKings; i++)
       {
         PieceType piece = null;
-        if (i >= queensToBe)
+        if (i < queensToBe)
         {
           piece = choosePiece(ref majors, randomPieces, chosenPieces, limit);
           promoPieces.Add(piece.Notation[player]);
@@ -252,16 +269,22 @@ namespace Archipelago.APChessV
           randomPieces.Next();
         parity = placeInArray(order, left, right, randomLocations, parity, i, piece);
       }
-      for (int i = 7; i < ApmwCore.getInstance().foundMajors; i++)
+      for (int i = 7; i < ApmwCore.getInstance().foundMajors + numKings; i++)
       {
-        PieceType piece = choosePiece(ref majors, randomPieces, chosenPieces, limit);
-        promoPieces.Add(piece.Notation[player]);
+        PieceType piece = null;
+        if (i < queensToBe)
+        {
+          piece = choosePiece(ref majors, randomPieces, chosenPieces, limit);
+          promoPieces.Add(piece.Notation[player]);
+        }
+        else
+          randomPieces.Next();
         order.Add(chooseIndexAndPlace(outer, randomLocations, piece) + 8);
       }
 
       List<PieceType> output = new List<PieceType>();
       output.AddRange(left);
-      output.Add(ApmwCore.getInstance().king);
+      output.Add(ApmwCore.getInstance().kings[0]);
       output.AddRange(right);
       output.AddRange(outer);
       promotions.Add(string.Join("", promoPieces));

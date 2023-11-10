@@ -19,6 +19,7 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 ****************************************************************************/
 
 using ChessV.Base;
+using ChessV.Games.Pieces.Apmw;
 using ChessV.Games.Pieces.Berolina;
 using ChessV.Games.Rules.Apmw;
 using ChessV.Games.Rules.Cards;
@@ -71,6 +72,11 @@ namespace ChessV.Games
     public PieceType Cannon;
     public PieceType Vao;
 
+    //  Fairy Kings
+    public PieceType MountedKing;
+    public PieceType HyperKing;
+
+    public List<PieceType> Kings;
     public HashSet<PieceType> Pawns { get; set; }
     public HashSet<PieceType> Minors;
     public HashSet<PieceType> Majors;
@@ -86,6 +92,7 @@ namespace ChessV.Games
 
     public ApmwChessGame()
     {
+      Kings = new List<PieceType>();
       Pawns = new HashSet<PieceType>();
       Minors = new HashSet<PieceType>();
       Majors = new HashSet<PieceType>();
@@ -95,6 +102,7 @@ namespace ChessV.Games
       PocketSets = new List<HashSet<PieceType>>() { Pawns, Minors, Majors, Queens };
 
       ApmwCore apmwCore = ApmwCore.getInstance();
+      apmwCore.kings = Kings;
       apmwCore.pawns = Pawns;
       apmwCore.minors = Minors;
       apmwCore.majors = Majors;
@@ -103,7 +111,6 @@ namespace ChessV.Games
       apmwCore.armies = Armies;
       apmwCore.pocketSets = PocketSets;
     }
-
 
 		// *** INITIALIZATION *** //
 
@@ -120,7 +127,7 @@ namespace ChessV.Games
 		{
 			base.AddRules();
       AddRule(new CardDropRule(ApmwCore.getInstance().foundPocketRange));
-      ReplaceRule(FindRule(typeof(Rules.CheckmateRule), true), new Rules.Extinction.ExtinctionRule("K"));
+      ReplaceRule(FindRule(typeof(Rules.CheckmateRule), true), new Rules.Extinction.CovenantRule("KW"));
       AddRule(new ApmwStalemateRule(King));
       //AddRule(new ApmwMoveCompletionRule());
       // TODO(chesslogic): conditionally remove en passant for one player only. (the Apmw provider probably knows whether the player can en passant at this point)
@@ -266,6 +273,10 @@ namespace ChessV.Games
         if (loadableTypes.Contains(piece.Notation[HumanPlayer]))
           AddPieceType(piece);
 
+      if (promotions.Contains("W") || promotions.Contains("w"))
+      {
+      }
+
       //	Army adjustment
       //if ((WhiteArmy.Value == "Fabulous FIDEs" && BlackArmy.Value == "Remarkable Rookies") ||
       //  (BlackArmy.Value == "Fabulous FIDEs" && WhiteArmy.Value == "Remarkable Rookies"))
@@ -381,9 +392,11 @@ namespace ChessV.Games
 
     public void earlyPopulatePieceTypes()
     {
-      // Unused: wudfj
+      // Unused: udfj
 
       King = new King("King", "K", 0, 0);
+      MountedKing = new MountedKing("King", "W", 0, 0);
+      HyperKing = new HyperKing("King", "W", 0, 0);
       Pawn = new Pawn("Pawn", "P", 100, 125);
       Rook = new Rook("Rook", "R", 500, 550);
       Bishop = new Bishop("Bishop", "B", 325, 350);
@@ -411,6 +424,10 @@ namespace ChessV.Games
       // Eurasian
       Cannon = new Cannon("Cannon", "O", 400, 275);
       Vao = new Vao("Vao", "V", 300, 175);
+
+      Kings.Add(King);
+      Kings.Add(MountedKing);
+      Kings.Add(HyperKing);
 
       Pawns.Add(Pawn);
       Pawns.Add(BerolinaPawn);
@@ -444,12 +461,13 @@ namespace ChessV.Games
         new HashSet<PieceType>() { Bishop, Knight, Rook, Queen },
         new HashSet<PieceType>() { WarElephant, Phoenix, Cleric, Archbishop }, // has 2 major pieces and 1 minor piece
         new HashSet<PieceType>() { Tower, ShortRook, Lion, Chancellor },
-        new HashSet<PieceType>() { ChargingKnight, NarrowKnight, ChargingRook, Colonel }
+        new HashSet<PieceType>() { ChargingKnight, NarrowKnight, ChargingRook, Colonel },
+        // TODO(chesslogic): Decide breadth of Eurasian army
+        // new HashSet<PieceType>() { Bishop, Cannon, Rook, Colonel });
+        // new HashSet<PieceType>() { Vao, Cannon, Rook, Colonel });
+        new HashSet<PieceType>() { Bishop, Knight, Rook, Queen },
+        new HashSet<PieceType>() { Bishop, Knight, Rook, Queen },
       });
-      // TODO(chesslogic): Decide breadth of Eurasian army
-      // Armies.Add(new HashSet<PieceType>() { Vao, Cannon, Rook, Colonel });
-
-      ApmwCore.getInstance().king = King;
     }
   }
 }

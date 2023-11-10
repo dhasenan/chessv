@@ -27,7 +27,7 @@ namespace Archipelago.APChessV
   }
   internal enum FairyArmy
   {
-    Chaos = 0, Limited = 1, Fair = 2,
+    Chaos = 0, Limited = 1,
   }
   internal enum FairyPawns
   {

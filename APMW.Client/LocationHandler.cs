@@ -303,7 +303,7 @@ namespace Archipelago.APChessV
           {
             locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Threaten Queen"));
           }
-          if (ApmwCore.getInstance().king == attackedPiece.PieceType)
+          if (ApmwCore.getInstance().kings[0] == attackedPiece.PieceType)
           {
             locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Threaten King"));
           }
@@ -332,7 +332,7 @@ namespace Archipelago.APChessV
                 if (trueForkers[attackers[i]] > 2)
                   locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Fork, True Triple"));
               }
-              if (ApmwCore.getInstance().king == attackedPiece.PieceType)
+              if (ApmwCore.getInstance().kings[0] == attackedPiece.PieceType)
                 kingAttacked[attackers[i]] = (true, isTrueFork);
               if (ApmwCore.getInstance().queens.Contains(attackedPiece.PieceType))
                 queenAttacked[attackers[i]] = (true, isTrueFork);
