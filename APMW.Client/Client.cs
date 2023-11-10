@@ -168,10 +168,7 @@ namespace Archipelago.APChessV
           lastServerUrl = (hostName, port);
 
           LoginSuccessful successResult = (LoginSuccessful)result;
-          if (successResult.SlotData.TryGetValue("FinalStageDeath", out var stageDeathObject))
-          {
-            //finalStageDeath = Convert.ToBoolean(stageDeathObject);
-          }
+          Convenience.getInstance().success(port.ToString(), slotName, hostName);
 
           //if (connectionTask.IsFaulted || session == null)
           //{
@@ -180,20 +177,25 @@ namespace Archipelago.APChessV
 
           LocationHandler = LocationHandler.GetInstance();
           LocationHandler.Initialize(session.Locations, session);
-          ApmwConfig.getInstance().Instantiate(session.DataStorage.GetSlotData());
-          var deathLinkService = session.CreateDeathLinkService();
-          var isDeathLink = 0 < Convert.ToInt32(session.DataStorage.GetSlotData().GetValueOrDefault("death_link", "0"));
-          if (isDeathLink)
-          {
-            deathLinkService.EnableDeathLink();
-            deathLinkService.OnDeathLinkReceived += (DeathLink deathLink) =>
-            {
-              this.match.Stop();
-              this.nonSessionMessages.Add(deathLink.Cause);
-            };
-          }
 
           this.ItemHandler = new ItemHandler(session.Items);
+
+          var slotData = session.DataStorage.GetSlotData();
+          ApmwConfig.getInstance().Instantiate(slotData);
+          var isDeathLink = 0 < Convert.ToInt32(slotData.GetValueOrDefault("death_link", 0));
+          if (isDeathLink)
+          {
+            var deathLinkService = session.CreateDeathLinkService();
+            new Task(() =>
+            {
+              deathLinkService.EnableDeathLink();
+              deathLinkService.OnDeathLinkReceived += (DeathLink deathLink) =>
+              {
+                this.match.Stop();
+                this.nonSessionMessages.Add(deathLink.Cause);
+              };
+            }).Start();
+          }
 
           //LocationCheckBar.ItemPickupStep = ItemLogic.ItemPickupStep;
 
@@ -201,7 +203,6 @@ namespace Archipelago.APChessV
           session.Socket.SocketClosed += (reason) => Session_SocketClosed(reason, session);
 
           //OnConnect(session);
-          Convenience.getInstance().success(port.ToString(), slotName, hostName);
         });
         connectionTask.Start();
       }
