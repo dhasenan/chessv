@@ -153,7 +153,7 @@ namespace Archipelago.APChessV
       Dictionary<PieceType, int> chosenPieces = new Dictionary<PieceType, int>();
       List<PieceType> minors = ApmwCore.getInstance().minors.ToList();
       minors = filterPiecesByArmy(minors);
-      List<PieceType> outer = queens.Skip(8).Take(2).ToList();
+      List<PieceType> outer = queens.Skip(8).Take(4).ToList();
       List<PieceType> left = queens.Take(4).ToList();
       List<PieceType> right = queens.Skip(5).Take(3).ToList();
       List<PieceType> temp = new List<PieceType>() { null, null, };

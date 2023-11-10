@@ -127,7 +127,10 @@ namespace ChessV.Games
 		{
 			base.AddRules();
       AddRule(new CardDropRule(ApmwCore.getInstance().foundPocketRange));
-      ReplaceRule(FindRule(typeof(Rules.CheckmateRule), true), new Rules.Extinction.CovenantRule("KW"));
+      if (ApmwCore.getInstance().foundKingPromotions > 0)
+        ReplaceRule(FindRule(typeof(Rules.CheckmateRule), true), new Rules.Extinction.CovenantRule("KW"));
+      else
+        ReplaceRule(FindRule(typeof(Rules.CheckmateRule), true), new Rules.Extinction.ExtinctionRule("K"));
       AddRule(new ApmwStalemateRule(King));
       //AddRule(new ApmwMoveCompletionRule());
       // TODO(chesslogic): conditionally remove en passant for one player only. (the Apmw provider probably knows whether the player can en passant at this point)
