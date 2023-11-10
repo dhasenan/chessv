@@ -21,8 +21,6 @@ namespace Archipelago.APChessV
       ReceivedItemsHelper = receivedItemsHelper;
 
       this.Hook();
-      irHandler = (helper) => this.Hook();
-      ReceivedItemsHelper.ItemReceived += irHandler;
 
       // overwrite global state
       ApmwCore.getInstance().PlayerPieceSetProvider = () => generatePlayerPieceSet();
@@ -34,8 +32,9 @@ namespace Archipelago.APChessV
 
     public void Hook()
     {
-      var items = ReceivedItemsHelper.AllItemsReceived;
+      irHandler = (helper) => this.Hook();
       ReceivedItemsHelper.ItemReceived += irHandler;
+      var items = ReceivedItemsHelper.AllItemsReceived;
 
       ApmwCore.getInstance().foundPockets = items.Count(
         (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Pocket");
@@ -70,6 +69,10 @@ namespace Archipelago.APChessV
       ReceivedItemsHelper.ItemReceived -= irHandler;
     }
 
+    ///////////////////////
+    /// GENERATE PIECES ///
+    ///////////////////////
+
     public (Dictionary<KeyValuePair<int, int>, PieceType>, string) generatePlayerPieceSet()
     {
       ApmwConfig.getInstance().seed();
@@ -91,6 +94,10 @@ namespace Archipelago.APChessV
 
       return (pieces, String.Join("", promotions));
     }
+
+    ///////////////////////
+    /// GENERATE PIECES ///
+    ///////////////////////
 
     public List<PieceType> GeneratePawns(List<PieceType> minors)
     {
@@ -186,7 +193,7 @@ namespace Archipelago.APChessV
 
       List<PieceType> output = new List<PieceType>();
       output.AddRange(left);
-      output.Add(ApmwCore.getInstance().kings[0]);
+      output.Add(queens[4]);
       output.AddRange(right);
       output.AddRange(outer);
       promotions.Add(string.Join("", promoPieces));
@@ -260,7 +267,7 @@ namespace Archipelago.APChessV
       for (int i = 0; i < Math.Min(7, ApmwCore.getInstance().foundMajors) - numKings; i++)
       {
         PieceType piece = null;
-        if (i < queensToBe)
+        if (i < ApmwCore.getInstance().foundMajors - queensToBe)
         {
           piece = choosePiece(ref majors, randomPieces, chosenPieces, limit);
           promoPieces.Add(piece.Notation[player]);
@@ -272,7 +279,7 @@ namespace Archipelago.APChessV
       for (int i = 7; i < ApmwCore.getInstance().foundMajors + numKings; i++)
       {
         PieceType piece = null;
-        if (i < queensToBe)
+        if (i < ApmwCore.getInstance().foundMajors - queensToBe)
         {
           piece = choosePiece(ref majors, randomPieces, chosenPieces, limit);
           promoPieces.Add(piece.Notation[player]);

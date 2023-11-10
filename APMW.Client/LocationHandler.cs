@@ -324,12 +324,12 @@ namespace Archipelago.APChessV
                   trueForkers[attackers[i]] = 0;
                 trueForkers[attackers[i]]++;
               }
-              if (trueForkers[attackers[i]] > 2)
+              if (trueForkers.ContainsKey(attackers[i]) && trueForkers[attackers[i]] > 2)
                 locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Fork, True"));
               if (forkers[attackers[i]] > 2)
               {
                 locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Fork, Sacrificial Triple"));
-                if (trueForkers[attackers[i]] > 2)
+                if (trueForkers.ContainsKey(attackers[i]) && trueForkers[attackers[i]] > 2)
                   locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Fork, True Triple"));
               }
               if (ApmwCore.getInstance().kings[0] == attackedPiece.PieceType)

@@ -19,6 +19,8 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 ****************************************************************************/
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using ChessV.Games;
 
 namespace ChessV.Evaluations
@@ -47,7 +49,7 @@ namespace ChessV.Evaluations
 			if( game.Board is Boards.CylindricalBoard )
 				KRKIsDraw = true;
 
-			royalTypeNumber = -1;
+			royalTypeNumbers = new HashSet<int>();
 			promotingTypeNumber = -1;
 			kingTypeNumber = -1;
 			pawnTypeNumber = -1;
@@ -101,7 +103,7 @@ namespace ChessV.Evaluations
 			Games.Rules.CheckmateRule rule =
 				(Games.Rules.CheckmateRule) game.FindRule( typeof( Games.Rules.CheckmateRule ) );
 			if( rule != null )
-				royalTypeNumber = rule.RoyalPieceType.TypeNumber;
+				royalTypeNumbers = new HashSet<int>(rule.RoyalPieceTypes.Select((type) => type.TypeNumber));
 			//	find the promoting type
 			if( ((Games.Abstract.GenericChess) game).PromotingType != null )
 				promotingTypeNumber = ((Games.Abstract.GenericChess) game).PromotingType.TypeNumber;
@@ -113,7 +115,7 @@ namespace ChessV.Evaluations
 				if( pieceTypes[nPieceType] is Pawn )
 					pawnTypeNumber = pieceTypes[nPieceType].TypeNumber;
 				else if( (pieceTypes[nPieceType] is King && kingTypeNumber == -1) || 
-					(pieceTypes[nPieceType] is King && nPieceType == royalTypeNumber) )
+					(pieceTypes[nPieceType] is King && royalTypeNumbers.Contains(nPieceType)) )
 					kingTypeNumber = pieceTypes[nPieceType].TypeNumber;
 				else if( pieceTypes[nPieceType] is Knight )
 					knightTypeNumber = pieceTypes[nPieceType].TypeNumber;
@@ -381,8 +383,8 @@ namespace ChessV.Evaluations
 			int strongSide = board.GetPlayerMaterial( 0 ) > board.GetPlayerMaterial( 1 ) ? 0 : 1;
 			int weakSide = strongSide ^ 1;
 
-			int strongKingSquare = board.GetPieceTypeBitboard( strongSide, royalTypeNumber ).LSB;
-			int weakKingSquare = board.GetPieceTypeBitboard( weakSide, royalTypeNumber ).LSB;
+			int strongKingSquare = board.GetPieceTypeBitboard( strongSide, royalTypeNumbers.First() ).LSB;
+			int weakKingSquare = board.GetPieceTypeBitboard( weakSide, royalTypeNumbers.First()).LSB;
 
 			int a = board.GetPlayerEndgameMaterial( strongSide );
 			int value = board.GetPlayerEndgameMaterial( strongSide ) + PushToCorner[weakKingSquare] +
@@ -507,7 +509,7 @@ namespace ChessV.Evaluations
 
 		// *** PROTECTED DATA MEMBERS *** //
 
-		protected int royalTypeNumber;
+		protected HashSet<int> royalTypeNumbers;
 		protected int promotingTypeNumber;
 		protected int kingTypeNumber;
 		protected int pawnTypeNumber;

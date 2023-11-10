@@ -127,11 +127,17 @@ namespace ChessV.Games
 		{
 			base.AddRules();
       AddRule(new CardDropRule(ApmwCore.getInstance().foundPocketRange));
-      if (ApmwCore.getInstance().foundKingPromotions > 0)
+      var kingPromotions = ApmwCore.getInstance().foundKingPromotions;
+      if (kingPromotions > 0)
+      {
         ReplaceRule(FindRule(typeof(Rules.CheckmateRule), true), new Rules.Extinction.CovenantRule("KW"));
+        AddRule(new ApmwStalemateRule(new PieceType[] { King, Kings[kingPromotions] }));
+      }
       else
+      {
         ReplaceRule(FindRule(typeof(Rules.CheckmateRule), true), new Rules.Extinction.ExtinctionRule("K"));
-      AddRule(new ApmwStalemateRule(King));
+        AddRule(new ApmwStalemateRule(new PieceType[] { King }));
+      }
       //AddRule(new ApmwMoveCompletionRule());
       // TODO(chesslogic): conditionally remove en passant for one player only. (the Apmw provider probably knows whether the player can en passant at this point)
 
@@ -264,6 +270,8 @@ namespace ChessV.Games
         loadableTypes = loadableTypes.ToLower();
 
       AddPieceType(King);
+      if (ApmwCore.getInstance().foundKingPromotions > 0)
+        AddPieceType(Kings[ApmwCore.getInstance().foundKingPromotions]);
       foreach (PieceType piece in Pawns)
         AddPieceType(piece);
       foreach (PieceType piece in Minors)
@@ -276,9 +284,6 @@ namespace ChessV.Games
         if (loadableTypes.Contains(piece.Notation[HumanPlayer]))
           AddPieceType(piece);
 
-      if (promotions.Contains("W") || promotions.Contains("w"))
-        if (ApmwCore.getInstance().foundKingPromotions > 0)
-          AddPieceType(Kings[ApmwCore.getInstance().foundKingPromotions]);
 
       //	Army adjustment
       //if ((WhiteArmy.Value == "Fabulous FIDEs" && BlackArmy.Value == "Remarkable Rookies") ||
@@ -398,8 +403,8 @@ namespace ChessV.Games
       // Unused: udfj
 
       King = new King("King", "K", 0, 0);
-      MountedKing = new MountedKing("King", "W", 0, 0);
-      HyperKing = new HyperKing("King", "W", 0, 0);
+      MountedKing = new MountedKing("Mounted King", "W", 0, 0, preferredImageName: "Champion");
+      HyperKing = new HyperKing("Hyper King", "W", 0, 0, preferredImageName: "Frog");
       Pawn = new Pawn("Pawn", "P", 100, 125);
       Rook = new Rook("Rook", "R", 500, 550);
       Bishop = new Bishop("Bishop", "B", 325, 350);

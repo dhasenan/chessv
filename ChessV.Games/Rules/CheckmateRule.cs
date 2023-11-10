@@ -20,6 +20,7 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ChessV.Games.Rules
 {
@@ -29,31 +30,41 @@ namespace ChessV.Games.Rules
 
 		public MoveEventResponse StalemateResult { get; set; }
 
-		public PieceType RoyalPieceType { get; private set; }
+    public PieceType[] RoyalPieceTypes { get; private set; }
+
+    public PieceType RoyalPieceType { get { return RoyalPieceTypes[0]; } }
 
 
-		// *** CONSTRUCTION ** //
+    // *** CONSTRUCTION ** //
 
-		public CheckmateRule( PieceType royalPieceType )
+    public CheckmateRule(PieceType royalPieceType)
 		{
-			RoyalPieceType = royalPieceType;
-			StalemateResult = MoveEventResponse.GameDrawn;
-		}
+			RoyalPieceTypes = new PieceType[1] { royalPieceType };
+      StalemateResult = MoveEventResponse.GameDrawn;
+    }
 
-		public override void Initialize( Game game )
+    public CheckmateRule(PieceType[] royalPieceTypes)
+    {
+      RoyalPieceTypes = royalPieceTypes;
+      StalemateResult = MoveEventResponse.GameDrawn;
+    }
+
+    public override void Initialize( Game game )
 		{
-			royalPieces = new Piece[game.NumPlayers];
+			royalPieces = new Piece[game.NumPlayers][];
 			base.Initialize( game );
-			if( RoyalPieceType.FindCustomAttributes( typeof(RoyalAttribute) ).Count == 0 )
-				RoyalPieceType.AddAttribute( new RoyalAttribute() );
+			foreach (PieceType royalType in RoyalPieceTypes)
+				if (royalType.FindCustomAttributes(typeof(RoyalAttribute)).Count == 0)
+          royalType.AddAttribute(new RoyalAttribute());
 		}
 
 
 		// *** OVERRIDES *** //
 
 		public override void RuleRemoved()
-		{
-			RoyalPieceType.RemoveCustomAttributes( typeof(RoyalAttribute) );
+    {
+      foreach (PieceType royalType in RoyalPieceTypes)
+        royalType.RemoveCustomAttributes( typeof(RoyalAttribute) );
 		}
 
 		public override void PositionLoaded( FEN fen )
@@ -62,9 +73,15 @@ namespace ChessV.Games.Rules
 			for( int player = 0; player < Game.NumPlayers; player++ )
 			{
 				List<Piece> piecelist = Game.GetPieceList( player );
-				foreach( Piece piece in piecelist )
-					if( piece.PieceType == RoyalPieceType )
-						royalPieces[player] = piece;
+				foreach (Piece piece in piecelist)
+					if (RoyalPieceTypes.Contains(piece.PieceType))
+					{
+						if (royalPieces[player] == null)
+							royalPieces[player] = new Piece[1];
+						else
+							royalPieces[player] = new Piece[royalPieces[player].Length + 1];
+						royalPieces[player][royalPieces[player].Length - 1] = piece;
+					}
 			}
 		}
 
@@ -73,7 +90,7 @@ namespace ChessV.Games.Rules
       //	Assert that this move doesn't capture a royal piece, 
       //	otherwise we have a fundamental problem!
       if (move.PieceCaptured != null &&
-        (move.PieceCaptured == royalPieces[0] || move.PieceCaptured == royalPieces[1]))
+        (royalPieces[0].Contains(move.PieceCaptured) || royalPieces[1].Contains(move.PieceCaptured)))
         throw new Exception("Fatal error in CheckmateRule - Royal piece captured");
       return IllegalCheckMoves(move);
     }
@@ -82,39 +99,40 @@ namespace ChessV.Games.Rules
     {
       //	Make sure that as a result of this move, the moving player's
       //	royal piece isn't attacked.  If it is, this move is illegal.
-      Piece royalPiece = royalPieces[move.Player];
-      if (royalPiece != null && Game.IsSquareAttacked(royalPiece.Square, move.Player ^ 1))
-        return MoveEventResponse.IllegalMove;
+      foreach (Piece royalPiece in royalPieces[move.Player])
+				if (royalPiece != null && Game.IsSquareAttacked(royalPiece.Square, move.Player ^ 1))
+					return MoveEventResponse.IllegalMove;
       return MoveEventResponse.NotHandled;
     }
 
     public override MoveEventResponse NoMovesResult( int currentPlayer, int ply )
 		{
-			Piece royalPiece = royalPieces[currentPlayer];
-			//	No moves - if the royal piece is attacked, the game is lost;
-			//	Otherwise, return the StalemateResult
-			if( Game.IsSquareAttacked( royalPiece.Square, currentPlayer ^ 1 ) )
-				return MoveEventResponse.GameLost;
+			foreach(Piece royalPiece in royalPieces[currentPlayer])
+				//	No moves - if the royal piece is attacked, the game is lost;
+				//	Otherwise, return the StalemateResult
+				if( Game.IsSquareAttacked( royalPiece.Square, currentPlayer ^ 1 ) )
+					return MoveEventResponse.GameLost;
 			return StalemateResult;
 		}
 
 		public override int PositionalSearchExtension( int currentPlayer, int ply )
 		{
-			if( Game.IsSquareAttacked( royalPieces[currentPlayer].Square, currentPlayer ^ 1 ) )
-				//	king is in check - extend by one ply
-				return Game.ONEPLY;
+			foreach(Piece royalPiece in royalPieces[currentPlayer])
+				if( Game.IsSquareAttacked( royalPiece.Square, currentPlayer ^ 1 ) )
+					//	king is in check - extend by one ply
+					return Game.ONEPLY;
 			return 0;
 		}
 
 		public override void GetNotesForPieceType( PieceType type, List<string> notes )
 		{
-			if( type == RoyalPieceType )
+			if(RoyalPieceTypes.Contains(type))
 				notes.Add( "royal" );
 		}
 
 
 		// *** PROTECTED DATA MEMBERS *** //
 
-		protected Piece[] royalPieces;
+		protected Piece[][] royalPieces;
 	}
 }

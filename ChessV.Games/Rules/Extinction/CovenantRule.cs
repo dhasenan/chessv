@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ChessV.Games.Rules.Extinction
 {
+  /** Defines a game loss state when ALL specified types are extinct, rather than ANY. */
   internal class CovenantRule : ExtinctionRule
   {
     public CovenantRule(string types) : base(types)

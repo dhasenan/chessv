@@ -49,7 +49,7 @@ namespace ChessV.Games.Rules.MultiMove
 			CheckmateRule checkmateRule = (CheckmateRule) game.FindRule( typeof(CheckmateRule), true );
 			if( checkmateRule != null )
 			{
-				RoyalPieceType = checkmateRule.RoyalPieceType;
+				RoyalPieceType = checkmateRule.RoyalPieceTypes[0];
 				royalPieces = new Piece[game.NumPlayers];
 			}
 		}

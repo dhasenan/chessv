@@ -9,7 +9,7 @@ namespace ChessV.Games.Rules.Apmw
 {
 	public class ApmwStalemateRule: CheckmateRule
 	{
-		public ApmwStalemateRule( PieceType royalPieceType ) : base( royalPieceType ) { }
+		public ApmwStalemateRule( PieceType[] royalPieceTypes ) : base(royalPieceTypes) { }
 
     public override MoveEventResponse MoveBeingMade( MoveInfo move, int ply )
     {
