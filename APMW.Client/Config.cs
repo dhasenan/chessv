@@ -1,4 +1,5 @@
-﻿using ChessV;
+﻿using Archipelago.MultiClient.Net.Helpers;
+using ChessV;
 using ChessV.Base;
 using System;
 using System.Collections.Generic;
@@ -138,8 +139,6 @@ namespace Archipelago.APChessV
     {
       SlotData = slotData;
 
-      seed();
-
       // Implemented by ChecksMate protocol
       //SlotData["max_material"]
       //SlotData["min_material"]
@@ -172,39 +171,57 @@ namespace Archipelago.APChessV
     public void seed()
     {
       Random random = new Random();
-      int[] seeds = new int[] {
-          Convert.ToInt32(SlotData["pocket_seed"]),
-          Convert.ToInt32(SlotData["pawn_seed"]),
-          Convert.ToInt32(SlotData["minor_seed"]),
-          Convert.ToInt32(SlotData["major_seed"]),
-          Convert.ToInt32(SlotData["queen_seed"]),
-        };
-      pocketSeed = seeds[0];
-      pawnSeed = seeds[1];
-      pawnLocSeed = seeds[1];
-      minorSeed = seeds[2];
-      minorLocSeed = seeds[2];
-      majorSeed = seeds[3];
-      majorLocSeed = seeds[3];
-      queenSeed = seeds[4];
-      queenLocSeed = seeds[4];
-      // TODO(chesslogic): I thought about it for a moment, and I think this is fine
-      // But maybe Mersenne twister is happier with some sort of offset
-      
-      if (this.Types == PieceTypes.Chaos)
+
+      // Types
+      if (this.Types != PieceTypes.Chaos)
+      {
+        pocketSeed = Convert.ToInt32(SlotData["pocket_seed"]);
+        pawnSeed = Convert.ToInt32(SlotData["pawn_seed"]);
+        minorSeed = Convert.ToInt32(SlotData["minor_seed"]);
+        majorSeed = Convert.ToInt32(SlotData["major_seed"]);
+        queenSeed = Convert.ToInt32(SlotData["queen_seed"]);
+
+        // Locations
+        if (this.Locs != PieceLocations.Chaos)
+        {
+          // TODO(chesslogic): I thought about it for a moment, and I think this is fine
+          // But maybe Mersenne twister is happier with some sort of offset
+          pawnLocSeed = pawnSeed;
+          minorLocSeed = minorSeed;
+          majorLocSeed = majorSeed;
+          queenLocSeed = majorSeed;
+        }
+        else
+        {
+          pawnLocSeed = random.Next();
+          minorLocSeed = random.Next();
+          majorLocSeed = random.Next();
+          queenLocSeed = random.Next();
+        }
+      }
+      else
       {
         pocketSeed = random.Next();
         pawnSeed = random.Next();
         minorSeed = random.Next();
         majorSeed = random.Next();
         queenSeed = random.Next();
-      }
-      if (this.Locs == PieceLocations.Chaos)
-      {
-        pawnLocSeed = random.Next();
-        minorLocSeed = random.Next();
-        majorLocSeed = random.Next();
-        queenLocSeed = random.Next();
+
+        // Locations
+        if (this.Locs != PieceLocations.Chaos)
+        {
+          pawnLocSeed = Convert.ToInt32(SlotData["pawn_seed"]);
+          minorLocSeed = Convert.ToInt32(SlotData["minor_seed"]);
+          majorLocSeed = Convert.ToInt32(SlotData["major_seed"]);
+          queenLocSeed = Convert.ToInt32(SlotData["queen_seed"]);
+        }
+        else
+        {
+          pawnLocSeed = random.Next();
+          minorLocSeed = random.Next();
+          majorLocSeed = random.Next();
+          queenLocSeed = random.Next();
+        }
       }
     }
 

@@ -118,7 +118,7 @@ namespace ChessV.Games.Rules
 		public override int PositionalSearchExtension( int currentPlayer, int ply )
 		{
 			foreach(Piece royalPiece in royalPieces[currentPlayer])
-				if( Game.IsSquareAttacked( royalPiece.Square, currentPlayer ^ 1 ) )
+				if(royalPiece != null && Game.IsSquareAttacked( royalPiece.Square, currentPlayer ^ 1 ) )
 					//	king is in check - extend by one ply
 					return Game.ONEPLY;
 			return 0;

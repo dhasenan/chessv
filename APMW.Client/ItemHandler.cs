@@ -20,6 +20,8 @@ namespace Archipelago.APChessV
     {
       ReceivedItemsHelper = receivedItemsHelper;
 
+      irHandler = (helper) => this.Hook();
+      ReceivedItemsHelper.ItemReceived += irHandler;
       this.Hook();
 
       // overwrite global state
@@ -32,35 +34,35 @@ namespace Archipelago.APChessV
 
     public void Hook()
     {
-      irHandler = (helper) => this.Hook();
-      ReceivedItemsHelper.ItemReceived += irHandler;
       var items = ReceivedItemsHelper.AllItemsReceived;
 
-      ApmwCore.getInstance().foundPockets = items.Count(
+      var core = ApmwCore.getInstance();
+
+      core.foundPockets = items.Count(
         (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Pocket");
-      ApmwCore.getInstance().foundPocketRange = items.Count(
+      core.foundPocketRange = items.Count(
         (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Pocket Range");
-      ApmwCore.getInstance().foundPocketGems = items.Count(
+      core.foundPocketGems = items.Count(
         (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Pocket Gems");
-      ApmwCore.getInstance().GeriProvider = () => items.Any(
+      core.GeriProvider = () => items.Any(
         (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Play as White") ? 0 : 1;
-      ApmwCore.getInstance().EngineWeakeningProvider = () => items.Count(
+      core.EngineWeakeningProvider = () => items.Count(
         (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Engine ELO Lobotomy");
-      ApmwCore.getInstance().foundPockets = items.Count(
+      core.foundPockets = items.Count(
         (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Pocket");
-      ApmwCore.getInstance().foundPawns = items.Count(
+      core.foundPawns = items.Count(
         (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Pawn");
-      ApmwCore.getInstance().foundMinors = items.Count(
+      core.foundMinors = items.Count(
         (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Minor Piece");
-      ApmwCore.getInstance().foundMajors = items.Count(
+      core.foundMajors = items.Count(
         (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Major Piece");
-      ApmwCore.getInstance().foundQueens = items.Count(
+      core.foundQueens = items.Count(
         (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Major To Queen");
-      ApmwCore.getInstance().foundPawnForwardness = items.Count(
+      core.foundPawnForwardness = items.Count(
         (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Pawn Forwardness");
-      ApmwCore.getInstance().foundConsuls = items.Count(
+      core.foundConsuls = items.Count(
         (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Consul");
-      ApmwCore.getInstance().foundKingPromotions = items.Count(
+      core.foundKingPromotions = items.Count(
         (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive King Promotion");
     }
 

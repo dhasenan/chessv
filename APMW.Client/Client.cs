@@ -148,7 +148,8 @@ namespace Archipelago.APChessV
             itemsHandlingFlags: ItemsHandlingFlags.AllItems,
             new Version(4, 3, 0),
             tags: new string[] { "ChecksMate V" },
-            password: password);
+            password: password,
+            requestSlotData: true);
 
           if (!result.Successful)
           {
@@ -168,6 +169,7 @@ namespace Archipelago.APChessV
           lastServerUrl = (hostName, port);
 
           LoginSuccessful successResult = (LoginSuccessful)result;
+          nonSessionMessages.Add("Connection successful - interpreting slot data");
           Convenience.getInstance().success(port.ToString(), slotName, hostName);
 
           //if (connectionTask.IsFaulted || session == null)
@@ -180,7 +182,7 @@ namespace Archipelago.APChessV
 
           this.ItemHandler = new ItemHandler(session.Items);
 
-          var slotData = session.DataStorage.GetSlotData();
+          var slotData = successResult.SlotData;
           ApmwConfig.getInstance().Instantiate(slotData);
           var isDeathLink = 0 < Convert.ToInt32(slotData.GetValueOrDefault("death_link", 0));
           if (isDeathLink)
