@@ -221,14 +221,15 @@ namespace Archipelago.APChessV
 
       int limit = ApmwConfig.getInstance().queenTypeLimit;
       int player = ApmwCore.getInstance().GeriProvider();
-      for (int i = order.Count - 1; i > order.Count - 1 - ApmwCore.getInstance().foundQueens && i >= 0; i++)
+      int numKings = ApmwCore.getInstance().foundConsuls;
+      for (int i = order.Count - 1; i > order.Count - 1 - ApmwCore.getInstance().foundQueens && i >= 0; i--)
       {
         var piece = choosePiece(ref queens, random, chosenPieces, limit);
         promoPieces.Add(piece.Notation[player]);
         if (order[i] < kingIndex)
           majors[order[i]] = piece;
         else
-          majors[order[i]+1] = piece;
+          majors[order[i]+numKings+1] = piece;
       }
       promotions.Add(string.Join("", promoPieces));
       return majors;
