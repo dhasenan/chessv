@@ -173,7 +173,7 @@ namespace Archipelago.APChessV
       Random randomPieces = new Random(ApmwConfig.getInstance().minorSeed);
       Random randomLocations = new Random(ApmwConfig.getInstance().minorLocSeed);
 
-      int startingPieces = ApmwCore.getInstance().foundMajors;
+      int startingPieces = ApmwCore.getInstance().foundMajors + ApmwCore.getInstance().foundConsuls;
       int totalPieces = startingPieces + ApmwCore.getInstance().foundMinors;
 
       int limit = ApmwConfig.getInstance().minorTypeLimit;
@@ -222,7 +222,9 @@ namespace Archipelago.APChessV
       int limit = ApmwConfig.getInstance().queenTypeLimit;
       int player = ApmwCore.getInstance().GeriProvider();
       int numKings = ApmwCore.getInstance().foundConsuls;
-      for (int i = order.Count - 1; i > order.Count - 1 - ApmwCore.getInstance().foundQueens && i >= 0; i--)
+      int numQueens = ApmwCore.getInstance().foundQueens;
+      int remainingMajors = order.Count - numQueens;
+      for (int i = order.Count - 1; i >= remainingMajors && i >= 0; i--)
       {
         var piece = choosePiece(ref queens, random, chosenPieces, limit);
         promoPieces.Add(piece.Notation[player]);
