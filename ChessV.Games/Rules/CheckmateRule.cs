@@ -51,13 +51,12 @@ namespace ChessV.Games.Rules
 
     public override void Initialize( Game game )
 		{
-			royalPieces = new Piece[game.NumPlayers][];
+			royalPieces = new List<Piece>[game.NumPlayers];
 			base.Initialize( game );
 			foreach (PieceType royalType in RoyalPieceTypes)
 				if (royalType.FindCustomAttributes(typeof(RoyalAttribute)).Count == 0)
           royalType.AddAttribute(new RoyalAttribute());
 		}
-
 
 		// *** OVERRIDES *** //
 
@@ -77,10 +76,8 @@ namespace ChessV.Games.Rules
 					if (RoyalPieceTypes.Contains(piece.PieceType))
 					{
 						if (royalPieces[player] == null)
-							royalPieces[player] = new Piece[1];
-						else
-							royalPieces[player] = new Piece[royalPieces[player].Length + 1];
-						royalPieces[player][royalPieces[player].Length - 1] = piece;
+							royalPieces[player] = new List<Piece>();
+						royalPieces[player].Add(piece);
 					}
 			}
 		}
@@ -106,21 +103,25 @@ namespace ChessV.Games.Rules
     }
 
     public override MoveEventResponse NoMovesResult( int currentPlayer, int ply )
-		{
-			foreach(Piece royalPiece in royalPieces[currentPlayer])
-				//	No moves - if the royal piece is attacked, the game is lost;
-				//	Otherwise, return the StalemateResult
-				if( Game.IsSquareAttacked( royalPiece.Square, currentPlayer ^ 1 ) )
-					return MoveEventResponse.GameLost;
+    {
+      if (royalPieces[currentPlayer].Where(p => p != null).Count() > 1)
+        return 0;
+      Piece royalPiece = royalPieces[currentPlayer].First(p => p != null);
+      //	No moves - if the royal piece is attacked, the game is lost;
+      //	Otherwise, return the StalemateResult
+      if ( Game.IsSquareAttacked( royalPiece.Square, currentPlayer ^ 1 ) )
+				return MoveEventResponse.GameLost;
 			return StalemateResult;
 		}
 
 		public override int PositionalSearchExtension( int currentPlayer, int ply )
 		{
-			foreach(Piece royalPiece in royalPieces[currentPlayer])
-				if(royalPiece != null && Game.IsSquareAttacked( royalPiece.Square, currentPlayer ^ 1 ) )
-					//	king is in check - extend by one ply
-					return Game.ONEPLY;
+			if (royalPieces[currentPlayer].Where(p => p != null).Count() > 1)
+				return 0;
+			Piece royalPiece = royalPieces[currentPlayer].First(p => p != null);
+			if (Game.IsSquareAttacked( royalPiece.Square, currentPlayer ^ 1 ) )
+				//	king is in check - extend by one ply
+				return Game.ONEPLY;
 			return 0;
 		}
 
@@ -133,6 +134,6 @@ namespace ChessV.Games.Rules
 
 		// *** PROTECTED DATA MEMBERS *** //
 
-		protected Piece[][] royalPieces;
+		protected List<Piece>[] royalPieces;
 	}
 }

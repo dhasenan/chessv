@@ -2233,7 +2233,7 @@ namespace ChessV
 			//	validate inputs - this can often go bad, for example, in a game with a 
 			//	checkmate rule where the king has been allowed to be captured for some reason
 			if( square < 0 || square >= Board.NumSquares || player < 0 || player > 1 )
-				throw new Exception( "Board.IsSquareAttacked called with invalid argument" );
+				throw new Exception( $"Board.IsSquareAttacked called with invalid argument: Square {square} or player {player}" );
 			//	iterate through all directions in the game
 			for( int dir = 0; dir < NDirections; dir++ )
 			{
