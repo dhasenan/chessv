@@ -302,16 +302,21 @@ namespace ChessV.Games
       base.SetOtherVariables();
 
       ApmwCore starter = ApmwCore.getInstance();
+      int humanPlayer = starter.GeriProvider();
+
       earlyPopulatePieceTypes();
       (Dictionary<KeyValuePair<int, int>, PieceType>, string) pieceSet =
         starter.PlayerPieceSetProvider();
       startingPosition = pieceSet.Item1;
       promotions = pieceSet.Item2;
+      List<PieceType> pocketPieces = ApmwCore.getInstance().PlayerPocketPiecesProvider();
+      promotions += string.Join("", pocketPieces
+        .Select(p => p.Notation[humanPlayer])
+        .Where(p => !promotions.Contains(p) && !Pawns.Select(pn => pn.Notation[humanPlayer]).Contains(p)));
       PromotionTypes += promotions;
 
       string humanPrefix = "Black";
       string cpuPrefix = "White";
-      int humanPlayer = starter.GeriProvider();
       if (humanPlayer == 0)
       {
         (humanPrefix, cpuPrefix) = (cpuPrefix, humanPrefix);
@@ -387,7 +392,7 @@ namespace ChessV.Games
       // determine pockets
       SetCustomProperty("PocketPieces",
         (humanPlayer == 1 ? "3" : "") +
-        ApmwCore.getInstance().PlayerPocketPiecesProvider()
+        pocketPieces
           .Select((PieceType piece) => piece == null ? "1" : piece.Notation[humanPlayer])
           .Aggregate("", (string piece, string notation) => notation + piece)
           + (humanPlayer == 0 ? "3" : ""));
