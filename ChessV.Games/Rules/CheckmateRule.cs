@@ -51,7 +51,7 @@ namespace ChessV.Games.Rules
 
     public override void Initialize( Game game )
 		{
-			royalPieces = new List<Piece>[game.NumPlayers];
+			royalPieces = new HashSet<Piece>[game.NumPlayers];
 			base.Initialize( game );
 			foreach (PieceType royalType in RoyalPieceTypes)
 				if (royalType.FindCustomAttributes(typeof(RoyalAttribute)).Count == 0)
