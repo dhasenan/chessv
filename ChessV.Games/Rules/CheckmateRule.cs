@@ -76,7 +76,7 @@ namespace ChessV.Games.Rules
 					if (RoyalPieceTypes.Contains(piece.PieceType))
 					{
 						if (royalPieces[player] == null)
-							royalPieces[player] = new List<Piece>();
+							royalPieces[player] = new HashSet<Piece>();
 						royalPieces[player].Add(piece);
 					}
 			}
@@ -134,6 +134,6 @@ namespace ChessV.Games.Rules
 
 		// *** PROTECTED DATA MEMBERS *** //
 
-		protected List<Piece>[] royalPieces;
+		protected HashSet<Piece>[] royalPieces;
 	}
 }

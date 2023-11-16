@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ChessV.Games.Rules.Apmw
 {
@@ -14,6 +10,11 @@ namespace ChessV.Games.Rules.Apmw
       StalemateResult = MoveEventResponse.GameDrawn;
     }
 
+    public override void Initialize(Game game)
+    {
+      base.Initialize(game);
+    }
+
     public override MoveEventResponse MoveBeingMade( MoveInfo move, int ply )
     {
       if (Game == null || Game.Match == null)
@@ -21,7 +22,20 @@ namespace ChessV.Games.Rules.Apmw
       Player player = Game.Match.GetPlayer(move.Player);
       if (player is HumanPlayer)
         return MoveEventResponse.NotHandled;
-			return base.IllegalCheckMoves(move);
+      if (move.MoveType.HasFlag(MoveType.CaptureProperty))
+        royalPieces[player.Opponent.Side].Remove(move.PieceCaptured);
+      return base.IllegalCheckMoves(move);
+    }
+
+    public override MoveEventResponse MoveBeingUnmade(MoveInfo move, int ply)
+    {
+      if (Game == null || Game.Match == null)
+        return base.IllegalCheckMoves(move);
+      Player player = Game.Match.GetPlayer(move.Player);
+      if (player is not HumanPlayer)
+        if (move.MoveType.HasFlag(MoveType.CaptureProperty))
+          royalPieces[player.Opponent.Side].Add(move.PieceCaptured);
+      return MoveEventResponse.NotHandled;
     }
 
     public override MoveEventResponse NoMovesResult(int currentPlayer, int ply)
