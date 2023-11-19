@@ -23,8 +23,12 @@ namespace ChessV.Games.Rules.Apmw
       if (player is HumanPlayer)
         return MoveEventResponse.NotHandled;
       if (move.MoveType.HasFlag(MoveType.CaptureProperty))
-        royalPieces[player.Opponent.Side].Remove(move.PieceCaptured);
-      return base.IllegalCheckMoves(move);
+        if (royalPieces[player.Opponent.Side].Remove(move.PieceCaptured))
+          return MoveEventResponse.NotHandled;
+      if (royalPieces[move.Player ^ 1].Count > 1 || 
+          !move.MoveType.HasFlag(MoveType.CaptureProperty) || move.PieceCaptured != royalPieces[move.Player ^ 1].First())
+        return base.IllegalCheckMoves(move);
+      return MoveEventResponse.NotHandled;
     }
 
     public override MoveEventResponse MoveBeingUnmade(MoveInfo move, int ply)

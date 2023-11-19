@@ -87,7 +87,7 @@ namespace ChessV.Games.Rules
       //	Assert that this move doesn't capture a royal piece, 
       //	otherwise we have a fundamental problem!
       if (move.PieceCaptured != null &&
-        (royalPieces[0].Contains(move.PieceCaptured) || royalPieces[1].Contains(move.PieceCaptured)))
+					royalPieces.Any(playerRoyals => playerRoyals.Contains(move.PieceCaptured)))
         throw new Exception("Fatal error in CheckmateRule - Royal piece captured");
       return IllegalCheckMoves(move);
     }
