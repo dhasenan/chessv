@@ -159,7 +159,7 @@ namespace Archipelago.APChessV
       //
 
       // check if move is early and is directly forward one step
-      if (pieceName.Equals("King"))
+      if (ApmwCore.getInstance().kings.Contains(piece.PieceType))
       {
         // TODO(chesslogic): Math.min(match.Game.Board pieces count, 4) 
         if (match.Game.GameTurnNumber <= 4 &&
@@ -198,10 +198,10 @@ namespace Archipelago.APChessV
       //
 
       // check if move is capture
-      if ((info.MoveType & MoveType.CaptureProperty) != 0)
+      if (info.MoveType.HasFlag(MoveType.CaptureProperty))
       {
         // handle king captures
-        if (pieceName.Equals("King"))
+        if (ApmwCore.getInstance().kings.Contains(piece.PieceType))
         {
           locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud Capture"));
         }
@@ -220,7 +220,7 @@ namespace Archipelago.APChessV
         int originalFile = match.Game.Board.GetFile(originalSquare);
         string fileNotation = match.Game.Board.GetFileNotation(originalFile);
         fileNotation = fileNotation.ToUpper();
-        bool isPiece = !info.PieceCaptured.PieceType.Name.Contains("Pawn");
+        bool isPiece = !ApmwCore.getInstance().pawns.Contains(info.PieceCaptured.PieceType);
         string locationName;
         if (isPiece)
           locationName = "Capture Piece " + fileNotation;
