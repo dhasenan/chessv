@@ -187,6 +187,18 @@ namespace Archipelago.APChessV
         {
           locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud Center"));
         }
+
+        if (info.MoveType.HasFlag(MoveType.Castling))
+        {
+          if (info.FromSquare > info.ToSquare)
+          {
+            locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "O-O Castle"));
+          }
+          else
+          {
+            locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "O-O-O Castle"));
+          }
+        }
       }
 
       //
