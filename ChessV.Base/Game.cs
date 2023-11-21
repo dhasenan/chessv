@@ -22,6 +22,7 @@ using ChessV.Base;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
