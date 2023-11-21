@@ -230,9 +230,11 @@ namespace Archipelago.APChessV
         if (currentSquaresToOriginalSquares.ContainsKey(info.ToSquare))
           originalSquare = currentSquaresToOriginalSquares[info.ToSquare];
         int originalFile = match.Game.Board.GetFile(originalSquare);
+        int originalRank = match.Game.Board.GetRank(originalSquare);
         string fileNotation = match.Game.Board.GetFileNotation(originalFile);
         fileNotation = fileNotation.ToUpper();
-        bool isPiece = !ApmwCore.getInstance().pawns.Contains(info.PieceCaptured.PieceType);
+        bool isPiece = originalRank == 0 || originalRank == 7;
+        //bool isPiece = !ApmwCore.getInstance().pawns.Contains(info.PieceCaptured.PieceType);
         string locationName;
         if (isPiece)
           locationName = "Capture Piece " + fileNotation;
