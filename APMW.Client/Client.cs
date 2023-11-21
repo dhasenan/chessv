@@ -95,16 +95,8 @@ namespace Archipelago.APChessV
     private LocationInfoPacket locationInfoPacket;
     private ConnectPacket connectPacket;
 
-    private Dictionary<int, string> itemLookupById;
-    private Dictionary<int, string> locationLookupById;
-    private Dictionary<int, string> playerNameById;
+    private Match match;
 
-    private ChessV.Match match;
-
-    private Queue<string> itemReceivedQueue = new Queue<string>();
-    private int totalLocations;
-    private bool finishedAllChecks = false;
-    private ulong seed;
     private (string, int) lastServerUrl;
     private static Task connectionTask;
 
@@ -180,7 +172,7 @@ namespace Archipelago.APChessV
           LocationHandler = LocationHandler.GetInstance();
           LocationHandler.Initialize(session.Locations, session);
 
-          this.ItemHandler = new ItemHandler(session.Items);
+          ItemHandler = new ItemHandler(session.Items);
 
           var slotData = successResult.SlotData;
           ApmwConfig.getInstance().Instantiate(slotData);
@@ -193,8 +185,14 @@ namespace Archipelago.APChessV
               deathLinkService.EnableDeathLink();
               deathLinkService.OnDeathLinkReceived += (DeathLink deathLink) =>
               {
-                this.match.Stop();
-                this.nonSessionMessages.Add(deathLink.Cause);
+                nonSessionMessages.Add(deathLink.Cause);
+                lock (LocationHandler.DeathlinkedMatches)
+                {
+                  if (LocationHandler.DeathlinkedMatches.Contains(match))
+                    return;
+                  LocationHandler.DeathlinkedMatches.Add(match);
+                }
+                match.Stop();
               };
             }).Start();
           }

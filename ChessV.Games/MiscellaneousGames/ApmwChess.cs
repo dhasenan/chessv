@@ -311,7 +311,7 @@ namespace ChessV.Games
       promotions = pieceSet.Item2;
       List<PieceType> pocketPieces = ApmwCore.getInstance().PlayerPocketPiecesProvider();
       promotions += string.Join("", pocketPieces
-        .Select(p => p.Notation[humanPlayer])
+        .Select(p => p != null ? p.Notation[humanPlayer] : "")
         .Where(p => !promotions.Contains(p) && !Pawns.Select(pn => pn.Notation[humanPlayer]).Contains(p)));
       PromotionTypes += promotions;
 

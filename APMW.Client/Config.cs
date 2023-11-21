@@ -69,6 +69,7 @@ namespace Archipelago.APChessV
     public int minorTypeLimit = -1;
     public int majorTypeLimit = -1;
     public int queenTypeLimit = -1;
+    public int pocketLimit = -1;
     public int Army = -1;
 
     private Goal goal;
@@ -144,28 +145,42 @@ namespace Archipelago.APChessV
       //SlotData["min_material"]
       //SlotData["early_material"]
       //SlotData["queen_piece_limit"]
+      //SlotData["max_pocket"]
 
       // Progressive Goal
-      GoalInt = Convert.ToInt32(SlotData["goal"]);
-      EnemyTypesInt = Convert.ToInt32(SlotData["enemy_piece_types"]);
+      GoalInt = Convert.ToInt32(SlotData.GetValueOrDefault(
+        "goal", Goal.Single));
+      EnemyTypesInt = Convert.ToInt32(SlotData.GetValueOrDefault(
+        "enemy_piece_types", PieceTypes.Book));
 
       // Chaotic Material Randomization
       // Non-Progressive Material
-      LocsInt = Convert.ToInt32(SlotData["piece_locations"]);
-      TypesInt = Convert.ToInt32(SlotData["piece_types"]);
+      LocsInt = Convert.ToInt32(SlotData.GetValueOrDefault(
+        "piece_locations", PieceLocations.Stable));
+      TypesInt = Convert.ToInt32(SlotData.GetValueOrDefault(
+        "piece_types", PieceTypes.Stable));
 
       // Army-Constrained Material
-      FairyArmyInt = Convert.ToInt32(SlotData["fairy_chess_army"]);
-      Army = Convert.ToInt32(SlotData.GetValueOrDefault("army", -1));
+      FairyArmyInt = Convert.ToInt32(SlotData.GetValueOrDefault(
+        "fairy_chess_army", FairyArmy.Chaos));
+      Army = Convert.ToInt32(SlotData.GetValueOrDefault(
+        "army", -1));
 
       // Non-Fairy Chess
-      FairyInt = Convert.ToInt32(SlotData["fairy_chess_pieces"]);
-      PawnsInt = Convert.ToInt32(SlotData["fairy_chess_pawns"]);
+      FairyInt = Convert.ToInt32(SlotData.GetValueOrDefault(
+        "fairy_chess_pieces", FairyTypes.Full));
+      PawnsInt = Convert.ToInt32(SlotData.GetValueOrDefault(
+        "fairy_chess_pawns", FairyPawns.Mixed));
 
       // Piece Limits
-      minorTypeLimit = Convert.ToInt32(SlotData["minor_piece_limit_by_type"]);
-      majorTypeLimit = Convert.ToInt32(SlotData["major_piece_limit_by_type"]);
-      queenTypeLimit = Convert.ToInt32(SlotData["queen_piece_limit_by_type"]);
+      minorTypeLimit = Convert.ToInt32(SlotData.GetValueOrDefault(
+        "minor_piece_limit_by_type", 0));
+      majorTypeLimit = Convert.ToInt32(SlotData.GetValueOrDefault(
+        "major_piece_limit_by_type", 0));
+      queenTypeLimit = Convert.ToInt32(SlotData.GetValueOrDefault(
+        "queen_piece_limit_by_type", 0));
+      pocketLimit = Convert.ToInt32(SlotData.GetValueOrDefault(
+        "pocket_limit_by_pocket", 4));
     }
 
     public void seed()
@@ -237,16 +252,16 @@ namespace Archipelago.APChessV
 
       // probably not uniform... but it's within range so it works for now. will break FEN later
       Random random = new Random(pocketSeed);
-      var x = random.Next(Math.Max(0, foundPockets - 8), Math.Min(foundPockets, 5));
+      var x = random.Next(Math.Max(0, foundPockets - pocketLimit * 2), Math.Min(foundPockets, pocketLimit + 1));
       if (x == foundPockets)
       {
         return new List<int>() { x, 0, 0 };
       }
-      var y = random.Next(Math.Max(0, foundPockets - 4 - x), Math.Min(foundPockets, 5));
+      var y = random.Next(Math.Max(0, foundPockets - pocketLimit - x), Math.Min(foundPockets, pocketLimit + 1));
       var z = foundPockets - (y + x);
       if (z < 0)
       {
-        (x, y, z) = (4 - x, 4 - y, -z);
+        (x, y, z) = (pocketLimit - x, pocketLimit - y, -z);
       }
 
       return new List<int>() { x, y, z };

@@ -31,11 +31,11 @@ namespace Archipelago.APChessV
 
     protected LocationHandler()
     {
-      seHandler = (match) => this.StartMatch(match);
+      seHandler = StartMatch;
       ApmwCore.getInstance().StartedEventHandlers.Add(seHandler);
-      mpHandler = (move) => this.HandleMove(move);
+      mpHandler = HandleMove;
       ApmwCore.getInstance().NewMovePlayed.Add(mpHandler);
-      feHandler = (match) => this.HandleMatch(match);
+      feHandler = HandleMatch;
       ApmwCore.getInstance().MatchFinished.Add(feHandler);
       Initialized = false;
     }
@@ -44,10 +44,10 @@ namespace Archipelago.APChessV
     {
       //if (Initialized)
       //  throw new InvalidOperationException("Cannot reinitialize LocationHandler");
-      this.LocationCheckHelper = locationCheckHelper;
+      LocationCheckHelper = locationCheckHelper;
       Initialized = true;
-      this.victory = () => new Task(() => this.Victory(session)).Start();
-      this.deathlink = () => new Task(() => this.Deathlink(session)).Start();
+      victory = () => new Task(() => Victory(session)).Start();
+      deathlink = () => new Task(() => Deathlink(session)).Start();
     }
 
     public ILocationCheckHelper LocationCheckHelper { get; private set; }
@@ -58,8 +58,8 @@ namespace Archipelago.APChessV
     private Action<MoveInfo> mpHandler;
     private Action victory;
     private Action deathlink;
-    private ChessV.Match match;
-    private HashSet<Match> deathlinkedMatches = new HashSet<Match>();
+    private Match match;
+    public HashSet<Match> DeathlinkedMatches = new HashSet<Match>();
     private int humanPlayer;
     private int capturedPieces;
     private int capturedPawns;
@@ -72,11 +72,11 @@ namespace Archipelago.APChessV
         throw new InvalidOperationException("LocationHandler has not been initialized");
       this.match = match;
       //match.Game.MovePlayed += (move) => this.HandleMove(move);
-      this.humanPlayer = this.match.GetPlayer(0).IsHuman ? 0 : 1;
+      humanPlayer = this.match.GetPlayer(0).IsHuman ? 0 : 1;
       // TODO(chesslogic): why does this continue to increment between games?
-      this.capturedPawns = 0;
-      this.capturedPieces = 0;
-      this.currentSquaresToOriginalSquares = new Dictionary<int, int>();
+      capturedPawns = 0;
+      capturedPieces = 0;
+      currentSquaresToOriginalSquares = new Dictionary<int, int>();
 
       this.match.Finished += HandleMatch;
     }
@@ -372,7 +372,7 @@ namespace Archipelago.APChessV
       // END threats ...
       //
 
-      if (locations.Count > 0)
+      if (locations.Count > 0 && !DeathlinkedMatches.Contains(match))
         new Task(() => LocationCheckHelper.CompleteLocationChecks(locations.ToArray())).Start();
 
       UpdateMoveState(info);
@@ -408,15 +408,15 @@ namespace Archipelago.APChessV
 
     public void Deathlink(ArchipelagoSession session)
     {
-      var deathLinkService = session.CreateDeathLinkService();
+      lock (DeathlinkedMatches)
+      {
+        if (DeathlinkedMatches.Contains(match))
+          return;
+        DeathlinkedMatches.Add(match);
+      }
       if (session.ConnectionInfo.Tags.Contains("DeathLink"))
       {
-        lock (deathlinkedMatches)
-        {
-          if (deathlinkedMatches.Contains(match))
-            return;
-          deathlinkedMatches.Add(match);
-        }
+        var deathLinkService = session.CreateDeathLinkService();
         var deathLink = new DeathLink(session.Players.GetPlayerName(session.ConnectionInfo.Slot));
         deathLinkService.SendDeathLink(deathLink);
       }
