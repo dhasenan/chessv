@@ -18,86 +18,85 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
 using System.Collections.Generic;
 
 namespace ChessV
 {
-	public class BoardMoveStack
-	{
-		public Board Board { get; private set; }
+  public class BoardMoveStack
+  {
+    public Board Board { get; private set; }
 
-		public int MoveCount
-		{ get { return moves.Count; } }
+    public int MoveCount
+    { get { return moves.Count; } }
 
-		public MoveInfo GetMove( int movenum )
-		{
-			return moves[movenum];
-		}
+    public MoveInfo GetMove(int movenum)
+    {
+      return moves[movenum];
+    }
 
-		public BoardMoveStack( Board board )
-		{
-			Board = board;
+    public BoardMoveStack(Board board)
+    {
+      Board = board;
 
-			pickups = new List<Pickup>();
-			drops = new List<Drop>();
-			moves = new List<MoveInfo>();
-		}
+      pickups = new List<Pickup>();
+      drops = new List<Drop>();
+      moves = new List<MoveInfo>();
+    }
 
-		public void MakingMove( MoveList movelist, MoveInfo moveinfo )
-		{
-			MoveInfo newmove = moveinfo;
-			movelist.CopyMoveToGameHistory( pickups, drops, moveinfo );
-			newmove.PickupCursor = pickups.Count;
-			newmove.DropCursor = drops.Count;
-			moves.Add( newmove );
-		}
+    public void MakingMove(MoveList movelist, MoveInfo moveinfo)
+    {
+      MoveInfo newmove = moveinfo;
+      movelist.CopyMoveToGameHistory(pickups, drops, moveinfo);
+      newmove.PickupCursor = pickups.Count;
+      newmove.DropCursor = drops.Count;
+      moves.Add(newmove);
+    }
 
-		public void UnmakeMove()
-		{
+    public void UnmakeMove()
+    {
 
-			if( moves.Count > 0 )
-			{
-				Board.Game.MoveBeingUnmade( moves[moves.Count - 1] );
+      if (moves.Count > 0)
+      {
+        Board.Game.MoveBeingUnmade(moves[moves.Count - 1]);
 
-				int pickupCursor = 0;
-				int dropCursor = 0;
-				if( moves.Count > 1 )
-				{
-					pickupCursor = moves[moves.Count - 2].PickupCursor;
-					dropCursor = moves[moves.Count - 2].DropCursor;
-				}
-				//	undo all drops
-				for( int x = drops.Count; x > dropCursor; x-- )
-					UndoDrop();
-				//	undo all pickups
-				for( int x = pickups.Count; x > pickupCursor; x-- )
-					UndoPickup();
-				moves.RemoveAt( moves.Count - 1 );
-			}
-		}
+        int pickupCursor = 0;
+        int dropCursor = 0;
+        if (moves.Count > 1)
+        {
+          pickupCursor = moves[moves.Count - 2].PickupCursor;
+          dropCursor = moves[moves.Count - 2].DropCursor;
+        }
+        //	undo all drops
+        for (int x = drops.Count; x > dropCursor; x--)
+          UndoDrop();
+        //	undo all pickups
+        for (int x = pickups.Count; x > pickupCursor; x--)
+          UndoPickup();
+        moves.RemoveAt(moves.Count - 1);
+      }
+    }
 
-		protected void UndoPickup()
-		{
-			Board.SetSquare( pickups[pickups.Count-1].Piece, pickups[pickups.Count-1].Square );
-			pickups.RemoveAt( pickups.Count - 1 );
-		}
+    protected void UndoPickup()
+    {
+      Board.SetSquare(pickups[pickups.Count - 1].Piece, pickups[pickups.Count - 1].Square);
+      pickups.RemoveAt(pickups.Count - 1);
+    }
 
-		protected void UndoDrop()
-		{
-			Board.ClearSquare( drops[drops.Count-1].Square );
-			drops[drops.Count-1].Piece.MoveCount--;
-			if( drops[drops.Count - 1].NewType != null )
-			{
-				PieceType oldType = drops[drops.Count-1].NewType;
-				drops[drops.Count-1].Piece.PieceType = oldType;
-				drops[drops.Count-1].Piece.TypeNumber = oldType.TypeNumber;
-			}
-			drops.RemoveAt( drops.Count - 1 );
-		}
+    protected void UndoDrop()
+    {
+      Board.ClearSquare(drops[drops.Count - 1].Square);
+      drops[drops.Count - 1].Piece.MoveCount--;
+      if (drops[drops.Count - 1].NewType != null)
+      {
+        PieceType oldType = drops[drops.Count - 1].NewType;
+        drops[drops.Count - 1].Piece.PieceType = oldType;
+        drops[drops.Count - 1].Piece.TypeNumber = oldType.TypeNumber;
+      }
+      drops.RemoveAt(drops.Count - 1);
+    }
 
-		protected List<Pickup> pickups;
-		protected List<Drop> drops;
-		protected List<MoveInfo> moves;
-	}
+    protected List<Pickup> pickups;
+    protected List<Drop> drops;
+    protected List<MoveInfo> moves;
+  }
 }

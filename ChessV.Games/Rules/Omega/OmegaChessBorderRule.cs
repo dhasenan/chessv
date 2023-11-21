@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -18,25 +17,22 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
 namespace ChessV.Games.Rules.Omega
 {
-	public class OmegaChessBorderRule: Rule
-	{
-		public override MoveEventResponse MoveBeingGenerated( MoveList moves, int from, int to, MoveType type )
-		{
-			Location location = Board.SquareToLocation( to );
-			if( (location.Rank == 0 && location.File != 0 && location.File != Board.NumFiles - 1) ||
-				(location.Rank == Board.NumRanks - 1 && location.File != 0 && location.File != Board.NumFiles - 1) ||
-				(location.File == 0 && location.Rank != 0 && location.Rank != Board.NumRanks - 1) ||
-				(location.File == Board.NumFiles - 1 && location.Rank != 0 && location.Rank != Board.NumRanks - 1) )
-			{
-				//	attempt to move to a missing square
-				return MoveEventResponse.IllegalMove;
-			}
-			return MoveEventResponse.NotHandled;
-		}
-	}
+  public class OmegaChessBorderRule : Rule
+  {
+    public override MoveEventResponse MoveBeingGenerated(MoveList moves, int from, int to, MoveType type)
+    {
+      Location location = Board.SquareToLocation(to);
+      if ((location.Rank == 0 && location.File != 0 && location.File != Board.NumFiles - 1) ||
+        (location.Rank == Board.NumRanks - 1 && location.File != 0 && location.File != Board.NumFiles - 1) ||
+        (location.File == 0 && location.Rank != 0 && location.Rank != Board.NumRanks - 1) ||
+        (location.File == Board.NumFiles - 1 && location.Rank != 0 && location.Rank != Board.NumRanks - 1))
+      {
+        //	attempt to move to a missing square
+        return MoveEventResponse.IllegalMove;
+      }
+      return MoveEventResponse.NotHandled;
+    }
+  }
 }

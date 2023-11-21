@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -18,23 +17,21 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-
 namespace ChessV
 {
-	public abstract class BoardGeometry
-	{
-		public int NumberOfCells { get; private set; }
-		public int NumberOfBoards { get; private set; }
-		public int NumberOfDimensions { get; private set; }
+  public abstract class BoardGeometry
+  {
+    public int NumberOfCells { get; private set; }
+    public int NumberOfBoards { get; private set; }
+    public int NumberOfDimensions { get; private set; }
 
-		public abstract string Shape { get; }
+    public abstract string Shape { get; }
 
-		protected BoardGeometry( int numberOfCells, int numberOfBoards, int numberOfDimensions )
-		{
-			NumberOfCells = numberOfCells;
-			NumberOfBoards = numberOfBoards;
-			NumberOfDimensions = numberOfDimensions;
-		}
-	}
+    protected BoardGeometry(int numberOfCells, int numberOfBoards, int numberOfDimensions)
+    {
+      NumberOfCells = numberOfCells;
+      NumberOfBoards = numberOfBoards;
+      NumberOfDimensions = numberOfDimensions;
+    }
+  }
 }

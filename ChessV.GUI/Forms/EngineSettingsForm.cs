@@ -25,131 +25,131 @@ using System.Windows.Forms;
 
 namespace ChessV.GUI
 {
-	public partial class EngineSettingsForm: Form
-	{
-		// *** PROPERTIES *** //
+  public partial class EngineSettingsForm : Form
+  {
+    // *** PROPERTIES *** //
 
-		public int TTSizeInMB { get; set; }
-		public int Variation { get; set; }
-		public int Weakening { get; set; }
-		public int XBoardMemory { get; set; }
-		public int XBoardCores { get; set; }
-
-
-		// *** CONSTRUCTION *** //
-
-		#region Constructor
-		public EngineSettingsForm()
-		{
-			InitializeComponent();
-
-			ttsizeTrackStops = new int[] { 16, 32, 64, 128, 256, 512, 1024, 2048, 4096 };
-			variationLabels = new string[] { "None", "Small", "Medium", "Large" };
-			weakeningLabels = new string[] { "None", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15" };
-			XBoardMemory = 32;
-			XBoardCores = 1;
-		}
-		#endregion
+    public int TTSizeInMB { get; set; }
+    public int Variation { get; set; }
+    public int Weakening { get; set; }
+    public int XBoardMemory { get; set; }
+    public int XBoardCores { get; set; }
 
 
-		// *** EVENT HANDLERS *** //
+    // *** CONSTRUCTION *** //
 
-		#region Event Handlers
-		#region Form Load event
-		private void EngineSettingsForm_Load( object sender, EventArgs e )
-		{
-			//	initialize the TT Size trackbar and label
-			bool found = false;
-			for( int x = 0; x < ttsizeTrackStops.Length && !found; x++ )
-			{
-				if( ttsizeTrackStops[x] == TTSizeInMB )
-				{
-					trackTTSize.Value = x;
-					found = true;
-				}
-			}
-			if( !found )
-			{
-				trackTTSize.Value = 2;
-				TTSizeInMB = ttsizeTrackStops[2];
-			}
-			lblTTSize.Text = sizeInMBToString( ttsizeTrackStops[trackTTSize.Value] );
+    #region Constructor
+    public EngineSettingsForm()
+    {
+      InitializeComponent();
 
-			//	initialize the Variation trackbar and label
-			trackVariation.Value = Variation;
-			lblVariation.Text = variationLabels[Variation];
-
-			//	initialize the Weakening trackbar and label
-			trackWeakening.Value = Weakening;
-			lblWeakening.Text = weakeningLabels[Weakening];
-		}
-		#endregion
-
-		#region trackTTSize Scroll event
-		private void trackTTSize_Scroll( object sender, EventArgs e )
-		{
-			TTSizeInMB = ttsizeTrackStops[trackTTSize.Value];
-			lblTTSize.Text = sizeInMBToString( TTSizeInMB );
-		}
-		#endregion
-
-		#region trackVariation Scroll event
-		private void trackVariation_Scroll( object sender, EventArgs e )
-		{
-			Variation = trackVariation.Value;
-			lblVariation.Text = variationLabels[Variation];
-		}
-		#endregion
-
-		#region trackWeakening Scroll event
-		private void trackWeakening_Scroll( object sender, EventArgs e )
-		{
-			Weakening = trackWeakening.Value;
-			lblWeakening.Text = weakeningLabels[Weakening];
-		}
-		#endregion
-
-		#region OK Button Click event
-		private void btnOK_Click( object sender, EventArgs e )
-		{
-			DialogResult = DialogResult.OK;
-			int mem;
-			if( Int32.TryParse( txtXBoardMemory.Text, out mem ) )
-				XBoardMemory = mem;
-			int cores;
-			if( Int32.TryParse( txtXBoardCores.Text, out cores ) )
-				XBoardCores = cores;
-			Close();
-		}
-		#endregion
-
-		#region Cancel Button Click Event
-		private void btnCancel_Click( object sender, EventArgs e )
-		{
-			DialogResult = DialogResult.Cancel;
-			Close();
-		}
-		#endregion
-		#endregion
+      ttsizeTrackStops = new int[] { 16, 32, 64, 128, 256, 512, 1024, 2048, 4096 };
+      variationLabels = new string[] { "None", "Small", "Medium", "Large" };
+      weakeningLabels = new string[] { "None", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15" };
+      XBoardMemory = 32;
+      XBoardCores = 1;
+    }
+    #endregion
 
 
-		// *** HELPER FUNCTIONS *** //
+    // *** EVENT HANDLERS *** //
 
-		#region sizeInMBToString
-		protected string sizeInMBToString( int sizeInMB )
-		{
-			if( sizeInMB < 1024 )
-				return sizeInMB.ToString() + " MB";
-			else
-				return (sizeInMB / 1024).ToString() + " GB";
-		}
-		#endregion
+    #region Event Handlers
+    #region Form Load event
+    private void EngineSettingsForm_Load(object sender, EventArgs e)
+    {
+      //	initialize the TT Size trackbar and label
+      bool found = false;
+      for (int x = 0; x < ttsizeTrackStops.Length && !found; x++)
+      {
+        if (ttsizeTrackStops[x] == TTSizeInMB)
+        {
+          trackTTSize.Value = x;
+          found = true;
+        }
+      }
+      if (!found)
+      {
+        trackTTSize.Value = 2;
+        TTSizeInMB = ttsizeTrackStops[2];
+      }
+      lblTTSize.Text = sizeInMBToString(ttsizeTrackStops[trackTTSize.Value]);
+
+      //	initialize the Variation trackbar and label
+      trackVariation.Value = Variation;
+      lblVariation.Text = variationLabels[Variation];
+
+      //	initialize the Weakening trackbar and label
+      trackWeakening.Value = Weakening;
+      lblWeakening.Text = weakeningLabels[Weakening];
+    }
+    #endregion
+
+    #region trackTTSize Scroll event
+    private void trackTTSize_Scroll(object sender, EventArgs e)
+    {
+      TTSizeInMB = ttsizeTrackStops[trackTTSize.Value];
+      lblTTSize.Text = sizeInMBToString(TTSizeInMB);
+    }
+    #endregion
+
+    #region trackVariation Scroll event
+    private void trackVariation_Scroll(object sender, EventArgs e)
+    {
+      Variation = trackVariation.Value;
+      lblVariation.Text = variationLabels[Variation];
+    }
+    #endregion
+
+    #region trackWeakening Scroll event
+    private void trackWeakening_Scroll(object sender, EventArgs e)
+    {
+      Weakening = trackWeakening.Value;
+      lblWeakening.Text = weakeningLabels[Weakening];
+    }
+    #endregion
+
+    #region OK Button Click event
+    private void btnOK_Click(object sender, EventArgs e)
+    {
+      DialogResult = DialogResult.OK;
+      int mem;
+      if (Int32.TryParse(txtXBoardMemory.Text, out mem))
+        XBoardMemory = mem;
+      int cores;
+      if (Int32.TryParse(txtXBoardCores.Text, out cores))
+        XBoardCores = cores;
+      Close();
+    }
+    #endregion
+
+    #region Cancel Button Click Event
+    private void btnCancel_Click(object sender, EventArgs e)
+    {
+      DialogResult = DialogResult.Cancel;
+      Close();
+    }
+    #endregion
+    #endregion
 
 
-		// *** DATA MEMBERS *** //
+    // *** HELPER FUNCTIONS *** //
 
-		public int[] ttsizeTrackStops;
-		public string[] variationLabels;
-		public string[] weakeningLabels;
-	}
+    #region sizeInMBToString
+    protected string sizeInMBToString(int sizeInMB)
+    {
+      if (sizeInMB < 1024)
+        return sizeInMB.ToString() + " MB";
+      else
+        return (sizeInMB / 1024).ToString() + " GB";
+    }
+    #endregion
+
+
+    // *** DATA MEMBERS *** //
+
+    public int[] ttsizeTrackStops;
+    public string[] variationLabels;
+    public string[] weakeningLabels;
+  }
 }

@@ -18,27 +18,26 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
 using System.Collections.Generic;
 
 namespace ChessV
 {
-	public class MovePathInfo
-	{
-		public List<List<Direction>> PathDirections { get; set; }
-		public List<List<int>> PathNDirections { get; set; }
-		public bool AllowMultiCapture { get; set; }
+  public class MovePathInfo
+  {
+    public List<List<Direction>> PathDirections { get; set; }
+    public List<List<int>> PathNDirections { get; set; }
+    public bool AllowMultiCapture { get; set; }
 
-		public MovePathInfo()
-		{
-			AllowMultiCapture = false;
-			PathDirections = new List<List<Direction>>();
-			PathNDirections = new List<List<int>>();
-		}
+    public MovePathInfo()
+    {
+      AllowMultiCapture = false;
+      PathDirections = new List<List<Direction>>();
+      PathNDirections = new List<List<int>>();
+    }
 
-		public void AddPath( List<Direction> path )
-		{
-			PathDirections.Add( path );
-		}
-	}
+    public void AddPath(List<Direction> path)
+    {
+      PathDirections.Add(path);
+    }
+  }
 }

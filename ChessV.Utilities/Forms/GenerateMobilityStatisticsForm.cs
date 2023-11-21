@@ -18,93 +18,93 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
+using ChessV.Games;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Reflection;
+using System.Text;
 using System.Windows.Forms;
-using ChessV.Games;
 
 namespace ChessV.Utilities
 {
-	public partial class GenerateMobilityStatisticsForm: Form
-	{
-		public GenerateMobilityStatisticsForm()
-		{
-			InitializeComponent();
-		}
+  public partial class GenerateMobilityStatisticsForm : Form
+  {
+    public GenerateMobilityStatisticsForm()
+    {
+      InitializeComponent();
+    }
 
-		private void GenerateMobilityStatisticsForm_Load( object sender, EventArgs e )
-		{
-			densities = new int[] { 50, 45, 40, 35, 30, 25, 20, 15, 10 }; 
-		}
+    private void GenerateMobilityStatisticsForm_Load(object sender, EventArgs e)
+    {
+      densities = new int[] { 50, 45, 40, 35, 30, 25, 20, 15, 10 };
+    }
 
-		private void btnCalculate_Click( object sender, EventArgs e )
-		{
-			int nFiles = Convert.ToInt32( txtNumberOfFiles.Text );
-			int nRanks = Convert.ToInt32( txtNumberOfRanks.Text );
-			GameAttribute attr = new GameAttribute( "", typeof(Geometry.Rectangular), nFiles, nRanks );
-			Games.Abstract.UndefinedGame.PieceTypeList = new List<PieceType>();
-			types = new List<PieceType>();
+    private void btnCalculate_Click(object sender, EventArgs e)
+    {
+      int nFiles = Convert.ToInt32(txtNumberOfFiles.Text);
+      int nRanks = Convert.ToInt32(txtNumberOfRanks.Text);
+      GameAttribute attr = new GameAttribute("", typeof(Geometry.Rectangular), nFiles, nRanks);
+      Games.Abstract.UndefinedGame.PieceTypeList = new List<PieceType>();
+      types = new List<PieceType>();
 
-			addPieceType( typeof(Queen), "Q" );
-			addPieceType( typeof(Rook), "R" );
-			addPieceType( typeof(Bishop), "B" );
-			addPieceType( typeof(Knight), "N" );
-			addPieceType( typeof(Amazon), "QN" );
-			addPieceType( typeof(Chancellor), "RN" );
-			addPieceType( typeof(Archbishop), "BN" );
-			addPieceType( typeof(Nightrider), "NN" );
-			addPieceType( typeof(Unicorn), "BNN" );
-			addPieceType( typeof(Champion), "WDA" );
-			addPieceType( typeof(Wizard), "FC" );
-			addPieceType( typeof(Lion), "HFD" );
-			addPieceType( typeof(WarElephant), "FAD" );
-			addPieceType( typeof(Phoenix), "WA" );
-			addPieceType( typeof(Cleric), "BD" );
-			addPieceType( typeof(ShortRook), "R4" );
-			//addPieceType( typeof(Bowman), "WD" );
-			addPieceType( typeof(NarrowKnight), "fbNF" );
-			addPieceType( typeof(ChargingRook), "frlRbK" );
-			addPieceType( typeof(ChargingKnight), "fhNrlbK" );
-			addPieceType( typeof(Colonel), "fhNfrlRbK" );
+      addPieceType(typeof(Queen), "Q");
+      addPieceType(typeof(Rook), "R");
+      addPieceType(typeof(Bishop), "B");
+      addPieceType(typeof(Knight), "N");
+      addPieceType(typeof(Amazon), "QN");
+      addPieceType(typeof(Chancellor), "RN");
+      addPieceType(typeof(Archbishop), "BN");
+      addPieceType(typeof(Nightrider), "NN");
+      addPieceType(typeof(Unicorn), "BNN");
+      addPieceType(typeof(Champion), "WDA");
+      addPieceType(typeof(Wizard), "FC");
+      addPieceType(typeof(Lion), "HFD");
+      addPieceType(typeof(WarElephant), "FAD");
+      addPieceType(typeof(Phoenix), "WA");
+      addPieceType(typeof(Cleric), "BD");
+      addPieceType(typeof(ShortRook), "R4");
+      //addPieceType( typeof(Bowman), "WD" );
+      addPieceType(typeof(NarrowKnight), "fbNF");
+      addPieceType(typeof(ChargingRook), "frlRbK");
+      addPieceType(typeof(ChargingKnight), "fhNrlbK");
+      addPieceType(typeof(Colonel), "fhNfrlRbK");
 
-			ChessV.Games.Abstract.UndefinedGame game = new Games.Abstract.UndefinedGame( nFiles, nRanks );
-			game.Initialize( new GameAttribute( "", typeof(Geometry.Rectangular), nFiles, nRanks ), null, null );
+      ChessV.Games.Abstract.UndefinedGame game = new Games.Abstract.UndefinedGame(nFiles, nRanks);
+      game.Initialize(new GameAttribute("", typeof(Geometry.Rectangular), nFiles, nRanks), null, null);
 
-			StringBuilder str = new StringBuilder();
-			foreach( PieceType type in types )
-			{
-				type.CalculateMobilityStatistics( game, (double) 1.0 - ((double) densities[0] / 100.0) );
-				str.Append( type.InternalName );
-				str.Append( '\t' );
-				str.Append( type.Notation );
-				str.Append( '\t' );
-				str.Append( type.AverageDirectionsAttacked.ToString( "F2" ) );
-				str.Append( '\t' );
-				str.Append( type.AverageSafeChecks.ToString( "F2" ) );
-				str.Append( '\t' );
-				str.Append( type.AverageMobility.ToString( "F2" ) );
-				for( int x = 1; x < densities.Length; x++ )
-				{
-					type.CalculateMobilityStatistics( game, (double) 1.0 - ((double) densities[x] / 100.0) );
-					str.Append( '\t' );
-					str.Append( type.AverageMobility.ToString( "F2" ) );
-				}
-				str.Append( '\n' );
-			}
-			Clipboard.SetText( str.ToString() );
-		}
+      StringBuilder str = new StringBuilder();
+      foreach (PieceType type in types)
+      {
+        type.CalculateMobilityStatistics(game, (double)1.0 - ((double)densities[0] / 100.0));
+        str.Append(type.InternalName);
+        str.Append('\t');
+        str.Append(type.Notation);
+        str.Append('\t');
+        str.Append(type.AverageDirectionsAttacked.ToString("F2"));
+        str.Append('\t');
+        str.Append(type.AverageSafeChecks.ToString("F2"));
+        str.Append('\t');
+        str.Append(type.AverageMobility.ToString("F2"));
+        for (int x = 1; x < densities.Length; x++)
+        {
+          type.CalculateMobilityStatistics(game, (double)1.0 - ((double)densities[x] / 100.0));
+          str.Append('\t');
+          str.Append(type.AverageMobility.ToString("F2"));
+        }
+        str.Append('\n');
+      }
+      Clipboard.SetText(str.ToString());
+    }
 
-		protected void addPieceType( Type pieceTypeType, string notation )
-		{
-			ConstructorInfo ci = pieceTypeType.GetConstructor( new Type[] { typeof(string), typeof(string), typeof(int), typeof(int), typeof(string) } );
-			object pieceType = ci.Invoke( new object[] { "", notation, 0, 0, "" } );
-			Games.Abstract.UndefinedGame.PieceTypeList.Add( (PieceType) pieceType );
-			types.Add( (PieceType) pieceType );
-		}
+    protected void addPieceType(Type pieceTypeType, string notation)
+    {
+      ConstructorInfo ci = pieceTypeType.GetConstructor(new Type[] { typeof(string), typeof(string), typeof(int), typeof(int), typeof(string) });
+      object pieceType = ci.Invoke(new object[] { "", notation, 0, 0, "" });
+      Games.Abstract.UndefinedGame.PieceTypeList.Add((PieceType)pieceType);
+      types.Add((PieceType)pieceType);
+    }
 
-		protected int[] densities;
-		protected List<PieceType> types;
-	}
+    protected int[] densities;
+    protected List<PieceType> types;
+  }
 }

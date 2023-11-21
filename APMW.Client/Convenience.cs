@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System.IO;
 using System.Threading.Tasks;
 
 namespace Archipelago.APChessV
@@ -11,7 +7,8 @@ namespace Archipelago.APChessV
   {
     public static Convenience _instance;
 
-    public static Convenience getInstance() {
+    public static Convenience getInstance()
+    {
       if (_instance == null)
       {
         lock (typeof(Convenience))
@@ -42,7 +39,8 @@ namespace Archipelago.APChessV
     public void success(string port, string slotName, string hostName)
     {
       if (this.port == null || !this.port.Equals(port) ||
-        this.slotName == null || !this.slotName.Equals(slotName)) {
+        this.slotName == null || !this.slotName.Equals(slotName))
+      {
         new Task(() =>
         {
           using (StreamWriter writetext = new StreamWriter("apmw.txt", false))
@@ -103,7 +101,7 @@ namespace Archipelago.APChessV
                 host = readtext.ReadLine();
             }
             return slotName ?? "";
-          } 
+          }
         }
         catch (FileNotFoundException ex)
         {

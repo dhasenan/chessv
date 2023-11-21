@@ -24,135 +24,135 @@ using System.IO;
 
 namespace ChessV.Games
 {
-	[Game("Eurasian Chess", typeof(Geometry.Rectangular), 10, 10,
-		  Invented = "2003",
-		  InventedBy = "Fergus Duniho",
-		  Tags = "Chess Variant",
-		  GameDescription1 = "A synthesis of European and Asian forms of Chess",
-		  GameDescription2 = "Features the Cannon from Chinese Chess and elements from Grand Chess")]
-	[Appearance(ColorScheme="Buckingham Green", PieceSet="Eurasian")]
-	public class EurasianChess: GrandChess
-	{
-		// *** PIECE TYPES *** //
+  [Game("Eurasian Chess", typeof(Geometry.Rectangular), 10, 10,
+      Invented = "2003",
+      InventedBy = "Fergus Duniho",
+      Tags = "Chess Variant",
+      GameDescription1 = "A synthesis of European and Asian forms of Chess",
+      GameDescription2 = "Features the Cannon from Chinese Chess and elements from Grand Chess")]
+  [Appearance(ColorScheme = "Buckingham Green", PieceSet = "Eurasian")]
+  public class EurasianChess : GrandChess
+  {
+    // *** PIECE TYPES *** //
 
-		public PieceType Cannon;
-		public PieceType Vao;
-
-
-		// *** CONSTRUCTION *** //
-
-		public EurasianChess()
-		{
-			string currPath = Directory.GetCurrentDirectory();
-			if( !File.Exists( currPath +
-				Path.DirectorySeparatorChar + "Graphics" +
-				Path.DirectorySeparatorChar + "Themes" +
-				Path.DirectorySeparatorChar + "Eurasian Chess" +
-				Path.DirectorySeparatorChar + "EurasianBoard.jpg" ) )
-			{
-				int iIndex = currPath.LastIndexOf( "ChessV" );
-				if( iIndex >= 0 )
-				{
-					iIndex = currPath.IndexOf( Path.DirectorySeparatorChar, iIndex );
-					if( iIndex > 0 )
-					{
-						currPath = currPath.Remove( iIndex );
-						if( !File.Exists( currPath +
-							Path.DirectorySeparatorChar + "Graphics" +
-							Path.DirectorySeparatorChar + "Themes" +
-							Path.DirectorySeparatorChar + "Eurasian Chess" +
-							Path.DirectorySeparatorChar + "EurasianBoard.jpg" ) )
-						{
-							currPath = Directory.GetCurrentDirectory();
-							iIndex = currPath.IndexOf( "ChessV" );
-							if( iIndex >= 0 )
-							{
-								iIndex = currPath.IndexOf( Path.DirectorySeparatorChar, iIndex );
-								if( iIndex > 0 )
-									currPath = currPath.Remove( iIndex );
-							}
-						}
-					}
-				}
-			}
-			boardImageFile = currPath + 
-				Path.DirectorySeparatorChar + "Graphics" +
-				Path.DirectorySeparatorChar + "Themes" +
-				Path.DirectorySeparatorChar + "Eurasian Chess" +
-				Path.DirectorySeparatorChar + "EurasianBoard.jpg";
-		}
+    public PieceType Cannon;
+    public PieceType Vao;
 
 
-		// *** INITIALIZATION *** //
+    // *** CONSTRUCTION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "r1c4c1r/1nbvqkvbn1/pppppppppp/10/10/10/10/PPPPPPPPPP/1NBVQKVBN1/R1C4C1R";
-		}
-		#endregion
-
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			Marshall.Enabled = false;
-			Cardinal.Enabled = false;
-			AddPieceType( Cannon = new Cannon( "Cannon", "C", 400, 275 ) );
-			AddPieceType( Vao = new Vao( "Vao", "V", 300, 175 ) );
-		}
-		#endregion
-
-		#region AddRules
-		public override void AddRules()
-		{
-			base.AddRules();
-			AddRule( new Rules.Xiangqi.KingFacingRule( King ) );
-			AddRule( new Rules.PieceLocationRestrictionRule( King, loc => loc.Rank >= 5 ) );
-		}
-		#endregion
-
-
-		// *** CUSTOM APPEARANCE *** //
-
-		#region GetCustomThemes
-		public override List<string> GetCustomThemes()
-		{
-			if( File.Exists( boardImageFile ) )
-				return new List<string> { "Eurasian" };
-			return null;
-		}
-		#endregion
-
-		#region GetThemeSquareSize
-		public override void GetThemeSquareSize( string themeName, ref int squareSize )
-		{
-			squareSize = 54;
-		}
-		#endregion
-
-		#region GetDefaultCustomTheme
-		public override string GetDefaultCustomTheme()
-		{
-			return "Eurasian";
-		}
-		#endregion
-
-		#region RenderCustomThemeBoard
-		public override void RenderCustomThemeBoard( Graphics gr, int borderWidth, string customThemeName )
-		{
-			if( boardImage == null && File.Exists( boardImageFile ) )
-				boardImage = Image.FromFile( boardImageFile );
-			if( boardImage != null )
-				gr.DrawImage( boardImage, new Rectangle( borderWidth, borderWidth, 540,  540 ) );
-		}
-		#endregion
+    public EurasianChess()
+    {
+      string currPath = Directory.GetCurrentDirectory();
+      if (!File.Exists(currPath +
+        Path.DirectorySeparatorChar + "Graphics" +
+        Path.DirectorySeparatorChar + "Themes" +
+        Path.DirectorySeparatorChar + "Eurasian Chess" +
+        Path.DirectorySeparatorChar + "EurasianBoard.jpg"))
+      {
+        int iIndex = currPath.LastIndexOf("ChessV");
+        if (iIndex >= 0)
+        {
+          iIndex = currPath.IndexOf(Path.DirectorySeparatorChar, iIndex);
+          if (iIndex > 0)
+          {
+            currPath = currPath.Remove(iIndex);
+            if (!File.Exists(currPath +
+              Path.DirectorySeparatorChar + "Graphics" +
+              Path.DirectorySeparatorChar + "Themes" +
+              Path.DirectorySeparatorChar + "Eurasian Chess" +
+              Path.DirectorySeparatorChar + "EurasianBoard.jpg"))
+            {
+              currPath = Directory.GetCurrentDirectory();
+              iIndex = currPath.IndexOf("ChessV");
+              if (iIndex >= 0)
+              {
+                iIndex = currPath.IndexOf(Path.DirectorySeparatorChar, iIndex);
+                if (iIndex > 0)
+                  currPath = currPath.Remove(iIndex);
+              }
+            }
+          }
+        }
+      }
+      boardImageFile = currPath +
+        Path.DirectorySeparatorChar + "Graphics" +
+        Path.DirectorySeparatorChar + "Themes" +
+        Path.DirectorySeparatorChar + "Eurasian Chess" +
+        Path.DirectorySeparatorChar + "EurasianBoard.jpg";
+    }
 
 
-		// *** PROTECTED DATA MEMBERS *** //
+    // *** INITIALIZATION *** //
 
-		protected string boardImageFile;
-		protected Image boardImage;
-	}
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "r1c4c1r/1nbvqkvbn1/pppppppppp/10/10/10/10/PPPPPPPPPP/1NBVQKVBN1/R1C4C1R";
+    }
+    #endregion
+
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      Marshall.Enabled = false;
+      Cardinal.Enabled = false;
+      AddPieceType(Cannon = new Cannon("Cannon", "C", 400, 275));
+      AddPieceType(Vao = new Vao("Vao", "V", 300, 175));
+    }
+    #endregion
+
+    #region AddRules
+    public override void AddRules()
+    {
+      base.AddRules();
+      AddRule(new Rules.Xiangqi.KingFacingRule(King));
+      AddRule(new Rules.PieceLocationRestrictionRule(King, loc => loc.Rank >= 5));
+    }
+    #endregion
+
+
+    // *** CUSTOM APPEARANCE *** //
+
+    #region GetCustomThemes
+    public override List<string> GetCustomThemes()
+    {
+      if (File.Exists(boardImageFile))
+        return new List<string> { "Eurasian" };
+      return null;
+    }
+    #endregion
+
+    #region GetThemeSquareSize
+    public override void GetThemeSquareSize(string themeName, ref int squareSize)
+    {
+      squareSize = 54;
+    }
+    #endregion
+
+    #region GetDefaultCustomTheme
+    public override string GetDefaultCustomTheme()
+    {
+      return "Eurasian";
+    }
+    #endregion
+
+    #region RenderCustomThemeBoard
+    public override void RenderCustomThemeBoard(Graphics gr, int borderWidth, string customThemeName)
+    {
+      if (boardImage == null && File.Exists(boardImageFile))
+        boardImage = Image.FromFile(boardImageFile);
+      if (boardImage != null)
+        gr.DrawImage(boardImage, new Rectangle(borderWidth, borderWidth, 540, 540));
+    }
+    #endregion
+
+
+    // *** PROTECTED DATA MEMBERS *** //
+
+    protected string boardImageFile;
+    protected Image boardImage;
+  }
 }

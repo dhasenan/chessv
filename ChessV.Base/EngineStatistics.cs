@@ -22,24 +22,24 @@ using System;
 
 public class Statistics
 {
-	public DateTime SearchStartTime { get; set; }
+  public DateTime SearchStartTime { get; set; }
 
-	public long Nodes { get; set; }
-	public long QNodes { get; set; }
+  public long Nodes { get; set; }
+  public long QNodes { get; set; }
 
-	public long PawnHashLookups { get; set; }
-	public long PawnHashHits { get; set; }
+  public long PawnHashLookups { get; set; }
+  public long PawnHashHits { get; set; }
 
-	public long MaterialHashLookups { get; set; }
-	public long MaterialHashHits { get; set; }
+  public long MaterialHashLookups { get; set; }
+  public long MaterialHashHits { get; set; }
 
-	public void Reset()
-	{
-		Nodes = 0;
-		QNodes = 0;
-		PawnHashLookups = 0;
-		PawnHashHits = 0;
-		MaterialHashLookups = 0;
-		MaterialHashHits = 0;
-	}
+  public void Reset()
+  {
+    Nodes = 0;
+    QNodes = 0;
+    PawnHashLookups = 0;
+    PawnHashHits = 0;
+    MaterialHashLookups = 0;
+    MaterialHashHits = 0;
+  }
 }

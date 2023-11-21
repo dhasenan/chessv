@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -18,49 +17,45 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace ChessV.Test
 {
-	[TestClass]
-	public class PawnHashUnitTests
-	{
-		[TestMethod]
-		public void PawnHashBackPawnTests()
-		{
-			PawnHashEntry entry = new PawnHashEntry();
-			int[] a = new int[] { 0, 15, 4, 0, 9, 15, 3, 2, 11, 8, 10, 0, 15, 15, 14, 1 };
-			int[] b = new int[] { 1, 0, 4, 15, 14, 15, 15, 0, 2, 9, 4, 15, 0, 15, 14, 15 };
-			for( int x = 0; x < 16; x++ )
-			{
-				entry.SetBackPawnRank( 0, x, a[x] );
-				entry.SetBackPawnRank( 1, x, b[x] );
-			}
-			for( int x = 0; x < 16; x++ )
-			{
-				Assert.AreEqual( entry.GetBackPawnRank( 0, x ), a[x] );
-				Assert.AreEqual( entry.GetBackPawnRank( 1, x ), b[x] );
-			}
-			for( int x = 0; x < 16; x++ )
-			{
-				entry.SetBackPawnRank( 0, x, b[x] );
-				entry.SetBackPawnRank( 1, x, a[x] );
-			}
-			for( int x = 0; x < 16; x++ )
-			{
-				Assert.AreEqual( entry.GetBackPawnRank( 0, x ), b[x] );
-				Assert.AreEqual( entry.GetBackPawnRank( 1, x ), a[x] );
-			}
-			//	make sure copying the struct works correctly
-			PawnHashEntry e2;
-			e2 = entry;
-			for( int x = 0; x < 16; x++ )
-			{
-				Assert.AreEqual( e2.GetBackPawnRank( 0, x ), b[x] );
-				Assert.AreEqual( e2.GetBackPawnRank( 1, x ), a[x] );
-			}
-		}
-	}
+  [TestClass]
+  public class PawnHashUnitTests
+  {
+    [TestMethod]
+    public void PawnHashBackPawnTests()
+    {
+      PawnHashEntry entry = new PawnHashEntry();
+      int[] a = new int[] { 0, 15, 4, 0, 9, 15, 3, 2, 11, 8, 10, 0, 15, 15, 14, 1 };
+      int[] b = new int[] { 1, 0, 4, 15, 14, 15, 15, 0, 2, 9, 4, 15, 0, 15, 14, 15 };
+      for (int x = 0; x < 16; x++)
+      {
+        entry.SetBackPawnRank(0, x, a[x]);
+        entry.SetBackPawnRank(1, x, b[x]);
+      }
+      for (int x = 0; x < 16; x++)
+      {
+        Assert.AreEqual(entry.GetBackPawnRank(0, x), a[x]);
+        Assert.AreEqual(entry.GetBackPawnRank(1, x), b[x]);
+      }
+      for (int x = 0; x < 16; x++)
+      {
+        entry.SetBackPawnRank(0, x, b[x]);
+        entry.SetBackPawnRank(1, x, a[x]);
+      }
+      for (int x = 0; x < 16; x++)
+      {
+        Assert.AreEqual(entry.GetBackPawnRank(0, x), b[x]);
+        Assert.AreEqual(entry.GetBackPawnRank(1, x), a[x]);
+      }
+      //	make sure copying the struct works correctly
+      PawnHashEntry e2;
+      e2 = entry;
+      for (int x = 0; x < 16; x++)
+      {
+        Assert.AreEqual(e2.GetBackPawnRank(0, x), b[x]);
+        Assert.AreEqual(e2.GetBackPawnRank(1, x), a[x]);
+      }
+    }
+  }
 }

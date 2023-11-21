@@ -22,61 +22,61 @@ using System.Collections.Generic;
 
 namespace ChessV.Games.Rules.FileSharing
 {
-	public class PawnSwapRule: Rule
-	{
-		// *** PROPERTIES *** //
+  public class PawnSwapRule : Rule
+  {
+    // *** PROPERTIES *** //
 
-		public PieceType PawnType { get; private set; }
-
-
-		// *** CONSTRUCTION *** //
-
-		public PawnSwapRule( PieceType pawnType )
-		{
-			PawnType = pawnType;
-		}
+    public PieceType PawnType { get; private set; }
 
 
-		// *** OVERRIDES *** //
+    // *** CONSTRUCTION *** //
 
-		public override void GenerateSpecialMoves( MoveList list, bool capturesOnly, int ply )
-		{
-			if( !capturesOnly )
-			{
-				BitBoard pawns = Board.GetPieceTypeBitboard( Game.CurrentSide, PawnType.TypeNumber );
-				while( pawns )
-				{
-					int pawnSquare = pawns.ExtractLSB();
-					int nextSquare = Board.NextSquare( PredefinedDirections.N + Game.CurrentSide, pawnSquare );
-					if( nextSquare >= 0 && Board[nextSquare] != null && 
-						Board[nextSquare].TypeNumber == PawnType.TypeNumber && 
-						Board[nextSquare].Player != Game.CurrentSide )
-					{
-						Piece enemyPawn = Board[nextSquare];
-						//	we can only perform the swap if the enemyPawn is not 
-						//	currently attacking any piece of the current side
-						int attackSquare1 = Board.NextSquare( PredefinedDirections.E, pawnSquare );
-						int attackSquare2 = Board.NextSquare( PredefinedDirections.W, pawnSquare );
-						if( (attackSquare1 < 0 || Board[attackSquare1] == null || Board[attackSquare1].Player != Game.CurrentSide) &&
-							(attackSquare2 < 0 || Board[attackSquare2] == null || Board[attackSquare2].Player != Game.CurrentSide) )
-						{
-							//	swap move is legal - add it now
-							list.BeginMoveAdd( MoveType.Swap, pawnSquare, nextSquare );
-							Piece myPawn = list.AddPickup( pawnSquare );
-							enemyPawn = list.AddPickup( nextSquare );
-							list.AddDrop( myPawn, nextSquare );
-							list.AddDrop( enemyPawn, pawnSquare );
-							list.EndMoveAdd( 25 );
-						}
-					}
-				}
-			}
-		}
+    public PawnSwapRule(PieceType pawnType)
+    {
+      PawnType = pawnType;
+    }
 
-		public override void GetNotesForPieceType( PieceType type, List<string> notes )
-		{
-			if( type == PawnType )
-				notes.Add( "pawn swap ability" );
-		}
-	}
+
+    // *** OVERRIDES *** //
+
+    public override void GenerateSpecialMoves(MoveList list, bool capturesOnly, int ply)
+    {
+      if (!capturesOnly)
+      {
+        BitBoard pawns = Board.GetPieceTypeBitboard(Game.CurrentSide, PawnType.TypeNumber);
+        while (pawns)
+        {
+          int pawnSquare = pawns.ExtractLSB();
+          int nextSquare = Board.NextSquare(PredefinedDirections.N + Game.CurrentSide, pawnSquare);
+          if (nextSquare >= 0 && Board[nextSquare] != null &&
+            Board[nextSquare].TypeNumber == PawnType.TypeNumber &&
+            Board[nextSquare].Player != Game.CurrentSide)
+          {
+            Piece enemyPawn = Board[nextSquare];
+            //	we can only perform the swap if the enemyPawn is not 
+            //	currently attacking any piece of the current side
+            int attackSquare1 = Board.NextSquare(PredefinedDirections.E, pawnSquare);
+            int attackSquare2 = Board.NextSquare(PredefinedDirections.W, pawnSquare);
+            if ((attackSquare1 < 0 || Board[attackSquare1] == null || Board[attackSquare1].Player != Game.CurrentSide) &&
+              (attackSquare2 < 0 || Board[attackSquare2] == null || Board[attackSquare2].Player != Game.CurrentSide))
+            {
+              //	swap move is legal - add it now
+              list.BeginMoveAdd(MoveType.Swap, pawnSquare, nextSquare);
+              Piece myPawn = list.AddPickup(pawnSquare);
+              enemyPawn = list.AddPickup(nextSquare);
+              list.AddDrop(myPawn, nextSquare);
+              list.AddDrop(enemyPawn, pawnSquare);
+              list.EndMoveAdd(25);
+            }
+          }
+        }
+      }
+    }
+
+    public override void GetNotesForPieceType(PieceType type, List<string> notes)
+    {
+      if (type == PawnType)
+        notes.Add("pawn swap ability");
+    }
+  }
 }

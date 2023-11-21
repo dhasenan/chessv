@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -18,67 +17,64 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
 namespace ChessV.Games
 {
-	//**********************************************************************
-	//
-	//                        WildebeestChess
-	//
-	//    This class implements R. Wayne Schmittberger's Wildebeest Chess.
-	//    The intention was to balance the number of leaping piece types 
-	//    with the number of riding piece types.  Thus was added the Camel 
-	//    and the Wildebeest, a Knight+Camel compound.
+  //**********************************************************************
+  //
+  //                        WildebeestChess
+  //
+  //    This class implements R. Wayne Schmittberger's Wildebeest Chess.
+  //    The intention was to balance the number of leaping piece types 
+  //    with the number of riding piece types.  Thus was added the Camel 
+  //    and the Wildebeest, a Knight+Camel compound.
 
-	[Game("Wildebeest Chess", typeof(Geometry.Rectangular), 11, 10,
-		  XBoardName = "wildebeest",
-		  Invented = "1987",
-		  InventedBy = "R. Wayne Schmittberger",
-		  Tags = "Chess Variant,Popular")]
-	[Appearance(ColorScheme = "Lemon Cappuccino")]
-	public class WildebeestChess: Abstract.Generic11x10
-	{
-		// *** PIECE TYPES *** //
+  [Game("Wildebeest Chess", typeof(Geometry.Rectangular), 11, 10,
+      XBoardName = "wildebeest",
+      Invented = "1987",
+      InventedBy = "R. Wayne Schmittberger",
+      Tags = "Chess Variant,Popular")]
+  [Appearance(ColorScheme = "Lemon Cappuccino")]
+  public class WildebeestChess : Abstract.Generic11x10
+  {
+    // *** PIECE TYPES *** //
 
-		public PieceType Camel;
-		public PieceType Wildebeest;
-
-
-		// *** CONSTRUCTION *** //
-
-		public WildebeestChess(): 
-			base
-				( /* symmetry = */ new RotationalSymmetry() )
-		{
-		}
+    public PieceType Camel;
+    public PieceType Wildebeest;
 
 
-		// *** INITIALIZATION *** //
+    // *** CONSTRUCTION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "rnccwkqbbnr/ppppppppppp/11/11/11/11/11/11/PPPPPPPPPPP/RNBBQKWCCNR";
-			PromotionRule.Value = "Standard";
-			PromotionTypes = "QW";
-			PawnMultipleMove.Value = "Wildebeest";
-			Castling.Value = "Wildebeest";
-			EnPassant = true;
-			StalemateResult.Value = "Loss";
-		}                    
-		#endregion
+    public WildebeestChess() :
+      base
+        ( /* symmetry = */ new RotationalSymmetry())
+    {
+    }
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			AddChessPieceTypes();
-			AddPieceType( Camel = new Camel( "Camel", "C", 250, 250 ) );
-			AddPieceType( Wildebeest = new Wildebeest( "Wildebeest", "W", 675, 675 ) );
-		}
-		#endregion
-	}
+
+    // *** INITIALIZATION *** //
+
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "rnccwkqbbnr/ppppppppppp/11/11/11/11/11/11/PPPPPPPPPPP/RNBBQKWCCNR";
+      PromotionRule.Value = "Standard";
+      PromotionTypes = "QW";
+      PawnMultipleMove.Value = "Wildebeest";
+      Castling.Value = "Wildebeest";
+      EnPassant = true;
+      StalemateResult.Value = "Loss";
+    }
+    #endregion
+
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      AddChessPieceTypes();
+      AddPieceType(Camel = new Camel("Camel", "C", 250, 250));
+      AddPieceType(Wildebeest = new Wildebeest("Wildebeest", "W", 675, 675));
+    }
+    #endregion
+  }
 }

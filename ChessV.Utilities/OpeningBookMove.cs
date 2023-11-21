@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -18,14 +17,11 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
 namespace ChessV.Utilities
 {
-	public class OpeningBookMove
-	{
-		public string MoveDescription;
-		public OpeningBookNode NextNode;
-	}
+  public class OpeningBookMove
+  {
+    public string MoveDescription;
+    public OpeningBookNode NextNode;
+  }
 }

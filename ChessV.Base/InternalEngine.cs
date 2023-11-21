@@ -18,54 +18,53 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace ChessV
 {
-	public class InternalEngine: Player
-	{
-		public InternalEngine( IDebugMessageLog messageLog, TimerFactory timerFactory ):
-			base( messageLog, timerFactory )
-		{
-			Name = "ChessV";
-			State = PlayerState.Idle;
-			moveDelayTimer = timerFactory.NewTimer();
-			moveDelayTimer.Interval = 50;
-			moveDelayTimer.Tick += onTimerTick;
-		}
+  public class InternalEngine : Player
+  {
+    public InternalEngine(IDebugMessageLog messageLog, TimerFactory timerFactory) :
+      base(messageLog, timerFactory)
+    {
+      Name = "ChessV";
+      State = PlayerState.Idle;
+      moveDelayTimer = timerFactory.NewTimer();
+      moveDelayTimer.Interval = 50;
+      moveDelayTimer.Tick += onTimerTick;
+    }
 
-		public override bool IsHuman
-		{ get { return false; } }
+    public override bool IsHuman
+    { get { return false; } }
 
-		public override bool SupportsVariant( string variant )
-		{ return true; }
+    public override bool SupportsVariant(string variant)
+    { return true; }
 
-		public override void MakeMove( List<Movement> move )
-		{ }
+    public override void MakeMove(List<Movement> move)
+    { }
 
-		public override void StopThinking()
-		{
-			Game.AbortSearch();
-		}
+    public override void StopThinking()
+    {
+      Game.AbortSearch();
+    }
 
-		protected override void startThinking()
-		{
-			moves = Game.Think( TimeControl );
-			moveDelayTimer.Start();
-		}
+    protected override void startThinking()
+    {
+      moves = Game.Think(TimeControl);
+      moveDelayTimer.Start();
+    }
 
-		protected override void startGame()
-		{ }
+    protected override void startGame()
+    { }
 
-		protected void onTimerTick( object sender, System.EventArgs e )
-		{
-			moveDelayTimer.Stop();
-			emitMove( moves );
-		}
+    protected void onTimerTick(object sender, System.EventArgs e)
+    {
+      moveDelayTimer.Stop();
+      emitMove(moves);
+    }
 
-		protected Timer moveDelayTimer;
-		protected List<Movement> moves;
-	}
+    protected Timer moveDelayTimer;
+    protected List<Movement> moves;
+  }
 }

@@ -18,37 +18,36 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
 using System.Collections.Generic;
 
 namespace ChessV.EngineOptions
 {
-	public class EngineComboOption: EngineOption
-	{
-		public EngineComboOption
-			( string name,
-			  object value = null,
-			  object defaultValue = null,
-			  List<string> choices = null,
-			  string alias = null ):
-				base
-					( name, 
-					  typeof(string),
-					  value,
-					  defaultValue,
-					  alias )
-		{
-			Choices = choices;
-			if( Choices == null )
-				Choices = new List<string>();
-		}
+  public class EngineComboOption : EngineOption
+  {
+    public EngineComboOption
+      (string name,
+        object value = null,
+        object defaultValue = null,
+        List<string> choices = null,
+        string alias = null) :
+        base
+          (name,
+            typeof(string),
+            value,
+            defaultValue,
+            alias)
+    {
+      Choices = choices;
+      if (Choices == null)
+        Choices = new List<string>();
+    }
 
-		public override bool IsValid( object value )
-		{
-			return Choices.Contains( value.ToString() );
-		}
+    public override bool IsValid(object value)
+    {
+      return Choices.Contains(value.ToString());
+    }
 
 
-		List<string> Choices { get; set; }
-	}
+    List<string> Choices { get; set; }
+  }
 }

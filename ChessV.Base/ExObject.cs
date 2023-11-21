@@ -23,62 +23,62 @@ using System.Collections.Generic;
 
 namespace ChessV
 {
-	public class ExObject
-	{
-		public ExObject()
-		{
-			customProprties = new SymbolTable();
-			customAttributes = new List<Attribute>();
-		}
+  public class ExObject
+  {
+    public ExObject()
+    {
+      customProprties = new SymbolTable();
+      customAttributes = new List<Attribute>();
+    }
 
-		public object GetCustomProperty( string name )
-		{
-			return customProprties.Lookup( name );
-		}
+    public object GetCustomProperty(string name)
+    {
+      return customProprties.Lookup(name);
+    }
 
-		public void SetCustomProperty( string name, object value )
-		{
-			customProprties.Set( name, value );
-		}
+    public void SetCustomProperty(string name, object value)
+    {
+      customProprties.Set(name, value);
+    }
 
-		public void AddAttribute( Attribute attribute )
-		{
-			customAttributes.Add( attribute );
-		}
+    public void AddAttribute(Attribute attribute)
+    {
+      customAttributes.Add(attribute);
+    }
 
-		public Attribute[] GetCustomAttributes()
-		{
-			return customAttributes.ToArray();
-		}
+    public Attribute[] GetCustomAttributes()
+    {
+      return customAttributes.ToArray();
+    }
 
-		public List<Attribute> FindCustomAttributes( Type attributeType )
-		{
-			List<Attribute> attributes = new List<Attribute>();
-			foreach( Attribute attr in customAttributes )
-				if( attr.GetType() == attributeType || attr.GetType().IsSubclassOf( attributeType ) )
-					attributes.Add( attr );
-			return attributes;
-		}
+    public List<Attribute> FindCustomAttributes(Type attributeType)
+    {
+      List<Attribute> attributes = new List<Attribute>();
+      foreach (Attribute attr in customAttributes)
+        if (attr.GetType() == attributeType || attr.GetType().IsSubclassOf(attributeType))
+          attributes.Add(attr);
+      return attributes;
+    }
 
-		public void RemoveCustomAttributes( Type typeToRemove )
-		{
-			List<Attribute> newAttributeList = new List<Attribute>();
-			foreach( Attribute attr in customAttributes )
-				if( attr.GetType() != typeToRemove && attr.GetType().IsSubclassOf( typeToRemove ) )
-					newAttributeList.Add( attr );
-			customAttributes = newAttributeList;
-		}
+    public void RemoveCustomAttributes(Type typeToRemove)
+    {
+      List<Attribute> newAttributeList = new List<Attribute>();
+      foreach (Attribute attr in customAttributes)
+        if (attr.GetType() != typeToRemove && attr.GetType().IsSubclassOf(typeToRemove))
+          newAttributeList.Add(attr);
+      customAttributes = newAttributeList;
+    }
 
-		public Attribute[] GetCustomAttributes( Type attributeType )
-		{
-			List<Attribute> filteredList = new List<Attribute>();
-			foreach( Attribute attr in customAttributes )
-				if( attr.GetType() == attributeType || attr.GetType().IsSubclassOf( attributeType ) )
-					filteredList.Add( attr );
-			return filteredList.ToArray();
-		}
+    public Attribute[] GetCustomAttributes(Type attributeType)
+    {
+      List<Attribute> filteredList = new List<Attribute>();
+      foreach (Attribute attr in customAttributes)
+        if (attr.GetType() == attributeType || attr.GetType().IsSubclassOf(attributeType))
+          filteredList.Add(attr);
+      return filteredList.ToArray();
+    }
 
-		protected SymbolTable customProprties;
-		protected List<Attribute> customAttributes;
-	}
+    protected SymbolTable customProprties;
+    protected List<Attribute> customAttributes;
+  }
 }

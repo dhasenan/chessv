@@ -23,46 +23,46 @@ using System.Windows.Forms;
 
 namespace ChessV.GUI
 {
-	//**********************************************************************
-	//
-	//                        StringEditForm
-	//
-	//    This is a generic form for editing a single, named text property
+  //**********************************************************************
+  //
+  //                        StringEditForm
+  //
+  //    This is a generic form for editing a single, named text property
 
-	public partial class StringEditForm: Form
-	{
-		// *** PROPERTIES *** //
+  public partial class StringEditForm : Form
+  {
+    // *** PROPERTIES *** //
 
-		//	the name of the string property being edited
-		public string StringName { get; set; }
+    //	the name of the string property being edited
+    public string StringName { get; set; }
 
-		//	the value of the string property being edited
-		public string StringValue { get; set; }
-
-
-		// *** CONSTRUCTION *** //
-
-		public StringEditForm()
-		{
-			InitializeComponent();
-		}
+    //	the value of the string property being edited
+    public string StringValue { get; set; }
 
 
-		// *** EVENT HANDLERS *** //
+    // *** CONSTRUCTION *** //
 
-		//	Form load event handler
-		private void StringEditForm_Load( object sender, EventArgs e )
-		{
-			Text = StringName;
-			label.Text = StringName + ":";
-			if( StringValue != null )
-				txtString.Text = StringValue;
-		}
+    public StringEditForm()
+    {
+      InitializeComponent();
+    }
 
-		//	OK button clicked event handler
-		private void btnOK_Click( object sender, EventArgs e )
-		{
-			StringValue = txtString.Text;
-		}
-	}
+
+    // *** EVENT HANDLERS *** //
+
+    //	Form load event handler
+    private void StringEditForm_Load(object sender, EventArgs e)
+    {
+      Text = StringName;
+      label.Text = StringName + ":";
+      if (StringValue != null)
+        txtString.Text = StringValue;
+    }
+
+    //	OK button clicked event handler
+    private void btnOK_Click(object sender, EventArgs e)
+    {
+      StringValue = txtString.Text;
+    }
+  }
 }

@@ -22,66 +22,66 @@ using System.Collections.Generic;
 
 namespace ChessV.Games
 {
-	[Game("Shatranj Kamil X", typeof(Geometry.Rectangular), 10, 10,
-		  Invented = "2007",
-		  InventedBy = "David Paulowich",
-		  Tags = "Chess Variant")]
-	public class ShatranjKamilX: Abstract.Generic10x10
-	{
-		// *** PIECE TYPES *** //
+  [Game("Shatranj Kamil X", typeof(Geometry.Rectangular), 10, 10,
+      Invented = "2007",
+      InventedBy = "David Paulowich",
+      Tags = "Chess Variant")]
+  public class ShatranjKamilX : Abstract.Generic10x10
+  {
+    // *** PIECE TYPES *** //
 
-		public PieceType Ferz;
-		public PieceType SilverGeneral;
-		public PieceType Cannon;
-		public PieceType Elephant;
-		public PieceType WarElephant;
+    public PieceType Ferz;
+    public PieceType SilverGeneral;
+    public PieceType Cannon;
+    public PieceType Elephant;
+    public PieceType WarElephant;
 
 
-		// *** CONSTRUCTION *** //
+    // *** CONSTRUCTION *** //
 
-		public ShatranjKamilX():
-			base
-				( /* symmetry = */ new MirrorSymmetry() )
-		{
-		}
+    public ShatranjKamilX() :
+      base
+        ( /* symmetry = */ new MirrorSymmetry())
+    {
+    }
 
-		// *** INITIALIZATION *** //
+    // *** INITIALIZATION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "c3ke3c/1rnsefsnr1/pppppppppp/10/10/10/10/PPPPPPPPPP/1RNSEFSNR1/C3KE3C";
-			PromotionRule.Value = "Custom";
-			StalemateResult.Value = "Loss";
-		}
-		#endregion
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "c3ke3c/1rnsefsnr1/pppppppppp/10/10/10/10/PPPPPPPPPP/1RNSEFSNR1/C3KE3C";
+      PromotionRule.Value = "Custom";
+      StalemateResult.Value = "Loss";
+    }
+    #endregion
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			AddPieceType( Rook = new Rook( "Rook", "R", 550, 650 ) );
-			AddPieceType( Knight = new Knight( "Knight", "N", 250, 250 ) );
-			AddPieceType( Ferz = new Ferz( "Ferz", "F", 150, 150 ) );
-			AddPieceType( SilverGeneral = new SilverGeneral( "Silver General", "S", 175, 175 ) );
-			AddPieceType( Cannon = new Cannon( "Cannon", "C", 400, 275 ) );
-			AddPieceType( Elephant = new ChainedPadwar( "Elephant", "E", 150, 200, "Elephant" ) );
-			AddPieceType( WarElephant = new FreePadwar( "War Elephant", "W", 300, 350, "ElephantFerz2" ) );
-		}
-		#endregion
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      AddPieceType(Rook = new Rook("Rook", "R", 550, 650));
+      AddPieceType(Knight = new Knight("Knight", "N", 250, 250));
+      AddPieceType(Ferz = new Ferz("Ferz", "F", 150, 150));
+      AddPieceType(SilverGeneral = new SilverGeneral("Silver General", "S", 175, 175));
+      AddPieceType(Cannon = new Cannon("Cannon", "C", 400, 275));
+      AddPieceType(Elephant = new ChainedPadwar("Elephant", "E", 150, 200, "Elephant"));
+      AddPieceType(WarElephant = new FreePadwar("War Elephant", "W", 300, 350, "ElephantFerz2"));
+    }
+    #endregion
 
-		#region AddRules
-		public override void AddRules()
-		{
-			base.AddRules();
-			//	Add promotions for Pawn and Ferz
-			if( PromotionRule.Value == "Custom" )
-			{
-				AddRule( new Rules.BasicPromotionRule( Pawn, new List<PieceType> { WarElephant }, Loc => Loc.Rank == 9 ) );
-				AddRule( new Rules.BasicPromotionRule( Ferz, new List<PieceType> { WarElephant }, Loc => Loc.Rank == 9 ) );
-			}
-		}
-		#endregion
-	}
+    #region AddRules
+    public override void AddRules()
+    {
+      base.AddRules();
+      //	Add promotions for Pawn and Ferz
+      if (PromotionRule.Value == "Custom")
+      {
+        AddRule(new Rules.BasicPromotionRule(Pawn, new List<PieceType> { WarElephant }, Loc => Loc.Rank == 9));
+        AddRule(new Rules.BasicPromotionRule(Ferz, new List<PieceType> { WarElephant }, Loc => Loc.Rank == 9));
+      }
+    }
+    #endregion
+  }
 }

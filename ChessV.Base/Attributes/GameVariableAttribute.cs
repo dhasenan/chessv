@@ -22,15 +22,15 @@ using System;
 
 namespace ChessV
 {
-	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
-	public class GameVariableAttribute: Attribute
-	{
-		public bool Hidden { get; set; }
+  [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
+  public class GameVariableAttribute : Attribute
+  {
+    public bool Hidden { get; set; }
 
-		public GameVariableAttribute()
-		{
-			Hidden = false;
-		}
+    public GameVariableAttribute()
+    {
+      Hidden = false;
+    }
 
-	}
+  }
 }

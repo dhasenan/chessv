@@ -25,107 +25,107 @@ using System.Windows.Forms;
 
 namespace ChessV.GUI
 {
-	public partial class SquareColorForm: Form
-	{
-		// *** PROPERTIES *** //
+  public partial class SquareColorForm : Form
+  {
+    // *** PROPERTIES *** //
 
-		public Texture Texture { get; set; }
-		public Color Color { get; set; }
-		public bool NotUsed { get; set; }
-		public bool NotUsedEnabled { get; set; }
-
-
-		// *** CONSTRUCTION *** //
-
-		public SquareColorForm()
-		{
-			NotUsedEnabled = false;
-			InitializeComponent();
-		}
+    public Texture Texture { get; set; }
+    public Color Color { get; set; }
+    public bool NotUsed { get; set; }
+    public bool NotUsedEnabled { get; set; }
 
 
-		// *** EVENT HANDLERS *** //
+    // *** CONSTRUCTION *** //
 
-		private void TextureOrColorForm_Load( object sender, EventArgs e )
-		{
-			if( !NotUsedEnabled )
-				optNotUsed.Enabled = false;
+    public SquareColorForm()
+    {
+      NotUsedEnabled = false;
+      InitializeComponent();
+    }
 
-			//	Populate list of textures
-			foreach( KeyValuePair<string, Texture> pair in TextureLibrary.Textures )
-				pickTexture.Items.Add( pair.Value );
 
-			//	Set controls to match current settings
-			if( NotUsed )
-			{
-				optNotUsed.Checked = true;
-				pickTexture.Enabled = false;
-				panelSquareColor.BackgroundImage = global::ChessV.GUI.Properties.Resources.RedX;
-			}
-			else if( Texture != null )
-			{
-				pickTexture.SelectedItem = Texture;
-				panelSquareColor.BackgroundImage = Texture.Images[0];
-				optTexture.Checked = true;
-			}
-			else
-			{
-				pickTexture.Enabled = false;
-				panelSquareColor.BackgroundImage = null;
-				panelSquareColor.BackColor = Color;
-				optColor.Checked = true;
-			}
-		}
+    // *** EVENT HANDLERS *** //
 
-		private void options_CheckedChanged( object sender, EventArgs e )
-		{
-			pickTexture.Enabled = optTexture.Checked;
-			if( optNotUsed.Checked )
-			{
-				NotUsed = true;
-				panelSquareColor.BackgroundImage = global::ChessV.GUI.Properties.Resources.RedX;
-			}
-			else if( optTexture.Checked )
-			{
-				NotUsed = false;
-				if( pickTexture.SelectedItem == null )
-					pickTexture.SelectedIndex = 0;
-				Texture = (Texture) pickTexture.SelectedItem;
-				panelSquareColor.BackgroundImage = Texture.Images[0];
-			}
-			else
-			{
-				NotUsed = false;
-				Texture = null;
-				panelSquareColor.BackgroundImage = null;
-				panelSquareColor.BackColor = Color;
-			}
-		}
+    private void TextureOrColorForm_Load(object sender, EventArgs e)
+    {
+      if (!NotUsedEnabled)
+        optNotUsed.Enabled = false;
 
-		private void pickTexture_SelectedIndexChanged( object sender, EventArgs e )
-		{
-			Texture = (Texture) pickTexture.SelectedItem;
-			panelSquareColor.BackgroundImage = Texture.Images[0];
-		}
+      //	Populate list of textures
+      foreach (KeyValuePair<string, Texture> pair in TextureLibrary.Textures)
+        pickTexture.Items.Add(pair.Value);
 
-		private void linkChooseColor_LinkClicked( object sender, LinkLabelLinkClickedEventArgs e )
-		{
-			colorDialog.SolidColorOnly = true;
-			colorDialog.AllowFullOpen = true;
-			colorDialog.AnyColor = true;
-			colorDialog.Color = Color;
-			if( colorDialog.ShowDialog() == DialogResult.OK )
-			{
-				Color = colorDialog.Color;
-				panelSquareColor.BackColor = Color;
-				optColor.Checked = true;
-			}
-		}
+      //	Set controls to match current settings
+      if (NotUsed)
+      {
+        optNotUsed.Checked = true;
+        pickTexture.Enabled = false;
+        panelSquareColor.BackgroundImage = global::ChessV.GUI.Properties.Resources.RedX;
+      }
+      else if (Texture != null)
+      {
+        pickTexture.SelectedItem = Texture;
+        panelSquareColor.BackgroundImage = Texture.Images[0];
+        optTexture.Checked = true;
+      }
+      else
+      {
+        pickTexture.Enabled = false;
+        panelSquareColor.BackgroundImage = null;
+        panelSquareColor.BackColor = Color;
+        optColor.Checked = true;
+      }
+    }
 
-		private void btnOK_Click( object sender, EventArgs e )
-		{
-			DialogResult = DialogResult.OK;
-			Close();
-		}
-	}
+    private void options_CheckedChanged(object sender, EventArgs e)
+    {
+      pickTexture.Enabled = optTexture.Checked;
+      if (optNotUsed.Checked)
+      {
+        NotUsed = true;
+        panelSquareColor.BackgroundImage = global::ChessV.GUI.Properties.Resources.RedX;
+      }
+      else if (optTexture.Checked)
+      {
+        NotUsed = false;
+        if (pickTexture.SelectedItem == null)
+          pickTexture.SelectedIndex = 0;
+        Texture = (Texture)pickTexture.SelectedItem;
+        panelSquareColor.BackgroundImage = Texture.Images[0];
+      }
+      else
+      {
+        NotUsed = false;
+        Texture = null;
+        panelSquareColor.BackgroundImage = null;
+        panelSquareColor.BackColor = Color;
+      }
+    }
+
+    private void pickTexture_SelectedIndexChanged(object sender, EventArgs e)
+    {
+      Texture = (Texture)pickTexture.SelectedItem;
+      panelSquareColor.BackgroundImage = Texture.Images[0];
+    }
+
+    private void linkChooseColor_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+    {
+      colorDialog.SolidColorOnly = true;
+      colorDialog.AllowFullOpen = true;
+      colorDialog.AnyColor = true;
+      colorDialog.Color = Color;
+      if (colorDialog.ShowDialog() == DialogResult.OK)
+      {
+        Color = colorDialog.Color;
+        panelSquareColor.BackColor = Color;
+        optColor.Checked = true;
+      }
+    }
+
+    private void btnOK_Click(object sender, EventArgs e)
+    {
+      DialogResult = DialogResult.OK;
+      Close();
+    }
+  }
 }

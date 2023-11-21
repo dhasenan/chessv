@@ -39,11 +39,11 @@ namespace ChessV.Games
   //**********************************************************************
 
   [Game("Archipelago Multiworld", typeof(Geometry.Rectangular), 8, 8, 3,
-		  Invented = "2019",
-		  InventedBy = "Berserker", 
-		  Tags = "Chess Variant,Multiple Boards,Popular,Different Armies")]
-	[Appearance(ColorScheme = "Sublimation")]
-	public class ApmwChessGame: Chess, IMultipawnGame
+      Invented = "2019",
+      InventedBy = "Berserker",
+      Tags = "Chess Variant,Multiple Boards,Popular,Different Armies")]
+  [Appearance(ColorScheme = "Sublimation")]
+  public class ApmwChessGame : Chess, IMultipawnGame
   {
     // *** PIECE TYPES *** //
 
@@ -112,20 +112,20 @@ namespace ChessV.Games
       apmwCore.pocketSets = PocketSets;
     }
 
-		// *** INITIALIZATION *** //
+    // *** INITIALIZATION *** //
 
-		#region CreateBoard
-		//	We override the CreateBoard function so the game uses a board of 
-		//	type BoardWithCards instead of Board.  This is enough to trigger the 
-		//	board with cards architecture and proper rendering to the display.
-		public override Board CreateBoard( int nPlayers, int nFiles, int nRanks, Symmetry symmetry )
-		{ return new Boards.BoardWithCards( nFiles, nRanks, 3 ); }
-		#endregion
+    #region CreateBoard
+    //	We override the CreateBoard function so the game uses a board of 
+    //	type BoardWithCards instead of Board.  This is enough to trigger the 
+    //	board with cards architecture and proper rendering to the display.
+    public override Board CreateBoard(int nPlayers, int nFiles, int nRanks, Symmetry symmetry)
+    { return new Boards.BoardWithCards(nFiles, nRanks, 3); }
+    #endregion
 
-		#region AddRules
-		public override void AddRules()
-		{
-			base.AddRules();
+    #region AddRules
+    public override void AddRules()
+    {
+      base.AddRules();
       AddRule(new CardDropRule(ApmwCore.getInstance().foundPocketRange));
       var kingPromotions = ApmwCore.getInstance().foundKingPromotions;
       if (kingPromotions > 0)
@@ -142,7 +142,7 @@ namespace ChessV.Games
       // TODO(chesslogic): conditionally remove en passant for one player only. (the Apmw provider probably knows whether the player can en passant at this point)
 
       // *** BEROLINA PAWN PROMOTION *** //
-      List <PieceType> availablePromotionTypes = ParseTypeListFromString(PromotionTypes);
+      List<PieceType> availablePromotionTypes = ParseTypeListFromString(PromotionTypes);
       AddBasicPromotionRule(BerolinaPawn, availablePromotionTypes, (loc) => loc.Rank == Board.NumRanks - 1);
 
       // *** BEROLINA PAWN DOUBLE MOVE *** //
@@ -181,9 +181,10 @@ namespace ChessV.Games
       int humanPlayer = ApmwCore.getInstance().GeriProvider();
       int rank = humanPlayer * 7;
       // TODO(chesslogic): the starting position dict chesslogic made uses rank=2 for back line. why? u ever heard front to back?
-      int positionRank = 2; 
+      int positionRank = 2;
       Location kingFrom = new Location(rank, 4);
-      for (int i = 0; i < 8; i++) {
+      for (int i = 0; i < 8; i++)
+      {
         var rookFromPair = new KeyValuePair<int, int>(positionRank, i);
         if (!startingPosition.ContainsKey(rookFromPair))
           continue;
@@ -235,10 +236,10 @@ namespace ChessV.Games
 
     #region AddEvaluations
     public override void AddEvaluations()
-		{
-			//	most, if not all, evaluations probably won't do the "right" thing 
-			//	in this game, so we'll override this function and do nothing
-		}
+    {
+      //	most, if not all, evaluations probably won't do the "right" thing 
+      //	in this game, so we'll override this function and do nothing
+    }
     #endregion
 
     // *** INITIALIZATION *** //

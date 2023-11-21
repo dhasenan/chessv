@@ -18,17 +18,15 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace ChessV
 {
-	public class TimerFactory
-	{
-		public Timer NewTimer()
-		{
-			return new System.Windows.Forms.Timer();
-		}
-	}
+  public class TimerFactory
+  {
+    public Timer NewTimer()
+    {
+      return new System.Windows.Forms.Timer();
+    }
+  }
 }

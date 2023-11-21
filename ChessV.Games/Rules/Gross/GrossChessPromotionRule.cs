@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -18,64 +17,60 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-using ChessV.Games;
-
 namespace ChessV.Games.Rules.Gross
 {
-	public class GrossChessPromotionRule: PromoteByReplacementRule
-	{
-		public GrossChessPromotionRule( PieceType promotingType, OptionalPromotionLocationDelegate conditionDelegate ):
-			base( promotingType, conditionDelegate )
-		{
-		}
+  public class GrossChessPromotionRule : PromoteByReplacementRule
+  {
+    public GrossChessPromotionRule(PieceType promotingType, OptionalPromotionLocationDelegate conditionDelegate) :
+      base(promotingType, conditionDelegate)
+    {
+    }
 
-		public override void Initialize( Game game )
-		{
-			base.Initialize( game );
-			GrossChess grossChessGame = (GrossChess) game;
+    public override void Initialize(Game game)
+    {
+      base.Initialize(game);
+      GrossChess grossChessGame = (GrossChess)game;
 
-			//	add extra captured pieces for promotion reserves
-			for( int player = 0; player < 2; player++ )
-			{
-				game.AddPiece( new Piece( game, player, grossChessGame.Queen, -1 ) );
-				game.AddPiece( new Piece( game, player, grossChessGame.Queen, -1 ) );
-				for( int x = 0; x < 4; x++ )
-				{
-					game.AddPiece( new Piece( game, player, grossChessGame.Rook, -1 ) );
-					game.AddPiece( new Piece( game, player, grossChessGame.Bishop, -1 ) );
-					game.AddPiece( new Piece( game, player, grossChessGame.Knight, -1 ) );
-				}
-			}
-		}
+      //	add extra captured pieces for promotion reserves
+      for (int player = 0; player < 2; player++)
+      {
+        game.AddPiece(new Piece(game, player, grossChessGame.Queen, -1));
+        game.AddPiece(new Piece(game, player, grossChessGame.Queen, -1));
+        for (int x = 0; x < 4; x++)
+        {
+          game.AddPiece(new Piece(game, player, grossChessGame.Rook, -1));
+          game.AddPiece(new Piece(game, player, grossChessGame.Bishop, -1));
+          game.AddPiece(new Piece(game, player, grossChessGame.Knight, -1));
+        }
+      }
+    }
 
-		public override MoveEventResponse MoveBeingMade( MoveInfo move, int ply )
-		{
-			GrossChess grossChessGame = (GrossChess) Game;
-			if( move.MoveType == MoveType.CaptureReplace ||
-				move.MoveType == MoveType.MoveReplace )
-			{
-				//	if the promotion is on the 10th rank, then it must be to 
-				//	Bishop, Knight, Vao, or Wizard
-				if( (Board.GetRank( move.ToSquare ) == 9 || Board.GetRank( move.ToSquare ) == 2) &&
-					move.PromotionType != grossChessGame.Bishop.TypeNumber &&
-					move.PromotionType != grossChessGame.Knight.TypeNumber &&
-					move.PromotionType != grossChessGame.Wizard.TypeNumber &&
-					move.PromotionType != grossChessGame.Vao.TypeNumber )
-					return MoveEventResponse.IllegalMove;
-				else
-				{
-					//	if the promotion is on the 11th rank, then it 
-					//	cannot be Archbishop, Marshall, or Queen
-					if( (Board.GetRank( move.ToSquare ) == 10 || Board.GetRank( move.ToSquare ) == 1) &&
-						(move.PromotionType == grossChessGame.Queen.TypeNumber ||
-						 move.PromotionType == grossChessGame.Archbishop.TypeNumber ||
-						 move.PromotionType == grossChessGame.Chancellor.TypeNumber) )
-						return MoveEventResponse.IllegalMove;
-				}
-			}
-			return base.MoveBeingMade( move, ply );
-		}
-	}
+    public override MoveEventResponse MoveBeingMade(MoveInfo move, int ply)
+    {
+      GrossChess grossChessGame = (GrossChess)Game;
+      if (move.MoveType == MoveType.CaptureReplace ||
+        move.MoveType == MoveType.MoveReplace)
+      {
+        //	if the promotion is on the 10th rank, then it must be to 
+        //	Bishop, Knight, Vao, or Wizard
+        if ((Board.GetRank(move.ToSquare) == 9 || Board.GetRank(move.ToSquare) == 2) &&
+          move.PromotionType != grossChessGame.Bishop.TypeNumber &&
+          move.PromotionType != grossChessGame.Knight.TypeNumber &&
+          move.PromotionType != grossChessGame.Wizard.TypeNumber &&
+          move.PromotionType != grossChessGame.Vao.TypeNumber)
+          return MoveEventResponse.IllegalMove;
+        else
+        {
+          //	if the promotion is on the 11th rank, then it 
+          //	cannot be Archbishop, Marshall, or Queen
+          if ((Board.GetRank(move.ToSquare) == 10 || Board.GetRank(move.ToSquare) == 1) &&
+            (move.PromotionType == grossChessGame.Queen.TypeNumber ||
+             move.PromotionType == grossChessGame.Archbishop.TypeNumber ||
+             move.PromotionType == grossChessGame.Chancellor.TypeNumber))
+            return MoveEventResponse.IllegalMove;
+        }
+      }
+      return base.MoveBeingMade(move, ply);
+    }
+  }
 }

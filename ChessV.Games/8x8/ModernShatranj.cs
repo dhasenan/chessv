@@ -20,28 +20,28 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 namespace ChessV.Games
 {
-	[Game("Modern Shatranj", typeof(Geometry.Rectangular), 8, 8,
-		  Invented = "2005",
-		  InventedBy = "Joe Joyce",
-		  Tags = "Chess Variant")]
-	public class ModernShatranj: Shatranj
-	{
-		// *** INITIALIZATION *** //
+  [Game("Modern Shatranj", typeof(Geometry.Rectangular), 8, 8,
+      Invented = "2005",
+      InventedBy = "Joe Joyce",
+      Tags = "Chess Variant")]
+  public class ModernShatranj : Shatranj
+  {
+    // *** INITIALIZATION *** //
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			//	The Elephant gets the added abtility to move as Ferz
-			Ferz.AddMoves( Elephant );
-			Elephant.PreferredImage = "Elephant Ferz";
-			Elephant.MidgameValue = 400;
-			Elephant.EndgameValue = 400;
-			//	The General gets the added ability to move as Wazir
-			Wazir.AddMoves( General );
-			General.MidgameValue = 400;
-			General.EndgameValue = 400;
-		}
-		#endregion
-	}
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      //	The Elephant gets the added abtility to move as Ferz
+      Ferz.AddMoves(Elephant);
+      Elephant.PreferredImage = "Elephant Ferz";
+      Elephant.MidgameValue = 400;
+      Elephant.EndgameValue = 400;
+      //	The General gets the added ability to move as Wazir
+      Wazir.AddMoves(General);
+      General.MidgameValue = 400;
+      General.EndgameValue = 400;
+    }
+    #endregion
+  }
 }

@@ -22,13 +22,13 @@ using System;
 
 namespace ChessV.Exceptions
 {
-	public class ChessVException: Exception
-	{
-		public Game Game { get; private set; }
+  public class ChessVException : Exception
+  {
+    public Game Game { get; private set; }
 
-		public ChessVException( Game game, Exception innerException ): base( innerException.Message, innerException )
-		{
-			Game = game;
-		}
-	}
+    public ChessVException(Game game, Exception innerException) : base(innerException.Message, innerException)
+    {
+      Game = game;
+    }
+  }
 }

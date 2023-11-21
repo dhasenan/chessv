@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -18,30 +17,27 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
 namespace ChessV.Games.Rules
 {
-	public class ColorboundPromotionRestrictionRule: Rule
-	{
-		public override MoveEventResponse MoveBeingMade( MoveInfo move, int ply )
-		{
-			if( (move.MoveType & MoveType.PromotionProperty) != 0 || (move.MoveType & MoveType.Replace) != 0 )
-			{
-				Piece piece = Board[move.ToSquare];
-				if( piece.PieceType.NumSlices > 1 )
-				{
-					BitBoard pieces = Board.GetPieceTypeBitboard( piece.Player, piece.TypeNumber );
-					while( pieces )
-					{
-						int sq = pieces.ExtractLSB();
-						if( sq != move.ToSquare && piece.PieceType.SliceLookup[sq] == piece.PieceType.SliceLookup[move.ToSquare] )
-							return MoveEventResponse.IllegalMove;
-					}
-				}
-			}
-			return MoveEventResponse.NotHandled;
-		}
-	}
+  public class ColorboundPromotionRestrictionRule : Rule
+  {
+    public override MoveEventResponse MoveBeingMade(MoveInfo move, int ply)
+    {
+      if ((move.MoveType & MoveType.PromotionProperty) != 0 || (move.MoveType & MoveType.Replace) != 0)
+      {
+        Piece piece = Board[move.ToSquare];
+        if (piece.PieceType.NumSlices > 1)
+        {
+          BitBoard pieces = Board.GetPieceTypeBitboard(piece.Player, piece.TypeNumber);
+          while (pieces)
+          {
+            int sq = pieces.ExtractLSB();
+            if (sq != move.ToSquare && piece.PieceType.SliceLookup[sq] == piece.PieceType.SliceLookup[move.ToSquare])
+              return MoveEventResponse.IllegalMove;
+          }
+        }
+      }
+      return MoveEventResponse.NotHandled;
+    }
+  }
 }

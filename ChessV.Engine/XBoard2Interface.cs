@@ -20,98 +20,97 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 using System;
 using System.Collections.Generic;
-using System.Threading;
-using System.Text;
 using System.IO;
+using System.Threading;
 
 namespace ChessV.Engine
 {
-	public class XBoard2Interface
-	{
-		#region Delegates
-		//	The delegatetype communication event
-		public delegate void CommunicationEvent( string message );
+  public class XBoard2Interface
+  {
+    #region Delegates
+    //	The delegatetype communication event
+    public delegate void CommunicationEvent(string message);
 
-		//	The delegatetype standard event
-		public delegate void StandardEvent();
-		#endregion
+    //	The delegatetype standard event
+    public delegate void StandardEvent();
+    #endregion
 
-		#region Public Events
-		//	XBoard input event
-		public static event CommunicationEvent XBoardInputEvent = ProcessInputEvent;
+    #region Public Events
+    //	XBoard input event
+    public static event CommunicationEvent XBoardInputEvent = ProcessInputEvent;
 
-		//	XBoard output event
-		public static event CommunicationEvent XBoardOutputEvent;
+    //	XBoard output event
+    public static event CommunicationEvent XBoardOutputEvent;
 
-		//	XBoard quit event
-		public static event StandardEvent XBoardQuitEvent;
+    //	XBoard quit event
+    public static event StandardEvent XBoardQuitEvent;
 
-		//	XBoard time updated event
-		public static event StandardEvent XBoardTimeUpdatedEvent = ProcessTimeUpdatedEvent;
-		#endregion
+    //	XBoard time updated event
+    public static event StandardEvent XBoardTimeUpdatedEvent = ProcessTimeUpdatedEvent;
+    #endregion
 
-		#region Properties
-		//	Gets a value indicating whether XBoard protocol is Active
-		public static bool Active { get; private set; }
+    #region Properties
+    //	Gets a value indicating whether XBoard protocol is Active
+    public static bool Active { get; private set; }
 
-		//	Gets or sets the name of the variant to be played
-		public static string Variant { get; set; }
+    //	Gets or sets the name of the variant to be played
+    public static string Variant { get; set; }
 
-		//	Get the current Game in progress (if any)
-		public static Game Game { get; private set; }
+    //	Get the current Game in progress (if any)
+    public static Game Game { get; private set; }
 
-		//	Get the TimeControl being used
-		public static TimeControl TimeControl { get; private set; }
+    //	Get the TimeControl being used
+    public static TimeControl TimeControl { get; private set; }
 
-		//	Gets a value indicating whether to show the XBoard message GUI
-		public static bool ShowGui { get; private set; }
+    //	Gets a value indicating whether to show the XBoard message GUI
+    public static bool ShowGui { get; private set; }
 
-		//	Gets or sets the thread that this class runs in
-		public static Thread ThreadListener { get; private set; }
+    //	Gets or sets the thread that this class runs in
+    public static Thread ThreadListener { get; private set; }
 
-		//  Gets or sets the side (color) being played by this engine
-		public static int MySide { get; private set; }
-		#endregion
+    //  Gets or sets the side (color) being played by this engine
+    public static int MySide { get; private set; }
+    #endregion
 
-		#region Public Methods
-		#region QueryAndSetXBoardActiveStatus
-		public static void QueryAndSetXBoardActiveStatus()
-		//	Checks if XBoard is present and sets the Active property if true
-		{
-			string strMessage = Console.ReadLine();
-			Active = strMessage != null && strMessage.StartsWith( "xboard" );
-			sendOutputMessage( "\n" );
-		}
-		#endregion
+    #region Public Methods
+    #region QueryAndSetXBoardActiveStatus
+    public static void QueryAndSetXBoardActiveStatus()
+    //	Checks if XBoard is present and sets the Active property if true
+    {
+      string strMessage = Console.ReadLine();
+      Active = strMessage != null && strMessage.StartsWith("xboard");
+      sendOutputMessage("\n");
+    }
+    #endregion
 
-		#region ProcessTimeUpdatedEvent
-		public static void ProcessTimeUpdatedEvent()
-		{ 
-		}
-		#endregion
+    #region ProcessTimeUpdatedEvent
+    public static void ProcessTimeUpdatedEvent()
+    {
+    }
+    #endregion
 
-		#region ProcessInputEvent
-		public static void ProcessInputEvent( string strMessage )
-		{
-			try
-			{
-				#region xboard
-				if( strMessage.StartsWith( "xboard" ) )
-				{
-					/*	Chess Engine Communication Protocol 
+    #region ProcessInputEvent
+    public static void ProcessInputEvent(string strMessage)
+    {
+      try
+      {
+        #region xboard
+        if (strMessage.StartsWith("xboard"))
+        {
+          /*	Chess Engine Communication Protocol 
 						This command will be sent once immediately after your engine process is started. 
 						You can use it to put your engine into "xboard mode" if that is needed. 
 						If your engine prints a prompt to ask for user input, you must turn off the prompt and output a 
 						newline when the "xboard" command comes in.
 						This will be a false 2nd "ghost" message, so ignore it.
 					*/
-				}
-				#endregion
+        }
+        #endregion
 
-				#region protover
-				else if( strMessage.StartsWith( "protover " ) )
-				{
-					/*
+        #region protover
+        else if (strMessage.StartsWith("protover "))
+        {
+          /*
 					 * Chess Engine Communication Protocol
 						ping (boolean, default 0, recommended 1) 
 						If ping=1, xboard may use the protocol's new "ping" command; if ping=0, xboard will not use the command. 
@@ -150,124 +149,124 @@ namespace ChessV.Engine
 						done (integer, no default) 
 						If you set done=1 during the initial two-second timeout after xboard sends you the "xboard" command, the timeout will end and xboard will not look for any more feature commands before starting normal operation. If you set done=0, the initial timeout is increased to one hour; in this case, you must set done=1 before xboard will enter normal operation. 
 					*/
-					
-					var variants = string.Join(",", Program.Manager.GetXBoardVariantList());
-					
-					var strFeatures =
-						"feature ping=1 memory=1 setboard=1 usermove=1 time=1 reuse=1 sigint=0 sigterm=0 draw=0 myname=\"ChessV 2.2\" colors=0\n" +
-						"feature option=\"Variation of Play -combo *None /// Small /// Medium /// Large\"\n" +
-						"feature option=\"Weakening -slider 0 0 15\"\n" +
-						$"feature variants=\"{variants}\"\n" +
-						"feature done=1";
-					sendOutputMessage( strFeatures );
-				}
-				#endregion
 
-				#region new
-				else if( strMessage == "new" )
-				{
-					//	if there is a current game, stop tinking and erase it
-					Game?.AbortSearch();
-					Game = null;
+          var variants = string.Join(",", Program.Manager.GetXBoardVariantList());
 
-					//  We don't start a new game here, because we still don't 
-					//	know what variant we are playing.  The "variant" command is 
-					//	sent after the "new" command (probably for historical reasons.)
+          var strFeatures =
+            "feature ping=1 memory=1 setboard=1 usermove=1 time=1 reuse=1 sigint=0 sigterm=0 draw=0 myname=\"ChessV 2.2\" colors=0\n" +
+            "feature option=\"Variation of Play -combo *None /// Small /// Medium /// Large\"\n" +
+            "feature option=\"Weakening -slider 0 0 15\"\n" +
+            $"feature variants=\"{variants}\"\n" +
+            "feature done=1";
+          sendOutputMessage(strFeatures);
+        }
+        #endregion
 
-					//	we will assume we are playing Orthodox Chess ("normal") until we are told 
-					//	otherwise - in case we don't receive a "variant" command
-					Variant = "normal";
+        #region new
+        else if (strMessage == "new")
+        {
+          //	if there is a current game, stop tinking and erase it
+          Game?.AbortSearch();
+          Game = null;
 
-					//	set the computer to play black
-					MySide = 1;
-					ForceModeOn = false;
-				}
-				#endregion
+          //  We don't start a new game here, because we still don't 
+          //	know what variant we are playing.  The "variant" command is 
+          //	sent after the "new" command (probably for historical reasons.)
 
-				#region load
-				else if( strMessage.StartsWith( "load " ) )
-				{
-					// Load saved game
-					string strPath = strMessage.Substring( 5 ).Trim();
-					Active = false;
-					try
-					{
-						TextReader reader = new StreamReader( strPath );
-						Game = Program.Manager.LoadGame( reader );
-						sendOutputMessage( "Loaded save game: " + strPath );
-					}
-					catch( Exception ex )
-					{
-						throw new XBoardInputException( "Unable to load save game: " + strPath, ex );
-					}
+          //	we will assume we are playing Orthodox Chess ("normal") until we are told 
+          //	otherwise - in case we don't receive a "variant" command
+          Variant = "normal";
 
-					Active = true;
-				}
-				#endregion
+          //	set the computer to play black
+          MySide = 1;
+          ForceModeOn = false;
+        }
+        #endregion
 
-				#region variant
-				else if( strMessage.StartsWith( "variant " ) )
-				{
-					Variant = strMessage.Substring( 8 ).Trim();
-					List<string> variants = Program.Manager.GetXBoardVariantList();
-					if( !variants.Contains( Variant ) )
-						throw new XBoardInputException( "Unsupported variant: " + Variant );
-					if( Game != null )
-					{
-						Game = null;
-						createGameIfNotYetCreated();
-					}
-				}
-				#endregion
+        #region load
+        else if (strMessage.StartsWith("load "))
+        {
+          // Load saved game
+          string strPath = strMessage.Substring(5).Trim();
+          Active = false;
+          try
+          {
+            TextReader reader = new StreamReader(strPath);
+            Game = Program.Manager.LoadGame(reader);
+            sendOutputMessage("Loaded save game: " + strPath);
+          }
+          catch (Exception ex)
+          {
+            throw new XBoardInputException("Unable to load save game: " + strPath, ex);
+          }
 
-				#region quit
-				else if( strMessage == "quit" )
-				{
-					//	terminate the program
-					//XBoardQuitEvent();
-				}
-				#endregion
+          Active = true;
+        }
+        #endregion
 
-				#region force
-				else if( strMessage == "force" )
-				{
-					// * Chess Engine Communication Protocol
-					//	Set the engine to play neither color ("force mode"). Stop clocks. The engine should check that moves 
-					//	received in force mode are legal and made in the proper turn, but should not think, ponder, or make 
-					//	moves of its own.
-					ForceModeOn = true;
-					if( Game != null )
-					{
-						Game.ComputerControlled[0] = false;
-						Game.ComputerControlled[1] = false;
-					}
-				}
-				#endregion
+        #region variant
+        else if (strMessage.StartsWith("variant "))
+        {
+          Variant = strMessage.Substring(8).Trim();
+          List<string> variants = Program.Manager.GetXBoardVariantList();
+          if (!variants.Contains(Variant))
+            throw new XBoardInputException("Unsupported variant: " + Variant);
+          if (Game != null)
+          {
+            Game = null;
+            createGameIfNotYetCreated();
+          }
+        }
+        #endregion
 
-				#region go
-				else if( strMessage == "go" )
-				{
-					// * Chess Engine Communication Protocol
-					//	Leave force mode and set the engine to play the color that is on move. 
-					//	Associate the engine's clock with the color that is on move, the opponent's clock with the color that 
-					//	is not on move. Start the engine's clock. Start thinking and eventually make a move. 
+        #region quit
+        else if (strMessage == "quit")
+        {
+          //	terminate the program
+          //XBoardQuitEvent();
+        }
+        #endregion
 
-					createGameIfNotYetCreated();
-					ForceModeOn = false;
-					MySide = Game.CurrentSide;
-					Game.ComputerControlled[MySide] = true;
-					TimeControl.StartTimer();
-					List<Movement> moves = Game.Think( TimeControl );
-					foreach( Movement mv in moves )
-						Game.MakeMove( mv, true );
-					sendMove( moves );
-				}
-				#endregion
+        #region force
+        else if (strMessage == "force")
+        {
+          // * Chess Engine Communication Protocol
+          //	Set the engine to play neither color ("force mode"). Stop clocks. The engine should check that moves 
+          //	received in force mode are legal and made in the proper turn, but should not think, ponder, or make 
+          //	moves of its own.
+          ForceModeOn = true;
+          if (Game != null)
+          {
+            Game.ComputerControlled[0] = false;
+            Game.ComputerControlled[1] = false;
+          }
+        }
+        #endregion
 
-				#region playother
-				else if( strMessage == "playother" )
-				{
-					/*
+        #region go
+        else if (strMessage == "go")
+        {
+          // * Chess Engine Communication Protocol
+          //	Leave force mode and set the engine to play the color that is on move. 
+          //	Associate the engine's clock with the color that is on move, the opponent's clock with the color that 
+          //	is not on move. Start the engine's clock. Start thinking and eventually make a move. 
+
+          createGameIfNotYetCreated();
+          ForceModeOn = false;
+          MySide = Game.CurrentSide;
+          Game.ComputerControlled[MySide] = true;
+          TimeControl.StartTimer();
+          List<Movement> moves = Game.Think(TimeControl);
+          foreach (Movement mv in moves)
+            Game.MakeMove(mv, true);
+          sendMove(moves);
+        }
+        #endregion
+
+        #region playother
+        else if (strMessage == "playother")
+        {
+          /*
 					   * Chess Engine Communication Protocol
 						(This command is new in protocol version 2. It is not sent unless you enable it with the feature command.) 
 						Leave force mode and set the engine to play the color that is not on move. Associate the opponent's 
@@ -275,102 +274,102 @@ namespace ChessV.Engine
 						opponent's clock. If pondering is enabled, the engine should begin pondering. If the engine later 
 						receives a move, it should start thinking and eventually reply. 
 					*/
-					/*Game.SuspendPondering();
+          /*Game.SuspendPondering();
 					Game.PlayerToPlay = Game.PlayerToPlay.OpposingPlayer;
 					Game.PlayerToPlay.Intellegence = Player.PlayerIntellegenceNames.Computer;
 					Game.PlayerToPlay.OpposingPlayer.Intellegence = Player.PlayerIntellegenceNames.Human;
 					Game.PlayerToPlay.OpposingPlayer.Clock.Stop();
 					Game.PlayerToPlay.Clock.Start();
 					Game.ResumePondering();*/
-				}
-				#endregion
+        }
+        #endregion
 
-				#region st command
-				else if( strMessage.StartsWith( "st " ) )
-				{
-					// * Chess Engine Communication Protocol
-					//	Set time Absolute fixed time-per-move. No time is carried forward from one move to the next. 
-					//	The commands "level" and "st" are not used together. 
-					int seconds = Convert.ToInt32( strMessage.Substring( "st ".Length ) );
-					TimeControl = new TimeControl();
-					TimeControl.TimePerMove = seconds * 1000;
-					XBoardTimeUpdatedEvent();
-				}
-				#endregion
+        #region st command
+        else if (strMessage.StartsWith("st "))
+        {
+          // * Chess Engine Communication Protocol
+          //	Set time Absolute fixed time-per-move. No time is carried forward from one move to the next. 
+          //	The commands "level" and "st" are not used together. 
+          int seconds = Convert.ToInt32(strMessage.Substring("st ".Length));
+          TimeControl = new TimeControl();
+          TimeControl.TimePerMove = seconds * 1000;
+          XBoardTimeUpdatedEvent();
+        }
+        #endregion
 
-				#region sd command
-				else if( strMessage.StartsWith( "sd " ) )
-				{
-					int depth = Convert.ToInt32( strMessage.Substring( "sd ".Length ) );
-					TimeControl = new TimeControl();
-					TimeControl.Infinite = true;
-					TimeControl.PlyLimit = depth;
-					XBoardTimeUpdatedEvent();
-				}
-				#endregion
+        #region sd command
+        else if (strMessage.StartsWith("sd "))
+        {
+          int depth = Convert.ToInt32(strMessage.Substring("sd ".Length));
+          TimeControl = new TimeControl();
+          TimeControl.Infinite = true;
+          TimeControl.PlyLimit = depth;
+          XBoardTimeUpdatedEvent();
+        }
+        #endregion
 
-				#region depth command
-				else if( strMessage.StartsWith( "depth " ) )
-				{
-					// * Chess Engine Communication Protocol
-					//	The engine should limit its thinking to DEPTH ply. 
-					TimeControl = new TimeControl();
-					TimeControl.Infinite = true;
-					TimeControl.PlyLimit = Convert.ToInt32( strMessage.Substring( "depth ".Length ) );
-				}
-				#endregion
+        #region depth command
+        else if (strMessage.StartsWith("depth "))
+        {
+          // * Chess Engine Communication Protocol
+          //	The engine should limit its thinking to DEPTH ply. 
+          TimeControl = new TimeControl();
+          TimeControl.Infinite = true;
+          TimeControl.PlyLimit = Convert.ToInt32(strMessage.Substring("depth ".Length));
+        }
+        #endregion
 
-				#region time command
-				else if( strMessage.StartsWith( "time " ) )
-				{
-					//					Game.SuspendPondering();
+        #region time command
+        else if (strMessage.StartsWith("time "))
+        {
+          //					Game.SuspendPondering();
 
-					/* Chess Engine Communication Protocol
+          /* Chess Engine Communication Protocol
 						Set a clock that always belongs to the engine. N is a number in centiseconds (units of 1/100 second). 
 						Even if the engine changes to playing the opposite color, this clock remains with the engine.
 					*/
-					TimeControl.TimeLeft = Convert.ToInt64( strMessage.Substring( "time ".Length ) ) * 10;
-					//					WinBoardTimeUpdatedEvent();
-				}
-				#endregion
+          TimeControl.TimeLeft = Convert.ToInt64(strMessage.Substring("time ".Length)) * 10;
+          //					WinBoardTimeUpdatedEvent();
+        }
+        #endregion
 
-				#region usermove command
-				else if( strMessage.StartsWith( "usermove " ) )
-				{
-					/*
+        #region usermove command
+        else if (strMessage.StartsWith("usermove "))
+        {
+          /*
 					   * Chess Engine Communication Protocol
 						By default, moves are sent to the engine without a command name; the notation is just sent as a line 
 						by itself. Beginning in protocol version 2, you can use the feature command to cause the command name
 						"usermove" to be sent before the move. Example: "usermove e2e4". 
 					*/
-					createGameIfNotYetCreated();
-					Game.MakeMove( Game.MoveFromDescription( strMessage.Substring( "usermove ".Length ), MoveNotation.XBoard ), true );
-					if( Game.ComputerControlled[Game.CurrentSide] )
-					{
-						TimeControl.StartTimer();
-						List<Movement> moves = Game.Think( TimeControl );
-						foreach( Movement mv in moves )
-							Game.MakeMove( mv, true );
-						sendMove( moves );
-					}
-				}
-				#endregion
+          createGameIfNotYetCreated();
+          Game.MakeMove(Game.MoveFromDescription(strMessage.Substring("usermove ".Length), MoveNotation.XBoard), true);
+          if (Game.ComputerControlled[Game.CurrentSide])
+          {
+            TimeControl.StartTimer();
+            List<Movement> moves = Game.Think(TimeControl);
+            foreach (Movement mv in moves)
+              Game.MakeMove(mv, true);
+            sendMove(moves);
+          }
+        }
+        #endregion
 
-				#region ?
-				else if( strMessage == "?" )
-				{
-					/*	Move now. If your engine is thinking, it should move immediately; otherwise, the command should be 
+        #region ?
+        else if (strMessage == "?")
+        {
+          /*	Move now. If your engine is thinking, it should move immediately; otherwise, the command should be 
 						ignored (treated as a no-op). It is permissible for your engine to always ignore the ? command. 
 						The only bad consequence is that xboard's Move Now menu command will do nothing. 
 					*/
-					Game.AbortSearch();
-				}
-				#endregion
+          Game.AbortSearch();
+        }
+        #endregion
 
-				#region ping
-				else if( strMessage.StartsWith( "ping " ) )
-				{
-					/*
+        #region ping
+        else if (strMessage.StartsWith("ping "))
+        {
+          /*
 					   * Chess Engine Communication Protocol
 						In this command, N is a decimal number. When you receive the command, reply by sending the string 
 						pong N, where N is the same number you received. Important: You must not reply to a "ping" command 
@@ -389,19 +388,19 @@ namespace ChessV.Engine
 						thinking, but it is needed in all engines. 
 					*/
 
-					if( Game != null )
-						while( Game.IsThinking )
-							// Wait for thinking to finish
-							Thread.Sleep( 100 );
+          if (Game != null)
+            while (Game.IsThinking)
+              // Wait for thinking to finish
+              Thread.Sleep(100);
 
-					sendOutputMessage( "pong " + strMessage.Substring( 5 ) );
-				}
-				#endregion
+          sendOutputMessage("pong " + strMessage.Substring(5));
+        }
+        #endregion
 
-				#region draw
-				else if( strMessage == "draw" )
-				{
-					/*
+        #region draw
+        else if (strMessage == "draw")
+        {
+          /*
 						The engine's opponent offers the engine a draw. To accept the draw, send "offer draw". 
 						To decline, ignore the offer (that is, send nothing). If you're playing on ICS, it's possible for the 
 						draw offer to have been withdrawn by the time you accept it, so don't assume the game is over because 
@@ -409,13 +408,13 @@ namespace ChessV.Engine
 						"offer draw" below. 
 						Ignore all draw offers for now.
 					*/
-				}
-				#endregion
+        }
+        #endregion
 
-				#region result
-				else if( strMessage.StartsWith( "result " ) )
-				{
-					/*
+        #region result
+        else if (strMessage.StartsWith("result "))
+        {
+          /*
 					   * Chess Engine Communication Protocol
 						After the end of each game, xboard will send you a result command. You can use this command to trigger learning. RESULT is either 1-0, 0-1, 1/2-1/2, or *, indicating whether white won, black won, the game was a draw, or the game was unfinished. The COMMENT string is purely a human-readable comment; its content is unspecified and subject to change. In ICS mode, it is passed through from ICS uninterpreted. Example: 
 						result 1-0 {White mates}
@@ -425,15 +424,15 @@ namespace ChessV.Engine
 
 						You will get a result command even if you already know the game ended -- for example, after you just checkmated your opponent. In fact, if you send the "RESULT {COMMENT}" command (discussed below), you will simply get the same thing fed back to you with "result" tacked in front. You might not always get a "result *" command, however. In particular, you won't get one in local chess engine mode when the user stops playing by selecting Reset, Edit Game, Exit or the like. 
 					*/
-					//					Game.SuspendPondering();
-					Game.AbortSearch();
-				}
-				#endregion
+          //					Game.SuspendPondering();
+          Game.AbortSearch();
+        }
+        #endregion
 
-				#region setboard
-				else if( strMessage.StartsWith( "setboard " ) )
-				{
-					/*
+        #region setboard
+        else if (strMessage.StartsWith("setboard "))
+        {
+          /*
 					   * Chess Engine Communication Protocol
 						The setboard command is the new way to set up positions, beginning in protocol version 2. 
 						It is not used unless it has been selected with the feature command. 
@@ -444,137 +443,137 @@ namespace ChessV.Engine
 						illegal, I suggest that you send the response "tellusererror Illegal position", and then respond to 
 						any attempted move with "Illegal move" until the next new, edit, or setboard command.
 					*/
-					try
-					{
-						if( Game == null )
-							Game = Program.Manager.CreateGame( Program.Manager.XBoardNameToProperName( Variant ) );
-						Game.ClearGameState();
-						Game.LoadFEN( strMessage.Substring( 9 ) );
-					}
-					catch /*Fen.ValidationException x*/
-					{
-						throw;
-						//sendOutputMessage( "tellusererror Illegal position: " + x.FenMessage );
-					}
-				}
-				#endregion
+          try
+          {
+            if (Game == null)
+              Game = Program.Manager.CreateGame(Program.Manager.XBoardNameToProperName(Variant));
+            Game.ClearGameState();
+            Game.LoadFEN(strMessage.Substring(9));
+          }
+          catch /*Fen.ValidationException x*/
+          {
+            throw;
+            //sendOutputMessage( "tellusererror Illegal position: " + x.FenMessage );
+          }
+        }
+        #endregion
 
-				#region undo
-				else if( strMessage == "undo" )
-				{
-					// * Chess Engine Communication Protocol
-					// If the user asks to back up one move, xboard will send you the "undo" command. xboard will not send this command without putting you in "force" mode first, so you don't have to worry about what should happen if the user asks to undo a move your engine made. (GNU Chess 4 actually switches to playing the opposite color in this case.) 
-					Game.UndoMove();
-				}
-				#endregion
+        #region undo
+        else if (strMessage == "undo")
+        {
+          // * Chess Engine Communication Protocol
+          // If the user asks to back up one move, xboard will send you the "undo" command. xboard will not send this command without putting you in "force" mode first, so you don't have to worry about what should happen if the user asks to undo a move your engine made. (GNU Chess 4 actually switches to playing the opposite color in this case.) 
+          Game.UndoMove();
+        }
+        #endregion
 
-				#region remove
-				else if( strMessage == "remove" )
-				{
-					// * Chess Engine Communication Protocol
-					// If the user asks to retract a move, xboard will send you the "remove" command. It sends this command only when the user is on move. 
-					// Your engine should undo the last two moves (one for each player) and continue playing the same color.
-					Game.UndoMove();
-					Game.UndoMove();
-				}
-				#endregion
+        #region remove
+        else if (strMessage == "remove")
+        {
+          // * Chess Engine Communication Protocol
+          // If the user asks to retract a move, xboard will send you the "remove" command. It sends this command only when the user is on move. 
+          // Your engine should undo the last two moves (one for each player) and continue playing the same color.
+          Game.UndoMove();
+          Game.UndoMove();
+        }
+        #endregion
 
-				#region post 
-				else if( strMessage == "post" )
-				{
-					// * Chess Engine Communication Protocol
-					// Turn on thinking output
-					createGameIfNotYetCreated();
-					Game.ThinkingCallback = XBoard2Interface.callbackObject.updateThinking;
-				}
-				#endregion
+        #region post 
+        else if (strMessage == "post")
+        {
+          // * Chess Engine Communication Protocol
+          // Turn on thinking output
+          createGameIfNotYetCreated();
+          Game.ThinkingCallback = XBoard2Interface.callbackObject.updateThinking;
+        }
+        #endregion
 
-				#region nopost
-				else if( strMessage == "nopost" )
-				{
-					// Turn off thinking output
-					createGameIfNotYetCreated();
-					Game.ThinkingCallback = null;
-				}
-				#endregion
+        #region nopost
+        else if (strMessage == "nopost")
+        {
+          // Turn off thinking output
+          createGameIfNotYetCreated();
+          Game.ThinkingCallback = null;
+        }
+        #endregion
 
-				#region level
-				else if( strMessage.StartsWith( "level " ) )
-				{
-					setLevel( strMessage.Substring( "level ".Length ) );
-					XBoardTimeUpdatedEvent();
-				}
-				#endregion
+        #region level
+        else if (strMessage.StartsWith("level "))
+        {
+          setLevel(strMessage.Substring("level ".Length));
+          XBoardTimeUpdatedEvent();
+        }
+        #endregion
 
-				#region option
-				else if( strMessage.StartsWith( "option " ) )
-				{
-					//	process setting of ChessV option (if recognized)
-					string optionEqualsValueString = strMessage.Substring( 7 ).Trim();
-					int splitIndex = optionEqualsValueString.IndexOf( '=' );
-					if( splitIndex > 0 )
-					{
-						string option = optionEqualsValueString.Substring( 0, splitIndex ).Trim();
-						string value = optionEqualsValueString.Substring( splitIndex + 1 ).Trim();
-						if( option.ToUpper() == "VARIATION OF PLAY" )
-						{
-							if( value.ToUpper() == "NONE" )
-								variationOfPlay = 0;
-							else if( value.ToUpper() == "SMALL" )
-								variationOfPlay = 1;
-							else if( value.ToUpper() == "MEDIUM" )
-								variationOfPlay = 2;
-							else if( value.ToUpper() == "LARGE" )
-								variationOfPlay = 3;
-						}
-						else if( option.ToUpper() == "WEAKENING" )
-						{
-							int weakeningVal;
-							bool canParse = int.TryParse( value, out weakeningVal );
-							if( canParse && weakeningVal >= 0 && weakeningVal <= 15 )
-								weakening = weakeningVal;
-						}
-					}
-				}
-				#endregion
+        #region option
+        else if (strMessage.StartsWith("option "))
+        {
+          //	process setting of ChessV option (if recognized)
+          string optionEqualsValueString = strMessage.Substring(7).Trim();
+          int splitIndex = optionEqualsValueString.IndexOf('=');
+          if (splitIndex > 0)
+          {
+            string option = optionEqualsValueString.Substring(0, splitIndex).Trim();
+            string value = optionEqualsValueString.Substring(splitIndex + 1).Trim();
+            if (option.ToUpper() == "VARIATION OF PLAY")
+            {
+              if (value.ToUpper() == "NONE")
+                variationOfPlay = 0;
+              else if (value.ToUpper() == "SMALL")
+                variationOfPlay = 1;
+              else if (value.ToUpper() == "MEDIUM")
+                variationOfPlay = 2;
+              else if (value.ToUpper() == "LARGE")
+                variationOfPlay = 3;
+            }
+            else if (option.ToUpper() == "WEAKENING")
+            {
+              int weakeningVal;
+              bool canParse = int.TryParse(value, out weakeningVal);
+              if (canParse && weakeningVal >= 0 && weakeningVal <= 15)
+                weakening = weakeningVal;
+            }
+          }
+        }
+        #endregion
 
-				#region memory
-				else if( strMessage.StartsWith( "memory " ) )
-				{
-					string sizeStr = strMessage.Substring( 7 ).Trim();
-					int size;
-					if( int.TryParse( sizeStr, out size ) )
-					{
-						//	find the next smallest power of 2
-						int ttsize = 4096;
-						while( ttsize >= size )
-							ttsize /= 2;
-						ttSizeInMB = ttsize;
-					}
-				}
-				#endregion
+        #region memory
+        else if (strMessage.StartsWith("memory "))
+        {
+          string sizeStr = strMessage.Substring(7).Trim();
+          int size;
+          if (int.TryParse(sizeStr, out size))
+          {
+            //	find the next smallest power of 2
+            int ttsize = 4096;
+            while (ttsize >= size)
+              ttsize /= 2;
+            ttSizeInMB = ttsize;
+          }
+        }
+        #endregion
 
 
-				#region *** analysis mode commands ***
-				#region analyze
-				else if( strMessage == "analyze" )
-				{
-					// * Chess Engine Communication Protocol
-					// Enter analyze mode.
+        #region *** analysis mode commands ***
+        #region analyze
+        else if (strMessage == "analyze")
+        {
+          // * Chess Engine Communication Protocol
+          // Enter analyze mode.
 
-					//	analysis mode is not supported
-					throw new XBoardInputException( "Unsupported command: " + strMessage );
-				}
-				#endregion
+          //	analysis mode is not supported
+          throw new XBoardInputException("Unsupported command: " + strMessage);
+        }
+        #endregion
 
-				#region .
-				else if( strMessage == "." )
-				{
-					//	analysis mode is not supported
-					throw new XBoardInputException( "Unsupported command: " + strMessage );
+        #region .
+        else if (strMessage == ".")
+        {
+          //	analysis mode is not supported
+          throw new XBoardInputException("Unsupported command: " + strMessage);
 
-					// Status update
-					/*					if( Game.PlayerToPlay.Brain.IsThinking )
+          // Status update
+          /*					if( Game.PlayerToPlay.Brain.IsThinking )
 										{
 											SendAnalyzeStatus(
 												Game.PlayerToPlay.Brain.ThinkingTimeElpased,
@@ -584,111 +583,111 @@ namespace ChessV.Engine
 												Game.PlayerToPlay.Brain.Search.TotalPositionsToSearch,
 												Game.PlayerToPlay.Brain.Search.CurrentMoveSearched );
 										}*/
-				}
-				#endregion
+        }
+        #endregion
 
-				#region exit
-				else if( strMessage == "exit" )
-				{
-					// Exit analyze mode.
-					//					Game.SuspendPondering();
+        #region exit
+        else if (strMessage == "exit")
+        {
+          // Exit analyze mode.
+          //					Game.SuspendPondering();
 
-					//					if( Game.IsInAnalyseMode )
-					//					{
-					//						Game.IsInAnalyseMode = false;
-					//					}
-				}
-				#endregion
-				#endregion
+          //					if( Game.IsInAnalyseMode )
+          //					{
+          //						Game.IsInAnalyseMode = false;
+          //					}
+        }
+        #endregion
+        #endregion
 
 
-				#region *** commands we ignore ***
-				#region random
-				else if( strMessage == "random" )
-				{
-					//	ignore this
-				}
-				#endregion
+        #region *** commands we ignore ***
+        #region random
+        else if (strMessage == "random")
+        {
+          //	ignore this
+        }
+        #endregion
 
-				#region white/back
-				else if( strMessage == "white" || strMessage == "black" )
-				{
-					//	obsolete commands as of protocol version 2 - ignore 
-				}
-				#endregion
+        #region white/back
+        else if (strMessage == "white" || strMessage == "black")
+        {
+          //	obsolete commands as of protocol version 2 - ignore 
+        }
+        #endregion
 
-				#region hard
-				else if( strMessage == "hard" )
-				{
-					/*
+        #region hard
+        else if (strMessage == "hard")
+        {
+          /*
 					   * Chess Engine Communication Protocol
 						Turn on pondering (thinking on the opponent's time, also known as "permanent brain"). xboard will not 
 						make any assumption about what your default is for pondering or whether "new" affects this setting. 
 					*/
 
-					//	Pondering is not supported, so do nothing
-				}
-				#endregion
+          //	Pondering is not supported, so do nothing
+        }
+        #endregion
 
-				#region easy
-				else if( strMessage == "easy" )
-				{
-					// * Chess Engine Communication Protocol
-					// Turn off pondering
+        #region easy
+        else if (strMessage == "easy")
+        {
+          // * Chess Engine Communication Protocol
+          // Turn off pondering
 
-					//	Pondering is not supported, so do nothing				
-				}
-				#endregion
+          //	Pondering is not supported, so do nothing				
+        }
+        #endregion
 
-				#region otim
-				else if( strMessage.StartsWith( "otim " ) )
-				{
-					//	do nothing - we don't do anything differently based on the opponent's time remaining
-				}
-				#endregion
+        #region otim
+        else if (strMessage.StartsWith("otim "))
+        {
+          //	do nothing - we don't do anything differently based on the opponent's time remaining
+        }
+        #endregion
 
-				#region computer
-				else if( strMessage == "computer" )
-				{
-					// * Chess Engine Communication Protocol
-					// The opponent is also a computer chess engine. Some engines alter their playing style when they receive this command.
-				}
-				#endregion
+        #region computer
+        else if (strMessage == "computer")
+        {
+          // * Chess Engine Communication Protocol
+          // The opponent is also a computer chess engine. Some engines alter their playing style when they receive this command.
+        }
+        #endregion
 
-				#region name
-				else if( strMessage.StartsWith( "name " ) )
-				{
-					// * Chess Engine Communication Protocol
-					// This command informs the engine of its opponent's name. When the engine is playing on a chess server, xboard obtains the 
-					// opponent's name from the server. When the engine is playing locally against a human user, xboard obtains the user's login 
-					// name from the local operating system. When the engine is playing locally against another engine, xboard uses either the other 
-					// engine's filename or the name that the other engine supplied in the myname option to the feature command. By default, xboard 
-					// uses the name command only when the engine is playing on a chess server. Beginning in protocol version 2, you can change this
-					// with the name option to the feature command.
-				}
-				#endregion
+        #region name
+        else if (strMessage.StartsWith("name "))
+        {
+          // * Chess Engine Communication Protocol
+          // This command informs the engine of its opponent's name. When the engine is playing on a chess server, xboard obtains the 
+          // opponent's name from the server. When the engine is playing locally against a human user, xboard obtains the user's login 
+          // name from the local operating system. When the engine is playing locally against another engine, xboard uses either the other 
+          // engine's filename or the name that the other engine supplied in the myname option to the feature command. By default, xboard 
+          // uses the name command only when the engine is playing on a chess server. Beginning in protocol version 2, you can change this
+          // with the name option to the feature command.
+        }
+        #endregion
 
-				#region accepted
-				else if( strMessage.StartsWith( "accepted " ) )
-				{
-					//	Feature request is accepted - no action necessary
-				}
-				#endregion
+        #region accepted
+        else if (strMessage.StartsWith("accepted "))
+        {
+          //	Feature request is accepted - no action necessary
+        }
+        #endregion
 
-				#region rejected
-				else if( strMessage.StartsWith( "rejected " ) )
-				{
-					//	Feature request is rejected - no action necessary
-				}
-				#endregion
-				#endregion
+        #region rejected
+        else if (strMessage.StartsWith("rejected "))
+        {
+          //	Feature request is rejected - no action necessary
+        }
+        #endregion
+        #endregion
 
 
-				#region *** commands we do not support ***
-				#region edit
-				else if( strMessage == "edit" )
-				{
-					/*
+        #region *** commands we do not support ***
+        #region edit
+        else if (strMessage == "edit")
+        {
+          /*
 					   * Chess Engine Communication Protocol
 						The edit command is the old way to set up positions. For compatibility with old engines, it is still used by default, but new engines may prefer to use the feature command (see below) to cause xboard to use setboard instead. The edit command puts the chess engine into a special mode, where it accepts the following subcommands: c change current piece color, initially white  
 						Pa4 (for example) place pawn of current color on a4  
@@ -710,56 +709,56 @@ namespace ChessV.Engine
 						After an edit command is complete, if a king and a rook are on their home squares, castling is assumed to be available to them. En passant capture is assumed to be illegal on the current move regardless of the positions of the pawns. The clock for the 50 move rule starts at zero, and for purposes of the draw by repetition rule, no prior positions are deemed to have occurred. 
 
 					*/
-					throw new XBoardInputException( "Unsupported command: " + strMessage );
-				}
-				#endregion
+          throw new XBoardInputException("Unsupported command: " + strMessage);
+        }
+        #endregion
 
-				#region hint
-				else if( strMessage == "hint" )
-				{
-					// * Chess Engine Communication Protocol
-					// If the user asks for a hint, xboard sends your engine the command "hint". Your engine should respond with "Hint: xxx", where xxx is a suggested move. If there is no move to suggest, you can ignore the hint command (that is, treat it as a no-op). 
-					throw new XBoardInputException( "Unsupported command: " + strMessage );
-				}
-				#endregion
+        #region hint
+        else if (strMessage == "hint")
+        {
+          // * Chess Engine Communication Protocol
+          // If the user asks for a hint, xboard sends your engine the command "hint". Your engine should respond with "Hint: xxx", where xxx is a suggested move. If there is no move to suggest, you can ignore the hint command (that is, treat it as a no-op). 
+          throw new XBoardInputException("Unsupported command: " + strMessage);
+        }
+        #endregion
 
-				#region bk
-				else if( strMessage == "bk" )
-				{
-					// * Chess Engine Communication Protocol
-					// If the user selects "Book" from the xboard menu, xboard will send your engine the command "bk". You can send any text you like as the response, as long as each line begins with a blank space or tab (\t) character, and you send an empty line at the end. The text pops up in a modal information dialog. 
-					throw new XBoardInputException( "Unsupported command: " + strMessage );
-				}
-				#endregion
+        #region bk
+        else if (strMessage == "bk")
+        {
+          // * Chess Engine Communication Protocol
+          // If the user selects "Book" from the xboard menu, xboard will send your engine the command "bk". You can send any text you like as the response, as long as each line begins with a blank space or tab (\t) character, and you send an empty line at the end. The text pops up in a modal information dialog. 
+          throw new XBoardInputException("Unsupported command: " + strMessage);
+        }
+        #endregion
 
-				#region resume
-				else if( strMessage == "resume" )
-				{
-					// * Chess Engine Communication Protocol
-					// (These commands are new in protocol version 2 and will not be sent unless feature pause=1 is set. 
-					// At this writing, xboard actually does not use the commands at all, but it or other interfaces may use them in the future.) 
-					// The "pause" command puts the engine into a special state where it does not think, ponder, or otherwise consume significant CPU time. 
-					// The current thinking or pondering (if any) is suspended and both player's clocks are stopped. 
-					// The only command that the interface may send to the engine while it is in the paused state is "resume". 
-					// The paused thinking or pondering (if any) resumes from exactly where it left off, and the clock of the player 
-					// on move resumes running from where it stopped. 
-					throw new XBoardInputException( "Unsupported command: " + strMessage );
-				}
-				#endregion
+        #region resume
+        else if (strMessage == "resume")
+        {
+          // * Chess Engine Communication Protocol
+          // (These commands are new in protocol version 2 and will not be sent unless feature pause=1 is set. 
+          // At this writing, xboard actually does not use the commands at all, but it or other interfaces may use them in the future.) 
+          // The "pause" command puts the engine into a special state where it does not think, ponder, or otherwise consume significant CPU time. 
+          // The current thinking or pondering (if any) is suspended and both player's clocks are stopped. 
+          // The only command that the interface may send to the engine while it is in the paused state is "resume". 
+          // The paused thinking or pondering (if any) resumes from exactly where it left off, and the clock of the player 
+          // on move resumes running from where it stopped. 
+          throw new XBoardInputException("Unsupported command: " + strMessage);
+        }
+        #endregion
 
-				#region pause
-				else if( strMessage == "pause" )
-				{
-					// * Chess Engine Communication Protocol
-					// See resume
-					throw new XBoardInputException( "Unsupported command: " + strMessage );
-				}
-				#endregion
+        #region pause
+        else if (strMessage == "pause")
+        {
+          // * Chess Engine Communication Protocol
+          // See resume
+          throw new XBoardInputException("Unsupported command: " + strMessage);
+        }
+        #endregion
 
-				#region rating
-				else if( strMessage == "rating" )
-				{
-					/*
+        #region rating
+        else if (strMessage == "rating")
+        {
+          /*
 					   * Chess Engine Communication Protocol
 						In ICS mode, xboard obtains the ICS opponent's rating from the "Creating:" message that appears before each game. 
 						(This message may not appear on servers using outdated versions of the FICS code.) In Zippy mode, it sends these ratings on
@@ -767,159 +766,159 @@ namespace ChessV.Engine
 						rated, his rating is given as 0. In the future this command may also be used in other modes, if ratings are known. 
 						Example: rating 2600 1500
 					*/
-					throw new XBoardInputException( "Unsupported command: " + strMessage );
-				}
-				#endregion
+          throw new XBoardInputException("Unsupported command: " + strMessage);
+        }
+        #endregion
 
-				#region ics
-				else if( strMessage.StartsWith( "ics " ) )
-				{
-					// * Chess Engine Communication Protocol
-					// If HOSTNAME is "-", the engine is playing against a local opponent; otherwise, the engine is playing on an Internet Chess Server (ICS)
-					//  with the given hostname. This command is new in protocol version 2 and is not sent unless the engine has enabled it with the "feature"
-					//  command. Example: "ics freechess.org" 
-					throw new XBoardInputException( "Unsupported command: " + strMessage );
-				}
-				#endregion
-				#endregion
+        #region ics
+        else if (strMessage.StartsWith("ics "))
+        {
+          // * Chess Engine Communication Protocol
+          // If HOSTNAME is "-", the engine is playing against a local opponent; otherwise, the engine is playing on an Internet Chess Server (ICS)
+          //  with the given hostname. This command is new in protocol version 2 and is not sent unless the engine has enabled it with the "feature"
+          //  command. Example: "ics freechess.org" 
+          throw new XBoardInputException("Unsupported command: " + strMessage);
+        }
+        #endregion
+        #endregion
 
 
-				#region *** other input - probably a move ***
-				else
-				{
-					createGameIfNotYetCreated();
-					Movement move = Game.MoveFromDescription( strMessage, MoveNotation.XBoard );
-					if( move != null )
-					{
-						Game.MakeMove( move, true );
-						if( Game.ComputerControlled[Game.CurrentSide] )
-						{
-							TimeControl.StartTimer();
-							List<Movement> moves = Game.Think( TimeControl );
-							foreach( Movement mv in moves )
-								Game.MakeMove( mv, true );
-							sendMove( moves );
-						}
-					}
-					else
-						throw new XBoardInputException( "Error (unknown command): " + strMessage );
-				}
-				#endregion
-			}
-			catch( XBoardInputException e )
-			{
-				sendOutputMessage( e.Message );
-			}
-		}
-		#endregion
+        #region *** other input - probably a move ***
+        else
+        {
+          createGameIfNotYetCreated();
+          Movement move = Game.MoveFromDescription(strMessage, MoveNotation.XBoard);
+          if (move != null)
+          {
+            Game.MakeMove(move, true);
+            if (Game.ComputerControlled[Game.CurrentSide])
+            {
+              TimeControl.StartTimer();
+              List<Movement> moves = Game.Think(TimeControl);
+              foreach (Movement mv in moves)
+                Game.MakeMove(mv, true);
+              sendMove(moves);
+            }
+          }
+          else
+            throw new XBoardInputException("Error (unknown command): " + strMessage);
+        }
+        #endregion
+      }
+      catch (XBoardInputException e)
+      {
+        sendOutputMessage(e.Message);
+      }
+    }
+    #endregion
 
-		public static void SendCheckmate()
-		{
-			if( Active )
-				sendOutputMessage( Game.Match.Result.Winner == 0 ? "1-0 {White mates}" : "0-1 {Black mates}" );
-		}
+    public static void SendCheckmate()
+    {
+      if (Active)
+        sendOutputMessage(Game.Match.Result.Winner == 0 ? "1-0 {White mates}" : "0-1 {Black mates}");
+    }
 
-		public static void SendStalemate()
-		{
-			if( Active )
-				sendOutputMessage( "1/2-1/2 {Stalemate}" );
-		}
+    public static void SendStalemate()
+    {
+      if (Active)
+        sendOutputMessage("1/2-1/2 {Stalemate}");
+    }
 
-		public static void SendDrawByFiftyMoveRule()
-		{
-			if( Active )
-				sendOutputMessage( "1/2-1/2 {Draw by 50 move rule}" );
-		}
+    public static void SendDrawByFiftyMoveRule()
+    {
+      if (Active)
+        sendOutputMessage("1/2-1/2 {Draw by 50 move rule}");
+    }
 
-		public static void SendDrawByInsufficientMaterial()
-		{
-			if( Active )
-				sendOutputMessage( "1/2-1/2 {Draw by insufficient material}" );
-		}
+    public static void SendDrawByInsufficientMaterial()
+    {
+      if (Active)
+        sendOutputMessage("1/2-1/2 {Draw by insufficient material}");
+    }
 
-		public static void SendDrawByRepetition()
-		{
-			if( Active )
-				sendOutputMessage( "1/2-1/2 {Draw by repetition}" );
-		}
+    public static void SendDrawByRepetition()
+    {
+      if (Active)
+        sendOutputMessage("1/2-1/2 {Draw by repetition}");
+    }
 
-		#region SendMoveTime
-		public static void SendMoveTime( TimeSpan timeSpan )
-		{
-			if( Active )
-			{
-				sendOutputMessage( "movetime " + timeSpan.ToString() );
-			}
-		}
-		#endregion
+    #region SendMoveTime
+    public static void SendMoveTime(TimeSpan timeSpan)
+    {
+      if (Active)
+      {
+        sendOutputMessage("movetime " + timeSpan.ToString());
+      }
+    }
+    #endregion
 
-		#region UpdateThinking
-		public static void UpdateThinking( Dictionary<string, string> searchinfo )
-		{
-			int currentEval = 0;
-			if( searchinfo["Score"].IndexOf( "M" ) >= 0 )
-				currentEval = searchinfo["Score"].IndexOf( "-" ) >= 0
-			  ? -100000 - Convert.ToInt32( searchinfo["Score"].Substring( searchinfo["Score"].IndexOf( "M" ) + 1 ) )
-			  : 100000 + Convert.ToInt32( searchinfo["Score"].Substring( searchinfo["Score"].IndexOf( "M" ) + 1 ) );
-			else
-			{
-				Double d;
-				if( Double.TryParse( searchinfo["Score"], out d ) )
-					currentEval = Convert.ToInt32( d * 100.0 );
-			}
-			sendOutputMessage(
-				searchinfo["Depth"] + " " +      // send search depth
-				currentEval.ToString() + " " +   // send evaluation 
-				searchinfo["TimeXB"] + " " +     // send time used
-				searchinfo["NodesXB"] + " " +    // send node count
-				searchinfo["PV"] );              // send current PV
-		}
-		#endregion
+    #region UpdateThinking
+    public static void UpdateThinking(Dictionary<string, string> searchinfo)
+    {
+      int currentEval = 0;
+      if (searchinfo["Score"].IndexOf("M") >= 0)
+        currentEval = searchinfo["Score"].IndexOf("-") >= 0
+        ? -100000 - Convert.ToInt32(searchinfo["Score"].Substring(searchinfo["Score"].IndexOf("M") + 1))
+        : 100000 + Convert.ToInt32(searchinfo["Score"].Substring(searchinfo["Score"].IndexOf("M") + 1));
+      else
+      {
+        Double d;
+        if (Double.TryParse(searchinfo["Score"], out d))
+          currentEval = Convert.ToInt32(d * 100.0);
+      }
+      sendOutputMessage(
+        searchinfo["Depth"] + " " +      // send search depth
+        currentEval.ToString() + " " +   // send evaluation 
+        searchinfo["TimeXB"] + " " +     // send time used
+        searchinfo["NodesXB"] + " " +    // send node count
+        searchinfo["PV"]);              // send current PV
+    }
+    #endregion
 
-		#region StartListener
-		public static void StartListener()
-		{
-			if( Active )
-			{
-				ThreadListener = new Thread( listen ) { Priority = ThreadPriority.Normal };
-				ThreadListener.Start();
-			}
-		}
-		#endregion
+    #region StartListener
+    public static void StartListener()
+    {
+      if (Active)
+      {
+        ThreadListener = new Thread(listen) { Priority = ThreadPriority.Normal };
+        ThreadListener.Start();
+      }
+    }
+    #endregion
 
-		#region StopListener
-		public static void StopListener()
-		{
-			if( Active )
-			{
-				ThreadListener.Abort();
-				ThreadListener.Join();
-				ThreadListener = null;
-			}
-		}
-		#endregion
-		#endregion
+    #region StopListener
+    public static void StopListener()
+    {
+      if (Active)
+      {
+        ThreadListener.Abort();
+        ThreadListener.Join();
+        ThreadListener = null;
+      }
+    }
+    #endregion
+    #endregion
 
-		#region Private Functions
-		private static void listen()
-		{
-			while( true )
-			{
-				string strMessage = Console.ReadLine();
-				if( strMessage == null )
-				{
-					Thread.Sleep( 100 );
-				}
-				else
-				{
-					XBoardInputEvent( strMessage );
-				}
-			}
-		}
+    #region Private Functions
+    private static void listen()
+    {
+      while (true)
+      {
+        string strMessage = Console.ReadLine();
+        if (strMessage == null)
+        {
+          Thread.Sleep(100);
+        }
+        else
+        {
+          XBoardInputEvent(strMessage);
+        }
+      }
+    }
 
-		private static void makeMove( string strMove )
-		{
-			/*
+    private static void makeMove(string strMove)
+    {
+      /*
 					See below for the syntax of moves. If the move is illegal, print an error message; 
 					see the section "Commands from the engine to xboard". If the move is legal and in turn, make it. 
 					If not in force mode, stop the opponent's clock, start the engine's clock, start thinking, and eventually make a move. 
@@ -940,113 +939,113 @@ namespace ChessV.Engine
 					or rook moves, or en passant availability. If xboard sends an illegal move, send back an error message so that xboard 
 					can retract it and inform the user; see the section "Commands from the engine to xboard". 
 				*/
-			//			Game.SuspendPondering();
+      //			Game.SuspendPondering();
 
-			throw new XBoardInputException( "Illegal move: " + strMove );
-		}
+      throw new XBoardInputException("Illegal move: " + strMove);
+    }
 
-		private static void sendOutputMessage( string message )
-		{
-			Console.WriteLine( message );
-		}
+    private static void sendOutputMessage(string message)
+    {
+      Console.WriteLine(message);
+    }
 
-		private static void sendMove( List<Movement> moves )
-		{
-			if( moves.Count == 1 )
-				sendOutputMessage( "move " + Game.DescribeMove( moves[0], MoveNotation.XBoard ) );
-			else
-			{
-				//	multi-leg moves such as in marseillais chess
-				string movedesc = Game.DescribeMove( moves[0], MoveNotation.XBoard );
-				for( int x = 1; x < moves.Count; x++ )
-					movedesc += "," + Game.DescribeMove( moves[1], MoveNotation.XBoard );
-				sendOutputMessage( "move " + movedesc );
-			}
-		}
+    private static void sendMove(List<Movement> moves)
+    {
+      if (moves.Count == 1)
+        sendOutputMessage("move " + Game.DescribeMove(moves[0], MoveNotation.XBoard));
+      else
+      {
+        //	multi-leg moves such as in marseillais chess
+        string movedesc = Game.DescribeMove(moves[0], MoveNotation.XBoard);
+        for (int x = 1; x < moves.Count; x++)
+          movedesc += "," + Game.DescribeMove(moves[1], MoveNotation.XBoard);
+        sendOutputMessage("move " + movedesc);
+      }
+    }
 
-		private static void setLevel( string strLevel )
-		{
-			int intPos;
-			string strMoves;
-			string strTime;
-			string strIncrement;
-			int intMoves;
-			int intMinutes;
-			int intSeconds;
-			int intIncrement;
+    private static void setLevel(string strLevel)
+    {
+      int intPos;
+      string strMoves;
+      string strTime;
+      string strIncrement;
+      int intMoves;
+      int intMinutes;
+      int intSeconds;
+      int intIncrement;
 
-			intPos = strLevel.IndexOf( " " );
-			strMoves = strLevel.Substring( 0, intPos );
-			strLevel = strLevel.Substring( intPos + 1 );
+      intPos = strLevel.IndexOf(" ");
+      strMoves = strLevel.Substring(0, intPos);
+      strLevel = strLevel.Substring(intPos + 1);
 
-			intPos = strLevel.IndexOf( " " );
-			strTime = strLevel.Substring( 0, intPos );
-			strLevel = strLevel.Substring( intPos + 1 );
+      intPos = strLevel.IndexOf(" ");
+      strTime = strLevel.Substring(0, intPos);
+      strLevel = strLevel.Substring(intPos + 1);
 
-			strIncrement = strLevel;
-			intIncrement = int.Parse( strIncrement );
+      strIncrement = strLevel;
+      intIncrement = int.Parse(strIncrement);
 
-			intMoves = int.Parse( strMoves );
+      intMoves = int.Parse(strMoves);
 
-			intPos = strTime.IndexOf( ':' );
-			if( intPos >= 0 )
-			{
-				intMinutes = int.Parse( strTime.Substring( 0, intPos ) );
-				intSeconds = int.Parse( strTime.Substring( intPos + 1 ) );
-			}
-			else
-			{
-				intMinutes = int.Parse( strTime );
-				intSeconds = 0;
-			}
+      intPos = strTime.IndexOf(':');
+      if (intPos >= 0)
+      {
+        intMinutes = int.Parse(strTime.Substring(0, intPos));
+        intSeconds = int.Parse(strTime.Substring(intPos + 1));
+      }
+      else
+      {
+        intMinutes = int.Parse(strTime);
+        intSeconds = 0;
+      }
 
-			string tcString = intMinutes.ToString();
-			if( intSeconds > 0 )
-				tcString = tcString + ":" + intSeconds.ToString();
-			if( intIncrement > 0 )
-				tcString = tcString + "+" + intIncrement.ToString();
-			if( intMoves > 0 )
-				tcString = intMoves.ToString() + "/" + tcString;
-			TimeControl = new TimeControl( tcString );
+      string tcString = intMinutes.ToString();
+      if (intSeconds > 0)
+        tcString = tcString + ":" + intSeconds.ToString();
+      if (intIncrement > 0)
+        tcString = tcString + "+" + intIncrement.ToString();
+      if (intMoves > 0)
+        tcString = intMoves.ToString() + "/" + tcString;
+      TimeControl = new TimeControl(tcString);
 
-		}
+    }
 
-		private static void setTime( string strTime )
-		{
-			int seconds = int.Parse( strTime );
-			TimeControl = new TimeControl();
-			TimeControl.TimePerMove = seconds * 1000;
-		}
+    private static void setTime(string strTime)
+    {
+      int seconds = int.Parse(strTime);
+      TimeControl = new TimeControl();
+      TimeControl.TimePerMove = seconds * 1000;
+    }
 
-		private static void createGameIfNotYetCreated()
-		{
-			if( Game == null )
-				Game = Program.Manager.CreateGame( Program.Manager.XBoardNameToProperName( Variant ) );
-			Game.Variation = variationOfPlay;
-			Game.Weakening = weakening;
-			Game.TTSizeInMB = ttSizeInMB;
-			Game.ComputerControlled[0] = ForceModeOn == false && MySide == 0;
-			Game.ComputerControlled[1] = ForceModeOn == false && MySide == 1;
-		}
-		#endregion
+    private static void createGameIfNotYetCreated()
+    {
+      if (Game == null)
+        Game = Program.Manager.CreateGame(Program.Manager.XBoardNameToProperName(Variant));
+      Game.Variation = variationOfPlay;
+      Game.Weakening = weakening;
+      Game.TTSizeInMB = ttSizeInMB;
+      Game.ComputerControlled[0] = ForceModeOn == false && MySide == 0;
+      Game.ComputerControlled[1] = ForceModeOn == false && MySide == 1;
+    }
+    #endregion
 
-		private static CallbackObject callbackObject = new CallbackObject();
+    private static CallbackObject callbackObject = new CallbackObject();
 
-		private static bool ForceModeOn;
+    private static bool ForceModeOn;
 
-		private static int variationOfPlay;
+    private static int variationOfPlay;
 
-		private static int weakening;
+    private static int weakening;
 
-		private static int ttSizeInMB = 64;
-	}
+    private static int ttSizeInMB = 64;
+  }
 
-	class CallbackObject
-	{
-		//	callback function from engine to post thinking info
-		public void updateThinking( Dictionary<string, string> searchinfo )
-		{
-			XBoard2Interface.UpdateThinking( searchinfo );
-		}
-	}
+  class CallbackObject
+  {
+    //	callback function from engine to post thinking info
+    public void updateThinking(Dictionary<string, string> searchinfo)
+    {
+      XBoard2Interface.UpdateThinking(searchinfo);
+    }
+  }
 }

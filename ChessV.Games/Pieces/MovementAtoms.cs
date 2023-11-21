@@ -20,179 +20,179 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 namespace ChessV.Games
 {
-	#region Wazir
-	[PieceType("Wazir", "Movement Atoms")]
-	public class Wazir: PieceType
-	{
-		public Wazir( string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null ):
-			base( "Wazir", name, notation, midgameValue, endgameValue, preferredImageName )
-		{
-			AddMoves( this );
-		}
+  #region Wazir
+  [PieceType("Wazir", "Movement Atoms")]
+  public class Wazir : PieceType
+  {
+    public Wazir(string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null) :
+      base("Wazir", name, notation, midgameValue, endgameValue, preferredImageName)
+    {
+      AddMoves(this);
+    }
 
-		public static new void AddMoves( PieceType type )
-		{
-			type.Step( new Direction( 0, 1 ) );
-			type.Step( new Direction( 0, -1 ) );
-			type.Step( new Direction( 1, 0 ) );
-			type.Step( new Direction( -1, 0 ) );
-		}
-	}
-	#endregion
+    public static new void AddMoves(PieceType type)
+    {
+      type.Step(new Direction(0, 1));
+      type.Step(new Direction(0, -1));
+      type.Step(new Direction(1, 0));
+      type.Step(new Direction(-1, 0));
+    }
+  }
+  #endregion
 
-	#region Ferz
-	[PieceType("Ferz", "Movement Atoms")]
-	public class Ferz: PieceType
-	{
-		public Ferz( string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null ):
-			base( "Ferz", name, notation, midgameValue, endgameValue, preferredImageName )
-		{
-			AddMoves( this );
-		}
+  #region Ferz
+  [PieceType("Ferz", "Movement Atoms")]
+  public class Ferz : PieceType
+  {
+    public Ferz(string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null) :
+      base("Ferz", name, notation, midgameValue, endgameValue, preferredImageName)
+    {
+      AddMoves(this);
+    }
 
-		public static new void AddMoves( PieceType type )
-		{
-			type.Step( new Direction( 1, 1 ) );
-			type.Step( new Direction( 1, -1 ) );
-			type.Step( new Direction( -1, 1 ) );
-			type.Step( new Direction( -1, -1 ) );
-		}
-	}
-	#endregion
+    public static new void AddMoves(PieceType type)
+    {
+      type.Step(new Direction(1, 1));
+      type.Step(new Direction(1, -1));
+      type.Step(new Direction(-1, 1));
+      type.Step(new Direction(-1, -1));
+    }
+  }
+  #endregion
 
-	#region Elephant
-	[PieceType("Elephant", "Movement Atoms")]
-	public class Elephant: PieceType
-	{
-		public Elephant( string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null ):
-			base( "Elephant", name, notation, midgameValue, endgameValue, preferredImageName )
-		{
-			AddMoves( this );
-		}
+  #region Elephant
+  [PieceType("Elephant", "Movement Atoms")]
+  public class Elephant : PieceType
+  {
+    public Elephant(string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null) :
+      base("Elephant", name, notation, midgameValue, endgameValue, preferredImageName)
+    {
+      AddMoves(this);
+    }
 
-		public static new void AddMoves( PieceType type )
-		{
-			type.Step( new Direction( 2, 2 ) );
-			type.Step( new Direction( 2, -2 ) );
-			type.Step( new Direction( -2, 2 ) );
-			type.Step( new Direction( -2, -2 ) );
-		}
-	}
-	#endregion
+    public static new void AddMoves(PieceType type)
+    {
+      type.Step(new Direction(2, 2));
+      type.Step(new Direction(2, -2));
+      type.Step(new Direction(-2, 2));
+      type.Step(new Direction(-2, -2));
+    }
+  }
+  #endregion
 
-	#region Dabbabah
-	[PieceType("Dabbabah", "Movement Atoms")]
-	public class Dabbabah: PieceType
-	{
-		public Dabbabah( string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null ):
-			base( "Dabbabah", name, notation, midgameValue, endgameValue, preferredImageName )
-		{
-			AddMoves( this );
-		}
+  #region Dabbabah
+  [PieceType("Dabbabah", "Movement Atoms")]
+  public class Dabbabah : PieceType
+  {
+    public Dabbabah(string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null) :
+      base("Dabbabah", name, notation, midgameValue, endgameValue, preferredImageName)
+    {
+      AddMoves(this);
+    }
 
-		public static new void AddMoves( PieceType type )
-		{
-			type.Step( new Direction( 0, 2 ) );
-			type.Step( new Direction( 0, -2 ) );
-			type.Step( new Direction( 2, 0 ) );
-			type.Step( new Direction( -2, 0 ) );
-		}
-	}
-	#endregion
+    public static new void AddMoves(PieceType type)
+    {
+      type.Step(new Direction(0, 2));
+      type.Step(new Direction(0, -2));
+      type.Step(new Direction(2, 0));
+      type.Step(new Direction(-2, 0));
+    }
+  }
+  #endregion
 
-	#region Tribbabah
-	[PieceType("Tribbabah", "Movement Atoms")]
-	public class Tribbabah: PieceType
-	{
-		public Tribbabah( string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null ):
-			base( "Tribbabah", name, notation, midgameValue, endgameValue, preferredImageName )
-		{
-			AddMoves( this );
-		}
+  #region Tribbabah
+  [PieceType("Tribbabah", "Movement Atoms")]
+  public class Tribbabah : PieceType
+  {
+    public Tribbabah(string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null) :
+      base("Tribbabah", name, notation, midgameValue, endgameValue, preferredImageName)
+    {
+      AddMoves(this);
+    }
 
-		public static new void AddMoves( PieceType type )
-		{
-			type.Step( new Direction( 0, 3 ) );
-			type.Step( new Direction( 0, -3 ) );
-			type.Step( new Direction( 3, 0 ) );
-			type.Step( new Direction( -3, 0 ) );
-		}
-	}
-	#endregion
+    public static new void AddMoves(PieceType type)
+    {
+      type.Step(new Direction(0, 3));
+      type.Step(new Direction(0, -3));
+      type.Step(new Direction(3, 0));
+      type.Step(new Direction(-3, 0));
+    }
+  }
+  #endregion
 
-	#region Camel
-	[PieceType("Camel", "Movement Atoms")]
-	public class Camel: PieceType
-	{
-		public Camel( string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null ):
-			base( "Camel", name, notation, midgameValue, endgameValue, preferredImageName )
-		{
-			AddMoves( this );
-		}
+  #region Camel
+  [PieceType("Camel", "Movement Atoms")]
+  public class Camel : PieceType
+  {
+    public Camel(string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null) :
+      base("Camel", name, notation, midgameValue, endgameValue, preferredImageName)
+    {
+      AddMoves(this);
+    }
 
-		public static new void AddMoves( PieceType type )
-		{
-			type.Step( new Direction( 1, 3 ) );
-			type.Step( new Direction( 3, 1 ) );
-			type.Step( new Direction( 3, -1 ) );
-			type.Step( new Direction( 1, -3 ) );
-			type.Step( new Direction( -1, -3 ) );
-			type.Step( new Direction( -3, -1 ) );
-			type.Step( new Direction( -3, 1 ) );
-			type.Step( new Direction( -1, 3 ) );
-		}
-	}
-	#endregion
+    public static new void AddMoves(PieceType type)
+    {
+      type.Step(new Direction(1, 3));
+      type.Step(new Direction(3, 1));
+      type.Step(new Direction(3, -1));
+      type.Step(new Direction(1, -3));
+      type.Step(new Direction(-1, -3));
+      type.Step(new Direction(-3, -1));
+      type.Step(new Direction(-3, 1));
+      type.Step(new Direction(-1, 3));
+    }
+  }
+  #endregion
 
-	#region Zebra
-	[PieceType("Zebra", "Movement Atoms")]
-	public class Zebra: PieceType
-	{
-		public Zebra( string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null ):
-			base( "Zebra", name, notation, midgameValue, endgameValue, preferredImageName )
-		{
-			AddMoves( this );
-		}
+  #region Zebra
+  [PieceType("Zebra", "Movement Atoms")]
+  public class Zebra : PieceType
+  {
+    public Zebra(string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null) :
+      base("Zebra", name, notation, midgameValue, endgameValue, preferredImageName)
+    {
+      AddMoves(this);
+    }
 
-		public static new void AddMoves( PieceType type )
-		{
-			type.Step( new Direction( 2, 3 ) );
-			type.Step( new Direction( 3, 2 ) );
-			type.Step( new Direction( 3, -2 ) );
-			type.Step( new Direction( 2, -3 ) );
-			type.Step( new Direction( -2, -3 ) );
-			type.Step( new Direction( -3, -2 ) );
-			type.Step( new Direction( -3, 2 ) );
-			type.Step( new Direction( -2, 3 ) );
-		}
-	}
-	#endregion
+    public static new void AddMoves(PieceType type)
+    {
+      type.Step(new Direction(2, 3));
+      type.Step(new Direction(3, 2));
+      type.Step(new Direction(3, -2));
+      type.Step(new Direction(2, -3));
+      type.Step(new Direction(-2, -3));
+      type.Step(new Direction(-3, -2));
+      type.Step(new Direction(-3, 2));
+      type.Step(new Direction(-2, 3));
+    }
+  }
+  #endregion
 
-	#region Nightrider
-	[PieceType("Nightrider", "Movement Atoms")]
-	public class Nightrider: PieceType
-	{
-		public Nightrider( string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null ):
-			base( "Nightrider", name, notation, midgameValue, endgameValue, preferredImageName )
-		{
-			AddMoves( this );
+  #region Nightrider
+  [PieceType("Nightrider", "Movement Atoms")]
+  public class Nightrider : PieceType
+  {
+    public Nightrider(string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null) :
+      base("Nightrider", name, notation, midgameValue, endgameValue, preferredImageName)
+    {
+      AddMoves(this);
 
-			//	Customize piece-square-tables for the Knightrider
-			PSTMidgameInSmallCenter = 12;
-			PSTMidgameInLargeCenter = 9;
-		}
+      //	Customize piece-square-tables for the Knightrider
+      PSTMidgameInSmallCenter = 12;
+      PSTMidgameInLargeCenter = 9;
+    }
 
-		public static new void AddMoves( PieceType type )
-		{
-			type.Slide( new Direction( 1, 2 ) );
-			type.Slide( new Direction( 2, 1 ) );
-			type.Slide( new Direction( 2, -1 ) );
-			type.Slide( new Direction( 1, -2 ) );
-			type.Slide( new Direction( -1, -2 ) );
-			type.Slide( new Direction( -2, -1 ) );
-			type.Slide( new Direction( -2, 1 ) );
-			type.Slide( new Direction( -1, 2 ) );
-		}
-	}
-	#endregion
+    public static new void AddMoves(PieceType type)
+    {
+      type.Slide(new Direction(1, 2));
+      type.Slide(new Direction(2, 1));
+      type.Slide(new Direction(2, -1));
+      type.Slide(new Direction(1, -2));
+      type.Slide(new Direction(-1, -2));
+      type.Slide(new Direction(-2, -1));
+      type.Slide(new Direction(-2, 1));
+      type.Slide(new Direction(-1, 2));
+    }
+  }
+  #endregion
 }

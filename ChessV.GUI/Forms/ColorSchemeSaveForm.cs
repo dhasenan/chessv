@@ -23,121 +23,121 @@ using System.Windows.Forms;
 
 namespace ChessV.GUI
 {
-	public partial class ColorSchemeSaveForm: Form
-	{
-		// *** PROPERTIES *** //
+  public partial class ColorSchemeSaveForm : Form
+  {
+    // *** PROPERTIES *** //
 
-		//	Returns whether the scheme is saved as a new scheme
-		//	(as opposed to overwriting the existing scheme)
-		public bool NewScheme { get; private set; }
-
-
-		// *** CONSTRUCTION *** //
-
-		public ColorSchemeSaveForm( ColorScheme colorScheme )
-		{
-			this.colorScheme = colorScheme;
-
-			InitializeComponent();
-		}
+    //	Returns whether the scheme is saved as a new scheme
+    //	(as opposed to overwriting the existing scheme)
+    public bool NewScheme { get; private set; }
 
 
-		// *** EVENT HANDLERS *** //
+    // *** CONSTRUCTION *** //
 
-		//	Form load event handler
-		private void ColorSchemeSaveForm_Load( object sender, EventArgs e )
-		{
-			if( colorScheme.Name == "(custom)" )
-			{
-				//	handling for a "custom" (i.e., nameless) scheme - 
-				//	we can only Save As, not Overwrite
-				optSaveAs.Checked = true;
-				optOverwrite.Enabled = false;
-			}
-			else
-			{
-				//	remove the (modified) from the end of the scheme name
-				//	since if we save it, it will no longer be modified
-				//	(and we shouldn't save it with "modified" in the name)
-				string schemeName = colorScheme.Name.Replace( " (modified)", "" );
-				optOverwrite.Text += " " + schemeName;
-				//	disable the new scheme name text box until the 
-				//	user selects the Save As radio button
-				txtNewSchemeName.Enabled = false;
-			}
-		}
+    public ColorSchemeSaveForm(ColorScheme colorScheme)
+    {
+      this.colorScheme = colorScheme;
 
-		//	Save As radio button check changed event handler
-		private void optSaveAs_CheckedChanged( object sender, EventArgs e )
-		{
-			if( optSaveAs.Checked )
-				//	enable the scheme name text box if Save As is selected
-				txtNewSchemeName.Enabled = true;
-		}
+      InitializeComponent();
+    }
 
-		//	Overwrite radio button check changed event handler
-		private void optOverwrite_CheckedChanged( object sender, EventArgs e )
-		{
-			if( optOverwrite.Checked )
-				//	disable the scheme name text box if Save As is not selected
-				txtNewSchemeName.Enabled = false;
-		}
 
-		//	Cancel button clicked event handler
-		private void btnCancel_Click( object sender, EventArgs e )
-		{
-			DialogResult = DialogResult.Cancel;
-			Close();
-		}
+    // *** EVENT HANDLERS *** //
 
-		//	OK button clicked event handler
-		private void btnOK_Click( object sender, EventArgs e )
-		{
-			if( optSaveAs.Checked )
-			{
-				//	If we're saving this as a new scheme ...
-				if( txtNewSchemeName.Text.Length < 1 )
-				{
-					MessageBox.Show( "You must provide a name for the new color scheme" );
-					return;
-				}
-				if( ColorSchemeLibrary.Contains( txtNewSchemeName.Text ) )
-				{
-					MessageBox.Show( "A color scheme with that name already exists" );
-					return;
-				}
-				else
-				{
-					colorScheme.Name = txtNewSchemeName.Text;
-					colorScheme.Modified = false;
-					ColorSchemeLibrary.NewScheme( colorScheme );
-					NewScheme = true;
-				}
-			}
-			else
-			{
-				//	We're overwriting the existing color scheme (if it's been modified)
-				//	NOTE: we shouldn't be here if the scheme has not been modified; in 
-				//	that case, the Save button on the AppearanceSettingsForm should 
-				//	have been disabled.
-				if( colorScheme.Modified )
-				{
-					//	since we're now saving it, it's no longer modified
-					colorScheme.Modified = false;
-					//	remove the (modified) from the name
-					colorScheme.Name = colorScheme.Name.Replace( " (modified)", "" );
-					//	update the color scheme in the library (which will 
-					//	update it in the registry)
-					ColorSchemeLibrary.UpdateScheme( colorScheme );
-				}
-			}
-			DialogResult = DialogResult.OK;
-			Close();
-		}
+    //	Form load event handler
+    private void ColorSchemeSaveForm_Load(object sender, EventArgs e)
+    {
+      if (colorScheme.Name == "(custom)")
+      {
+        //	handling for a "custom" (i.e., nameless) scheme - 
+        //	we can only Save As, not Overwrite
+        optSaveAs.Checked = true;
+        optOverwrite.Enabled = false;
+      }
+      else
+      {
+        //	remove the (modified) from the end of the scheme name
+        //	since if we save it, it will no longer be modified
+        //	(and we shouldn't save it with "modified" in the name)
+        string schemeName = colorScheme.Name.Replace(" (modified)", "");
+        optOverwrite.Text += " " + schemeName;
+        //	disable the new scheme name text box until the 
+        //	user selects the Save As radio button
+        txtNewSchemeName.Enabled = false;
+      }
+    }
 
-		
-		// *** PRIVATE DATA MEMBERS *** //
+    //	Save As radio button check changed event handler
+    private void optSaveAs_CheckedChanged(object sender, EventArgs e)
+    {
+      if (optSaveAs.Checked)
+        //	enable the scheme name text box if Save As is selected
+        txtNewSchemeName.Enabled = true;
+    }
 
-		private ColorScheme colorScheme;
-	}
+    //	Overwrite radio button check changed event handler
+    private void optOverwrite_CheckedChanged(object sender, EventArgs e)
+    {
+      if (optOverwrite.Checked)
+        //	disable the scheme name text box if Save As is not selected
+        txtNewSchemeName.Enabled = false;
+    }
+
+    //	Cancel button clicked event handler
+    private void btnCancel_Click(object sender, EventArgs e)
+    {
+      DialogResult = DialogResult.Cancel;
+      Close();
+    }
+
+    //	OK button clicked event handler
+    private void btnOK_Click(object sender, EventArgs e)
+    {
+      if (optSaveAs.Checked)
+      {
+        //	If we're saving this as a new scheme ...
+        if (txtNewSchemeName.Text.Length < 1)
+        {
+          MessageBox.Show("You must provide a name for the new color scheme");
+          return;
+        }
+        if (ColorSchemeLibrary.Contains(txtNewSchemeName.Text))
+        {
+          MessageBox.Show("A color scheme with that name already exists");
+          return;
+        }
+        else
+        {
+          colorScheme.Name = txtNewSchemeName.Text;
+          colorScheme.Modified = false;
+          ColorSchemeLibrary.NewScheme(colorScheme);
+          NewScheme = true;
+        }
+      }
+      else
+      {
+        //	We're overwriting the existing color scheme (if it's been modified)
+        //	NOTE: we shouldn't be here if the scheme has not been modified; in 
+        //	that case, the Save button on the AppearanceSettingsForm should 
+        //	have been disabled.
+        if (colorScheme.Modified)
+        {
+          //	since we're now saving it, it's no longer modified
+          colorScheme.Modified = false;
+          //	remove the (modified) from the name
+          colorScheme.Name = colorScheme.Name.Replace(" (modified)", "");
+          //	update the color scheme in the library (which will 
+          //	update it in the registry)
+          ColorSchemeLibrary.UpdateScheme(colorScheme);
+        }
+      }
+      DialogResult = DialogResult.OK;
+      Close();
+    }
+
+
+    // *** PRIVATE DATA MEMBERS *** //
+
+    private ColorScheme colorScheme;
+  }
 }

@@ -22,19 +22,19 @@ using System;
 
 namespace ChessV
 {
-	[AttributeUsage(AttributeTargets.Class, AllowMultiple=true)]
-	public class AppearanceAttribute: Attribute
-	{
-		public int NumberOfSquareColors { get; set; }
-		public string ColorScheme { get; set; }
-		public string PieceSet { get; set; }
-		public string Game { get; set; }
-		public string Player1Color { get; set; }
-		public string Player2Color { get; set; }
+  [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+  public class AppearanceAttribute : Attribute
+  {
+    public int NumberOfSquareColors { get; set; }
+    public string ColorScheme { get; set; }
+    public string PieceSet { get; set; }
+    public string Game { get; set; }
+    public string Player1Color { get; set; }
+    public string Player2Color { get; set; }
 
-		public AppearanceAttribute()
-		{
-			NumberOfSquareColors = 2;
-		}
-	}
+    public AppearanceAttribute()
+    {
+      NumberOfSquareColors = 2;
+    }
+  }
 }

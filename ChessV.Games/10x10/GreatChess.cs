@@ -20,79 +20,79 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 namespace ChessV.Games
 {
-	[Game("Great Chess", typeof(Geometry.Rectangular), 10, 10,
-		  Invented = "Unkown",
-		  InventedBy = "1700s",
-		  Tags = "Chess Variant,Historic")]
-	public class GreatChess: Abstract.Generic10x10
-	{
-		// *** PIECE TYPES *** //
+  [Game("Great Chess", typeof(Geometry.Rectangular), 10, 10,
+      Invented = "Unkown",
+      InventedBy = "1700s",
+      Tags = "Chess Variant,Historic")]
+  public class GreatChess : Abstract.Generic10x10
+  {
+    // *** PIECE TYPES *** //
 
-		public PieceType General;
-		public PieceType Archbishop;
-		public PieceType Chancellor;
-
-
-		// *** GAME VARIABLES *** //
-
-		[GameVariable] public ChoiceVariable Variant { get; set; }
+    public PieceType General;
+    public PieceType Archbishop;
+    public PieceType Chancellor;
 
 
-		// *** CONSTRUCTION *** //
+    // *** GAME VARIABLES *** //
 
-		public GreatChess():
-			base
-				 ( /* symmetry = */ new MirrorSymmetry() )
-		{
-		}
+    [GameVariable] public ChoiceVariable Variant { get; set; }
 
-		// *** INITIALIZATION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "rnbqkgabnr/ppppccpppp/4pp4/10/10/10/10/4PP4/PPPPCCPPPP/RNBQKGABNR";
-			Variant = new ChoiceVariable( new string[] { "Classic", "Faster Pawns", "Faster Pawns and Castling" }, "Classic" );
-			PromotionRule.Value = "Standard";
-			PromotionTypes = "Q";
-		}
-		#endregion
+    // *** CONSTRUCTION *** //
 
-		#region SetOtherVariables
-		public override void SetOtherVariables()
-		{
-			base.SetOtherVariables();
-			if( Variant.Value == "Classic" )
-			{
-				PawnMultipleMove.Value = "None";
-				EnPassant = false;
-				Castling.Value = "None";
-			}
-			else if( Variant.Value == "Faster Pawns" )
-			{
-				PawnMultipleMove.Value = "Great";
-				EnPassant = true;
-				Castling.Value = "None";
-			}
-			else if( Variant.Value == "Faster Pawns and Castling" )
-			{
-				PawnMultipleMove.Value = "Great";
-				EnPassant = true;
-				Castling.Value = "Standard";
-			}
-		}
-		#endregion
+    public GreatChess() :
+      base
+         ( /* symmetry = */ new MirrorSymmetry())
+    {
+    }
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			AddChessPieceTypes();
-			AddPieceType( Archbishop = new Archbishop( "Archbishop", "A", 750, 800 ) );
-			AddPieceType( Chancellor = new Chancellor( "Chancellor", "C", 925, 1000 ) );
-			AddPieceType( General = new Amazon( "General", "G", 1400, 1500 ) );
-		}
-		#endregion
-	}
+    // *** INITIALIZATION *** //
+
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "rnbqkgabnr/ppppccpppp/4pp4/10/10/10/10/4PP4/PPPPCCPPPP/RNBQKGABNR";
+      Variant = new ChoiceVariable(new string[] { "Classic", "Faster Pawns", "Faster Pawns and Castling" }, "Classic");
+      PromotionRule.Value = "Standard";
+      PromotionTypes = "Q";
+    }
+    #endregion
+
+    #region SetOtherVariables
+    public override void SetOtherVariables()
+    {
+      base.SetOtherVariables();
+      if (Variant.Value == "Classic")
+      {
+        PawnMultipleMove.Value = "None";
+        EnPassant = false;
+        Castling.Value = "None";
+      }
+      else if (Variant.Value == "Faster Pawns")
+      {
+        PawnMultipleMove.Value = "Great";
+        EnPassant = true;
+        Castling.Value = "None";
+      }
+      else if (Variant.Value == "Faster Pawns and Castling")
+      {
+        PawnMultipleMove.Value = "Great";
+        EnPassant = true;
+        Castling.Value = "Standard";
+      }
+    }
+    #endregion
+
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      AddChessPieceTypes();
+      AddPieceType(Archbishop = new Archbishop("Archbishop", "A", 750, 800));
+      AddPieceType(Chancellor = new Chancellor("Chancellor", "C", 925, 1000));
+      AddPieceType(General = new Amazon("General", "G", 1400, 1500));
+    }
+    #endregion
+  }
 }

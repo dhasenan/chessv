@@ -18,13 +18,12 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
 using System.Collections.Generic;
 
 namespace ChessV
 {
-	public class GameFilter
-	{
-		public List<string> RequiredTags;
-	}
+  public class GameFilter
+  {
+    public List<string> RequiredTags;
+  }
 }

@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -20,60 +19,57 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
 namespace ChessV
 {
-	public class MoveEvaluation
-	{
-		//	Constructs an empty MoveEvaluation object
-		public MoveEvaluation()
-		{
-			IsBookEval = false;
-			Depth = 0;
-			Score = 0;
-			Time = 0;
-			NodeCount = 0;
-			PV = "";
-		}
+  public class MoveEvaluation
+  {
+    //	Constructs an empty MoveEvaluation object
+    public MoveEvaluation()
+    {
+      IsBookEval = false;
+      Depth = 0;
+      Score = 0;
+      Time = 0;
+      NodeCount = 0;
+      PV = "";
+    }
 
-		//	Returns true if the evaluation is empty
-		public bool IsEmpty
-		{ get { return Depth == 0 && Score == 0 && Time < 500 && NodeCount == 0; } }
-		
-		//	Returns true if the evaluation points to a book move.
-		public bool IsBookEval { get; set; }
+    //	Returns true if the evaluation is empty
+    public bool IsEmpty
+    { get { return Depth == 0 && Score == 0 && Time < 500 && NodeCount == 0; } }
 
-		//	How many plies were searched?
-		//	For human players this is always 0.
-		public int Depth { get; set; }
+    //	Returns true if the evaluation points to a book move.
+    public bool IsBookEval { get; set; }
 
-		//	Score in centipawns from the player's point of view.
-		//	For human player this always 0.
-		public int Score { get; set; }
+    //	How many plies were searched?
+    //	For human players this is always 0.
+    public int Depth { get; set; }
 
-		//	Move time in milliseconds
-		public long Time { get; set; }
+    //	Score in centipawns from the player's point of view.
+    //	For human player this always 0.
+    public int Score { get; set; }
 
-		//	How many nodes were searched?
-		//	For human players this is always 0.
-		public long NodeCount { get; set; }
+    //	Move time in milliseconds
+    public long Time { get; set; }
 
-		//	Principal variation (PV) - the sequence of 
-		//	moves that an engine expects to be played next
-		//	(because these are the best moves by its calculation.)
-		//	For human players this is always empty.
-		public string PV { get; set; }
+    //	How many nodes were searched?
+    //	For human players this is always 0.
+    public long NodeCount { get; set; }
 
-		public void Clear()
-		{
-			IsBookEval = false;
-			Depth = 0;
-			Score = 0;
-			Time = 0;
-			NodeCount = 0;
-			PV = "";
-		}
-	}
+    //	Principal variation (PV) - the sequence of 
+    //	moves that an engine expects to be played next
+    //	(because these are the best moves by its calculation.)
+    //	For human players this is always empty.
+    public string PV { get; set; }
+
+    public void Clear()
+    {
+      IsBookEval = false;
+      Depth = 0;
+      Score = 0;
+      Time = 0;
+      NodeCount = 0;
+      PV = "";
+    }
+  }
 }

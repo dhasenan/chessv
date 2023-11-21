@@ -19,59 +19,58 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 ****************************************************************************/
 
 using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace ChessV
 {
-	public class SystemEnvironment
-	{
-		[DllImport("kernel32", SetLastError = true, CallingConvention = CallingConvention.Winapi)]
-		public extern static IntPtr LoadLibrary(string libraryName);
+  public class SystemEnvironment
+  {
+    [DllImport("kernel32", SetLastError = true, CallingConvention = CallingConvention.Winapi)]
+    public extern static IntPtr LoadLibrary(string libraryName);
 
-		[DllImport("kernel32", SetLastError = true, CallingConvention = CallingConvention.Winapi)]
-		public extern static IntPtr GetProcAddress(IntPtr hwnd, string procedureName);
+    [DllImport("kernel32", SetLastError = true, CallingConvention = CallingConvention.Winapi)]
+    public extern static IntPtr GetProcAddress(IntPtr hwnd, string procedureName);
 
-		private delegate bool IsWow64ProcessDelegate([In] IntPtr handle, [Out] out bool isWow64Process);
+    private delegate bool IsWow64ProcessDelegate([In] IntPtr handle, [Out] out bool isWow64Process);
 
-		public static bool IsOS64Bit()
-		{
-			if( IntPtr.Size == 8 || (IntPtr.Size == 4 && Is32BitProcessOn64BitProcessor()) )
-				return true;
-			return false;
-		}
+    public static bool IsOS64Bit()
+    {
+      if (IntPtr.Size == 8 || (IntPtr.Size == 4 && Is32BitProcessOn64BitProcessor()))
+        return true;
+      return false;
+    }
 
-		private static IsWow64ProcessDelegate GetIsWow64ProcessDelegate()
-		{
-			IntPtr handle = LoadLibrary( "kernel32" );
+    private static IsWow64ProcessDelegate GetIsWow64ProcessDelegate()
+    {
+      IntPtr handle = LoadLibrary("kernel32");
 
-			if( handle != IntPtr.Zero )
-			{
-				IntPtr fnPtr = GetProcAddress( handle, "IsWow64Process" );
+      if (handle != IntPtr.Zero)
+      {
+        IntPtr fnPtr = GetProcAddress(handle, "IsWow64Process");
 
-				if( fnPtr != IntPtr.Zero )
-				return (IsWow64ProcessDelegate) Marshal.GetDelegateForFunctionPointer( (IntPtr) fnPtr, typeof(IsWow64ProcessDelegate) );
-			}
+        if (fnPtr != IntPtr.Zero)
+          return (IsWow64ProcessDelegate)Marshal.GetDelegateForFunctionPointer((IntPtr)fnPtr, typeof(IsWow64ProcessDelegate));
+      }
 
-			return null;
-		}
+      return null;
+    }
 
-		private static bool Is32BitProcessOn64BitProcessor()
-		{
-			IsWow64ProcessDelegate fnDelegate = GetIsWow64ProcessDelegate();
+    private static bool Is32BitProcessOn64BitProcessor()
+    {
+      IsWow64ProcessDelegate fnDelegate = GetIsWow64ProcessDelegate();
 
-			if( fnDelegate == null )
-				return false;
-	
-			bool isWow64;
-			bool retVal = fnDelegate.Invoke( Process.GetCurrentProcess().Handle, out isWow64 );
+      if (fnDelegate == null)
+        return false;
 
-			if( retVal == false )
-				return false;
+      bool isWow64;
+      bool retVal = fnDelegate.Invoke(Process.GetCurrentProcess().Handle, out isWow64);
 
-			return isWow64;
-		}
+      if (retVal == false)
+        return false;
 
-	}
+      return isWow64;
+    }
+
+  }
 }

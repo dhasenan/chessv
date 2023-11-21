@@ -21,78 +21,74 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Antlr4.Runtime;
-using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
-using System.Windows.Forms;
 
 namespace ChessV.Compiler
 {
-	public class Environment
-	{
-		// *** CONSTRUCTION *** //
+  public class Environment
+  {
+    // *** CONSTRUCTION *** //
 
-		public Environment( Environment parentEnvironment = null )
-		{
-			ParentEnvironment = parentEnvironment;
-			typeSymbols = new Dictionary<string, Type>();
-			typeConstructorSignatures = new Dictionary<string, Type[]>();
-		}
-
-
-		// *** PROPERTIES *** //
-
-		public Environment ParentEnvironment { get; protected set; }
+    public Environment(Environment parentEnvironment = null)
+    {
+      ParentEnvironment = parentEnvironment;
+      typeSymbols = new Dictionary<string, Type>();
+      typeConstructorSignatures = new Dictionary<string, Type[]>();
+    }
 
 
-		// *** OPERATIONS *** //
+    // *** PROPERTIES *** //
 
-		public void AddSymbol( string name, Type type )
-		{
-			typeSymbols.Add( name, type );
-		}
-
-		public void ExecuteMemberFunction( ExObject obj, string functionName )
-		{
-			FieldInfo fi = obj.GetType().GetField( "FunctionCodeLookup", BindingFlags.Public | BindingFlags.Static );
-			Dictionary<string, Antlr4.Runtime.ParserRuleContext> functionCodeLookup;
-			functionCodeLookup = (Dictionary<string, Antlr4.Runtime.ParserRuleContext>) fi.GetValue( null );
-			Antlr4.Runtime.ParserRuleContext ruleContext = functionCodeLookup[functionName];
-			InterpreterVisitor visitor = new InterpreterVisitor( this, obj );
-			visitor.Parse( ruleContext );
-		}
-
-		public object InstantiateType( string typename, object[] constructorArgs )
-		{
-			Type objtype = null;
-			Environment searchEnv = this;
-			while( objtype == null && searchEnv != null )
-			{
-				if( searchEnv.typeSymbols.ContainsKey( typename ) )
-					objtype = searchEnv.typeSymbols[typename];
-				else
-					searchEnv = searchEnv.ParentEnvironment;
-			}
-			Type[] constructorArgTypes = null;
-			constructorArgTypes = searchEnv.typeConstructorSignatures[typename];
-			ConstructorInfo constructor = objtype.GetConstructor( BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.Public, null,
-				constructorArgTypes, null );
-			object newobj = constructor.Invoke( constructorArgs );
-
-			return newobj;
-		}
-
-		public object LookupSymbol( string symbol )
-		{
-			if( typeSymbols.ContainsKey( symbol ) )
-				return typeSymbols[symbol];
-			return null;
-		}
+    public Environment ParentEnvironment { get; protected set; }
 
 
-		// *** PROTECTED DATA *** //
+    // *** OPERATIONS *** //
 
-		protected Dictionary<string, Type> typeSymbols;
-		protected Dictionary<string, Type[]> typeConstructorSignatures;
-	}
+    public void AddSymbol(string name, Type type)
+    {
+      typeSymbols.Add(name, type);
+    }
+
+    public void ExecuteMemberFunction(ExObject obj, string functionName)
+    {
+      FieldInfo fi = obj.GetType().GetField("FunctionCodeLookup", BindingFlags.Public | BindingFlags.Static);
+      Dictionary<string, Antlr4.Runtime.ParserRuleContext> functionCodeLookup;
+      functionCodeLookup = (Dictionary<string, Antlr4.Runtime.ParserRuleContext>)fi.GetValue(null);
+      Antlr4.Runtime.ParserRuleContext ruleContext = functionCodeLookup[functionName];
+      InterpreterVisitor visitor = new InterpreterVisitor(this, obj);
+      visitor.Parse(ruleContext);
+    }
+
+    public object InstantiateType(string typename, object[] constructorArgs)
+    {
+      Type objtype = null;
+      Environment searchEnv = this;
+      while (objtype == null && searchEnv != null)
+      {
+        if (searchEnv.typeSymbols.ContainsKey(typename))
+          objtype = searchEnv.typeSymbols[typename];
+        else
+          searchEnv = searchEnv.ParentEnvironment;
+      }
+      Type[] constructorArgTypes = null;
+      constructorArgTypes = searchEnv.typeConstructorSignatures[typename];
+      ConstructorInfo constructor = objtype.GetConstructor(BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.Public, null,
+        constructorArgTypes, null);
+      object newobj = constructor.Invoke(constructorArgs);
+
+      return newobj;
+    }
+
+    public object LookupSymbol(string symbol)
+    {
+      if (typeSymbols.ContainsKey(symbol))
+        return typeSymbols[symbol];
+      return null;
+    }
+
+
+    // *** PROTECTED DATA *** //
+
+    protected Dictionary<string, Type> typeSymbols;
+    protected Dictionary<string, Type[]> typeConstructorSignatures;
+  }
 }

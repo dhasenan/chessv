@@ -21,43 +21,42 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 ****************************************************************************/
 
 using System;
-using System.Collections.Generic;
 
 namespace ChessV
 {
-	public abstract class EngineOption
-	{
-		public string Name { get; set; }
-		public Type ValueType { get; set; }
-		public object Value { get; set; }
-		public object DefaultValue { get; set; }
-		public string Alias { get; set; }
+  public abstract class EngineOption
+  {
+    public string Name { get; set; }
+    public Type ValueType { get; set; }
+    public object Value { get; set; }
+    public object DefaultValue { get; set; }
+    public string Alias { get; set; }
 
-		public EngineOption
-			( string name, 
-			  Type valueType, 
-			  object value = null,
-			  object defaultValue = null,
-			  string alias = null )
-		{
-			Name = name; 
-			ValueType = valueType;
-			Value = value;
-			DefaultValue = defaultValue;
-			Alias = alias;
-		}
+    public EngineOption
+      (string name,
+        Type valueType,
+        object value = null,
+        object defaultValue = null,
+        string alias = null)
+    {
+      Name = name;
+      ValueType = valueType;
+      Value = value;
+      DefaultValue = defaultValue;
+      Alias = alias;
+    }
 
-		public bool IsValid()
-		{
-			if( Name == null )
-				return false;
-			if( !IsValid( Value ) )
-				return false;
-			if( DefaultValue != null && !IsValid( DefaultValue ) )
-				return false;
-			return true;
-		}
+    public bool IsValid()
+    {
+      if (Name == null)
+        return false;
+      if (!IsValid(Value))
+        return false;
+      if (DefaultValue != null && !IsValid(DefaultValue))
+        return false;
+      return true;
+    }
 
-		public abstract bool IsValid( object value );
-	}
+    public abstract bool IsValid(object value);
+  }
 }

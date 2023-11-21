@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -18,18 +17,15 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
 namespace ChessV.Games.Rules
 {
-	public enum PromotionOption
-	{
-		CannotPromote,
-		CanPromote,
-		MustPromote
-	}
+  public enum PromotionOption
+  {
+    CannotPromote,
+    CanPromote,
+    MustPromote
+  }
 
-	public delegate PromotionOption OptionalPromotionLocationDelegate( Location loc );
-	public delegate PromotionOption OptionalPromotionFromAndToLocationDelegate( Location fromLoc, Location toLoc );
+  public delegate PromotionOption OptionalPromotionLocationDelegate(Location loc);
+  public delegate PromotionOption OptionalPromotionFromAndToLocationDelegate(Location fromLoc, Location toLoc);
 }

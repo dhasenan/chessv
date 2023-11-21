@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -18,45 +17,43 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
 namespace ChessV.Boards
 {
-	public class BoardWithCards: Board
-	{
-		public int HandSize;
+  public class BoardWithCards : Board
+  {
+    public int HandSize;
 
-		public BoardWithCards( int nFiles, int nRanks, int handSize, int numPlayers = 2) : base( nFiles, nRanks, nRanks * nFiles + handSize * numPlayers )
-		{
-			HandSize = handSize;
-			for( int player = 0; player < numPlayers; player++ )
-			{
-				for (int handIndex = 1; handIndex <= handSize; handIndex++)
-				{
-					int square = NumSquares - 1 + handIndex + (handSize * player);
-					rankBySquare[square] = player;
+    public BoardWithCards(int nFiles, int nRanks, int handSize, int numPlayers = 2) : base(nFiles, nRanks, nRanks * nFiles + handSize * numPlayers)
+    {
+      HandSize = handSize;
+      for (int player = 0; player < numPlayers; player++)
+      {
+        for (int handIndex = 1; handIndex <= handSize; handIndex++)
+        {
+          int square = NumSquares - 1 + handIndex + (handSize * player);
+          rankBySquare[square] = player;
           fileBySquare[square] = -handIndex;
         }
-			}
-		}
+      }
+    }
 
-		public override Location SquareToLocation( int square )
-		{
-			if (square < NumSquares)
-				return new Location(rankBySquare[square], fileBySquare[square]);
-			else {
-				int offset = square - NumSquares;
-				return new Location(offset / HandSize, -(offset % HandSize) - 1);
-			}
-		}
+    public override Location SquareToLocation(int square)
+    {
+      if (square < NumSquares)
+        return new Location(rankBySquare[square], fileBySquare[square]);
+      else
+      {
+        int offset = square - NumSquares;
+        return new Location(offset / HandSize, -(offset % HandSize) - 1);
+      }
+    }
 
-		public override int LocationToSquare(Location location)
-		{
-			if (location.File >= 0)
-				return location.File * NumRanks + location.Rank;
-			else
-				return NumSquares + location.Rank * HandSize - location.File - 1;
-		}
-	}
+    public override int LocationToSquare(Location location)
+    {
+      if (location.File >= 0)
+        return location.File * NumRanks + location.Rank;
+      else
+        return NumSquares + location.Rank * HandSize - location.File - 1;
+    }
+  }
 }

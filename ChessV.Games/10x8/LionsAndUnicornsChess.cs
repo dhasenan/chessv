@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -18,77 +17,75 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using ChessV.Evaluations;
-
 namespace ChessV.Games
 {
-	//**********************************************************************
-	//
-	//                    LionsAndUnicornsChess
-	//
-	//    This class implements David Paulowich's Lions and Unicorns Chess.
-	//    It adds two new types, the Lion (Betza's HFD) and the Unicorn 
-	//    (Bishop+Knightrider) on an 8x10 board.
+  //**********************************************************************
+  //
+  //                    LionsAndUnicornsChess
+  //
+  //    This class implements David Paulowich's Lions and Unicorns Chess.
+  //    It adds two new types, the Lion (Betza's HFD) and the Unicorn 
+  //    (Bishop+Knightrider) on an 8x10 board.
 
-	[Game("Lions and Unicorns Chess", typeof(Geometry.Rectangular), 10, 8,
-		  Invented = "2005",
-		  InventedBy = "David Paulowich",
-		  Tags = "Chess Variant")]
-	[Appearance(ColorScheme="Lesotho", NumberOfSquareColors=3)]
-	public class LionsAndUnicornsChess: Abstract.Generic10x8
-	{
-		// *** PIECE TYPES *** //
+  [Game("Lions and Unicorns Chess", typeof(Geometry.Rectangular), 10, 8,
+      Invented = "2005",
+      InventedBy = "David Paulowich",
+      Tags = "Chess Variant")]
+  [Appearance(ColorScheme = "Lesotho", NumberOfSquareColors = 3)]
+  public class LionsAndUnicornsChess : Abstract.Generic10x8
+  {
+    // *** PIECE TYPES *** //
 
-		public PieceType Unicorn;
-		public PieceType Chancellor;
-		public PieceType Lion;
-
-
-		// *** CONSTRUCTION *** //
-
-		public LionsAndUnicornsChess(): 
-			base
-				( /* symmetry = */ new MirrorSymmetry() )
-		{
-		}
+    public PieceType Unicorn;
+    public PieceType Chancellor;
+    public PieceType Lion;
 
 
-		// *** INITIALIZATION *** //
+    // *** CONSTRUCTION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			NumberOfSquareColors = 3;
-			Array = "lrcbqkburl/nppppppppn/10/10/10/10/NPPPPPPPPN/LRCBQKBURL";
-			PawnDoubleMove = true;
-			EnPassant = true;
-			PromotionRule.Value = "Standard";
-			PromotionTypes = "QCU";
-			Castling.Value = "Close-Rook";
-		}
-		#endregion
+    public LionsAndUnicornsChess() :
+      base
+        ( /* symmetry = */ new MirrorSymmetry())
+    {
+    }
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			AddChessPieceTypes();
-			AddPieceType( Unicorn = new Unicorn( "Unicorn", "U", 1050, 1125 ) );
-			AddPieceType( Chancellor = new Chancellor( "Chancellor", "C", 1050, 1125 ) );
-			AddPieceType( Lion = new Lion( "Lion", "L", 400, 400 ) );
-		}
-		#endregion
 
-		#region AddEvaluations
-		public override void AddEvaluations()
-		{
-			base.AddEvaluations();
-			if( Chancellor != null && Chancellor.Enabled )
-				RookTypeEval.AddRookOn7thBonus( Chancellor, King, 2, 8 );
-			if( Lion != null && Lion.Enabled )
-				OutpostEval.AddOutpostBonus( Lion, 12, 4, 8, 6 );
-		}
-		#endregion
-	}
+    // *** INITIALIZATION *** //
+
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      NumberOfSquareColors = 3;
+      Array = "lrcbqkburl/nppppppppn/10/10/10/10/NPPPPPPPPN/LRCBQKBURL";
+      PawnDoubleMove = true;
+      EnPassant = true;
+      PromotionRule.Value = "Standard";
+      PromotionTypes = "QCU";
+      Castling.Value = "Close-Rook";
+    }
+    #endregion
+
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      AddChessPieceTypes();
+      AddPieceType(Unicorn = new Unicorn("Unicorn", "U", 1050, 1125));
+      AddPieceType(Chancellor = new Chancellor("Chancellor", "C", 1050, 1125));
+      AddPieceType(Lion = new Lion("Lion", "L", 400, 400));
+    }
+    #endregion
+
+    #region AddEvaluations
+    public override void AddEvaluations()
+    {
+      base.AddEvaluations();
+      if (Chancellor != null && Chancellor.Enabled)
+        RookTypeEval.AddRookOn7thBonus(Chancellor, King, 2, 8);
+      if (Lion != null && Lion.Enabled)
+        OutpostEval.AddOutpostBonus(Lion, 12, 4, 8, 6);
+    }
+    #endregion
+  }
 }

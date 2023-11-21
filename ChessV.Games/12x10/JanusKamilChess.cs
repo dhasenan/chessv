@@ -20,55 +20,55 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 namespace ChessV.Games
 {
-	[Game("Janus Kamil Chess", typeof( Geometry.Rectangular ), 12, 10,
-		  InventedBy = "Jörg Knappen",
-		  Invented = "2004",
-		  Tags = "Chess Variant")]
-	public class JanusKamilChess: Abstract.Generic12x10
-	{
-		// *** PIECE TYPES *** //
+  [Game("Janus Kamil Chess", typeof(Geometry.Rectangular), 12, 10,
+      InventedBy = "Jörg Knappen",
+      Invented = "2004",
+      Tags = "Chess Variant")]
+  public class JanusKamilChess : Abstract.Generic12x10
+  {
+    // *** PIECE TYPES *** //
 
-		public PieceType Janus;
-		public PieceType Camel;
+    public PieceType Janus;
+    public PieceType Camel;
 
 
-		// *** CONSTRUCTION *** //
+    // *** CONSTRUCTION *** //
 
-		public JanusKamilChess() :
-			base
-				 ( /* symmetry = */ new MirrorSymmetry() )
-		{
-		}
+    public JanusKamilChess() :
+      base
+         ( /* symmetry = */ new MirrorSymmetry())
+    {
+    }
 
-		// *** INITIALIZATION *** //
+    // *** INITIALIZATION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "crjnbqkbnjrc/pppppppppppp/12/12/12/12/12/12/PPPPPPPPPPPP/CRJNBQKBNJRC";
-			Castling.Value = "Close-Rook 3-4";
-			PawnMultipleMove.Value = "Triple";
-			EnPassant = true;
-			PromotionTypes = "CRJNBQ";
-		}
-		#endregion
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "crjnbqkbnjrc/pppppppppppp/12/12/12/12/12/12/PPPPPPPPPPPP/CRJNBQKBNJRC";
+      Castling.Value = "Close-Rook 3-4";
+      PawnMultipleMove.Value = "Triple";
+      EnPassant = true;
+      PromotionTypes = "CRJNBQ";
+    }
+    #endregion
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			AddChessPieceTypes();
-			AddPieceType( Janus = new Archbishop( "Janus", "J", 900, 900 ) );
-			AddPieceType( Camel = new Camel( "Camel", "C", 250, 250 ) );
-		}
-		#endregion
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      AddChessPieceTypes();
+      AddPieceType(Janus = new Archbishop("Janus", "J", 900, 900));
+      AddPieceType(Camel = new Camel("Camel", "C", 250, 250));
+    }
+    #endregion
 
-		#region AddRules
-		public override void AddRules()
-		{
-			base.AddRules();
-		}
-		#endregion
-	}
+    #region AddRules
+    public override void AddRules()
+    {
+      base.AddRules();
+    }
+    #endregion
+  }
 }

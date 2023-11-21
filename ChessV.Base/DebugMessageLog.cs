@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -18,25 +17,22 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
 namespace ChessV
 {
-	public class DebugMessageLog: IDebugMessageLog
-	{
-		public DebugMessageLog()
-		{
-			Messages = new string[50000];
-			MessageCount = 0;
-		}
+  public class DebugMessageLog : IDebugMessageLog
+  {
+    public DebugMessageLog()
+    {
+      Messages = new string[50000];
+      MessageCount = 0;
+    }
 
-		public string[] Messages { get; private set; }
-		public int MessageCount { get; private set; }
+    public string[] Messages { get; private set; }
+    public int MessageCount { get; private set; }
 
-		public void DebugMessage( string message )
-		{
-			Messages[MessageCount++] = message;
-		}
-	}
+    public void DebugMessage(string message)
+    {
+      Messages[MessageCount++] = message;
+    }
+  }
 }

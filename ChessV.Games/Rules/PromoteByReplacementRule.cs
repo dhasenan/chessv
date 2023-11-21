@@ -22,77 +22,77 @@ using System.Collections.Generic;
 
 namespace ChessV.Games.Rules
 {
-	public class PromoteByReplacementRule: Rule
-	{
-		protected PieceType promotingType;
-		protected int promotingTypeNumber;
-		protected OptionalPromotionLocationDelegate condition;
+  public class PromoteByReplacementRule : Rule
+  {
+    protected PieceType promotingType;
+    protected int promotingTypeNumber;
+    protected OptionalPromotionLocationDelegate condition;
 
-		public PromoteByReplacementRule( PieceType promotingType, OptionalPromotionLocationDelegate conditionDelegate )
-		{ this.promotingType = promotingType; condition = conditionDelegate; }
+    public PromoteByReplacementRule(PieceType promotingType, OptionalPromotionLocationDelegate conditionDelegate)
+    { this.promotingType = promotingType; condition = conditionDelegate; }
 
-		public override void Initialize( Game game )
-		{
-			base.Initialize( game );
-			promotingTypeNumber = game.GetPieceTypeNumber( promotingType );
-		}
+    public override void Initialize(Game game)
+    {
+      base.Initialize(game);
+      promotingTypeNumber = game.GetPieceTypeNumber(promotingType);
+    }
 
-		public override MoveEventResponse MoveBeingGenerated( MoveList moves, int from, int to, MoveType type )
-		{
-			Piece movingPiece = Board[from];
-			if( movingPiece.TypeNumber == promotingTypeNumber )
-			{
-				Location loc = Board.SquareToLocation( Board.PlayerSquare( movingPiece.Player, to ) );
-				PromotionOption option = condition( loc );
-				if( option != PromotionOption.CannotPromote )
-				{
-					//	enemy piece being captured (if any)
-					Piece capturedEnemyPiece = Board[to];
+    public override MoveEventResponse MoveBeingGenerated(MoveList moves, int from, int to, MoveType type)
+    {
+      Piece movingPiece = Board[from];
+      if (movingPiece.TypeNumber == promotingTypeNumber)
+      {
+        Location loc = Board.SquareToLocation(Board.PlayerSquare(movingPiece.Player, to));
+        PromotionOption option = condition(loc);
+        if (option != PromotionOption.CannotPromote)
+        {
+          //	enemy piece being captured (if any)
+          Piece capturedEnemyPiece = Board[to];
 
-					//	if promotion is optional, add move without promotion
-					if( option == PromotionOption.CanPromote )
-					{
-						if( capturedEnemyPiece == null )
-							moves.AddMove( from, to, true );
-						else
-							moves.AddCapture( from, to, true );
-					}
+          //	if promotion is optional, add move without promotion
+          if (option == PromotionOption.CanPromote)
+          {
+            if (capturedEnemyPiece == null)
+              moves.AddMove(from, to, true);
+            else
+              moves.AddCapture(from, to, true);
+          }
 
-					List<int> pieceTypesFound = new List<int>();
-					List<Piece> capturedPieces = Game.GetCapturedPieceList( movingPiece.Player );
-					foreach( Piece capturedFriendlyPiece in capturedPieces )
-					{
-						if( capturedFriendlyPiece.TypeNumber != movingPiece.TypeNumber &&
-							!pieceTypesFound.Contains( capturedFriendlyPiece.TypeNumber ) )
-						{
-							if( capturedEnemyPiece == null )
-							{
-								moves.BeginMoveAdd( MoveType.MoveReplace, from, to, capturedFriendlyPiece.TypeNumber );
-								moves.AddPickup( from );
-								moves.AddDrop( capturedFriendlyPiece, to );
-								moves.EndMoveAdd( 5000 + capturedFriendlyPiece.PieceType.MidgameValue );
-							}
-							else
-							{
-								moves.BeginMoveAdd( MoveType.CaptureReplace, from, to, capturedFriendlyPiece.TypeNumber );
-								moves.AddPickup( from );
-								moves.AddPickup( to );
-								moves.AddDrop( capturedFriendlyPiece, to );
-								moves.EndMoveAdd( 5000 + capturedFriendlyPiece.PieceType.MidgameValue + capturedEnemyPiece.PieceType.MidgameValue );
-							}
-							pieceTypesFound.Add( capturedFriendlyPiece.TypeNumber );
-						}
-					}
-					return MoveEventResponse.Handled;
-				}
-			}
-			return MoveEventResponse.NotHandled;
-		}
+          List<int> pieceTypesFound = new List<int>();
+          List<Piece> capturedPieces = Game.GetCapturedPieceList(movingPiece.Player);
+          foreach (Piece capturedFriendlyPiece in capturedPieces)
+          {
+            if (capturedFriendlyPiece.TypeNumber != movingPiece.TypeNumber &&
+              !pieceTypesFound.Contains(capturedFriendlyPiece.TypeNumber))
+            {
+              if (capturedEnemyPiece == null)
+              {
+                moves.BeginMoveAdd(MoveType.MoveReplace, from, to, capturedFriendlyPiece.TypeNumber);
+                moves.AddPickup(from);
+                moves.AddDrop(capturedFriendlyPiece, to);
+                moves.EndMoveAdd(5000 + capturedFriendlyPiece.PieceType.MidgameValue);
+              }
+              else
+              {
+                moves.BeginMoveAdd(MoveType.CaptureReplace, from, to, capturedFriendlyPiece.TypeNumber);
+                moves.AddPickup(from);
+                moves.AddPickup(to);
+                moves.AddDrop(capturedFriendlyPiece, to);
+                moves.EndMoveAdd(5000 + capturedFriendlyPiece.PieceType.MidgameValue + capturedEnemyPiece.PieceType.MidgameValue);
+              }
+              pieceTypesFound.Add(capturedFriendlyPiece.TypeNumber);
+            }
+          }
+          return MoveEventResponse.Handled;
+        }
+      }
+      return MoveEventResponse.NotHandled;
+    }
 
-		public override void GetNotesForPieceType( PieceType type, List<string> notes )
-		{
-			if( type == promotingType )
-				notes.Add( "can promote by replacement" );
-		}
-	}
+    public override void GetNotesForPieceType(PieceType type, List<string> notes)
+    {
+      if (type == promotingType)
+        notes.Add("can promote by replacement");
+    }
+  }
 }

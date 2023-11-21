@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -18,23 +17,20 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
 namespace ChessV.Games.Rules
 {
-	public class NoMoveResultRule: Rule
-	{
-		public MoveEventResponse NoMoveResult { get; private set; }
+  public class NoMoveResultRule : Rule
+  {
+    public MoveEventResponse NoMoveResult { get; private set; }
 
-		public NoMoveResultRule( MoveEventResponse noMoveResult )
-		{
-			NoMoveResult = noMoveResult;
-		}
+    public NoMoveResultRule(MoveEventResponse noMoveResult)
+    {
+      NoMoveResult = noMoveResult;
+    }
 
-		public override MoveEventResponse NoMovesResult( int currentPlayer, int ply )
-		{
-			return NoMoveResult;
-		}
-	}
+    public override MoveEventResponse NoMovesResult(int currentPlayer, int ply)
+    {
+      return NoMoveResult;
+    }
+  }
 }

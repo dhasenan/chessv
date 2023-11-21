@@ -20,14 +20,14 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 namespace ChessV.Games
 {
-	public class CombatantAttribute: PieceTypePropertyAttribute
-	{
-		public override void AdjustMovement( PieceType pieceType )
-		{
-			MoveCapability[] moves;
-			int nMoves = pieceType.GetMoveCapabilities( out moves );
-			for( int x = 0; x < nMoves; x++ )
-				moves[x].MustCapture = true;
-		}
-	}
+  public class CombatantAttribute : PieceTypePropertyAttribute
+  {
+    public override void AdjustMovement(PieceType pieceType)
+    {
+      MoveCapability[] moves;
+      int nMoves = pieceType.GetMoveCapabilities(out moves);
+      for (int x = 0; x < nMoves; x++)
+        moves[x].MustCapture = true;
+    }
+  }
 }

@@ -18,73 +18,73 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System.Collections.Generic;
 using ChessV.Games.Pieces.Diamond;
+using System.Collections.Generic;
 
 namespace ChessV.Games
 {
-	//**********************************************************************
-	//
-	//                           DiamondChess
-	//
-	[Game("Diamond Chess", typeof(Geometry.Rectangular), 8, 8, 
-		  XBoardName = "diamond_chess",
-		  InventedBy = "J. A. Porterfield Rynd",
-		  Invented = "1886",
-		  Tags = "Chess Variant,Historic",
-		  GameDescription1 = "Chess with the board rotated 45 degrees and a different",
-		  GameDescription2 = "opening position.  Only the pawns move differently.")]
-	class DiamondChess: Abstract.GenericChess
-	{
-		// *** PIECE TYPES *** //
+  //**********************************************************************
+  //
+  //                           DiamondChess
+  //
+  [Game("Diamond Chess", typeof(Geometry.Rectangular), 8, 8,
+      XBoardName = "diamond_chess",
+      InventedBy = "J. A. Porterfield Rynd",
+      Invented = "1886",
+      Tags = "Chess Variant,Historic",
+      GameDescription1 = "Chess with the board rotated 45 degrees and a different",
+      GameDescription2 = "opening position.  Only the pawns move differently.")]
+  class DiamondChess : Abstract.GenericChess
+  {
+    // *** PIECE TYPES *** //
 
-		public PieceType DiamondPawn;
-		
-
-		// *** CONSTRUCTION *** //
-
-		public DiamondChess(): 
-			base
-				( /* num files = */ 8, 
-				  /* num ranks = */ 8,
-				  /* Symmetry = */ new RotationalSymmetry() )
-		{
-		}
+    public PieceType DiamondPawn;
 
 
-		// *** INITIALIZATION *** //
+    // *** CONSTRUCTION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "krbp4/rqnp4/nbpp4/pppp4/4PPPP/4PPBN/4PNQR/4PBRK";
-			PromotionTypes = "QRBN";
-		}
-		#endregion
+    public DiamondChess() :
+      base
+        ( /* num files = */ 8,
+          /* num ranks = */ 8,
+          /* Symmetry = */ new RotationalSymmetry())
+    {
+    }
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			AddPieceType( Rook = new Rook( "Rook", "R", 500, 550 ) );
-			AddPieceType( Bishop = new Bishop( "Bishop", "B", 325, 350 ) );
-			AddPieceType( Knight = new Knight( "Knight", "N", 325, 325 ) );
-			AddPieceType( Queen = new Queen( "Queen", "Q", 900, 1000 ) );
-			replacePieceType( Pawn, DiamondPawn = new DiamondPawn( "Pawn", "P", 100, 125 ) );
-			PromotingType = DiamondPawn;
-		}
-		#endregion
 
-		#region AddRules
-		public override void AddRules()
-		{
-			base.AddRules();
+    // *** INITIALIZATION *** //
 
-			// *** PROMOTION *** //
-			List<PieceType> availablePromotionTypes = ParseTypeListFromString( PromotionTypes );
-			AddBasicPromotionRule( DiamondPawn, availablePromotionTypes, loc => loc.Rank == 7 || loc.File == 0 );
-		}
-		#endregion
-	}
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "krbp4/rqnp4/nbpp4/pppp4/4PPPP/4PPBN/4PNQR/4PBRK";
+      PromotionTypes = "QRBN";
+    }
+    #endregion
+
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      AddPieceType(Rook = new Rook("Rook", "R", 500, 550));
+      AddPieceType(Bishop = new Bishop("Bishop", "B", 325, 350));
+      AddPieceType(Knight = new Knight("Knight", "N", 325, 325));
+      AddPieceType(Queen = new Queen("Queen", "Q", 900, 1000));
+      replacePieceType(Pawn, DiamondPawn = new DiamondPawn("Pawn", "P", 100, 125));
+      PromotingType = DiamondPawn;
+    }
+    #endregion
+
+    #region AddRules
+    public override void AddRules()
+    {
+      base.AddRules();
+
+      // *** PROMOTION *** //
+      List<PieceType> availablePromotionTypes = ParseTypeListFromString(PromotionTypes);
+      AddBasicPromotionRule(DiamondPawn, availablePromotionTypes, loc => loc.Rank == 7 || loc.File == 0);
+    }
+    #endregion
+  }
 }

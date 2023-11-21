@@ -19,125 +19,124 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 ****************************************************************************/
 
 using System;
-using System.Collections.Generic;
 
 namespace ChessV.Games
 {
-	//**********************************************************************
-	//
-	//                               Chess256
-	//
+  //**********************************************************************
+  //
+  //                               Chess256
+  //
 
-	[Game("Chess256", typeof(Geometry.Rectangular), 8, 8, 
-		  InventedBy = "Mats Winther",
-		  Invented = "2006",
-		  Tags = "Chess Variant,Random Array",
-		  GameDescription1 = "A Chess derivative where the opening pawn formation is",
-		  GameDescription2 = "randomized to eliminate the memorization of openings")]
-	class Chess256: Chess
-	{
-		// *** GAME VARIABLES *** //
+  [Game("Chess256", typeof(Geometry.Rectangular), 8, 8,
+      InventedBy = "Mats Winther",
+      Invented = "2006",
+      Tags = "Chess Variant,Random Array",
+      GameDescription1 = "A Chess derivative where the opening pawn formation is",
+      GameDescription2 = "randomized to eliminate the memorization of openings")]
+  class Chess256 : Chess
+  {
+    // *** GAME VARIABLES *** //
 
-		[GameVariable] public IntRangeVariable PositionNumber { get; set; }
-
-
-		// *** CONSTRUCTION *** //
-		public Chess256()
-		{
-		}
+    [GameVariable] public IntRangeVariable PositionNumber { get; set; }
 
 
-		// *** INITIALIZATION *** //
-
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			PositionNumber = new IntRangeVariable( 1, 256 );
-			Array = "rnbqkbnr/#{BlackPawns}/8/8/#{WhitePawns}/RNBQKBNR";
-		}
-		#endregion
-
-		#region SetOtherVariables
-		public override void SetOtherVariables()
-		{
-			base.SetOtherVariables();
-			if( PositionNumber.Value == null )
-			{
-				SetCustomProperty( "BlackPawns", "8/8" );
-				SetCustomProperty( "WhitePawns", "8/8" );
-				return;
-			}
-
-			//	determine Black's second-row pawns
-			int position = (int) PositionNumber.Value - 1;
-			int bitNumber = 0;
-			string notation2ndRank = "";
-
-			while( bitNumber < 8 )
-			{
-				if( (position & (1 << bitNumber)) == 0 )
-				{
-					notation2ndRank += 'p';
-					bitNumber++;
-				}
-				else
-				{
-					int emptySpaceCount = 1;
-					bitNumber++;
-					while( bitNumber < 8 && (position & (1 << bitNumber)) != 0 )
-					{
-						emptySpaceCount++;
-						bitNumber++;
-					}
-					notation2ndRank += Convert.ToChar( '0' + emptySpaceCount );
-				}
-			}
-
-			//	determine Black's third-row pawns
-			bitNumber = 0;
-			string notation3rdRank = "";
-
-			while( bitNumber < 8 )
-			{
-				if( (position & (1 << bitNumber)) != 0 )
-				{
-					notation3rdRank += 'p';
-					bitNumber++;
-				}
-				else
-				{
-					int emptySpaceCount = 1;
-					bitNumber++;
-					while( bitNumber < 8 && (position & (1 << bitNumber)) == 0 )
-					{
-						emptySpaceCount++;
-						bitNumber++;
-					}
-					notation3rdRank += Convert.ToChar( '0' + emptySpaceCount );
-				}
-			}
-
-			SetCustomProperty( "BlackPawns", notation2ndRank + "/" + notation3rdRank );
-			SetCustomProperty( "WhitePawns", notation3rdRank.ToUpper() + "/" + notation2ndRank.ToUpper() );
-		}
-		#endregion
+    // *** CONSTRUCTION *** //
+    public Chess256()
+    {
+    }
 
 
-		// *** WINBOARD ENGINE SUPPORT *** //
+    // *** INITIALIZATION *** //
 
-		#region TryCreateAdaptor
-		public override EngineGameAdaptor TryCreateAdaptor( EngineConfiguration config )
-		{
-			if( config.SupportedVariants.Contains( "normal" ) &&
-			    config.SupportedFeatures.Contains( "setboard" ) )
-			{
-				EngineGameAdaptor adaptor = new EngineGameAdaptor( "normal" );
-				adaptor.IssueSetboard = true;
-				return adaptor;
-			}
-			return null;
-		}
-		#endregion
-	}
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      PositionNumber = new IntRangeVariable(1, 256);
+      Array = "rnbqkbnr/#{BlackPawns}/8/8/#{WhitePawns}/RNBQKBNR";
+    }
+    #endregion
+
+    #region SetOtherVariables
+    public override void SetOtherVariables()
+    {
+      base.SetOtherVariables();
+      if (PositionNumber.Value == null)
+      {
+        SetCustomProperty("BlackPawns", "8/8");
+        SetCustomProperty("WhitePawns", "8/8");
+        return;
+      }
+
+      //	determine Black's second-row pawns
+      int position = (int)PositionNumber.Value - 1;
+      int bitNumber = 0;
+      string notation2ndRank = "";
+
+      while (bitNumber < 8)
+      {
+        if ((position & (1 << bitNumber)) == 0)
+        {
+          notation2ndRank += 'p';
+          bitNumber++;
+        }
+        else
+        {
+          int emptySpaceCount = 1;
+          bitNumber++;
+          while (bitNumber < 8 && (position & (1 << bitNumber)) != 0)
+          {
+            emptySpaceCount++;
+            bitNumber++;
+          }
+          notation2ndRank += Convert.ToChar('0' + emptySpaceCount);
+        }
+      }
+
+      //	determine Black's third-row pawns
+      bitNumber = 0;
+      string notation3rdRank = "";
+
+      while (bitNumber < 8)
+      {
+        if ((position & (1 << bitNumber)) != 0)
+        {
+          notation3rdRank += 'p';
+          bitNumber++;
+        }
+        else
+        {
+          int emptySpaceCount = 1;
+          bitNumber++;
+          while (bitNumber < 8 && (position & (1 << bitNumber)) == 0)
+          {
+            emptySpaceCount++;
+            bitNumber++;
+          }
+          notation3rdRank += Convert.ToChar('0' + emptySpaceCount);
+        }
+      }
+
+      SetCustomProperty("BlackPawns", notation2ndRank + "/" + notation3rdRank);
+      SetCustomProperty("WhitePawns", notation3rdRank.ToUpper() + "/" + notation2ndRank.ToUpper());
+    }
+    #endregion
+
+
+    // *** WINBOARD ENGINE SUPPORT *** //
+
+    #region TryCreateAdaptor
+    public override EngineGameAdaptor TryCreateAdaptor(EngineConfiguration config)
+    {
+      if (config.SupportedVariants.Contains("normal") &&
+          config.SupportedFeatures.Contains("setboard"))
+      {
+        EngineGameAdaptor adaptor = new EngineGameAdaptor("normal");
+        adaptor.IssueSetboard = true;
+        return adaptor;
+      }
+      return null;
+    }
+    #endregion
+  }
 }

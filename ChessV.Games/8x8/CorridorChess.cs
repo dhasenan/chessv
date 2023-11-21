@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -18,45 +17,42 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
 namespace ChessV.Games
 {
-	[Game("Corridor Chess", typeof(Geometry.Rectangular), 8, 8, 
-		  InventedBy = "Tony Paletta",
-		  Invented = "1980",
-		  Tags = "Chess Variant",
-		  GameDescription1 = "Standard Chess with a different setup and no castling",
-		  GameDescription2 = "Players often fight for control of the outside files")]
-	class CorridorChess: Chess
-	{
-		// *** INITIALIZATION *** //
+  [Game("Corridor Chess", typeof(Geometry.Rectangular), 8, 8,
+      InventedBy = "Tony Paletta",
+      Invented = "1980",
+      Tags = "Chess Variant",
+      GameDescription1 = "Standard Chess with a different setup and no castling",
+      GameDescription2 = "Players often fight for control of the outside files")]
+  class CorridorChess : Chess
+  {
+    // *** INITIALIZATION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "1nrqkrn1/2b2b2/1pppppp1/8/8/1PPPPPP1/2B2B2/1NRQKRN1";
-			Castling.Value = "None";
-		}
-		#endregion
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "1nrqkrn1/2b2b2/1pppppp1/8/8/1PPPPPP1/2B2B2/1NRQKRN1";
+      Castling.Value = "None";
+    }
+    #endregion
 
 
-		// *** WINBOARD ENGINE SUPPORT *** //
+    // *** WINBOARD ENGINE SUPPORT *** //
 
-		#region TryCreateAdaptor
-		public override EngineGameAdaptor TryCreateAdaptor( EngineConfiguration config )
-		{
-			if( config.SupportedVariants.Contains( "normal" ) &&
-				config.SupportedFeatures.Contains( "setboard" ) )
-			{
-				EngineGameAdaptor adaptor = new EngineGameAdaptor( "normal" );
-				adaptor.IssueSetboard = true;
-				return adaptor;
-			}
-			return null;
-		}
-		#endregion
-	}
+    #region TryCreateAdaptor
+    public override EngineGameAdaptor TryCreateAdaptor(EngineConfiguration config)
+    {
+      if (config.SupportedVariants.Contains("normal") &&
+        config.SupportedFeatures.Contains("setboard"))
+      {
+        EngineGameAdaptor adaptor = new EngineGameAdaptor("normal");
+        adaptor.IssueSetboard = true;
+        return adaptor;
+      }
+      return null;
+    }
+    #endregion
+  }
 }

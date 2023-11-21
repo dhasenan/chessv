@@ -23,36 +23,36 @@ using System.Collections.Generic;
 
 namespace ChessV.Compiler
 {
-	public class PartialDefinition
-	{
-		public PartialDefinition( string name, string baseName = null )
-		{
-			Name = name;
-			BaseName = baseName;
-			VariableAssignments = new Dictionary<string, object>();
-			MemberVariableDeclarations = new Dictionary<string, Type>();
-			FunctionDeclarations = new Dictionary<string, Antlr4.Runtime.ParserRuleContext>();
-		}
+  public class PartialDefinition
+  {
+    public PartialDefinition(string name, string baseName = null)
+    {
+      Name = name;
+      BaseName = baseName;
+      VariableAssignments = new Dictionary<string, object>();
+      MemberVariableDeclarations = new Dictionary<string, Type>();
+      FunctionDeclarations = new Dictionary<string, Antlr4.Runtime.ParserRuleContext>();
+    }
 
-		public void AddVariableAssignment( string memberName, object memberValue )
-		{
-			VariableAssignments.Add( memberName, memberValue );
-		}
+    public void AddVariableAssignment(string memberName, object memberValue)
+    {
+      VariableAssignments.Add(memberName, memberValue);
+    }
 
-		public void AddFunctionDeclaration( string memberName, Antlr4.Runtime.ParserRuleContext functionDefinition )
-		{
-			FunctionDeclarations.Add( memberName, functionDefinition );
-		}
+    public void AddFunctionDeclaration(string memberName, Antlr4.Runtime.ParserRuleContext functionDefinition)
+    {
+      FunctionDeclarations.Add(memberName, functionDefinition);
+    }
 
-		public void AddMemberVariableDeclaration( string memberName, Type type )
-		{
-			MemberVariableDeclarations.Add( memberName, type );
-		}
+    public void AddMemberVariableDeclaration(string memberName, Type type)
+    {
+      MemberVariableDeclarations.Add(memberName, type);
+    }
 
-		public string Name { get; private set; }
-		public string BaseName { get; private set; }
-		public Dictionary<string, object> VariableAssignments { get; private set; }
-		public Dictionary<string, Type> MemberVariableDeclarations { get; private set; }
-		public Dictionary<string, Antlr4.Runtime.ParserRuleContext> FunctionDeclarations { get; private set; }
-	}
+    public string Name { get; private set; }
+    public string BaseName { get; private set; }
+    public Dictionary<string, object> VariableAssignments { get; private set; }
+    public Dictionary<string, Type> MemberVariableDeclarations { get; private set; }
+    public Dictionary<string, Antlr4.Runtime.ParserRuleContext> FunctionDeclarations { get; private set; }
+  }
 }

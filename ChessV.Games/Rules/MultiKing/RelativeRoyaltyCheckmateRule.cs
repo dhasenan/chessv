@@ -22,81 +22,81 @@ using System.Collections.Generic;
 
 namespace ChessV.Games.Rules.MultiKing
 {
-	public class RelativeRoyaltyCheckmateRule: Rule
-	{
-		// *** PROPERTIES *** //
+  public class RelativeRoyaltyCheckmateRule : Rule
+  {
+    // *** PROPERTIES *** //
 
-		public MoveEventResponse StalemateResult { get; set; }
+    public MoveEventResponse StalemateResult { get; set; }
 
-		public PieceType RoyalPieceType { get; private set; }
-
-
-		// *** CONSTRUCTION ** //
-
-		public RelativeRoyaltyCheckmateRule( PieceType royalPieceType )
-		{
-			RoyalPieceType = royalPieceType;
-			StalemateResult = MoveEventResponse.GameDrawn;
-		}
+    public PieceType RoyalPieceType { get; private set; }
 
 
-		// *** OVERRIDES *** //
+    // *** CONSTRUCTION ** //
 
-		public override MoveEventResponse MoveBeingMade( MoveInfo move, int ply )
-		{
-			//	Find the royal piece for the current player
-			int royalSquare = FindRoyalPieceSquare( move.Player );
-			//	Make sure that as a result of this move, the moving player's
-			//	royal piece isn't attacked.  If it is, this move is illegal.
-			if( Game.IsSquareAttacked( royalSquare, move.Player ^ 1 ) )
-				return MoveEventResponse.IllegalMove;
-			return MoveEventResponse.NotHandled;
-		}
-
-		public override MoveEventResponse NoMovesResult( int currentPlayer, int ply )
-		{
-			//	Find the royal piece for the current player
-			int royalSquare = FindRoyalPieceSquare( currentPlayer );
-			//	No moves - if the royal piece is attacked, the game is lost;
-			//	Otherwise, return the StalemateResult
-			if( Game.IsSquareAttacked( royalSquare, currentPlayer ^ 1 ) )
-				return MoveEventResponse.GameLost;
-			return StalemateResult;
-		}
-
-		public override int PositionalSearchExtension( int currentPlayer, int ply )
-		{
-			int royalSquare = FindRoyalPieceSquare( currentPlayer );
-			if( Game.IsSquareAttacked( royalSquare, currentPlayer ^ 1 ) )
-				//	king is in check - extend by one ply
-				return Game.ONEPLY;
-			return 0;
-		}
-
-		public override void GetNotesForPieceType( PieceType type, List<string> notes )
-		{
-			if( type == RoyalPieceType )
-				notes.Add( "multiple royalty (relative position)" );
-		}
+    public RelativeRoyaltyCheckmateRule(PieceType royalPieceType)
+    {
+      RoyalPieceType = royalPieceType;
+      StalemateResult = MoveEventResponse.GameDrawn;
+    }
 
 
-		// *** HELPER FUNCTIONS *** //
+    // *** OVERRIDES *** //
 
-		protected int FindRoyalPieceSquare( int player )
-		{
-			BitBoard kings = Board.GetPieceTypeBitboard( player, RoyalPieceType.TypeNumber );
-			int royalSquare = kings.ExtractLSB();
-			int royalSquareRelative = Board.PlayerSquare( player, royalSquare );
-			while( kings )
-			{
-				int square = kings.ExtractLSB();
-				if( Board.PlayerSquare( player, square ) < royalSquareRelative )
-				{
-					royalSquare = square;
-					royalSquareRelative = Board.PlayerSquare( player, square );
-				}
-			}
-			return royalSquare;
-		}
-	}
+    public override MoveEventResponse MoveBeingMade(MoveInfo move, int ply)
+    {
+      //	Find the royal piece for the current player
+      int royalSquare = FindRoyalPieceSquare(move.Player);
+      //	Make sure that as a result of this move, the moving player's
+      //	royal piece isn't attacked.  If it is, this move is illegal.
+      if (Game.IsSquareAttacked(royalSquare, move.Player ^ 1))
+        return MoveEventResponse.IllegalMove;
+      return MoveEventResponse.NotHandled;
+    }
+
+    public override MoveEventResponse NoMovesResult(int currentPlayer, int ply)
+    {
+      //	Find the royal piece for the current player
+      int royalSquare = FindRoyalPieceSquare(currentPlayer);
+      //	No moves - if the royal piece is attacked, the game is lost;
+      //	Otherwise, return the StalemateResult
+      if (Game.IsSquareAttacked(royalSquare, currentPlayer ^ 1))
+        return MoveEventResponse.GameLost;
+      return StalemateResult;
+    }
+
+    public override int PositionalSearchExtension(int currentPlayer, int ply)
+    {
+      int royalSquare = FindRoyalPieceSquare(currentPlayer);
+      if (Game.IsSquareAttacked(royalSquare, currentPlayer ^ 1))
+        //	king is in check - extend by one ply
+        return Game.ONEPLY;
+      return 0;
+    }
+
+    public override void GetNotesForPieceType(PieceType type, List<string> notes)
+    {
+      if (type == RoyalPieceType)
+        notes.Add("multiple royalty (relative position)");
+    }
+
+
+    // *** HELPER FUNCTIONS *** //
+
+    protected int FindRoyalPieceSquare(int player)
+    {
+      BitBoard kings = Board.GetPieceTypeBitboard(player, RoyalPieceType.TypeNumber);
+      int royalSquare = kings.ExtractLSB();
+      int royalSquareRelative = Board.PlayerSquare(player, royalSquare);
+      while (kings)
+      {
+        int square = kings.ExtractLSB();
+        if (Board.PlayerSquare(player, square) < royalSquareRelative)
+        {
+          royalSquare = square;
+          royalSquareRelative = Board.PlayerSquare(player, square);
+        }
+      }
+      return royalSquare;
+    }
+  }
 }

@@ -20,26 +20,26 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 namespace ChessV.Games.Pieces.Berolina
 {
-	[PieceType("Berolina Pawn", "Miscellaneous")]
-	public class BerolinaPawn: PieceType
-	{
-		public BerolinaPawn( string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null ):
-			base( "Berolina Pawn", name, notation, midgameValue, endgameValue, preferredImageName )
-		{
-			IsSliced = false;
-			AddMoves( this );
+  [PieceType("Berolina Pawn", "Miscellaneous")]
+  public class BerolinaPawn : PieceType
+  {
+    public BerolinaPawn(string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null) :
+      base("Berolina Pawn", name, notation, midgameValue, endgameValue, preferredImageName)
+    {
+      IsSliced = false;
+      AddMoves(this);
 
-			//	Customize the piece-square-tables for the Pawn
-			PSTMidgameForwardness = 7;
-			PSTEndgameForwardness = 10;
-			PSTMidgameInSmallCenter = 8;
-		}
+      //	Customize the piece-square-tables for the Pawn
+      PSTMidgameForwardness = 7;
+      PSTEndgameForwardness = 10;
+      PSTMidgameInSmallCenter = 8;
+    }
 
-		public static new void AddMoves( PieceType type )
-		{
-			type.StepMoveOnly( new Direction( 1, 1 ) );
-			type.StepMoveOnly( new Direction( 1, -1 ) );
-			type.StepCaptureOnly( new Direction( 1, 0 ) );
-		}
-	}
+    public static new void AddMoves(PieceType type)
+    {
+      type.StepMoveOnly(new Direction(1, 1));
+      type.StepMoveOnly(new Direction(1, -1));
+      type.StepCaptureOnly(new Direction(1, 0));
+    }
+  }
 }

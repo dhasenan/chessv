@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -18,93 +17,91 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-
 namespace ChessV
 {
-	//**********************************************************************
-	//
-	//                         GenericPiece
-	//
-	//    Provides only the most basic information about a piece, namely:
-	//
-	//        PieceType - the PieceType of the piece
-	//        Player - the player who's piece it is (piece color)
-	//
-	//    Does not know what Game to which it belongs, whether it is on 
-	//    a Board square or not, etc.  This is the base class to Piece 
-	//    which knows this extra information.
+  //**********************************************************************
+  //
+  //                         GenericPiece
+  //
+  //    Provides only the most basic information about a piece, namely:
+  //
+  //        PieceType - the PieceType of the piece
+  //        Player - the player who's piece it is (piece color)
+  //
+  //    Does not know what Game to which it belongs, whether it is on 
+  //    a Board square or not, etc.  This is the base class to Piece 
+  //    which knows this extra information.
 
-	public class GenericPiece
-	{
-		// *** PUBLIC PROPERTIES *** //
+  public class GenericPiece
+  {
+    // *** PUBLIC PROPERTIES *** //
 
-		public int Player { get; set; }
-		public virtual PieceType PieceType { get; set; }
+    public int Player { get; set; }
+    public virtual PieceType PieceType { get; set; }
 
 
-		// *** CONSTRUCTION *** //
+    // *** CONSTRUCTION *** //
 
     // TEST ONLY
     public GenericPiece() { }
 
-    public GenericPiece( GenericPiece piece )
-		{
-			Player = piece.Player;
-			PieceType = piece.PieceType;
-		}
+    public GenericPiece(GenericPiece piece)
+    {
+      Player = piece.Player;
+      PieceType = piece.PieceType;
+    }
 
-		public GenericPiece( int player, PieceType pieceType )
-		{
-			Player = player;
-			PieceType = pieceType;
-		}
+    public GenericPiece(int player, PieceType pieceType)
+    {
+      Player = player;
+      PieceType = pieceType;
+    }
 
 
-		// *** OPERATORS *** //
+    // *** OPERATORS *** //
 
-		public static bool operator ==( GenericPiece gp1, GenericPiece gp2 )
-		{
-			//	If both are null, or both are same instance, return true
-			if( System.Object.ReferenceEquals( gp1, gp2 ) )
-				return true;
+    public static bool operator ==(GenericPiece gp1, GenericPiece gp2)
+    {
+      //	If both are null, or both are same instance, return true
+      if (System.Object.ReferenceEquals(gp1, gp2))
+        return true;
 
-			//	If one is null, but not both, return true
-			if( (object) gp1 == null || (object) gp2 == null )
-				return false;
-			
-			return gp1.PieceType == gp2.PieceType && gp1.Player == gp2.Player; 
-		}
+      //	If one is null, but not both, return true
+      if ((object)gp1 == null || (object)gp2 == null)
+        return false;
 
-		public static bool operator !=( GenericPiece gp1, GenericPiece gp2 )
-		{
-			//	If both are null, or both are same instance, return false
-			if( System.Object.ReferenceEquals( gp1, gp2 ) )
-				return false;
+      return gp1.PieceType == gp2.PieceType && gp1.Player == gp2.Player;
+    }
 
-			//	If one is null, but not both, return true
-			if( (object) gp1 == null || (object) gp2 == null )
-				return true;
+    public static bool operator !=(GenericPiece gp1, GenericPiece gp2)
+    {
+      //	If both are null, or both are same instance, return false
+      if (System.Object.ReferenceEquals(gp1, gp2))
+        return false;
 
-			return gp1.PieceType != gp2.PieceType && gp1.Player != gp2.Player; 
-		}
+      //	If one is null, but not both, return true
+      if ((object)gp1 == null || (object)gp2 == null)
+        return true;
 
-		public bool Equals( GenericPiece other )
-		{
-			return
-				other != null &&
-				other.Player == Player &&
-				other.PieceType == PieceType;
-		}
+      return gp1.PieceType != gp2.PieceType && gp1.Player != gp2.Player;
+    }
 
-		public override bool Equals( object obj )
-		{
-			if( obj is GenericPiece )
-				return Equals( (GenericPiece) obj );
-			return false;
-		}
+    public bool Equals(GenericPiece other)
+    {
+      return
+        other != null &&
+        other.Player == Player &&
+        other.PieceType == PieceType;
+    }
 
-		public override int GetHashCode()
-		{ return PieceType.TypeNumber << 4 | Player; }
-	}
+    public override bool Equals(object obj)
+    {
+      if (obj is GenericPiece)
+        return Equals((GenericPiece)obj);
+      return false;
+    }
+
+    public override int GetHashCode()
+    { return PieceType.TypeNumber << 4 | Player; }
+  }
 }

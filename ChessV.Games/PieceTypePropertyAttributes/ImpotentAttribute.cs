@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -18,19 +17,16 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
 namespace ChessV.Games
 {
-	public class ImpotentAttribute: PieceTypePropertyAttribute
-	{
-		public override void AdjustMovement( PieceType pieceType )
-		{
-			MoveCapability[] moves;
-			int nMoves = pieceType.GetMoveCapabilities( out moves );
-			for( int x = 0; x < nMoves; x++ )
-				moves[x].CanCapture = false;
-		}
-	}
+  public class ImpotentAttribute : PieceTypePropertyAttribute
+  {
+    public override void AdjustMovement(PieceType pieceType)
+    {
+      MoveCapability[] moves;
+      int nMoves = pieceType.GetMoveCapabilities(out moves);
+      for (int x = 0; x < nMoves; x++)
+        moves[x].CanCapture = false;
+    }
+  }
 }

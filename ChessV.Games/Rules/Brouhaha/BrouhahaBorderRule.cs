@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -18,26 +17,23 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
 namespace ChessV.Games.Rules.Brouhaha
 {
-	public class BrouhahaBorderRule: Rule
-	{
-		public override MoveEventResponse MoveBeingGenerated( MoveList moves, int from, int to, MoveType type )
-		{
-			//	we are only concerned about moves to the border squares
-			Location toLocation = Board.SquareToLocation( to );
-			if( toLocation.File == 0 || toLocation.File == Board.NumFiles - 1 ||
-				toLocation.Rank == 0 || toLocation.Rank == Board.NumRanks - 1 )
-			{
-				//	 move to border square - is this square occupied?
-				if( Board[to] == null )
-					//	not a capture, so the move is illegal
-					return MoveEventResponse.IllegalMove;
-			}
-			return MoveEventResponse.NotHandled;
-		}
-	}
+  public class BrouhahaBorderRule : Rule
+  {
+    public override MoveEventResponse MoveBeingGenerated(MoveList moves, int from, int to, MoveType type)
+    {
+      //	we are only concerned about moves to the border squares
+      Location toLocation = Board.SquareToLocation(to);
+      if (toLocation.File == 0 || toLocation.File == Board.NumFiles - 1 ||
+        toLocation.Rank == 0 || toLocation.Rank == Board.NumRanks - 1)
+      {
+        //	 move to border square - is this square occupied?
+        if (Board[to] == null)
+          //	not a capture, so the move is illegal
+          return MoveEventResponse.IllegalMove;
+      }
+      return MoveEventResponse.NotHandled;
+    }
+  }
 }

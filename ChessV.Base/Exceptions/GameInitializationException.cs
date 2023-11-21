@@ -22,17 +22,17 @@ using System;
 
 namespace ChessV.Exceptions
 {
-	public class GameInitializationException: Exception
-	{
-		public GameAttribute GameAttribute { get; private set; }
+  public class GameInitializationException : Exception
+  {
+    public GameAttribute GameAttribute { get; private set; }
 
-		public GameInitializationException
-			( GameAttribute gameAttribute,
-			  string message,
-			  Exception innerException = null ):
-				base( message, innerException )
-		{
-			GameAttribute = gameAttribute;
-		}
-	}
+    public GameInitializationException
+      (GameAttribute gameAttribute,
+        string message,
+        Exception innerException = null) :
+        base(message, innerException)
+    {
+      GameAttribute = gameAttribute;
+    }
+  }
 }

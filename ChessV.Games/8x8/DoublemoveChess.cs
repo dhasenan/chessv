@@ -1,4 +1,3 @@
-
 /***************************************************************************
 
                                  ChessV
@@ -18,54 +17,51 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
 namespace ChessV.Games
 {
-	[Game("Doublemove Chess", typeof(Geometry.Rectangular), 8, 8,
-		  Invented = "1957",
-		  InventedBy = "Fred Galvin",
-		  Tags = "Chess Variant,Multi-Move",
-		  GameDescription1 = "Except for white's first move, players make two",
-		  GameDescription2 = "moves per turn.  Win by capturing the king.")]
-	public class DoublemoveChess: Chess
-	{
-		// *** CONSTRUCTION *** //
+  [Game("Doublemove Chess", typeof(Geometry.Rectangular), 8, 8,
+      Invented = "1957",
+      InventedBy = "Fred Galvin",
+      Tags = "Chess Variant,Multi-Move",
+      GameDescription1 = "Except for white's first move, players make two",
+      GameDescription2 = "moves per turn.  Win by capturing the king.")]
+  public class DoublemoveChess : Chess
+  {
+    // *** CONSTRUCTION *** //
 
-		public DoublemoveChess()
-		{
-		}
+    public DoublemoveChess()
+    {
+    }
 
 
-		// *** INITIALIZATION *** //
+    // *** INITIALIZATION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-		}
-		#endregion
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+    }
+    #endregion
 
-		#region AddRules
-		public override void AddRules()
-		{
-			base.AddRules();
+    #region AddRules
+    public override void AddRules()
+    {
+      base.AddRules();
 
-			//	No check, checkmate, or stalemate
-			RemoveRule( typeof(Rules.CheckmateRule) );
+      //	No check, checkmate, or stalemate
+      RemoveRule(typeof(Rules.CheckmateRule));
 
-			//	No en passant
-			RemoveRule( typeof(Rules.EnPassantRule) );
+      //	No en passant
+      RemoveRule(typeof(Rules.EnPassantRule));
 
-			//	Victory by capturing the king
-			AddRule( new Rules.Extinction.ExtinctionRule( "K" ) );
+      //	Victory by capturing the king
+      AddRule(new Rules.Extinction.ExtinctionRule("K"));
 
-			//	Add DoubleMoveCompletionRule (which will automatically 
-			//	replace MoveCompletionDefaultRule since there can be 
-			//	only one MoveCompletionRule)
-			AddRule( new Rules.MultiMove.DoubleMoveCompletionRule() );
-		}
-		#endregion
-	}
+      //	Add DoubleMoveCompletionRule (which will automatically 
+      //	replace MoveCompletionDefaultRule since there can be 
+      //	only one MoveCompletionRule)
+      AddRule(new Rules.MultiMove.DoubleMoveCompletionRule());
+    }
+    #endregion
+  }
 }

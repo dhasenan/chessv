@@ -23,151 +23,151 @@ using System.Collections.Generic;
 
 namespace ChessV
 {
-	public sealed class ChoiceVariable: ICloneable
-	{
-		// *** PROPERTIES *** //
+  public sealed class ChoiceVariable : ICloneable
+  {
+    // *** PROPERTIES *** //
 
-		#region Choices
-		public List<string> Choices
-		{
-			get
-			{ return choices; }
-		}
-		#endregion
+    #region Choices
+    public List<string> Choices
+    {
+      get
+      { return choices; }
+    }
+    #endregion
 
-		#region Value
-		public string Value 
-		{
-			get 
-			{ return value; }
+    #region Value
+    public string Value
+    {
+      get
+      { return value; }
 
-			set
-			{
-				if( value == null )
-					this.value = null;
-				else
-				{
-					foreach( string choice in Choices )
-						if( choice.ToUpper() == value.ToUpper() )
-						{
-							this.value = choice;
-							return;
-						}
-					throw new Exception( "Specified value not valid for choice variable: " + value );
-				}
-			}
-		}
-		#endregion
+      set
+      {
+        if (value == null)
+          this.value = null;
+        else
+        {
+          foreach (string choice in Choices)
+            if (choice.ToUpper() == value.ToUpper())
+            {
+              this.value = choice;
+              return;
+            }
+          throw new Exception("Specified value not valid for choice variable: " + value);
+        }
+      }
+    }
+    #endregion
 
-		#region DefaultValue
-		public string DefaultValue { get; set; }
-		#endregion
-
-
-		// *** CONSTRUCTION *** //
-
-		#region Construction
-		public ChoiceVariable()
-		{
-			choices = new List<string>();
-			descriptions = new Dictionary<string, string>();
-			hasDescriptions = false;
-		}
-
-		public ChoiceVariable( ChoiceVariable original )
-		{
-			//	Copy constructor
-			choices = new List<string>();
-			descriptions = new Dictionary<string, string>();
-			foreach( string choice in original.Choices )
-				Choices.Add( choice );
-			defaultValue = original.defaultValue;
-			value = original.value;
-		}
-
-		public ChoiceVariable( string[] choices, string defaultChoice = null ): this()
-		{
-			foreach( string choice in choices )
-				Choices.Add( choice );
-			this.defaultValue = defaultChoice;
-		}
-
-		public ChoiceVariable( string[] choices ) : this( choices, null )
-		{
-		}
-
-		public ChoiceVariable( List<string> choices, string defaultChoice )
-		{
-			this.choices = choices;
-			this.defaultValue = defaultChoice;
-		}
-
-		public ChoiceVariable( List<string> choices ) : this( choices, null )
-		{
-		}
-		#endregion
+    #region DefaultValue
+    public string DefaultValue { get; set; }
+    #endregion
 
 
-		// *** PROPERTIES *** //
+    // *** CONSTRUCTION *** //
 
-		#region Properties
-		public bool HasDescriptions
-		{ get { return hasDescriptions; } }
-		#endregion
+    #region Construction
+    public ChoiceVariable()
+    {
+      choices = new List<string>();
+      descriptions = new Dictionary<string, string>();
+      hasDescriptions = false;
+    }
 
+    public ChoiceVariable(ChoiceVariable original)
+    {
+      //	Copy constructor
+      choices = new List<string>();
+      descriptions = new Dictionary<string, string>();
+      foreach (string choice in original.Choices)
+        Choices.Add(choice);
+      defaultValue = original.defaultValue;
+      value = original.value;
+    }
 
-		// *** OPERATIONS *** //
+    public ChoiceVariable(string[] choices, string defaultChoice = null) : this()
+    {
+      foreach (string choice in choices)
+        Choices.Add(choice);
+      this.defaultValue = defaultChoice;
+    }
 
-		#region Operations
-		public void AddChoice( string newChoice, string description = null )
-		{
-			Choices.Add( newChoice );
-			if( description != null )
-			{
-				hasDescriptions = true;
-				descriptions.Add( newChoice, description );
-			}
-		}
+    public ChoiceVariable(string[] choices) : this(choices, null)
+    {
+    }
 
-		public void RemoveChoice( string choice )
-		{
-			Choices.Remove( choice );
-			if( descriptions.ContainsKey( choice ) )
-				descriptions.Remove( choice );
-		}
+    public ChoiceVariable(List<string> choices, string defaultChoice)
+    {
+      this.choices = choices;
+      this.defaultValue = defaultChoice;
+    }
 
-		public string DescribeChoice( string choice )
-		{
-			if( descriptions.ContainsKey( choice ) )
-				return descriptions[choice];
-			return null;
-		}
-		#endregion
-
-
-		// *** OVERRIDES *** //
-
-		#region Overrides
-		public override string ToString()
-		{
-			return value;
-		}
-
-		object ICloneable.Clone()
-		{
-			return new ChoiceVariable( this );
-		}
-		#endregion
+    public ChoiceVariable(List<string> choices) : this(choices, null)
+    {
+    }
+    #endregion
 
 
-		// *** PRIVATE DATA *** //
+    // *** PROPERTIES *** //
 
-		#region Private Data
-		private List<string> choices;
-		private string value;
-		private string defaultValue;
-		private bool hasDescriptions;
-		private Dictionary<string, string> descriptions;
-		#endregion
-	}
+    #region Properties
+    public bool HasDescriptions
+    { get { return hasDescriptions; } }
+    #endregion
+
+
+    // *** OPERATIONS *** //
+
+    #region Operations
+    public void AddChoice(string newChoice, string description = null)
+    {
+      Choices.Add(newChoice);
+      if (description != null)
+      {
+        hasDescriptions = true;
+        descriptions.Add(newChoice, description);
+      }
+    }
+
+    public void RemoveChoice(string choice)
+    {
+      Choices.Remove(choice);
+      if (descriptions.ContainsKey(choice))
+        descriptions.Remove(choice);
+    }
+
+    public string DescribeChoice(string choice)
+    {
+      if (descriptions.ContainsKey(choice))
+        return descriptions[choice];
+      return null;
+    }
+    #endregion
+
+
+    // *** OVERRIDES *** //
+
+    #region Overrides
+    public override string ToString()
+    {
+      return value;
+    }
+
+    object ICloneable.Clone()
+    {
+      return new ChoiceVariable(this);
+    }
+    #endregion
+
+
+    // *** PRIVATE DATA *** //
+
+    #region Private Data
+    private List<string> choices;
+    private string value;
+    private string defaultValue;
+    private bool hasDescriptions;
+    private Dictionary<string, string> descriptions;
+    #endregion
+  }
 }

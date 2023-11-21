@@ -23,32 +23,32 @@ using System.IO;
 
 namespace ChessV.Engine
 {
-	static class Program
-	{
-		// *** GLOBALS *** //
+  static class Program
+  {
+    // *** GLOBALS *** //
 
-		//	The ChessV Manager singleton object
-		static public Manager.Manager Manager;
+    //	The ChessV Manager singleton object
+    static public Manager.Manager Manager;
 
-		//	Are we running a Microsoft Windows platform?
-		static public bool RunningOnWindows;
+    //	Are we running a Microsoft Windows platform?
+    static public bool RunningOnWindows;
 
-		//	A Random object used for generating pseudo-random numbers throughout the program
-		static public Random Random = new Random();
+    //	A Random object used for generating pseudo-random numbers throughout the program
+    static public Random Random = new Random();
 
 
-		static void Main( string[] args )
-		{
-			// *** INITIALIZATION *** //
+    static void Main(string[] args)
+    {
+      // *** INITIALIZATION *** //
 
-			Manager = new Manager.Manager();
+      Manager = new Manager.Manager();
 
-			//	Are we running on Windows?
-			RunningOnWindows = Path.DirectorySeparatorChar == '\\';
+      //	Are we running on Windows?
+      RunningOnWindows = Path.DirectorySeparatorChar == '\\';
 
-			XBoard2Interface.QueryAndSetXBoardActiveStatus();
-			if( XBoard2Interface.Active )
-				XBoard2Interface.StartListener();
-		}
-	}
+      XBoard2Interface.QueryAndSetXBoardActiveStatus();
+      if (XBoard2Interface.Active)
+        XBoard2Interface.StartListener();
+    }
+  }
 }

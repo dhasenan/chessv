@@ -22,155 +22,155 @@ using System.Collections.Generic;
 
 namespace ChessV
 {
-	public class MoveCapability: ExObject
-	{
-		// *** PROPERTIES *** //
+  public class MoveCapability : ExObject
+  {
+    // *** PROPERTIES *** //
 
-		#region Properties
-		//	The direction of the movement
-		public Direction Direction { get; set; }
+    #region Properties
+    //	The direction of the movement
+    public Direction Direction { get; set; }
 
-		//	The minimum number of steps that can be made
-		public int MinSteps { get; set; }
+    //	The minimum number of steps that can be made
+    public int MinSteps { get; set; }
 
-		//	The maximum number of steps that can be made
-		public int MaxSteps { get; set; }
+    //	The maximum number of steps that can be made
+    public int MaxSteps { get; set; }
 
-		//	Can an enemy piece be captured with this move?
-		public bool CanCapture { get; set; }
+    //	Can an enemy piece be captured with this move?
+    public bool CanCapture { get; set; }
 
-		//	Can the move only be made if an enemy piece is captured?
-		public bool MustCapture { get; set; }
+    //	Can the move only be made if an enemy piece is captured?
+    public bool MustCapture { get; set; }
 
-		//	The direction number of the direction of movement
-		//	(all directions used in a given game are given unique 
-		//	numbers for efficiency reasons.)
-		public int NDirection { get; set; }
+    //	The direction number of the direction of movement
+    //	(all directions used in a given game are given unique 
+    //	numbers for efficiency reasons.)
+    public int NDirection { get; set; }
 
-		//	If not null, the move can only be performed if the moving 
-		//	piece is on a square with a true value in the array 
-		//	ConditionalBySquare[playerNumber,squareNumber]
-		//public bool[,] ConditionalBySquare { get; set; }
-		public BitBoard[] ConditionalBySquare { get; set; }
+    //	If not null, the move can only be performed if the moving 
+    //	piece is on a square with a true value in the array 
+    //	ConditionalBySquare[playerNumber,squareNumber]
+    //public bool[,] ConditionalBySquare { get; set; }
+    public BitBoard[] ConditionalBySquare { get; set; }
 
-		//	The ConditionalBySquare is automatically initialized when 
-		//	a Condition is set to a ConditionDelegate, which is a 
-		//	lambda function determining if a move is allowed for the 
-		//	given location (translated appropriately for each player 
-		//	based on the Symmetry of the Game.)
-		public ConditionalLocationDelegate Condition { get; set; }
+    //	The ConditionalBySquare is automatically initialized when 
+    //	a Condition is set to a ConditionDelegate, which is a 
+    //	lambda function determining if a move is allowed for the 
+    //	given location (translated appropriately for each player 
+    //	based on the Symmetry of the Game.)
+    public ConditionalLocationDelegate Condition { get; set; }
 
-		//	Records any special attack types (such as Cannon-moves)
-		public SpecialAttacks SpecialAttacks { get; set; }
+    //	Records any special attack types (such as Cannon-moves)
+    public SpecialAttacks SpecialAttacks { get; set; }
 
-		//	PathInfo is set to a MovePathInfo object only for the 
-		//	case of lame leapers such as the Horse in Xiangqi or 
-		//	multi-path pieces such as the Falcon in Falcon Chess
-		public MovePathInfo PathInfo { get; set; }
-		#endregion
-
-
-		// *** CONSTRUCTION *** //
-
-		#region Construction
-		public MoveCapability()
-		{
-			MinSteps = 1;
-			MaxSteps = 9999;
-			CanCapture = true;
-			MustCapture = false;
-		}
-
-		public MoveCapability( Direction dir, int maxSteps = 9999, int minSteps = 1, bool canCapture = true, bool mustCapture = false )
-		{
-			Direction = dir;
-			MaxSteps = maxSteps;
-			MinSteps = minSteps;
-			CanCapture = canCapture;
-			MustCapture = mustCapture;
-		}
-		#endregion
+    //	PathInfo is set to a MovePathInfo object only for the 
+    //	case of lame leapers such as the Horse in Xiangqi or 
+    //	multi-path pieces such as the Falcon in Falcon Chess
+    public MovePathInfo PathInfo { get; set; }
+    #endregion
 
 
-		// *** INITIALIZATION *** //
+    // *** CONSTRUCTION *** //
 
-		#region Initialization
-		public void Initialize( Game game )
-		{
-			if( Condition != null && ConditionalBySquare == null )
-			{
-				ConditionalBySquare = new BitBoard[game.NumPlayers];
-				for( int player = 0; player < game.NumPlayers; player++ )
-				{
-					ConditionalBySquare[player].SetAll();
-					for( int sq = 0; sq < game.Board.NumSquares; sq++ )
-					{
-						Location location = game.Board.SquareToLocation( sq );
-						location = game.Symmetry.Translate( player, location );
-						if( !Condition( location ) )
-							ConditionalBySquare[player].ClearBit( sq );
-					}
-				}
-			}
-		}
-		#endregion
+    #region Construction
+    public MoveCapability()
+    {
+      MinSteps = 1;
+      MaxSteps = 9999;
+      CanCapture = true;
+      MustCapture = false;
+    }
+
+    public MoveCapability(Direction dir, int maxSteps = 9999, int minSteps = 1, bool canCapture = true, bool mustCapture = false)
+    {
+      Direction = dir;
+      MaxSteps = maxSteps;
+      MinSteps = minSteps;
+      CanCapture = canCapture;
+      MustCapture = mustCapture;
+    }
+    #endregion
 
 
-		public MoveCapability AddPath( List<Direction> path )
-		{
-			if( PathInfo == null )
-				PathInfo = new MovePathInfo();
-			PathInfo.AddPath( path );
-			return this;
-		}
+    // *** INITIALIZATION *** //
 
-		public static MoveCapability Step( Direction direction )
-		{
-			return new MoveCapability( direction, 1 );
-		}
+    #region Initialization
+    public void Initialize(Game game)
+    {
+      if (Condition != null && ConditionalBySquare == null)
+      {
+        ConditionalBySquare = new BitBoard[game.NumPlayers];
+        for (int player = 0; player < game.NumPlayers; player++)
+        {
+          ConditionalBySquare[player].SetAll();
+          for (int sq = 0; sq < game.Board.NumSquares; sq++)
+          {
+            Location location = game.Board.SquareToLocation(sq);
+            location = game.Symmetry.Translate(player, location);
+            if (!Condition(location))
+              ConditionalBySquare[player].ClearBit(sq);
+          }
+        }
+      }
+    }
+    #endregion
 
-		public static MoveCapability Slide( Direction direction )
-		{
-			return new MoveCapability( direction );
-		}
 
-		public static MoveCapability Slide( Direction direction, int maxSteps )
-		{
-			return new MoveCapability( direction, maxSteps );
-		}
+    public MoveCapability AddPath(List<Direction> path)
+    {
+      if (PathInfo == null)
+        PathInfo = new MovePathInfo();
+      PathInfo.AddPath(path);
+      return this;
+    }
 
-		public static MoveCapability StepMoveOnly( Direction direction )
-		{
-			return new MoveCapability( direction, 1, 1, false );
-		}
+    public static MoveCapability Step(Direction direction)
+    {
+      return new MoveCapability(direction, 1);
+    }
 
-		public static MoveCapability SlideMoveOnly( Direction direction )
-		{
-			return new MoveCapability( direction, 9999, 1, false );
-		}
+    public static MoveCapability Slide(Direction direction)
+    {
+      return new MoveCapability(direction);
+    }
 
-		public static MoveCapability StepCaptureOnly( Direction direction )
-		{
-			return new MoveCapability( direction, 1, 1, true, true );
-		}
+    public static MoveCapability Slide(Direction direction, int maxSteps)
+    {
+      return new MoveCapability(direction, maxSteps);
+    }
 
-		public static MoveCapability SlideCaptureOnly( Direction direction )
-		{
-			return new MoveCapability( direction, 9999, 1, true, true );
-		}
+    public static MoveCapability StepMoveOnly(Direction direction)
+    {
+      return new MoveCapability(direction, 1, 1, false);
+    }
 
-		public static MoveCapability CannonMove( Direction direction, int maxSteps = 9999 )
-		{
-			MoveCapability move = new MoveCapability( direction, maxSteps, 1, false, false );
-			move.SpecialAttacks = SpecialAttacks.CannonCapture;
-			return move;
-		}
+    public static MoveCapability SlideMoveOnly(Direction direction)
+    {
+      return new MoveCapability(direction, 9999, 1, false);
+    }
 
-		public static MoveCapability RifleCapture( Direction direction, int maxSpaces )
-		{
-			MoveCapability move = new MoveCapability( direction, maxSpaces, 1, true, true );
-			move.SpecialAttacks = SpecialAttacks.CannonCapture;
-			return move;
-		}
-	}
+    public static MoveCapability StepCaptureOnly(Direction direction)
+    {
+      return new MoveCapability(direction, 1, 1, true, true);
+    }
+
+    public static MoveCapability SlideCaptureOnly(Direction direction)
+    {
+      return new MoveCapability(direction, 9999, 1, true, true);
+    }
+
+    public static MoveCapability CannonMove(Direction direction, int maxSteps = 9999)
+    {
+      MoveCapability move = new MoveCapability(direction, maxSteps, 1, false, false);
+      move.SpecialAttacks = SpecialAttacks.CannonCapture;
+      return move;
+    }
+
+    public static MoveCapability RifleCapture(Direction direction, int maxSpaces)
+    {
+      MoveCapability move = new MoveCapability(direction, maxSpaces, 1, true, true);
+      move.SpecialAttacks = SpecialAttacks.CannonCapture;
+      return move;
+    }
+  }
 }

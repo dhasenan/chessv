@@ -19,58 +19,57 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 ****************************************************************************/
 
 using System;
-using System.Collections.Generic;
 
 namespace ChessV
 {
-	public struct MoveInfo
-	{
-		private Int32 tagOrPromotionType { get; set; }
+  public struct MoveInfo
+  {
+    private Int32 tagOrPromotionType { get; set; }
 
-		public MoveType MoveType { get; set; }
-		public Int32 Player { get; set; }
-		public Int32 FromSquare { get; set; }
-		public Int32 ToSquare { get; set; }
-		public Int32 Tag { get { return tagOrPromotionType; } set { tagOrPromotionType = value; } }
-		public Int32 PromotionType { get { return tagOrPromotionType; } set { tagOrPromotionType = value; } }
-		public Int32 OriginalType { get; set; }
-		public Int32 PickupCursor { get; set; }
-		public Int32 DropCursor { get; set; }
-		public Int32 Evaluation { get; set; }
-		public Piece PieceMoved { get; set; }
-		public Piece PieceCaptured { get; set; }
+    public MoveType MoveType { get; set; }
+    public Int32 Player { get; set; }
+    public Int32 FromSquare { get; set; }
+    public Int32 ToSquare { get; set; }
+    public Int32 Tag { get { return tagOrPromotionType; } set { tagOrPromotionType = value; } }
+    public Int32 PromotionType { get { return tagOrPromotionType; } set { tagOrPromotionType = value; } }
+    public Int32 OriginalType { get; set; }
+    public Int32 PickupCursor { get; set; }
+    public Int32 DropCursor { get; set; }
+    public Int32 Evaluation { get; set; }
+    public Piece PieceMoved { get; set; }
+    public Piece PieceCaptured { get; set; }
 
-		public static bool operator ==( MoveInfo m1, MoveInfo m2 )
-		{ return m1.MoveType == m2.MoveType && m1.FromSquare == m2.FromSquare && m1.ToSquare == m2.ToSquare && m1.tagOrPromotionType == m2.tagOrPromotionType; }
+    public static bool operator ==(MoveInfo m1, MoveInfo m2)
+    { return m1.MoveType == m2.MoveType && m1.FromSquare == m2.FromSquare && m1.ToSquare == m2.ToSquare && m1.tagOrPromotionType == m2.tagOrPromotionType; }
 
-		public static bool operator !=( MoveInfo m1, MoveInfo m2 )
-		{ return m1.MoveType != m2.MoveType || m1.FromSquare != m2.FromSquare || m1.ToSquare != m2.ToSquare || m1.tagOrPromotionType != m2.tagOrPromotionType; }
+    public static bool operator !=(MoveInfo m1, MoveInfo m2)
+    { return m1.MoveType != m2.MoveType || m1.FromSquare != m2.FromSquare || m1.ToSquare != m2.ToSquare || m1.tagOrPromotionType != m2.tagOrPromotionType; }
 
-		public static implicit operator Movement( MoveInfo mi )
-		{
-			return new Movement( mi.FromSquare, mi.ToSquare, mi.Player, mi.MoveType, mi.tagOrPromotionType );
-		}
+    public static implicit operator Movement(MoveInfo mi)
+    {
+      return new Movement(mi.FromSquare, mi.ToSquare, mi.Player, mi.MoveType, mi.tagOrPromotionType);
+    }
 
-		public UInt32 Hash
-		{
-			get
-			{ return (uint) FromSquare + (uint) (ToSquare << 8) + (uint) (tagOrPromotionType << 16) + ((uint) MoveType << 24) + ((uint) Player << 31); }
-		}
+    public UInt32 Hash
+    {
+      get
+      { return (uint)FromSquare + (uint)(ToSquare << 8) + (uint)(tagOrPromotionType << 16) + ((uint)MoveType << 24) + ((uint)Player << 31); }
+    }
 
-		public static implicit operator UInt32( MoveInfo mi )
-		{ return mi.Hash; }
+    public static implicit operator UInt32(MoveInfo mi)
+    { return mi.Hash; }
 
-		public override bool Equals( object obj )
-		{
-			if( obj is MoveInfo )
-				return Equals( (MoveInfo) obj );
-			return false;
-		}
+    public override bool Equals(object obj)
+    {
+      if (obj is MoveInfo)
+        return Equals((MoveInfo)obj);
+      return false;
+    }
 
-		public bool Equals( MoveInfo other )
-		{ return this == other; }
+    public bool Equals(MoveInfo other)
+    { return this == other; }
 
-		public override int GetHashCode()
-		{ return (int) Hash; }
-	}
+    public override int GetHashCode()
+    { return (int)Hash; }
+  }
 }

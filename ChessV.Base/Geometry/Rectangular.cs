@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -18,38 +17,36 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-
 namespace ChessV.Geometry
 {
-	public class Rectangular: BoardGeometry
-	{
-		public int NumRanks { get; private set; }
-		public int NumFiles { get; private set; }
-		public int NumExtraSquares { get; private set; }
+  public class Rectangular : BoardGeometry
+  {
+    public int NumRanks { get; private set; }
+    public int NumFiles { get; private set; }
+    public int NumExtraSquares { get; private set; }
 
-		public override string Shape
-		{ get { return "Rectangular"; } }
+    public override string Shape
+    { get { return "Rectangular"; } }
 
-		public Rectangular
-			( int nFiles,				//	number of files per board
-			  int nRanks,				//	number of ranks per board
-			  int nBoards = 1,			//	number of boards
-			  int nExtraSquares = 0 ):	//	total extra squares
-			base( (nFiles * nRanks * nBoards) + nExtraSquares, nBoards, 2 )
-		{
-			NumFiles = nFiles;
-			NumRanks = nRanks;
-			NumExtraSquares = nExtraSquares;
-		}
+    public Rectangular
+      (int nFiles,        //	number of files per board
+        int nRanks,       //	number of ranks per board
+        int nBoards = 1,      //	number of boards
+        int nExtraSquares = 0) :  //	total extra squares
+      base((nFiles * nRanks * nBoards) + nExtraSquares, nBoards, 2)
+    {
+      NumFiles = nFiles;
+      NumRanks = nRanks;
+      NumExtraSquares = nExtraSquares;
+    }
 
-		public override string ToString()
-		{
-			return
-				NumFiles.ToString() + " x " +
-				NumRanks.ToString() +
-				(NumberOfBoards > 1 ? " x " + NumberOfBoards.ToString() : "") +
-				(NumExtraSquares > 0 ? " (+" + NumExtraSquares.ToString() + ")" : "");
-		}
-	}
+    public override string ToString()
+    {
+      return
+        NumFiles.ToString() + " x " +
+        NumRanks.ToString() +
+        (NumberOfBoards > 1 ? " x " + NumberOfBoards.ToString() : "") +
+        (NumExtraSquares > 0 ? " (+" + NumExtraSquares.ToString() + ")" : "");
+    }
+  }
 }

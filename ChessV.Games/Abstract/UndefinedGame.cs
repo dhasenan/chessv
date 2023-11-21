@@ -18,59 +18,58 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
 using System.Collections.Generic;
 
 namespace ChessV.Games.Abstract
 {
-	//**********************************************************************
-	//
-	//                         UndefinedGame
-	//
-	//    This class is useful for when you need a functional Game object 
-	//    for reasons other than playing an actual game.  This has the 
-	//    minimum requirements to create a valid Game object.  It can 
-	//    be useful, for example, for generating mobility statistics for 
-	//    PieceType objects (which requires a Board and therefore a Game.)
+  //**********************************************************************
+  //
+  //                         UndefinedGame
+  //
+  //    This class is useful for when you need a functional Game object 
+  //    for reasons other than playing an actual game.  This has the 
+  //    minimum requirements to create a valid Game object.  It can 
+  //    be useful, for example, for generating mobility statistics for 
+  //    PieceType objects (which requires a Board and therefore a Game.)
 
-	public class UndefinedGame: GenericChess
-	{
-        // *** CONSTRUCTION *** //
+  public class UndefinedGame : GenericChess
+  {
+    // *** CONSTRUCTION *** //
 
-		public UndefinedGame
-			( int nFiles,               // number of files on the board
-			  int nRanks ):             // number of ranks on the board
-                base( nFiles, nRanks, new MirrorSymmetry() )
-				
-        {
-		}
+    public UndefinedGame
+      (int nFiles,               // number of files on the board
+        int nRanks) :             // number of ranks on the board
+                base(nFiles, nRanks, new MirrorSymmetry())
 
-
-		// *** INITIALIZATION *** //
-
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "k" + (Board.NumFiles - 1).ToString();
-			for( int rank = 1; rank < Board.NumRanks - 1; rank++ )
-				Array += "/" + Board.NumFiles.ToString();
-			Array += "/K" + (Board.NumFiles - 1).ToString();
-		}
-		#endregion
-
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			foreach( PieceType type in PieceTypeList )
-				AddPieceType( type );
-		}
-		#endregion
+    {
+    }
 
 
-		// *** PROTECTED DATA MEMBERS *** //
+    // *** INITIALIZATION *** //
 
-		public static List<PieceType> PieceTypeList;
-	}
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "k" + (Board.NumFiles - 1).ToString();
+      for (int rank = 1; rank < Board.NumRanks - 1; rank++)
+        Array += "/" + Board.NumFiles.ToString();
+      Array += "/K" + (Board.NumFiles - 1).ToString();
+    }
+    #endregion
+
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      foreach (PieceType type in PieceTypeList)
+        AddPieceType(type);
+    }
+    #endregion
+
+
+    // *** PROTECTED DATA MEMBERS *** //
+
+    public static List<PieceType> PieceTypeList;
+  }
 }

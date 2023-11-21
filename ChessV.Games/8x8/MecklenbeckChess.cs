@@ -18,59 +18,59 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System.Collections.Generic;
 using ChessV.Evaluations;
+using System.Collections.Generic;
 
 namespace ChessV.Games
 {
-	[Game("Mecklenbeck Chess", typeof(Geometry.Rectangular), 8, 8,
-		  Invented = "1973",
-		  InventedBy = "Bernd Eickenscheidt;B. Schwarzkopf",
-		  Tags = "Chess Variant",
-		  GameDescription1 = "Pawns may promote upon reaching the 6th rank",
-		  GameDescription2 = "Pawns must promote upon reaching the last rank")]
-	public class MecklenbeckChess: Chess
-	{
-		// *** INITIALIZATION *** //
+  [Game("Mecklenbeck Chess", typeof(Geometry.Rectangular), 8, 8,
+      Invented = "1973",
+      InventedBy = "Bernd Eickenscheidt;B. Schwarzkopf",
+      Tags = "Chess Variant",
+      GameDescription1 = "Pawns may promote upon reaching the 6th rank",
+      GameDescription2 = "Pawns must promote upon reaching the last rank")]
+  public class MecklenbeckChess : Chess
+  {
+    // *** INITIALIZATION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			PromotionRule.Value = "Custom";
-		}
-		#endregion
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      PromotionRule.Value = "Custom";
+    }
+    #endregion
 
-		#region AddRules
-		public override void AddRules()
-		{
-			base.AddRules();
+    #region AddRules
+    public override void AddRules()
+    {
+      base.AddRules();
 
-			// *** PAWN PROMOTION *** //
-			if( PromotionRule.Value == "Custom" )
-			{
-				Rules.ComplexPromotionRule promotionRule = new Rules.ComplexPromotionRule();
-				List<PieceType> availablePromotionTypes = ParseTypeListFromString( PromotionTypes );
-				promotionRule.AddPromotionCapability( Pawn, availablePromotionTypes, null,
-					loc => loc.Rank == Board.NumRanks - 1 ? Rules.PromotionOption.MustPromote :
-						(loc.Rank >= Board.NumRanks - 3 ? Rules.PromotionOption.CanPromote : Rules.PromotionOption.CannotPromote) );
-				AddRule( promotionRule );
-			}
-		}
-		#endregion
+      // *** PAWN PROMOTION *** //
+      if (PromotionRule.Value == "Custom")
+      {
+        Rules.ComplexPromotionRule promotionRule = new Rules.ComplexPromotionRule();
+        List<PieceType> availablePromotionTypes = ParseTypeListFromString(PromotionTypes);
+        promotionRule.AddPromotionCapability(Pawn, availablePromotionTypes, null,
+          loc => loc.Rank == Board.NumRanks - 1 ? Rules.PromotionOption.MustPromote :
+            (loc.Rank >= Board.NumRanks - 3 ? Rules.PromotionOption.CanPromote : Rules.PromotionOption.CannotPromote));
+        AddRule(promotionRule);
+      }
+    }
+    #endregion
 
-		#region AddEvaluations
-		public override void AddEvaluations()
-		{
-			base.AddEvaluations();
+    #region AddEvaluations
+    public override void AddEvaluations()
+    {
+      base.AddEvaluations();
 
-			//	We need to update the pawn structure evaluation to inform it 
-			//	that pawns promote on the 5th rank.  This is important for 
-			//	proper evaluation of passed pawns.
-			PawnStructureEvaluation eval = (PawnStructureEvaluation) FindEvaluation( typeof(PawnStructureEvaluation) );
-			eval.PassedPawnEvaluation = true;
-			eval.PawnPromotionRank = 5;
-		}
-		#endregion
-	}
+      //	We need to update the pawn structure evaluation to inform it 
+      //	that pawns promote on the 5th rank.  This is important for 
+      //	proper evaluation of passed pawns.
+      PawnStructureEvaluation eval = (PawnStructureEvaluation)FindEvaluation(typeof(PawnStructureEvaluation));
+      eval.PassedPawnEvaluation = true;
+      eval.PawnPromotionRank = 5;
+    }
+    #endregion
+  }
 }

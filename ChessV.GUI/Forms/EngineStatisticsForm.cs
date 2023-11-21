@@ -23,30 +23,30 @@ using System.Windows.Forms;
 
 namespace ChessV.GUI
 {
-	public partial class EngineStatisticsForm: Form
-	{
-		public EngineStatisticsForm( Statistics statistics )
-		{
-			Statistics = statistics;
+  public partial class EngineStatisticsForm : Form
+  {
+    public EngineStatisticsForm(Statistics statistics)
+    {
+      Statistics = statistics;
 
-			InitializeComponent();
-		}
+      InitializeComponent();
+    }
 
-		private void EngineStatisticsForm_Load( object sender, EventArgs e )
-		{
-		}
+    private void EngineStatisticsForm_Load(object sender, EventArgs e)
+    {
+    }
 
-		public void UpdateStatistics()
-		{
-			lblNodes.Text = Statistics.Nodes.ToString( "N0" );
-			lblQNodes.Text = Statistics.QNodes.ToString( "N0" );
-			lblQNodePercent.Text = (100.0 * Statistics.QNodes / Statistics.Nodes).ToString( "N2" ) + "%";
-			TimeSpan elapsedTime = DateTime.Now - Statistics.SearchStartTime;
-			lblNodesPerSecond.Text = (Statistics.Nodes / elapsedTime.TotalSeconds / 1000).ToString( "N" ) + "k";
-			lblPawnHitPercent.Text = (100.0 * Statistics.PawnHashHits / Statistics.PawnHashLookups).ToString( "N2" ) + "%";
-			lblMaterialHitPercent.Text = (100.0 * Statistics.MaterialHashHits / Statistics.MaterialHashLookups).ToString( "N2" ) + "%";
-		}
+    public void UpdateStatistics()
+    {
+      lblNodes.Text = Statistics.Nodes.ToString("N0");
+      lblQNodes.Text = Statistics.QNodes.ToString("N0");
+      lblQNodePercent.Text = (100.0 * Statistics.QNodes / Statistics.Nodes).ToString("N2") + "%";
+      TimeSpan elapsedTime = DateTime.Now - Statistics.SearchStartTime;
+      lblNodesPerSecond.Text = (Statistics.Nodes / elapsedTime.TotalSeconds / 1000).ToString("N") + "k";
+      lblPawnHitPercent.Text = (100.0 * Statistics.PawnHashHits / Statistics.PawnHashLookups).ToString("N2") + "%";
+      lblMaterialHitPercent.Text = (100.0 * Statistics.MaterialHashHits / Statistics.MaterialHashLookups).ToString("N2") + "%";
+    }
 
-		public Statistics Statistics { get; private set; }
-	}
+    public Statistics Statistics { get; private set; }
+  }
 }

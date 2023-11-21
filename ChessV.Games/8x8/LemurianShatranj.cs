@@ -18,70 +18,69 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
 using System.Collections.Generic;
 
 namespace ChessV.Games
 {
-	[Game("Lemurian Shatranj", typeof(Geometry.Rectangular), 8, 8,
-		  InventedBy = "Joe Joyce",
-		  Invented = "2006",
-		  Tags = "Chess Variant")]
-	public class LemurianShatranj: Abstract.Generic8x8
-	{
-		// *** PIECE TYPES *** //
+  [Game("Lemurian Shatranj", typeof(Geometry.Rectangular), 8, 8,
+      InventedBy = "Joe Joyce",
+      Invented = "2006",
+      Tags = "Chess Variant")]
+  public class LemurianShatranj : Abstract.Generic8x8
+  {
+    // *** PIECE TYPES *** //
 
-		public PieceType SlidingGeneral;
-		public PieceType BentShaman;
-		public PieceType BentHero;
-		public PieceType WarElephant;
-
-
-		// *** CONSTRUCTION *** //
-
-		public LemurianShatranj():
-			base
-				( /* symmetry = */ new MirrorSymmetry() )
-		{
-		}
+    public PieceType SlidingGeneral;
+    public PieceType BentShaman;
+    public PieceType BentHero;
+    public PieceType WarElephant;
 
 
-		// *** INITIALIZATION *** //
+    // *** CONSTRUCTION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "whsgkshw/pppppppp/8/8/8/8/PPPPPPPP/WHSGKSHW";
-			PromotionRule.Value = "Custom";
-		}
-		#endregion
+    public LemurianShatranj() :
+      base
+        ( /* symmetry = */ new MirrorSymmetry())
+    {
+    }
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			AddPieceType( SlidingGeneral = new SlidingGeneral( "Sliding General", "G", 1000, 1100 ) );
-			AddPieceType( BentShaman = new BentShaman( "Bent Shaman", "S", 600, 650 ) );
-			AddPieceType( BentHero = new BentHero( "Bent Hero", "H", 750, 750 ) );
-			AddPieceType( WarElephant = new WarElephant( "War Elephant", "W", 475, 475 ) );
-		}
-		#endregion
 
-		#region AddRules
-		public override void AddRules()
-		{
-			base.AddRules();
-			if( PromotionRule.Value == "Custom" )
-			{
-				List<PieceType> promotionTypes = new List<PieceType>() { SlidingGeneral };
-				List<PieceType> promoteByReplacementTypes = new List<PieceType>() { BentShaman, BentHero, WarElephant };
-				Rules.ComplexPromotionRule promotionRule = new Rules.ComplexPromotionRule();
-				promotionRule.AddPromotionCapability( Pawn, promotionTypes, promoteByReplacementTypes, loc => loc.Rank == 7 ? Rules.PromotionOption.MustPromote : Rules.PromotionOption.CannotPromote );
-				AddRule( promotionRule );
-				AddRule( new Rules.ColorboundPromotionRestrictionRule() );
-			}
-		}
-		#endregion
-	}
+    // *** INITIALIZATION *** //
+
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "whsgkshw/pppppppp/8/8/8/8/PPPPPPPP/WHSGKSHW";
+      PromotionRule.Value = "Custom";
+    }
+    #endregion
+
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      AddPieceType(SlidingGeneral = new SlidingGeneral("Sliding General", "G", 1000, 1100));
+      AddPieceType(BentShaman = new BentShaman("Bent Shaman", "S", 600, 650));
+      AddPieceType(BentHero = new BentHero("Bent Hero", "H", 750, 750));
+      AddPieceType(WarElephant = new WarElephant("War Elephant", "W", 475, 475));
+    }
+    #endregion
+
+    #region AddRules
+    public override void AddRules()
+    {
+      base.AddRules();
+      if (PromotionRule.Value == "Custom")
+      {
+        List<PieceType> promotionTypes = new List<PieceType>() { SlidingGeneral };
+        List<PieceType> promoteByReplacementTypes = new List<PieceType>() { BentShaman, BentHero, WarElephant };
+        Rules.ComplexPromotionRule promotionRule = new Rules.ComplexPromotionRule();
+        promotionRule.AddPromotionCapability(Pawn, promotionTypes, promoteByReplacementTypes, loc => loc.Rank == 7 ? Rules.PromotionOption.MustPromote : Rules.PromotionOption.CannotPromote);
+        AddRule(promotionRule);
+        AddRule(new Rules.ColorboundPromotionRestrictionRule());
+      }
+    }
+    #endregion
+  }
 }

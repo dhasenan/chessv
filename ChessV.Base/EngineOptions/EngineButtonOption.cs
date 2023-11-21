@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -18,21 +17,18 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
 namespace ChessV.EngineOptions
 {
-	public class EngineButtonOption: EngineOption
-	{
-		public EngineButtonOption( string name ):
-			base( name, null )
-		{
-		}
+  public class EngineButtonOption : EngineOption
+  {
+    public EngineButtonOption(string name) :
+      base(name, null)
+    {
+    }
 
-		public override bool IsValid( object value )
-		{
-			return value == null;
-		}
-	}
+    public override bool IsValid(object value)
+    {
+      return value == null;
+    }
+  }
 }

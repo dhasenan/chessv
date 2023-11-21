@@ -18,54 +18,51 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using ChessV;
 using ChessV.Boards;
 using ChessV.GUI.Attributes;
+using System.Drawing;
 
 namespace ChessV.GUI.BoardPresentations
 {
-[PresentsBoard(typeof(TwoBoards))]
-public class TwoBoardsPresentation: BoardPresentation
-{
-    public TwoBoardsPresentation( Board board, Theme theme, bool smallPreview = false ) :
-        base( board, theme, smallPreview )
+  [PresentsBoard(typeof(TwoBoards))]
+  public class TwoBoardsPresentation : BoardPresentation
+  {
+    public TwoBoardsPresentation(Board board, Theme theme, bool smallPreview = false) :
+        base(board, theme, smallPreview)
     { }
 
-    protected override LocationToPresentationMapping CreateMapping( int borderSize, int squareSize )
+    protected override LocationToPresentationMapping CreateMapping(int borderSize, int squareSize)
     {
-        return new TwoBoardsLocationToPresentationMapping( Board, Theme, borderSize, squareSize );
+      return new TwoBoardsLocationToPresentationMapping(Board, Theme, borderSize, squareSize);
     }
 
-    public class TwoBoardsLocationToPresentationMapping: LocationToPresentationMapping
+    public class TwoBoardsLocationToPresentationMapping : LocationToPresentationMapping
     {
-        public TwoBoardsLocationToPresentationMapping( Board board, Theme theme, int borderSize, int squareSize ) :
-            base( board, theme, borderSize, squareSize )
-        {
-            TotalWidth = 3 * borderSize + Board.NumFiles * squareSize + 1;
-        }
+      public TwoBoardsLocationToPresentationMapping(Board board, Theme theme, int borderSize, int squareSize) :
+          base(board, theme, borderSize, squareSize)
+      {
+        TotalWidth = 3 * borderSize + Board.NumFiles * squareSize + 1;
+      }
 
-        public override Rectangle MapLocation( Location location, bool rotateBoard = false )
+      public override Rectangle MapLocation(Location location, bool rotateBoard = false)
+      {
+        int nFilesPerBoard = Board.NumFiles / 2;
+        if (rotateBoard)
         {
-            int nFilesPerBoard = Board.NumFiles / 2;
-            if( rotateBoard )
-            {
-                if( location.File >= nFilesPerBoard )
-                    return new Rectangle( (BorderSize * 2) + (nFilesPerBoard * SquareSize) + (nFilesPerBoard - (location.File - nFilesPerBoard) - 1) * SquareSize,
-                                          BorderSize + location.Rank * SquareSize,
-                                          SquareSize, SquareSize );
-                else
-                    return new Rectangle( BorderSize + (nFilesPerBoard - location.File - 1) * SquareSize,
-                                          BorderSize + location.Rank * SquareSize,
-                                          SquareSize, SquareSize );
-            }
-            else
-                return new Rectangle( BorderSize + location.File * SquareSize + (location.File >= nFilesPerBoard ? BorderSize : 0),
-                                      BorderSize + (nFilesPerBoard - location.Rank - 1) * SquareSize,
-                                      SquareSize, SquareSize );
+          if (location.File >= nFilesPerBoard)
+            return new Rectangle((BorderSize * 2) + (nFilesPerBoard * SquareSize) + (nFilesPerBoard - (location.File - nFilesPerBoard) - 1) * SquareSize,
+                                  BorderSize + location.Rank * SquareSize,
+                                  SquareSize, SquareSize);
+          else
+            return new Rectangle(BorderSize + (nFilesPerBoard - location.File - 1) * SquareSize,
+                                  BorderSize + location.Rank * SquareSize,
+                                  SquareSize, SquareSize);
         }
+        else
+          return new Rectangle(BorderSize + location.File * SquareSize + (location.File >= nFilesPerBoard ? BorderSize : 0),
+                                BorderSize + (nFilesPerBoard - location.Rank - 1) * SquareSize,
+                                SquareSize, SquareSize);
+      }
     }
-}
+  }
 }

@@ -19,34 +19,28 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 ****************************************************************************/
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-using ChessV;
 
 namespace ChessV.GUI
 {
-	public partial class AboutForm: Form
-	{
-		public AboutForm()
-		{
-			InitializeComponent();
-		}
+  public partial class AboutForm : Form
+  {
+    public AboutForm()
+    {
+      InitializeComponent();
+    }
 
-		private void btnClose_Click( object sender, EventArgs e )
-		{
-			Close();
-		}
+    private void btnClose_Click(object sender, EventArgs e)
+    {
+      Close();
+    }
 
-		private void btnAcknowledgements_Click( object sender, EventArgs e )
-		{
-			Hide();
-			AcknowledgementsForm form = new AcknowledgementsForm();
-			form.ShowDialog();
-			Show();
-		}
-	}
+    private void btnAcknowledgements_Click(object sender, EventArgs e)
+    {
+      Hide();
+      AcknowledgementsForm form = new AcknowledgementsForm();
+      form.ShowDialog();
+      Show();
+    }
+  }
 }

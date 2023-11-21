@@ -22,29 +22,29 @@ using System;
 
 namespace ChessV
 {
-	public struct PawnHashEntry
-	{
-		public UInt64 HashCode;
-		public Int32 MidgameAdjustment;
-		public Int32 EndgameAdjustment;
-		private UInt64 backPawnRank0;
-		private UInt64 backPawnRank1;
-		public BitBoard PassedPawns;
+  public struct PawnHashEntry
+  {
+    public UInt64 HashCode;
+    public Int32 MidgameAdjustment;
+    public Int32 EndgameAdjustment;
+    private UInt64 backPawnRank0;
+    private UInt64 backPawnRank1;
+    public BitBoard PassedPawns;
 
-		public int GetBackPawnRank( int player, int file )
-		{
-			UInt64 backPawnRank = (player == 0 ? backPawnRank0 : backPawnRank1);
-			return (int) ((backPawnRank >> (file * 4)) & 0x0000000FUL);
-		}
+    public int GetBackPawnRank(int player, int file)
+    {
+      UInt64 backPawnRank = (player == 0 ? backPawnRank0 : backPawnRank1);
+      return (int)((backPawnRank >> (file * 4)) & 0x0000000FUL);
+    }
 
-		public void SetBackPawnRank( int player, int file, int backRank )
-		{
-			UInt64 clear = 0xFFFFFFFFFFFFFFFFUL ^ (0x0FUL << (file * 4));
-			UInt64 set = (UInt64) backRank << (file * 4);
-			if( player == 0 )
-				backPawnRank0 = (backPawnRank0 & clear) | set;
-			else
-				backPawnRank1 = (backPawnRank1 & clear) | set;
-		}
-	}
+    public void SetBackPawnRank(int player, int file, int backRank)
+    {
+      UInt64 clear = 0xFFFFFFFFFFFFFFFFUL ^ (0x0FUL << (file * 4));
+      UInt64 set = (UInt64)backRank << (file * 4);
+      if (player == 0)
+        backPawnRank0 = (backPawnRank0 & clear) | set;
+      else
+        backPawnRank1 = (backPawnRank1 & clear) | set;
+    }
+  }
 }

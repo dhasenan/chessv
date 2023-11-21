@@ -25,82 +25,82 @@ using System.Collections.Generic;
 
 namespace ChessV
 {
-	public class PGNGame
-	{
-		//	Mode for writing PGN games
-		public enum PGNMode
-		{
-			//	Only use data which is required by the PGN standard
-			Minimal,
+  public class PGNGame
+  {
+    //	Mode for writing PGN games
+    public enum PGNMode
+    {
+      //	Only use data which is required by the PGN standard
+      Minimal,
 
-			//	Use additional data like extra tags and comments
-			Verbose
-		};
+      //	Use additional data like extra tags and comments
+      Verbose
+    };
 
-		//	Brief structure for storing the game's move history
-		public class MoveData
-		{
-			//	The zobrist position key before the move
-			public UInt64 Key;
+    //	Brief structure for storing the game's move history
+    public class MoveData
+    {
+      //	The zobrist position key before the move
+      public UInt64 Key;
 
-			//	The move in the "generic" format
-			public Movement Move;
+      //	The move in the "generic" format
+      public Movement Move;
 
-			//	The move in Standard Algebraic Notation
-			public string MoveString;
+      //	The move in Standard Algebraic Notation
+      public string MoveString;
 
-			//	A comment/annotation describing the move
-			public string Comment;
-		};
-
-
-		// *** CONSTRUCTION *** //
-
-		public PGNGame()
-		{
-			StartingSide = 0;
-			Tags = new Dictionary<string,string>();
-			Moves = new List<MoveData>();
-		}
+      //	A comment/annotation describing the move
+      public string Comment;
+    };
 
 
-		// *** PROPERTIES *** //
+    // *** CONSTRUCTION *** //
 
-		//	List of MoveData records for the game moves
-		public List<MoveData> Moves { get; protected set; }
+    public PGNGame()
+    {
+      StartingSide = 0;
+      Tags = new Dictionary<string, string>();
+      Moves = new List<MoveData>();
+    }
 
-		//	true if the game doesn't contain any tags or moves
-		public bool IsNull 
-		{ get { return Tags.Count == 0 && Moves.Count == 0; } }
 
-		//	Deletes all tags and moves
-		public void Clear()
-		{
-			StartingSide = -1;
-			//m_eco = EcoNode::root();
-			Tags = new Dictionary<string,string>();
-			Moves = new List<MoveData>();
-		}
+    // *** PROPERTIES *** //
 
-		//	List of tags that describe the game
-		public Dictionary<string, string> Tags { get; private set; }
+    //	List of MoveData records for the game moves
+    public List<MoveData> Moves { get; protected set; }
 
-		//	Adds a new move to the game
-		public void AddMove( MoveData move )
-		{
-			Moves.Add( move );
-			// TODO: ECO stuff
-		}
+    //	true if the game doesn't contain any tags or moves
+    public bool IsNull
+    { get { return Tags.Count == 0 && Moves.Count == 0; } }
 
-		/*!
+    //	Deletes all tags and moves
+    public void Clear()
+    {
+      StartingSide = -1;
+      //m_eco = EcoNode::root();
+      Tags = new Dictionary<string, string>();
+      Moves = new List<MoveData>();
+    }
+
+    //	List of tags that describe the game
+    public Dictionary<string, string> Tags { get; private set; }
+
+    //	Adds a new move to the game
+    public void AddMove(MoveData move)
+    {
+      Moves.Add(move);
+      // TODO: ECO stuff
+    }
+
+    /*!
 		 * Creates a board object for viewing or analyzing the game.
 		 *
 		 * The board is set to the game's starting position.
 		 * Returns 0 on error.
 		 */
-		//public Chess::Board* createBoard() const;
+    //public Chess::Board* createBoard() const;
 
-		/*!
+    /*!
 		 * Reads a game from a PGN text stream.
 		 *
 		 * \param in The PGN stream to read from.
@@ -111,237 +111,237 @@ namespace ChessV
 		 *
 		 * Returns true if any tags and/or moves were read.
 		 */
-		//public bool Read( PgnStream in, int maxMoves = INT_MAX - 1 );
-		/*! Writes the game to a text stream. */
-		//public void Write( QTextStream out, PgnMode mode = Verbose );
-		/*!
+    //public bool Read( PgnStream in, int maxMoves = INT_MAX - 1 );
+    /*! Writes the game to a text stream. */
+    //public void Write( QTextStream out, PgnMode mode = Verbose );
+    /*!
 		 * Writes the game to a file.
 		 * If the file already exists, the game will be appended
 		 * to the end of the file.
 		 *
 		 * Returns true if successfull.
 		 */
-		//public bool write(const string filename, PgnMode mode = Verbose) const;
-		
-		//	Returns true only for a "normal" game of Orthodox Chess
-		//	played from the default starting position
-		public bool IsStandard
-		{ get { return Variant == "normal" && !Tags.ContainsKey( "FEN" ); } }
+    //public bool write(const string filename, PgnMode mode = Verbose) const;
 
-		//	Looks up the value of a tag - null if it doesn't exist
-		public string TagValue( string tag )
-		{ 
-			if( Tags.ContainsKey( tag ) )
-				return Tags[tag];
-			return null;
-		}
+    //	Returns true only for a "normal" game of Orthodox Chess
+    //	played from the default starting position
+    public bool IsStandard
+    { get { return Variant == "normal" && !Tags.ContainsKey("FEN"); } }
 
-		//	the name of the tournament or match event
-		public string Event
-		{ 
-			get
-			{
-				if( Tags.ContainsKey( "Event" ) )
-					return Tags["Event"];
-				return null;
-			}
-			set
-			{
-				Tags["Event"] = value;
-			}
-		}
+    //	Looks up the value of a tag - null if it doesn't exist
+    public string TagValue(string tag)
+    {
+      if (Tags.ContainsKey(tag))
+        return Tags[tag];
+      return null;
+    }
 
-		//	the location of the event
-		public string Site
-		{
-			get
-			{
-				if( Tags.ContainsKey( "Site" ) )
-					return Tags["Site"];
-				return null;
-			}
-			set
-			{
-				Tags["Site"] = value;
-			}
-		}
+    //	the name of the tournament or match event
+    public string Event
+    {
+      get
+      {
+        if (Tags.ContainsKey("Event"))
+          return Tags["Event"];
+        return null;
+      }
+      set
+      {
+        Tags["Event"] = value;
+      }
+    }
 
-		//	the starting date of the game
-		public string Date
-		{
-			get
-			{
-				if( Tags.ContainsKey( "Date" ) )
-					return Tags["Date"];
-				return null;
-			}
-			set
-			{
-				Tags["Date"] = value;
-			}
-		}
+    //	the location of the event
+    public string Site
+    {
+      get
+      {
+        if (Tags.ContainsKey("Site"))
+          return Tags["Site"];
+        return null;
+      }
+      set
+      {
+        Tags["Site"] = value;
+      }
+    }
 
-		//	the playing round ordinal of the game
-		public string Round
-		{
-			get
-			{
-				if( Tags.ContainsKey( "Round" ) )
-					return Tags["Round"];
-				return null;
-			}
-			set
-			{
-				Tags["Round"] = value;
-			}
-		}
+    //	the starting date of the game
+    public string Date
+    {
+      get
+      {
+        if (Tags.ContainsKey("Date"))
+          return Tags["Date"];
+        return null;
+      }
+      set
+      {
+        Tags["Date"] = value;
+      }
+    }
 
-		//	Returns the player's name for the given side
-		public string GetPlayerName( int side )
-		{
-			string tagname = side == 0 ? "White" : (side == 1 ? "Black" : null);
-			if( tagname != null )
-				if( Tags.ContainsKey( tagname ) )
-					return Tags[tagname];
-			return null;
-		}
+    //	the playing round ordinal of the game
+    public string Round
+    {
+      get
+      {
+        if (Tags.ContainsKey("Round"))
+          return Tags["Round"];
+        return null;
+      }
+      set
+      {
+        Tags["Round"] = value;
+      }
+    }
 
-		//	Returns the result of the game
-		public Result Result
-		{
-			get
-			{
-				if( Tags.ContainsKey( "Result" ) )
-					return new Result( Tags["Result"] );
-				return null;
-			}
-			set
-			{
-				Tags["Result"] = value.ShortString;
-				switch( Result.Type )
-				{
-					case ResultType.Adjudication:
-						Tags["Termination"] = "adjudication";
-						break;
-					case ResultType.Timeout:
-						Tags["Termination"] = "time forfeit";
-						break;
-					case ResultType.Disconnection:
-						Tags["Termination"] = "abandoned";
-						break;
-					case ResultType.NoResult:
-						Tags["Termination"] = "unterminated";
-						break;
-					default:
-						if( Tags.ContainsKey( "Termination" ) )
-							Tags.Remove( "Termination" );
-						break;
-				}
-			}
-		}
+    //	Returns the player's name for the given side
+    public string GetPlayerName(int side)
+    {
+      string tagname = side == 0 ? "White" : (side == 1 ? "Black" : null);
+      if (tagname != null)
+        if (Tags.ContainsKey(tagname))
+          return Tags[tagname];
+      return null;
+    }
 
-		//	the chess variant of the game
-		public string Variant
-		{
-			get
-			{
-				if( Tags.ContainsKey( "Variant" ) )
-					return Tags["Variant"];
-				return "normal";
-			}
-			set
-			{
-				if( Variant == "normal" )
-				{
-					if( Tags.ContainsKey( "Variant" ) )
-							Tags.Remove("Variant");
-				}
-				else
-					Tags["Variant"] = value;
-			}
-		}
+    //	Returns the result of the game
+    public Result Result
+    {
+      get
+      {
+        if (Tags.ContainsKey("Result"))
+          return new Result(Tags["Result"]);
+        return null;
+      }
+      set
+      {
+        Tags["Result"] = value.ShortString;
+        switch (Result.Type)
+        {
+          case ResultType.Adjudication:
+            Tags["Termination"] = "adjudication";
+            break;
+          case ResultType.Timeout:
+            Tags["Termination"] = "time forfeit";
+            break;
+          case ResultType.Disconnection:
+            Tags["Termination"] = "abandoned";
+            break;
+          case ResultType.NoResult:
+            Tags["Termination"] = "unterminated";
+            break;
+          default:
+            if (Tags.ContainsKey("Termination"))
+              Tags.Remove("Termination");
+            break;
+        }
+      }
+    }
 
-		//	the side that starts the game
-		public int StartingSide { get; set; }
+    //	the chess variant of the game
+    public string Variant
+    {
+      get
+      {
+        if (Tags.ContainsKey("Variant"))
+          return Tags["Variant"];
+        return "normal";
+      }
+      set
+      {
+        if (Variant == "normal")
+        {
+          if (Tags.ContainsKey("Variant"))
+            Tags.Remove("Variant");
+        }
+        else
+          Tags["Variant"] = value;
+      }
+    }
 
-		//	the FEN string of the starting position
-		public string StartingFEN
-		{
-			get
-			{
-				if( Tags.ContainsKey( "FEN" ) )
-					return Tags["FEN"];
-				return null;
-			}
-		}
+    //	the side that starts the game
+    public int StartingSide { get; set; }
 
-		//	sets the value of a tag
-		public void SetTag( string tag, string value )
-		{
-			if( value == null || value == "" )
-			{
-				if( Tags.ContainsKey( tag ) )
-					Tags.Remove( tag );
-			}
-			else
-				Tags[tag] = value;
-			// TODO: send to tag receiver (whatever that's for)
-		}
+    //	the FEN string of the starting position
+    public string StartingFEN
+    {
+      get
+      {
+        if (Tags.ContainsKey("FEN"))
+          return Tags["FEN"];
+        return null;
+      }
+    }
 
-		//	sets the name of the player for the given side
-		public void SetPlayerName( int side, string name )
-		{
-			if( side == 0 )
-				Tags["White"] = name;
-			else if( side == 1 )
-				Tags["Black"] = name;
-		}
+    //	sets the value of a tag
+    public void SetTag(string tag, string value)
+    {
+      if (value == null || value == "")
+      {
+        if (Tags.ContainsKey(tag))
+          Tags.Remove(tag);
+      }
+      else
+        Tags[tag] = value;
+      // TODO: send to tag receiver (whatever that's for)
+    }
 
-		//	sets the starting position's FEN string
-		public void SetStartingFenString( int side, string fen )
-		{
-			StartingSide = side;
-			if( fen == null )
-			{
-				if( Tags.ContainsKey( "FEN" ) )
-					Tags.Remove( "FEN" );
-				if( Tags.ContainsKey( "SetUp" ) )
-					Tags.Remove( "SetUp" );
-			}
-			else
-			{
-				Tags["FEN"] = fen;
-				Tags["SetUp"] = "1";
-			}
-		}
+    //	sets the name of the player for the given side
+    public void SetPlayerName(int side, string name)
+    {
+      if (side == 0)
+        Tags["White"] = name;
+      else if (side == 1)
+        Tags["Black"] = name;
+    }
 
-		//	Sets a description for the result.
-		//	This is appended to the last move's comment/annotation.
-		//	NOTE - this is not the same as the "Termination" tag which can
-		//	only hold one of the standardized values.
-		public void SetResultDescription( string description )
-		{
-			if( description == null || Moves.Count == 0 )
-				return;
+    //	sets the starting position's FEN string
+    public void SetStartingFenString(int side, string fen)
+    {
+      StartingSide = side;
+      if (fen == null)
+      {
+        if (Tags.ContainsKey("FEN"))
+          Tags.Remove("FEN");
+        if (Tags.ContainsKey("SetUp"))
+          Tags.Remove("SetUp");
+      }
+      else
+      {
+        Tags["FEN"] = fen;
+        Tags["SetUp"] = "1";
+      }
+    }
 
-			string comment = Moves[Moves.Count - 1].Comment;
-			if( comment != null )
-				comment += ", ";
-			comment += description;
-		}
+    //	Sets a description for the result.
+    //	This is appended to the last move's comment/annotation.
+    //	NOTE - this is not the same as the "Termination" tag which can
+    //	only hold one of the standardized values.
+    public void SetResultDescription(string description)
+    {
+      if (description == null || Moves.Count == 0)
+        return;
 
-		/*!
+      string comment = Moves[Moves.Count - 1].Comment;
+      if (comment != null)
+        comment += ", ";
+      comment += description;
+    }
+
+    /*!
 		 * Sets a receiver for PGN tags
 		 *
 		 * \a receiver is an object whose "setTag(string tag, string value)"
 		 * slot is called when a PGN tag changes.
 		 */
-		//public void setTagReceiver(QObject* receiver);
+    //public void setTagReceiver(QObject* receiver);
 
-	
-//		private bool parseMove(PgnStream in);
-		
-		//private const EcoNode* m_eco;
-		//private QObject* m_tagReceiver;
-	}
+
+    //		private bool parseMove(PgnStream in);
+
+    //private const EcoNode* m_eco;
+    //private QObject* m_tagReceiver;
+  }
 }

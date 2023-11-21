@@ -20,13 +20,13 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 using System;
 
-public class XBoardInputException: ApplicationException
+public class XBoardInputException : ApplicationException
 {
-    #region Construction
-    public XBoardInputException( string strMessage ): base( strMessage )
-    {  }
+  #region Construction
+  public XBoardInputException(string strMessage) : base(strMessage)
+  { }
 
-    public XBoardInputException( string strMessage, Exception innerException ): base( strMessage, innerException )
-    {  }
-    #endregion
+  public XBoardInputException(string strMessage, Exception innerException) : base(strMessage, innerException)
+  { }
+  #endregion
 }

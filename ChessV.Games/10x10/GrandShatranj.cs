@@ -20,98 +20,98 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 namespace ChessV.Games
 {
-	[Game("Grand Shatranj", typeof(Geometry.Rectangular), 10, 10,
-		  Invented = "2006",
-		  InventedBy = "Joe Joyce",
-		  Tags = "Chess Variant")]
-	public class GrandShatranj: Abstract.Generic10x10
-	{
-		// *** PIECE TYPES *** //
+  [Game("Grand Shatranj", typeof(Geometry.Rectangular), 10, 10,
+      Invented = "2006",
+      InventedBy = "Joe Joyce",
+      Tags = "Chess Variant")]
+  public class GrandShatranj : Abstract.Generic10x10
+  {
+    // *** PIECE TYPES *** //
 
-		public PieceType Oliphant;
-		public PieceType LightningWarmachine;
-		public PieceType JumpingGeneral;
-		public PieceType Minister;
-		public PieceType HighPriestess;
-
-
-		// *** GAME VARIABLES *** //
-
-		[GameVariable] public ChoiceVariable Variant { get; set; }
+    public PieceType Oliphant;
+    public PieceType LightningWarmachine;
+    public PieceType JumpingGeneral;
+    public PieceType Minister;
+    public PieceType HighPriestess;
 
 
-		// *** CONSTRUCTION *** //
+    // *** GAME VARIABLES *** //
 
-		public GrandShatranj():
-			base
-				( /* symmetry = */ new MirrorSymmetry() )
-		{
-		}
+    [GameVariable] public ChoiceVariable Variant { get; set; }
 
-		// *** INITIALIZATION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Variant = new ChoiceVariable( new string[] { "Grand Shatranj D", "Grand Shatranj R", "Gilded Grand Shatranj" } );
-			Array = "#{BlackArray}/10/10/10/10/#{WhiteArray}";
-		}
-		#endregion
+    // *** CONSTRUCTION *** //
 
-		#region SetOtherVariables
-		public override void SetOtherVariables()
-		{
-			base.SetOtherVariables();
-			if( Variant.Value == "Grand Shatranj D" )
-			{
-				SetCustomProperty( "BlackArray", "l8l/1nojkmhon1/pppppppppp" );
-				SetCustomProperty( "WhiteArray", "PPPPPPPPPP/1NOJKMHON1/L8L" );
-			}
-			else if( Variant.Value == "Grand Shatranj R" )
-			{
-				SetCustomProperty( "BlackArray", "r8r/1nojkmhon1/pppppppppp" );
-				SetCustomProperty( "WhiteArray", "PPPPPPPPPP/1NOJKMHON1/R8R" );
-			}
-			else if( Variant.Value == "Gilded Grand Shatranj" )
-			{
-				SetCustomProperty( "BlackArray", "l2o2o2l/1rnhjkmnr1/pppppppppp" );
-				SetCustomProperty( "WhiteArray", "PPPPPPPPPP/1RNHJKMNR1/L2O2O2L" );
-			}
-		}
-		#endregion
+    public GrandShatranj() :
+      base
+        ( /* symmetry = */ new MirrorSymmetry())
+    {
+    }
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			AddPieceType( Knight = new Knight( "Knight", "N", 300, 300 ) );
-			AddPieceType( Oliphant = new Oliphant( "Oliphant", "O", 500, 500 ) );
-			AddPieceType( JumpingGeneral = new JumpingGeneral( "Jumping General", "J", 600, 600 ) );
-			AddPieceType( Minister = new Minister( "Minister", "M", 575, 575, "KnightWazirDabbabah" ) );
-			AddPieceType( HighPriestess = new HighPriestess( "High Priestess", "H", 575, 575, "ElephantKnight" ) );
+    // *** INITIALIZATION *** //
 
-			if( Variant.Value == "Grand Shatranj D" || Variant.Value == "Gilded Grand Shatranj" )
-				AddPieceType( LightningWarmachine = new LightningWarmachine( "Lightning Warmachine", "L", 600, 600 ) );
-			if( Variant.Value == "Grand Shatranj R" || Variant.Value == "Gilded Grand Shatranj" )
-				AddPieceType( Rook = new Rook( "Rook", "R", 550, 650 ) );
-			base.AddPieceTypes();
-		}
-		#endregion
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Variant = new ChoiceVariable(new string[] { "Grand Shatranj D", "Grand Shatranj R", "Gilded Grand Shatranj" });
+      Array = "#{BlackArray}/10/10/10/10/#{WhiteArray}";
+    }
+    #endregion
 
-		#region AddRules
-		public override void AddRules()
-		{
-			base.AddRules();
-		}
-		#endregion
-	}
+    #region SetOtherVariables
+    public override void SetOtherVariables()
+    {
+      base.SetOtherVariables();
+      if (Variant.Value == "Grand Shatranj D")
+      {
+        SetCustomProperty("BlackArray", "l8l/1nojkmhon1/pppppppppp");
+        SetCustomProperty("WhiteArray", "PPPPPPPPPP/1NOJKMHON1/L8L");
+      }
+      else if (Variant.Value == "Grand Shatranj R")
+      {
+        SetCustomProperty("BlackArray", "r8r/1nojkmhon1/pppppppppp");
+        SetCustomProperty("WhiteArray", "PPPPPPPPPP/1NOJKMHON1/R8R");
+      }
+      else if (Variant.Value == "Gilded Grand Shatranj")
+      {
+        SetCustomProperty("BlackArray", "l2o2o2l/1rnhjkmnr1/pppppppppp");
+        SetCustomProperty("WhiteArray", "PPPPPPPPPP/1RNHJKMNR1/L2O2O2L");
+      }
+    }
+    #endregion
 
-	[Game("Gilded Grand Shatranj", typeof( Geometry.Rectangular ), 10, 10,
-		  Invented = "2006",
-		  InventedBy = "Joe Joyce",
-		  Tags = "Chess Variant",
-		  Definitions = "Variant=Gilded Grand Shatranj")]
-	public class GildedGrandShatrianj: GrandShatranj
-	{
-	}
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      AddPieceType(Knight = new Knight("Knight", "N", 300, 300));
+      AddPieceType(Oliphant = new Oliphant("Oliphant", "O", 500, 500));
+      AddPieceType(JumpingGeneral = new JumpingGeneral("Jumping General", "J", 600, 600));
+      AddPieceType(Minister = new Minister("Minister", "M", 575, 575, "KnightWazirDabbabah"));
+      AddPieceType(HighPriestess = new HighPriestess("High Priestess", "H", 575, 575, "ElephantKnight"));
+
+      if (Variant.Value == "Grand Shatranj D" || Variant.Value == "Gilded Grand Shatranj")
+        AddPieceType(LightningWarmachine = new LightningWarmachine("Lightning Warmachine", "L", 600, 600));
+      if (Variant.Value == "Grand Shatranj R" || Variant.Value == "Gilded Grand Shatranj")
+        AddPieceType(Rook = new Rook("Rook", "R", 550, 650));
+      base.AddPieceTypes();
+    }
+    #endregion
+
+    #region AddRules
+    public override void AddRules()
+    {
+      base.AddRules();
+    }
+    #endregion
+  }
+
+  [Game("Gilded Grand Shatranj", typeof(Geometry.Rectangular), 10, 10,
+      Invented = "2006",
+      InventedBy = "Joe Joyce",
+      Tags = "Chess Variant",
+      Definitions = "Variant=Gilded Grand Shatranj")]
+  public class GildedGrandShatrianj : GrandShatranj
+  {
+  }
 }

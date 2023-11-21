@@ -1,11 +1,10 @@
 ﻿using System.Linq;
-using System.Numerics;
 
 namespace ChessV.Games.Rules.Apmw
 {
-	public class ApmwStalemateRule: CheckmateRule
-	{
-		public ApmwStalemateRule( PieceType[] royalPieceTypes ) : base(royalPieceTypes)
+  public class ApmwStalemateRule : CheckmateRule
+  {
+    public ApmwStalemateRule(PieceType[] royalPieceTypes) : base(royalPieceTypes)
     {
       StalemateResult = MoveEventResponse.GameDrawn;
     }
@@ -15,7 +14,7 @@ namespace ChessV.Games.Rules.Apmw
       base.Initialize(game);
     }
 
-    public override MoveEventResponse MoveBeingMade( MoveInfo move, int ply )
+    public override MoveEventResponse MoveBeingMade(MoveInfo move, int ply)
     {
       if (Game == null || Game.Match == null)
         return base.IllegalCheckMoves(move);
@@ -25,7 +24,7 @@ namespace ChessV.Games.Rules.Apmw
       if (move.MoveType.HasFlag(MoveType.CaptureProperty))
         if (royalPieces[player.Opponent.Side].Remove(move.PieceCaptured))
           return MoveEventResponse.NotHandled;
-      if (royalPieces[move.Player ^ 1].Count > 1 || 
+      if (royalPieces[move.Player ^ 1].Count > 1 ||
           !move.MoveType.HasFlag(MoveType.CaptureProperty) || move.PieceCaptured != royalPieces[move.Player ^ 1].First())
         return base.IllegalCheckMoves(move);
       return MoveEventResponse.NotHandled;

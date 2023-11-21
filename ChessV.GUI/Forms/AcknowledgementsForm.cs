@@ -18,16 +18,15 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
 using System.Windows.Forms;
 
 namespace ChessV.GUI
 {
-	public partial class AcknowledgementsForm: Form
-	{
-		public AcknowledgementsForm()
-		{
-			InitializeComponent();
-		}
-	}
+  public partial class AcknowledgementsForm : Form
+  {
+    public AcknowledgementsForm()
+    {
+      InitializeComponent();
+    }
+  }
 }

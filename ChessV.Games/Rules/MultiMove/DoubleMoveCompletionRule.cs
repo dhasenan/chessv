@@ -19,91 +19,90 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 ****************************************************************************/
 
 using System;
-using System.Collections.Generic;
 
 namespace ChessV.Games.Rules.MultiMove
 {
-	public class DoubleMoveCompletionRule: MoveCompletionRule
-	{
-		// *** CONSTRUCTION *** //
+  public class DoubleMoveCompletionRule : MoveCompletionRule
+  {
+    // *** CONSTRUCTION *** //
 
-		public DoubleMoveCompletionRule()
-		{
-			currentState = 1;
-		}
+    public DoubleMoveCompletionRule()
+    {
+      currentState = 1;
+    }
 
-		public override void Initialize( Game game )
-		{
-			base.Initialize( game );
-			hashKeyIndex = game.HashKeys.TakeKeys( stateNotations.Length );
-		}
-
-
-		// *** OVERRIDES ** //
-
-		public override int TurnNumber
-		{
-			get { return turnNumber; }
-		}
-
-		public override void PositionLoaded( FEN fen )
-		{
-			//	read the turn number from the FEN
-			if( !Int32.TryParse( fen["turn number"], out turnNumber ) )
-				throw new Exception( "FEN parse error - invalid turn number specified: '" + fen["turn number"] + "'" );
-			//	read the current player from the FEN
-			string currentPlayerNotation = fen["current player"];
-			bool notationFound = false;
-			for( int x = 0; x < stateNotations.Length; x++ )
-				if( currentPlayerNotation == stateNotations[x] )
-				{
-					currentState = x;
-					Game.CurrentSide = currentState / 2;
-					notationFound = true;
-				}
-			if( !notationFound )
-				throw new Exception( "FEN parse error - invalid current player specified: '" + currentPlayerNotation + "'" );
-		}
-
-		public override void SavePositionToFEN( FEN fen )
-		{
-			fen["turn number"] = turnNumber.ToString();
-			fen["current player"] = stateNotations[currentState];
-		}
-
-		public override ulong GetPositionHashCode( int ply )
-		{
-			return HashKeys.Keys[hashKeyIndex + currentState];
-		}
-
-		public override void CompleteMove( MoveInfo move, int ply )
-		{
-			currentState = (currentState + 1) % 4;
-			if( currentState == 0 )
-				turnNumber++;
-			Game.CurrentSide = currentState / 2;
-		}
-
-		public override void UndoingMove()
-		{
-			currentState = (currentState + 3) % 4;
-			if( currentState == 3 )
-				turnNumber--;
-			Game.CurrentSide = currentState / 2;
-		}
-
-		public override int GetNextSide()
-		{
-			return ((currentState + 1) % 4) / 2;
-		}
+    public override void Initialize(Game game)
+    {
+      base.Initialize(game);
+      hashKeyIndex = game.HashKeys.TakeKeys(stateNotations.Length);
+    }
 
 
-		// *** PROTECTED DATA *** //
+    // *** OVERRIDES ** //
 
-		protected int currentState;
-		protected int hashKeyIndex;
-		protected int turnNumber;
+    public override int TurnNumber
+    {
+      get { return turnNumber; }
+    }
 
-		protected string[] stateNotations = new string[] { "w2", "w", "b2", "b" };
-	}
+    public override void PositionLoaded(FEN fen)
+    {
+      //	read the turn number from the FEN
+      if (!Int32.TryParse(fen["turn number"], out turnNumber))
+        throw new Exception("FEN parse error - invalid turn number specified: '" + fen["turn number"] + "'");
+      //	read the current player from the FEN
+      string currentPlayerNotation = fen["current player"];
+      bool notationFound = false;
+      for (int x = 0; x < stateNotations.Length; x++)
+        if (currentPlayerNotation == stateNotations[x])
+        {
+          currentState = x;
+          Game.CurrentSide = currentState / 2;
+          notationFound = true;
+        }
+      if (!notationFound)
+        throw new Exception("FEN parse error - invalid current player specified: '" + currentPlayerNotation + "'");
+    }
+
+    public override void SavePositionToFEN(FEN fen)
+    {
+      fen["turn number"] = turnNumber.ToString();
+      fen["current player"] = stateNotations[currentState];
+    }
+
+    public override ulong GetPositionHashCode(int ply)
+    {
+      return HashKeys.Keys[hashKeyIndex + currentState];
+    }
+
+    public override void CompleteMove(MoveInfo move, int ply)
+    {
+      currentState = (currentState + 1) % 4;
+      if (currentState == 0)
+        turnNumber++;
+      Game.CurrentSide = currentState / 2;
+    }
+
+    public override void UndoingMove()
+    {
+      currentState = (currentState + 3) % 4;
+      if (currentState == 3)
+        turnNumber--;
+      Game.CurrentSide = currentState / 2;
+    }
+
+    public override int GetNextSide()
+    {
+      return ((currentState + 1) % 4) / 2;
+    }
+
+
+    // *** PROTECTED DATA *** //
+
+    protected int currentState;
+    protected int hashKeyIndex;
+    protected int turnNumber;
+
+    protected string[] stateNotations = new string[] { "w2", "w", "b2", "b" };
+  }
 }

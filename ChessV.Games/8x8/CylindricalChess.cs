@@ -20,62 +20,62 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 namespace ChessV.Games
 {
-	//**********************************************************************
-	//
-	//                        CylindricalChess
-	//
-	//    This class implements the game of Cylindrical Chess.  It is like 
-	//    orthodox Chess except that the board is treated as a cylindar,  
-	//    with the left and right sides connected.  A piece may move off 
-	//    one side and wrap arround.
+  //**********************************************************************
+  //
+  //                        CylindricalChess
+  //
+  //    This class implements the game of Cylindrical Chess.  It is like 
+  //    orthodox Chess except that the board is treated as a cylindar,  
+  //    with the left and right sides connected.  A piece may move off 
+  //    one side and wrap arround.
 
-	[Game("Cylindrical Chess", typeof(Geometry.Rectangular), 8, 8,
-		  XBoardName = "cylinder",
-		  InventedBy = "Unknown",
-		  Invented = "circa 10th century",
-		  Tags = "Chess Variant,Historic,Popular",
-		  GameDescription1 = "Standard chess but with the modification that the edges",
-		  GameDescription2 = "of the board are considered to be connected")]
-	public class CylindricalChess: Chess
-	{
-		// *** CONSTRUCTION *** //
+  [Game("Cylindrical Chess", typeof(Geometry.Rectangular), 8, 8,
+      XBoardName = "cylinder",
+      InventedBy = "Unknown",
+      Invented = "circa 10th century",
+      Tags = "Chess Variant,Historic,Popular",
+      GameDescription1 = "Standard chess but with the modification that the edges",
+      GameDescription2 = "of the board are considered to be connected")]
+  public class CylindricalChess : Chess
+  {
+    // *** CONSTRUCTION *** //
 
-		public CylindricalChess()
-		{
-		}
+    public CylindricalChess()
+    {
+    }
 
 
-		// *** INITIALIZATION *** //
+    // *** INITIALIZATION *** //
 
-		#region CreateBoard
-		//	We override the CreateBoard function so the game uses a 
-		//	cylindrical board.
-		public override Board CreateBoard( int nPlayers, int nFiles, int nRanks, Symmetry symmetry )
-		{ return new Boards.CylindricalBoard( nFiles, nRanks ); }
-		#endregion
+    #region CreateBoard
+    //	We override the CreateBoard function so the game uses a 
+    //	cylindrical board.
+    public override Board CreateBoard(int nPlayers, int nFiles, int nRanks, Symmetry symmetry)
+    { return new Boards.CylindricalBoard(nFiles, nRanks); }
+    #endregion
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
 
-			//	We need to turn on move deduplication.  Otherwise, we will 
-			//	generate duplicates.  For example, a rook on an open rank can 
-			//	reach squares on that rank by two different paths
-			DeduplicateMoves = true;
-		}
-		#endregion
+      //	We need to turn on move deduplication.  Otherwise, we will 
+      //	generate duplicates.  For example, a rook on an open rank can 
+      //	reach squares on that rank by two different paths
+      DeduplicateMoves = true;
+    }
+    #endregion
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
 
-			Queen.MidgameValue = Queen.EndgameValue = 1100;
-			Rook.MidgameValue = Rook.EndgameValue = 500;
-			Bishop.MidgameValue = Bishop.EndgameValue = 400;
-			Knight.MidgameValue = Knight.EndgameValue = 325;
-		}
-		#endregion
-	}
+      Queen.MidgameValue = Queen.EndgameValue = 1100;
+      Rook.MidgameValue = Rook.EndgameValue = 500;
+      Bishop.MidgameValue = Bishop.EndgameValue = 400;
+      Knight.MidgameValue = Knight.EndgameValue = 325;
+    }
+    #endregion
+  }
 }

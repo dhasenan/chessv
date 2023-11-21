@@ -18,30 +18,29 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
 using System.Collections.Generic;
 
 namespace ChessV.Games.Pieces.OdinsRune
 {
-	public class OdinPawn: PieceType
-	{
-		public OdinPawn( string name, string notation, int midgameValue, int endgameValue ):
-			base( "Odin Pawn", name, notation, midgameValue, endgameValue )
-		{
-			AddMoves( this );
-		}
+  public class OdinPawn : PieceType
+  {
+    public OdinPawn(string name, string notation, int midgameValue, int endgameValue) :
+      base("Odin Pawn", name, notation, midgameValue, endgameValue)
+    {
+      AddMoves(this);
+    }
 
-		public static new void AddMoves( PieceType type )
-		{
-			Ferz.AddMoves( type );
+    public static new void AddMoves(PieceType type)
+    {
+      Ferz.AddMoves(type);
 
-			//	add the multi-path move
-			MoveCapability move = MoveCapability.Step( new Direction( 2, 0 ) );
-			MovePathInfo movePath = new MovePathInfo();
-			movePath.AddPath( new List<Direction>() { new Direction( 1, 1 ), new Direction( 1, -1 ) } );
-			movePath.AddPath( new List<Direction>() { new Direction( 1, -1 ), new Direction( 1, 1 ) } );
-			move.PathInfo = movePath;
-			type.AddMoveCapability( move );
-		}
-	}
+      //	add the multi-path move
+      MoveCapability move = MoveCapability.Step(new Direction(2, 0));
+      MovePathInfo movePath = new MovePathInfo();
+      movePath.AddPath(new List<Direction>() { new Direction(1, 1), new Direction(1, -1) });
+      movePath.AddPath(new List<Direction>() { new Direction(1, -1), new Direction(1, 1) });
+      move.PathInfo = movePath;
+      type.AddMoveCapability(move);
+    }
+  }
 }

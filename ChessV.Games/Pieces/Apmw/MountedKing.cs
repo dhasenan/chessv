@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ChessV.Games.Pieces.Apmw
+﻿namespace ChessV.Games.Pieces.Apmw
 {
   internal class MountedKing : PieceType
   {

@@ -22,43 +22,43 @@ using System.Collections.Generic;
 
 namespace ChessV.Games.Rules.Odyssey
 {
-	public class AssassinTradeRestrictionRule: Rule
-	{
-		protected PieceType executionerType;
+  public class AssassinTradeRestrictionRule : Rule
+  {
+    protected PieceType executionerType;
 
-		public AssassinTradeRestrictionRule( PieceType executionerType )
-		{
-			this.executionerType = executionerType;
-		}
+    public AssassinTradeRestrictionRule(PieceType executionerType)
+    {
+      this.executionerType = executionerType;
+    }
 
-		public override MoveEventResponse MoveBeingMade( MoveInfo move, int ply )
-		{
-			if( move.MoveType == MoveType.StandardCapture && 
-				move.PieceMoved.PieceType == executionerType && 
-				move.PieceCaptured.PieceType == executionerType )
-			{
-				//	declare this move illegal if and only if:
-				//	  (A) the capturing piece is moving more than one space, and 
-				//	  (B) the captured piece is protected
-				if( Board.SquareToLocation( move.FromSquare ).Rank - Board.SquareToLocation( move.ToSquare ).Rank > 1 ||
-					Board.SquareToLocation( move.ToSquare ).Rank - Board.SquareToLocation( move.FromSquare ).Rank > 1 ||
-					Board.SquareToLocation( move.FromSquare ).File - Board.SquareToLocation( move.ToSquare ).File > 1 ||
-					Board.SquareToLocation( move.ToSquare ).File - Board.SquareToLocation( move.FromSquare ).File > 1 )
-				{
-					//	The move is greater than one space.
-					//	Is the victim protected?
-					if( Game.IsSquareAttacked( move.ToSquare, move.PieceCaptured.Player ) )
-						//	the piece is protected, so this move is illegal
-						return MoveEventResponse.IllegalMove;
-				}
-			}
-			return base.MoveBeingMade( move, ply );
-		}
+    public override MoveEventResponse MoveBeingMade(MoveInfo move, int ply)
+    {
+      if (move.MoveType == MoveType.StandardCapture &&
+        move.PieceMoved.PieceType == executionerType &&
+        move.PieceCaptured.PieceType == executionerType)
+      {
+        //	declare this move illegal if and only if:
+        //	  (A) the capturing piece is moving more than one space, and 
+        //	  (B) the captured piece is protected
+        if (Board.SquareToLocation(move.FromSquare).Rank - Board.SquareToLocation(move.ToSquare).Rank > 1 ||
+          Board.SquareToLocation(move.ToSquare).Rank - Board.SquareToLocation(move.FromSquare).Rank > 1 ||
+          Board.SquareToLocation(move.FromSquare).File - Board.SquareToLocation(move.ToSquare).File > 1 ||
+          Board.SquareToLocation(move.ToSquare).File - Board.SquareToLocation(move.FromSquare).File > 1)
+        {
+          //	The move is greater than one space.
+          //	Is the victim protected?
+          if (Game.IsSquareAttacked(move.ToSquare, move.PieceCaptured.Player))
+            //	the piece is protected, so this move is illegal
+            return MoveEventResponse.IllegalMove;
+        }
+      }
+      return base.MoveBeingMade(move, ply);
+    }
 
-		public override void GetNotesForPieceType( PieceType type, List<string> notes )
-		{
-			if( type == executionerType )
-				notes.Add( "piece trading restriction" );
-		}
-	}
+    public override void GetNotesForPieceType(PieceType type, List<string> notes)
+    {
+      if (type == executionerType)
+        notes.Add("piece trading restriction");
+    }
+  }
 }

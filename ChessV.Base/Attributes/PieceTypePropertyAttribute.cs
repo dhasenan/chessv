@@ -19,17 +19,16 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 ****************************************************************************/
 
 using System;
-using System.Collections.Generic;
 
 namespace ChessV
 {
-	public abstract class PieceTypePropertyAttribute: Attribute, IPieceTypeProperty
-	{
-		protected PieceTypePropertyAttribute()
-		{  }
+  public abstract class PieceTypePropertyAttribute : Attribute, IPieceTypeProperty
+  {
+    protected PieceTypePropertyAttribute()
+    { }
 
-		public virtual void AddRules( PieceType pieceType, Game game ) { }
+    public virtual void AddRules(PieceType pieceType, Game game) { }
 
-		public virtual void AdjustMovement( PieceType pieceType ) { }
-	}
+    public virtual void AdjustMovement(PieceType pieceType) { }
+  }
 }

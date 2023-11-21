@@ -22,85 +22,85 @@ using ChessV.Games.Rules.Gross;
 
 namespace ChessV.Games
 {
-	[Game("Gross Chess", typeof(Geometry.Rectangular), 12, 12,
-		  Invented = "2009",
-		  InventedBy = "Fergus Duniho",
-		  Tags = "Chess Variant")]
-	[Appearance(ColorScheme = "Surrealistic Summer", PieceSet="Abstract", Player2Color="255,0,0")]
-	public class GrossChess: Abstract.Generic12x12
-	{
-		// *** PIECE TYPES *** //
+  [Game("Gross Chess", typeof(Geometry.Rectangular), 12, 12,
+      Invented = "2009",
+      InventedBy = "Fergus Duniho",
+      Tags = "Chess Variant")]
+  [Appearance(ColorScheme = "Surrealistic Summer", PieceSet = "Abstract", Player2Color = "255,0,0")]
+  public class GrossChess : Abstract.Generic12x12
+  {
+    // *** PIECE TYPES *** //
 
-		public PieceType Chancellor;
-		public PieceType Archbishop;
-		public PieceType Cannon;
-		public PieceType Vao;
-		public PieceType Wizard;
-		public PieceType Champion;
-
-
-		// *** CONSTRUCTION *** //
-
-		public GrossChess():
-			base
-				( /* symmetry = */ new MirrorSymmetry() )
-		{
-		}
+    public PieceType Chancellor;
+    public PieceType Archbishop;
+    public PieceType Cannon;
+    public PieceType Vao;
+    public PieceType Wizard;
+    public PieceType Champion;
 
 
-		// *** INITIALIZATION *** //
+    // *** CONSTRUCTION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "mavwc2cwvam/1rsnbqkbnsr1/pppppppppppp/12/12/12/12/12/12/PPPPPPPPPPPP/1RSNBQKBNSR1/MAVWC2CWVAM";
-			Castling.Value = "2R Close-Rook Flexible";
-			PromotionRule.Value = "Custom";
-			PawnMultipleMove.Value = "@3(2,3)";
-			EnPassant = true;
-		}
-		#endregion
+    public GrossChess() :
+      base
+        ( /* symmetry = */ new MirrorSymmetry())
+    {
+    }
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			AddChessPieceTypes();
-			AddPieceType( Chancellor = new Chancellor( "Marshall", "M", 1000, 1050 ) );
-			AddPieceType( Archbishop = new Archbishop( "Archbishop", "A", 850, 900 ) );
-			AddPieceType( Cannon = new Cannon( "Cannon", "C", 500, 250 ) );
-			AddPieceType( Vao = new Vao( "Vao", "V", 350, 150 ) );
-			AddPieceType( Wizard = new Wizard( "Wizard", "W", 600, 550 ) );
-			AddPieceType( Champion = new Champion( "Champion", "S", 600, 600 ) );
-		}
-		#endregion
 
-		#region AddRules
-		public override void AddRules()
-		{
-			base.AddRules();
+    // *** INITIALIZATION *** //
 
-			//	add custom pawn promotion rule
-			if( PromotionRule.Value == "Custom" )
-			{
-				AddRule( new GrossChessPromotionRule( Pawn,
-					loc => loc.Rank == 11 ? Rules.PromotionOption.MustPromote :
-						(loc.Rank == 9 || loc.Rank == 10 ? Rules.PromotionOption.CanPromote : Rules.PromotionOption.CannotPromote) ) );
-			}
-		}
-		#endregion
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "mavwc2cwvam/1rsnbqkbnsr1/pppppppppppp/12/12/12/12/12/12/PPPPPPPPPPPP/1RSNBQKBNSR1/MAVWC2CWVAM";
+      Castling.Value = "2R Close-Rook Flexible";
+      PromotionRule.Value = "Custom";
+      PawnMultipleMove.Value = "@3(2,3)";
+      EnPassant = true;
+    }
+    #endregion
 
-		#region AddEvaluations
-		public override void AddEvaluations()
-		{
-			base.AddEvaluations();
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      AddChessPieceTypes();
+      AddPieceType(Chancellor = new Chancellor("Marshall", "M", 1000, 1050));
+      AddPieceType(Archbishop = new Archbishop("Archbishop", "A", 850, 900));
+      AddPieceType(Cannon = new Cannon("Cannon", "C", 500, 250));
+      AddPieceType(Vao = new Vao("Vao", "V", 350, 150));
+      AddPieceType(Wizard = new Wizard("Wizard", "W", 600, 550));
+      AddPieceType(Champion = new Champion("Champion", "S", 600, 600));
+    }
+    #endregion
 
-			//	Customize the development evaluation function
-			Evaluations.DevelopmentEvaluation eval = (Evaluations.DevelopmentEvaluation) 
-				FindEvaluation( typeof(Evaluations.DevelopmentEvaluation) );
-			eval.HeavyPieceThreshold = 600;
-		}
-		#endregion
-	}
+    #region AddRules
+    public override void AddRules()
+    {
+      base.AddRules();
+
+      //	add custom pawn promotion rule
+      if (PromotionRule.Value == "Custom")
+      {
+        AddRule(new GrossChessPromotionRule(Pawn,
+          loc => loc.Rank == 11 ? Rules.PromotionOption.MustPromote :
+            (loc.Rank == 9 || loc.Rank == 10 ? Rules.PromotionOption.CanPromote : Rules.PromotionOption.CannotPromote)));
+      }
+    }
+    #endregion
+
+    #region AddEvaluations
+    public override void AddEvaluations()
+    {
+      base.AddEvaluations();
+
+      //	Customize the development evaluation function
+      Evaluations.DevelopmentEvaluation eval = (Evaluations.DevelopmentEvaluation)
+        FindEvaluation(typeof(Evaluations.DevelopmentEvaluation));
+      eval.HeavyPieceThreshold = 600;
+    }
+    #endregion
+  }
 }

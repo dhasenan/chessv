@@ -22,61 +22,61 @@ using ChessV.Games.Rules;
 
 namespace ChessV.Games
 {
-	[Game("Symmetric Chess", typeof(Geometry.Rectangular), 9, 8,
-		  InventedBy = "Carlos Cetina",
-		  Invented = "2014",
-		  Tags = "Chess Variant",
-		  GameDescription1 = "Symmetric layout with the King flanked by two Queens",
-		  GameDescription2 = "Bishops range on opposite colors thanks to the Bishop Conversion Rule")]
-	public class SymmetricChess: Abstract.Generic9x8
-	{
-		// *** GAME VARIABLES *** //
+  [Game("Symmetric Chess", typeof(Geometry.Rectangular), 9, 8,
+      InventedBy = "Carlos Cetina",
+      Invented = "2014",
+      Tags = "Chess Variant",
+      GameDescription1 = "Symmetric layout with the King flanked by two Queens",
+      GameDescription2 = "Bishops range on opposite colors thanks to the Bishop Conversion Rule")]
+  public class SymmetricChess : Abstract.Generic9x8
+  {
+    // *** GAME VARIABLES *** //
 
-		[GameVariable] public bool UseBishopConversionRule { get; set; }
-
-
-		// *** CONSTRUCTION *** //
-
-		public SymmetricChess(): 
-			base
-				( /* symmetry = */ new MirrorSymmetry() )
-		{
-		}
+    [GameVariable] public bool UseBishopConversionRule { get; set; }
 
 
-		// *** INITIALIZATION *** //
+    // *** CONSTRUCTION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			FENFormat = "{array} {current player} {castling} {en-passant} {bishop-conversion} {half-move clock} {turn number}";
-			FENStart = "#{Array} w #default #default #default 0 1";
-			Array = "rnbqkqbnr/ppppppppp/9/9/9/9/PPPPPPPPP/RNBQKQBNR";
-			PawnDoubleMove = true;
-			EnPassant = true;
-			Castling.Value = "Long";
-			PromotionRule.Value = "Standard";
-			PromotionTypes = "QRNB";
-			UseBishopConversionRule = true;
-		}
-		#endregion
+    public SymmetricChess() :
+      base
+        ( /* symmetry = */ new MirrorSymmetry())
+    {
+    }
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			AddChessPieceTypes();
-		}
-		#endregion
 
-		#region AddRules
-		public override void AddRules()
-		{
-			base.AddRules();
-			if( UseBishopConversionRule )
-				AddRule( new BishopConversionRule( new string[] { "c1", "g1", "c8", "g8" } ) );
-		}
-		#endregion
-	}
+    // *** INITIALIZATION *** //
+
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      FENFormat = "{array} {current player} {castling} {en-passant} {bishop-conversion} {half-move clock} {turn number}";
+      FENStart = "#{Array} w #default #default #default 0 1";
+      Array = "rnbqkqbnr/ppppppppp/9/9/9/9/PPPPPPPPP/RNBQKQBNR";
+      PawnDoubleMove = true;
+      EnPassant = true;
+      Castling.Value = "Long";
+      PromotionRule.Value = "Standard";
+      PromotionTypes = "QRNB";
+      UseBishopConversionRule = true;
+    }
+    #endregion
+
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      AddChessPieceTypes();
+    }
+    #endregion
+
+    #region AddRules
+    public override void AddRules()
+    {
+      base.AddRules();
+      if (UseBishopConversionRule)
+        AddRule(new BishopConversionRule(new string[] { "c1", "g1", "c8", "g8" }));
+    }
+    #endregion
+  }
 }

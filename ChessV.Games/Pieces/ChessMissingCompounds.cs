@@ -20,57 +20,57 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 namespace ChessV.Games
 {
-	#region Archbishop
-	[PieceType("Archbishop", "Chess Missing Compounds")]
-	public class Archbishop: PieceType
-	{
-		public Archbishop( string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null ):
-			base( "Archbishop", name, notation, midgameValue, endgameValue, preferredImageName )
-		{
-			AddMoves( this );
-		}
+  #region Archbishop
+  [PieceType("Archbishop", "Chess Missing Compounds")]
+  public class Archbishop : PieceType
+  {
+    public Archbishop(string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null) :
+      base("Archbishop", name, notation, midgameValue, endgameValue, preferredImageName)
+    {
+      AddMoves(this);
+    }
 
-		public static new void AddMoves( PieceType type )
-		{
-			Bishop.AddMoves( type );
-			Knight.AddMoves( type );
-		}
-	}
-	#endregion
+    public static new void AddMoves(PieceType type)
+    {
+      Bishop.AddMoves(type);
+      Knight.AddMoves(type);
+    }
+  }
+  #endregion
 
-	#region Chancellor
-	[PieceType("Chancellor", "Chess Missing Compounds")]
-	public class Chancellor: PieceType
-	{
-		public Chancellor( string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null ):
-			base( "Chancellor", name, notation, midgameValue, endgameValue, preferredImageName )
-		{
-			AddMoves( this );
-		}
+  #region Chancellor
+  [PieceType("Chancellor", "Chess Missing Compounds")]
+  public class Chancellor : PieceType
+  {
+    public Chancellor(string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null) :
+      base("Chancellor", name, notation, midgameValue, endgameValue, preferredImageName)
+    {
+      AddMoves(this);
+    }
 
-		public static new void AddMoves( PieceType type )
-		{
-			Rook.AddMoves( type );
-			Knight.AddMoves( type );
-		}
-	}
-	#endregion
+    public static new void AddMoves(PieceType type)
+    {
+      Rook.AddMoves(type);
+      Knight.AddMoves(type);
+    }
+  }
+  #endregion
 
-	#region Amazon
-	[PieceType("Amazon", "Chess Missing Compounds")]
-	public class Amazon: PieceType
-	{
-		public Amazon( string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null ):
-			base( "Amazon", name, notation, midgameValue, endgameValue, preferredImageName )
-		{
-			AddMoves( this );
-		}
+  #region Amazon
+  [PieceType("Amazon", "Chess Missing Compounds")]
+  public class Amazon : PieceType
+  {
+    public Amazon(string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null) :
+      base("Amazon", name, notation, midgameValue, endgameValue, preferredImageName)
+    {
+      AddMoves(this);
+    }
 
-		public static new void AddMoves( PieceType type )
-		{
-			Queen.AddMoves( type );
-			Knight.AddMoves( type );
-		}
-	}
-	#endregion
+    public static new void AddMoves(PieceType type)
+    {
+      Queen.AddMoves(type);
+      Knight.AddMoves(type);
+    }
+  }
+  #endregion
 }

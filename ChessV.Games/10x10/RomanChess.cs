@@ -20,47 +20,47 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 namespace ChessV.Games
 {
-	[Game("Roman Chess", typeof(Geometry.Rectangular), 10, 10,
-		  Invented = "1999",
-		  InventedBy = "Mark and Eric Woodall",
-		  Tags = "Chess Variant")]
-	public class RomanChess: Abstract.Generic10x10
-	{
-		// *** PIECE TYPES *** //
+  [Game("Roman Chess", typeof(Geometry.Rectangular), 10, 10,
+      Invented = "1999",
+      InventedBy = "Mark and Eric Woodall",
+      Tags = "Chess Variant")]
+  public class RomanChess : Abstract.Generic10x10
+  {
+    // *** PIECE TYPES *** //
 
-		public PieceType Archer;
+    public PieceType Archer;
 
 
-		// *** CONSTRUCTION *** //
+    // *** CONSTRUCTION *** //
 
-		public RomanChess():
-			base
-				 ( /* symmetry = */ new MirrorSymmetry() )
-		{
-		}
+    public RomanChess() :
+      base
+         ( /* symmetry = */ new MirrorSymmetry())
+    {
+    }
 
-		// *** INITIALIZATION *** //
+    // *** INITIALIZATION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "rnabqkbanr/pppppppppp/10/10/10/10/10/10/PPPPPPPPPP/RNABQKBANR";
-			PawnMultipleMove.Value = "Double";
-			EnPassant = true;
-			Castling.Value = "Standard";
-			PromotionRule.Value = "Standard";
-			PromotionTypes = "QRNBA";
-		}
-		#endregion
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "rnabqkbanr/pppppppppp/10/10/10/10/10/10/PPPPPPPPPP/RNABQKBANR";
+      PawnMultipleMove.Value = "Double";
+      EnPassant = true;
+      Castling.Value = "Standard";
+      PromotionRule.Value = "Standard";
+      PromotionTypes = "QRNBA";
+    }
+    #endregion
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			AddChessPieceTypes();
-			AddPieceType( Archer = new General( "Archer", "A", 325, 375 ) );
-		}
-		#endregion
-	}
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      AddChessPieceTypes();
+      AddPieceType(Archer = new General("Archer", "A", 325, 375));
+    }
+    #endregion
+  }
 }

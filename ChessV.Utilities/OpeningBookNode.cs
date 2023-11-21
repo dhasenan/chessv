@@ -23,10 +23,10 @@ using System.Collections.Generic;
 
 namespace ChessV.Utilities
 {
-	public class OpeningBookNode
-	{
-		public UInt64 Hashcode;
-		public int Depth;
-		public List<OpeningBookMove> Moves;
-	}
+  public class OpeningBookNode
+  {
+    public UInt64 Hashcode;
+    public int Depth;
+    public List<OpeningBookMove> Moves;
+  }
 }

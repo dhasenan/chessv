@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -18,32 +17,28 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using ChessV;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace ChessV.Test
 {
-	[TestClass]
-	public class MovementUnitTests
-	{
-		[TestMethod]
-		public void MovementTests1()
-		{
-			Movement m1 = new Movement( 16, 254, 1, MoveType.EnPassant, 33 );
-			Assert.AreEqual( m1.FromSquare, 16 );
-			Assert.AreEqual( m1.ToSquare, 254 );
-			Assert.AreEqual( m1.Player, 1 );
-			Assert.AreEqual( m1.MoveType, MoveType.EnPassant );
-			Assert.AreEqual( m1.Tag, 33 );
-			Movement m2 = new Movement( m1.Hash );
-			Assert.AreEqual( m2.FromSquare, 16 );
-			Assert.AreEqual( m2.ToSquare, 254 );
-			Assert.AreEqual( m2.Player, 1 );
-			Assert.AreEqual( m2.MoveType, MoveType.EnPassant );
-			Assert.AreEqual( m2.Tag, 33 );
-			Assert.AreEqual( m1, m2 );
-			Assert.AreEqual( m1.Hash, m2.Hash );
-		}
-	}
+  [TestClass]
+  public class MovementUnitTests
+  {
+    [TestMethod]
+    public void MovementTests1()
+    {
+      Movement m1 = new Movement(16, 254, 1, MoveType.EnPassant, 33);
+      Assert.AreEqual(m1.FromSquare, 16);
+      Assert.AreEqual(m1.ToSquare, 254);
+      Assert.AreEqual(m1.Player, 1);
+      Assert.AreEqual(m1.MoveType, MoveType.EnPassant);
+      Assert.AreEqual(m1.Tag, 33);
+      Movement m2 = new Movement(m1.Hash);
+      Assert.AreEqual(m2.FromSquare, 16);
+      Assert.AreEqual(m2.ToSquare, 254);
+      Assert.AreEqual(m2.Player, 1);
+      Assert.AreEqual(m2.MoveType, MoveType.EnPassant);
+      Assert.AreEqual(m2.Tag, 33);
+      Assert.AreEqual(m1, m2);
+      Assert.AreEqual(m1.Hash, m2.Hash);
+    }
+  }
 }

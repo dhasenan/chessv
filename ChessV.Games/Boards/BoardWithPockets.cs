@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -18,24 +17,21 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
 namespace ChessV.Boards
 {
-	public class BoardWithPockets: BoardWithCards
-	{
-		public BoardWithPockets( int nFiles, int nRanks, int nPlayers ): base( nFiles, nRanks, 1, nPlayers )
-		{
-			/*for( int player = 0; player < nPlayers; player++ )
+  public class BoardWithPockets : BoardWithCards
+  {
+    public BoardWithPockets(int nFiles, int nRanks, int nPlayers) : base(nFiles, nRanks, 1, nPlayers)
+    {
+      /*for( int player = 0; player < nPlayers; player++ )
 			{
 				int square = NumSquares + player;
 				fileBySquare[square] = -1;
 				rankBySquare[square] = player;
 			}*/
-		}
+    }
 
-		/*
+    /*
 		public override Location SquareToLocation( int square )
 		{
 			if( square < NumSquares )
@@ -52,5 +48,5 @@ namespace ChessV.Boards
 				return NumSquares + location.Rank;
 		}
 		*/
-	}
+  }
 }

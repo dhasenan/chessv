@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace ChessV.Games.Rules.Apmw
 {
@@ -25,7 +21,8 @@ namespace ChessV.Games.Rules.Apmw
       gameHistory[0] = 0;
       List<int> attackdirs = new List<int>();
       MoveCapability[] moveCapabilities;
-      foreach (PieceType pawnType in ((IMultipawnGame)Game).Pawns) {
+      foreach (PieceType pawnType in ((IMultipawnGame)Game).Pawns)
+      {
         int nMoveCapabilities = pawnType.GetMoveCapabilities(out moveCapabilities);
         for (int nMoveCap = 0; nMoveCap < nMoveCapabilities; nMoveCap++)
         {

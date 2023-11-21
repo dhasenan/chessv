@@ -24,79 +24,79 @@ using System.Windows.Forms;
 
 namespace ChessV.GUI
 {
-	public partial class GameIndexFilterForm: Form
-	{
-		public GameIndexFilterForm()
-		{
-			InitializeComponent();
-		}
+  public partial class GameIndexFilterForm : Form
+  {
+    public GameIndexFilterForm()
+    {
+      InitializeComponent();
+    }
 
-		private void GameIndexFilterForm_Load( object sender, EventArgs e )
-		{
-			LoadRequiredTags();
-			if( ListIsFiltered )
-				chkFilterGameIndex.Checked = true;
-			EnableOrDisableFilterControls( ListIsFiltered );
-		}
+    private void GameIndexFilterForm_Load(object sender, EventArgs e)
+    {
+      LoadRequiredTags();
+      if (ListIsFiltered)
+        chkFilterGameIndex.Checked = true;
+      EnableOrDisableFilterControls(ListIsFiltered);
+    }
 
-		private void chkFilterGameIndex_CheckedChanged( object sender, EventArgs e )
-		{
-			EnableOrDisableFilterControls( chkFilterGameIndex.Checked );
-		}
+    private void chkFilterGameIndex_CheckedChanged(object sender, EventArgs e)
+    {
+      EnableOrDisableFilterControls(chkFilterGameIndex.Checked);
+    }
 
-		private void btnOK_Click( object sender, EventArgs e )
-		{
-			ListIsFiltered = chkFilterGameIndex.Checked;
-			SaveRequiredTags();
-			Close();
-		}
+    private void btnOK_Click(object sender, EventArgs e)
+    {
+      ListIsFiltered = chkFilterGameIndex.Checked;
+      SaveRequiredTags();
+      Close();
+    }
 
-		private void EnableOrDisableFilterControls( bool enable )
-		{
-			chkTagChessVariant.Enabled = enable;
-			chkTagDifferentArmies.Enabled = enable;
-			chkTagHistoric.Enabled = enable;
-			chkTagMultipleBoards.Enabled = enable;
-			chkTagPopular.Enabled = enable;
-			chkTagRandomArray.Enabled = enable;
-			chkTagRegional.Enabled = enable;
-			chkTagMultiMove.Enabled = enable;
-		}
+    private void EnableOrDisableFilterControls(bool enable)
+    {
+      chkTagChessVariant.Enabled = enable;
+      chkTagDifferentArmies.Enabled = enable;
+      chkTagHistoric.Enabled = enable;
+      chkTagMultipleBoards.Enabled = enable;
+      chkTagPopular.Enabled = enable;
+      chkTagRandomArray.Enabled = enable;
+      chkTagRegional.Enabled = enable;
+      chkTagMultiMove.Enabled = enable;
+    }
 
-		private void LoadRequiredTags()
-		{
-			chkTagChessVariant.Checked = RequiredTags.Contains( "Chess Variant" );
-			chkTagDifferentArmies.Checked = RequiredTags.Contains( "Different Armies" );
-			chkTagHistoric.Checked = RequiredTags.Contains( "Historic" );
-			chkTagMultipleBoards.Checked = RequiredTags.Contains( "Multiple Boards" );
-			chkTagPopular.Checked = RequiredTags.Contains( "Popular" );
-			chkTagRandomArray.Checked = RequiredTags.Contains( "Random Array" );
-			chkTagRegional.Checked = RequiredTags.Contains( "Regional" );
-			chkTagMultiMove.Checked = RequiredTags.Contains( "Multi-Move" );
-		}
+    private void LoadRequiredTags()
+    {
+      chkTagChessVariant.Checked = RequiredTags.Contains("Chess Variant");
+      chkTagDifferentArmies.Checked = RequiredTags.Contains("Different Armies");
+      chkTagHistoric.Checked = RequiredTags.Contains("Historic");
+      chkTagMultipleBoards.Checked = RequiredTags.Contains("Multiple Boards");
+      chkTagPopular.Checked = RequiredTags.Contains("Popular");
+      chkTagRandomArray.Checked = RequiredTags.Contains("Random Array");
+      chkTagRegional.Checked = RequiredTags.Contains("Regional");
+      chkTagMultiMove.Checked = RequiredTags.Contains("Multi-Move");
+    }
 
-		private void SaveRequiredTags()
-		{
-			RequiredTags.Clear();
-			if( chkTagChessVariant.Checked )
-				RequiredTags.Add( "Chess Variant" );
-			if( chkTagDifferentArmies.Checked )
-				RequiredTags.Add( "Different Armies" );
-			if( chkTagHistoric.Checked )
-				RequiredTags.Add( "Historic" );
-			if( chkTagMultipleBoards.Checked )
-				RequiredTags.Add( "Multiple Boards" );
-			if( chkTagPopular.Checked )
-				RequiredTags.Add( "Popular" );
-			if( chkTagRandomArray.Checked )
-				RequiredTags.Add( "Random Array" );
-			if( chkTagRegional.Checked )
-				RequiredTags.Add( "Regional" );
-			if( chkTagMultiMove.Checked )
-				RequiredTags.Add( "Multi-Move" );
-		}
+    private void SaveRequiredTags()
+    {
+      RequiredTags.Clear();
+      if (chkTagChessVariant.Checked)
+        RequiredTags.Add("Chess Variant");
+      if (chkTagDifferentArmies.Checked)
+        RequiredTags.Add("Different Armies");
+      if (chkTagHistoric.Checked)
+        RequiredTags.Add("Historic");
+      if (chkTagMultipleBoards.Checked)
+        RequiredTags.Add("Multiple Boards");
+      if (chkTagPopular.Checked)
+        RequiredTags.Add("Popular");
+      if (chkTagRandomArray.Checked)
+        RequiredTags.Add("Random Array");
+      if (chkTagRegional.Checked)
+        RequiredTags.Add("Regional");
+      if (chkTagMultiMove.Checked)
+        RequiredTags.Add("Multi-Move");
+    }
 
-		public List<string> RequiredTags { get; set; }
-		public bool ListIsFiltered { get; set; }
-	}
+    public List<string> RequiredTags { get; set; }
+    public bool ListIsFiltered { get; set; }
+  }
 }

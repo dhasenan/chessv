@@ -1,4 +1,3 @@
-
 /***************************************************************************
 
                                  ChessV
@@ -18,53 +17,51 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using ChessV.Evaluations;
-
 namespace ChessV.Games
 {
-	[Game("Falcon Chess", typeof(Geometry.Rectangular), 10, 8,
-		  XBoardName = "falcon",
-		  Invented = "1992",
-		  InventedBy = "George Duke",
-		  Tags = "Chess Variant")]
-	[Appearance(ColorScheme = "Surrealistic Summer")]
-	public class FalconChess: Abstract.Generic10x8
-	{
-		// *** PIECE TYPES *** //
+  [Game("Falcon Chess", typeof(Geometry.Rectangular), 10, 8,
+      XBoardName = "falcon",
+      Invented = "1992",
+      InventedBy = "George Duke",
+      Tags = "Chess Variant")]
+  [Appearance(ColorScheme = "Surrealistic Summer")]
+  public class FalconChess : Abstract.Generic10x8
+  {
+    // *** PIECE TYPES *** //
 
-		public PieceType Falcon;
+    public PieceType Falcon;
 
 
-		// *** CONSTRUCTION *** //
+    // *** CONSTRUCTION *** //
 
-		public FalconChess() :
-			base
-				 ( /* symmetry = */ new MirrorSymmetry() )
-		{
-		}
+    public FalconChess() :
+      base
+         ( /* symmetry = */ new MirrorSymmetry())
+    {
+    }
 
-		// *** INITIALIZATION *** //
+    // *** INITIALIZATION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "rnbfqkfbnr/pppppppppp/10/10/10/10/PPPPPPPPPP/RNBFQKFBNR";
-			PawnDoubleMove = true;
-			EnPassant = true;
-			Castling.Value = "Flexible";
-			PromotionRule.Value = "Standard";
-			PromotionTypes = "RBNF";
-		}
-		#endregion
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "rnbfqkfbnr/pppppppppp/10/10/10/10/PPPPPPPPPP/RNBFQKFBNR";
+      PawnDoubleMove = true;
+      EnPassant = true;
+      Castling.Value = "Flexible";
+      PromotionRule.Value = "Standard";
+      PromotionTypes = "RBNF";
+    }
+    #endregion
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			AddChessPieceTypes();
-			AddPieceType( Falcon = new Falcon( "Falcon", "F", 600, 650 ) );
-		}
-		#endregion
-	}
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      AddChessPieceTypes();
+      AddPieceType(Falcon = new Falcon("Falcon", "F", 600, 650));
+    }
+    #endregion
+  }
 }

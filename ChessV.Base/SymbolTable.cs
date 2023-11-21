@@ -23,56 +23,56 @@ using System.Collections.Generic;
 
 namespace ChessV
 {
-	public class SymbolTable
-	{
-		// *** CONSTRUCTION *** //
+  public class SymbolTable
+  {
+    // *** CONSTRUCTION *** //
 
-		public SymbolTable( SymbolTable parentSymbolTable = null )
-		{
-			Parent = parentSymbolTable;
-			table = new Dictionary<string, object>();
-		}
-
-
-		// *** PROPERTIES *** //
-
-		public SymbolTable Parent { get; protected set; }
+    public SymbolTable(SymbolTable parentSymbolTable = null)
+    {
+      Parent = parentSymbolTable;
+      table = new Dictionary<string, object>();
+    }
 
 
-		// *** OPERATIONS *** //
+    // *** PROPERTIES *** //
 
-		public void SetParent( SymbolTable parent )
-		{
-			if( parent != null )
-				throw new Exception( "SymbolTable.SetParent: Parent table is already set" );
-			Parent = parent;
-		}
-
-		public object Lookup( string symbol, bool inherit = true )
-		{
-			if( table.ContainsKey( symbol ) )
-				return table[symbol];
-			if( inherit )
-			{
-				SymbolTable parentTable = Parent;
-				while( Parent != null )
-				{
-					if( Parent.table.ContainsKey( symbol ) )
-						return Parent.table[symbol];
-					Parent = Parent.Parent;
-				}
-			}
-			return null;
-		}
-
-		public void Set( string symbol, object value )
-		{
-			table[symbol] = value;
-		}
+    public SymbolTable Parent { get; protected set; }
 
 
-		// *** INTERNAL DATA *** //
+    // *** OPERATIONS *** //
 
-		protected Dictionary<string, object> table;
-	}
+    public void SetParent(SymbolTable parent)
+    {
+      if (parent != null)
+        throw new Exception("SymbolTable.SetParent: Parent table is already set");
+      Parent = parent;
+    }
+
+    public object Lookup(string symbol, bool inherit = true)
+    {
+      if (table.ContainsKey(symbol))
+        return table[symbol];
+      if (inherit)
+      {
+        SymbolTable parentTable = Parent;
+        while (Parent != null)
+        {
+          if (Parent.table.ContainsKey(symbol))
+            return Parent.table[symbol];
+          Parent = Parent.Parent;
+        }
+      }
+      return null;
+    }
+
+    public void Set(string symbol, object value)
+    {
+      table[symbol] = value;
+    }
+
+
+    // *** INTERNAL DATA *** //
+
+    protected Dictionary<string, object> table;
+  }
 }

@@ -20,60 +20,60 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 namespace ChessV.Games
 {
-	[Game("Shatranj", typeof(Geometry.Rectangular), 8, 8, 
-		  XBoardName = "shatranj",
-		  Invented = "circa 7th century",
-		  InventedBy = "Unknown", 
-		  Tags = "Chess Variant,Historic,Popular")]
-	[Appearance(NumberOfSquareColors=1)]
-	public class Shatranj: Abstract.Generic8x8
-	{
-		// *** PIECE TYPES *** //
+  [Game("Shatranj", typeof(Geometry.Rectangular), 8, 8,
+      XBoardName = "shatranj",
+      Invented = "circa 7th century",
+      InventedBy = "Unknown",
+      Tags = "Chess Variant,Historic,Popular")]
+  [Appearance(NumberOfSquareColors = 1)]
+  public class Shatranj : Abstract.Generic8x8
+  {
+    // *** PIECE TYPES *** //
 
-		public PieceType Elephant;
-		public PieceType General;
-		
+    public PieceType Elephant;
+    public PieceType General;
 
-		// *** CONSTRUCTION *** //
-		
-		public Shatranj(): 
-			base
-				( /* symmetry = */ new MirrorSymmetry() )
-		{
-		}
-		
 
-		// *** INITIALIZATION *** //
+    // *** CONSTRUCTION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			NumberOfSquareColors = 1;
-			Array = "rnekgenr/pppppppp/8/8/8/8/PPPPPPPP/RNEKGENR";
-			PromotionRule.Value = "Standard";
-			PromotionTypes = "G";
-			BareKing = true;
-		}
-		#endregion
+    public Shatranj() :
+      base
+        ( /* symmetry = */ new MirrorSymmetry())
+    {
+    }
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			AddPieceType( Rook = new Rook( "Rook", "R", 600, 600 ) );
-			AddPieceType( Knight = new Knight( "Knight", "N", 425, 425 ) );
-			AddPieceType( Elephant = new Elephant( "Elephant", "E", 125, 125 ) );
-			AddPieceType( General = new Ferz( "General", "G", 175, 175 ) );
-		}
-		#endregion
 
-		#region AddEvaluations
-		public override void AddEvaluations()
-		{
-			base.AddEvaluations();
-			OutpostEval.AddOutpostBonus( Elephant );
-		}
-		#endregion
-	}
+    // *** INITIALIZATION *** //
+
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      NumberOfSquareColors = 1;
+      Array = "rnekgenr/pppppppp/8/8/8/8/PPPPPPPP/RNEKGENR";
+      PromotionRule.Value = "Standard";
+      PromotionTypes = "G";
+      BareKing = true;
+    }
+    #endregion
+
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      AddPieceType(Rook = new Rook("Rook", "R", 600, 600));
+      AddPieceType(Knight = new Knight("Knight", "N", 425, 425));
+      AddPieceType(Elephant = new Elephant("Elephant", "E", 125, 125));
+      AddPieceType(General = new Ferz("General", "G", 175, 175));
+    }
+    #endregion
+
+    #region AddEvaluations
+    public override void AddEvaluations()
+    {
+      base.AddEvaluations();
+      OutpostEval.AddOutpostBonus(Elephant);
+    }
+    #endregion
+  }
 }

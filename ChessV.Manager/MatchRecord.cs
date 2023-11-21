@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -18,30 +17,26 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace ChessV.Manager
 {
-	public class MatchRecord
-	{
-		public MatchRecord()
-		{
-			PlayerNames = new string[2];
-			EngineNames = new string[2];
-			Engines = new EngineConfiguration[2];
-		}
+  public class MatchRecord
+  {
+    public MatchRecord()
+    {
+      PlayerNames = new string[2];
+      EngineNames = new string[2];
+      Engines = new EngineConfiguration[2];
+    }
 
-		public string ID;
-		public string SavedGameFile;
-		public string TimeControl;
-		public string Result;
-		public string[] PlayerNames;
-		public string[] EngineNames;
-		public EngineConfiguration[] Engines;
-		public int Variation;
-		public string Winner;
-		public Game Game;
-	}
+    public string ID;
+    public string SavedGameFile;
+    public string TimeControl;
+    public string Result;
+    public string[] PlayerNames;
+    public string[] EngineNames;
+    public EngineConfiguration[] Engines;
+    public int Variation;
+    public string Winner;
+    public Game Game;
+  }
 }

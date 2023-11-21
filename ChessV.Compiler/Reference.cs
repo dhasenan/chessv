@@ -23,109 +23,109 @@ using System.Reflection;
 
 namespace ChessV.Compiler
 {
-	public class Reference
-	{
-		public object ReferencedObject { get; private set; }
-		public string CustomPropertyName { get; private set; }
-		public FieldInfo FieldMember { get; private set; }
-		public PropertyInfo PropertyMember { get; private set; }
-		public MethodInfo FunctionMember { get; private set; }
-		public MethodInfo[] FunctionOverloads { get; private set; }
-		public bool IsStatic { get; private set; }
+  public class Reference
+  {
+    public object ReferencedObject { get; private set; }
+    public string CustomPropertyName { get; private set; }
+    public FieldInfo FieldMember { get; private set; }
+    public PropertyInfo PropertyMember { get; private set; }
+    public MethodInfo FunctionMember { get; private set; }
+    public MethodInfo[] FunctionOverloads { get; private set; }
+    public bool IsStatic { get; private set; }
 
-		public Reference( object referencedObject )
-		{
-			ReferencedObject = referencedObject;
-		}
+    public Reference(object referencedObject)
+    {
+      ReferencedObject = referencedObject;
+    }
 
-		public Reference( object referencedObject, string customPropertyName )
-		{
-			ReferencedObject = referencedObject;
-			CustomPropertyName = customPropertyName;
-		}
+    public Reference(object referencedObject, string customPropertyName)
+    {
+      ReferencedObject = referencedObject;
+      CustomPropertyName = customPropertyName;
+    }
 
-		public Reference( object referencedObject, FieldInfo fieldMember, bool isStatic = false )
-		{
-			ReferencedObject = referencedObject;
-			FieldMember = fieldMember;
-			IsStatic = isStatic;
-		}
+    public Reference(object referencedObject, FieldInfo fieldMember, bool isStatic = false)
+    {
+      ReferencedObject = referencedObject;
+      FieldMember = fieldMember;
+      IsStatic = isStatic;
+    }
 
-		public Reference( object referencedObject, PropertyInfo propertyMember, bool isStatic = false )
-		{
-			ReferencedObject = referencedObject;
-			PropertyMember = propertyMember;
-			IsStatic = isStatic;
-		}
+    public Reference(object referencedObject, PropertyInfo propertyMember, bool isStatic = false)
+    {
+      ReferencedObject = referencedObject;
+      PropertyMember = propertyMember;
+      IsStatic = isStatic;
+    }
 
-		public Reference( object referencedObject, MethodInfo functionMember, bool isStatic = false )
-		{
-			ReferencedObject = referencedObject;
-			FunctionMember = functionMember;
-			IsStatic = isStatic;
-		}
+    public Reference(object referencedObject, MethodInfo functionMember, bool isStatic = false)
+    {
+      ReferencedObject = referencedObject;
+      FunctionMember = functionMember;
+      IsStatic = isStatic;
+    }
 
-		public Reference( object referencedObject, MethodInfo[] functionOverloads )
-		{
-			ReferencedObject = referencedObject;
-			FunctionOverloads = functionOverloads;
-			IsStatic = false;
-		}
+    public Reference(object referencedObject, MethodInfo[] functionOverloads)
+    {
+      ReferencedObject = referencedObject;
+      FunctionOverloads = functionOverloads;
+      IsStatic = false;
+    }
 
-		public bool IsFunction
-		{
-			get
-			{
-				return FunctionMember != null || FunctionOverloads != null;
-			}
-		}
+    public bool IsFunction
+    {
+      get
+      {
+        return FunctionMember != null || FunctionOverloads != null;
+      }
+    }
 
-		public Type EffectiveType
-		{
-			get
-			{
-				if( FieldMember != null )
-					return FieldMember.FieldType;
-				if( PropertyMember != null )
-					return PropertyMember.PropertyType;
-				if( FunctionMember != null )
-					return FunctionMember.ReturnType;
-				if( FunctionOverloads != null )
-					return FunctionOverloads[0].ReturnType;
-				return ReferencedObject.GetType();
-			}
-		}
+    public Type EffectiveType
+    {
+      get
+      {
+        if (FieldMember != null)
+          return FieldMember.FieldType;
+        if (PropertyMember != null)
+          return PropertyMember.PropertyType;
+        if (FunctionMember != null)
+          return FunctionMember.ReturnType;
+        if (FunctionOverloads != null)
+          return FunctionOverloads[0].ReturnType;
+        return ReferencedObject.GetType();
+      }
+    }
 
-		public bool IsNull()
-		{
-			if( FieldMember != null )
-				return FieldMember.GetValue( ReferencedObject ) == null;
-			else if( PropertyMember != null )
-				return PropertyMember.GetValue( ReferencedObject, null ) == null;
-			return false;
-		}
+    public bool IsNull()
+    {
+      if (FieldMember != null)
+        return FieldMember.GetValue(ReferencedObject) == null;
+      else if (PropertyMember != null)
+        return PropertyMember.GetValue(ReferencedObject, null) == null;
+      return false;
+    }
 
-		public object GetValue( object[] args = null )
-		{
-			if( FieldMember != null )
-				return FieldMember.GetValue( ReferencedObject );
-			if( PropertyMember != null )
-				return PropertyMember.GetValue( ReferencedObject, null );
-			if( FunctionMember != null )
-				return FunctionMember.Invoke( FunctionMember.IsStatic ? null : ReferencedObject, args );
-			if( FunctionOverloads != null )
-				throw new Exception( "!!" );
-			return ReferencedObject;
-		}
+    public object GetValue(object[] args = null)
+    {
+      if (FieldMember != null)
+        return FieldMember.GetValue(ReferencedObject);
+      if (PropertyMember != null)
+        return PropertyMember.GetValue(ReferencedObject, null);
+      if (FunctionMember != null)
+        return FunctionMember.Invoke(FunctionMember.IsStatic ? null : ReferencedObject, args);
+      if (FunctionOverloads != null)
+        throw new Exception("!!");
+      return ReferencedObject;
+    }
 
-		public void SetValue( object value )
-		{
-			if( FieldMember != null )
-				FieldMember.SetValue( ReferencedObject, value );
-			else if( PropertyMember != null )
-				PropertyMember.SetValue( ReferencedObject, value, null );
-			else
-				throw new Exception( "Member is not assignable" );
-		}
-	}
+    public void SetValue(object value)
+    {
+      if (FieldMember != null)
+        FieldMember.SetValue(ReferencedObject, value);
+      else if (PropertyMember != null)
+        PropertyMember.SetValue(ReferencedObject, value, null);
+      else
+        throw new Exception("Member is not assignable");
+    }
+  }
 }

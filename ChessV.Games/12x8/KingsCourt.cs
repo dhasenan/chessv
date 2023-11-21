@@ -20,63 +20,63 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 namespace ChessV.Games
 {
-	[Game("King's Court", typeof(Geometry.Rectangular), 12, 8,
-		  Invented = "1997",
-		  InventedBy = "Sidney LeVasseur",
-		  Tags = "Chess Variant")]
-	[Appearance(ColorScheme = "Golden Goose Egg")]
-	public class KingsCourt: Abstract.Generic12x8
-	{
-		// *** PIECE TYPES *** //
+  [Game("King's Court", typeof(Geometry.Rectangular), 12, 8,
+      Invented = "1997",
+      InventedBy = "Sidney LeVasseur",
+      Tags = "Chess Variant")]
+  [Appearance(ColorScheme = "Golden Goose Egg")]
+  public class KingsCourt : Abstract.Generic12x8
+  {
+    // *** PIECE TYPES *** //
 
-		PieceType Chancellor;
-		PieceType Jester;
-
-
-		// *** CONSTRUCTION *** //
-
-		public KingsCourt():
-			base
-				( /* symmetry = */ new MirrorSymmetry() )
-		{
-		}
+    PieceType Chancellor;
+    PieceType Jester;
 
 
-		// *** INITIALIZATION *** //
+    // *** CONSTRUCTION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "rjcnbqkbncjr/pppppppppppp/12/12/12/12/PPPPPPPPPPPP/RJCNBQKBNCJR";
-			Castling.Value = "Flexible";
-			PawnDoubleMove = true;
-			EnPassant = true;
-		}
-		#endregion
+    public KingsCourt() :
+      base
+        ( /* symmetry = */ new MirrorSymmetry())
+    {
+    }
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			AddChessPieceTypes();
-			AddPieceType( Jester = new FreePadwar( "Jester", "J", 400, 400, "ElephantFerz2" ) );
-			AddPieceType( Chancellor = new Amazon( "Chancellor", "C", 700, 700, "Duke" ) );
-			//	limit the range of the slides to two spaces
-			MoveCapability[] moves;
-			int nMoves = Chancellor.GetMoveCapabilities( out moves );
-			for( int x = 0; x < nMoves; x++ )
-				if( moves[x].MaxSteps > 1 )
-					moves[x].MaxSteps = 2;
-		}
-		#endregion
 
-		#region AddRules
-		public override void AddRules()
-		{
-			base.AddRules();
-			AddRule( new Games.Rules.KingsCourt.KingsFlightRule( King, Chancellor ) );
-		}
-		#endregion
-	}
+    // *** INITIALIZATION *** //
+
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "rjcnbqkbncjr/pppppppppppp/12/12/12/12/PPPPPPPPPPPP/RJCNBQKBNCJR";
+      Castling.Value = "Flexible";
+      PawnDoubleMove = true;
+      EnPassant = true;
+    }
+    #endregion
+
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      AddChessPieceTypes();
+      AddPieceType(Jester = new FreePadwar("Jester", "J", 400, 400, "ElephantFerz2"));
+      AddPieceType(Chancellor = new Amazon("Chancellor", "C", 700, 700, "Duke"));
+      //	limit the range of the slides to two spaces
+      MoveCapability[] moves;
+      int nMoves = Chancellor.GetMoveCapabilities(out moves);
+      for (int x = 0; x < nMoves; x++)
+        if (moves[x].MaxSteps > 1)
+          moves[x].MaxSteps = 2;
+    }
+    #endregion
+
+    #region AddRules
+    public override void AddRules()
+    {
+      base.AddRules();
+      AddRule(new Games.Rules.KingsCourt.KingsFlightRule(King, Chancellor));
+    }
+    #endregion
+  }
 }

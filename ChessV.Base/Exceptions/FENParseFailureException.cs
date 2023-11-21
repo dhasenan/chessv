@@ -22,20 +22,20 @@ using System;
 
 namespace ChessV.Exceptions
 {
-	public class FENParseFailureException: Exception
-	{
-		public string FENPartName { get; private set; }
-		public string FENPartValue { get; private set; }
+  public class FENParseFailureException : Exception
+  {
+    public string FENPartName { get; private set; }
+    public string FENPartValue { get; private set; }
 
-		public FENParseFailureException
-			( string fenPartName, 
-			  string fenPartValue, 
-			  string message,
-			  Exception innerException = null ):
-				base( message, innerException )
-		{
-			FENPartName = fenPartName;
-			FENPartValue = fenPartValue;
-		}
-	}
+    public FENParseFailureException
+      (string fenPartName,
+        string fenPartValue,
+        string message,
+        Exception innerException = null) :
+        base(message, innerException)
+    {
+      FENPartName = fenPartName;
+      FENPartValue = fenPartValue;
+    }
+  }
 }

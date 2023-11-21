@@ -19,64 +19,64 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 ****************************************************************************/
 
 using System;
-using System.Windows.Forms;
 using System.IO;
+using System.Windows.Forms;
 
 namespace ChessV.GUI
 {
-	public partial class AutomatedMatchesSettingsForm: Form
-	{
-		public AutomatedMatchesSettingsForm()
-		{
-			InitializeComponent();
-		}
+  public partial class AutomatedMatchesSettingsForm : Form
+  {
+    public AutomatedMatchesSettingsForm()
+    {
+      InitializeComponent();
+    }
 
-		private void btnBrowseControlFile_Click( object sender, EventArgs e )
-		{
-			if( openFileDialog.ShowDialog() == DialogResult.OK )
-				txtControlFile.Text = openFileDialog.FileName;
-		}
+    private void btnBrowseControlFile_Click(object sender, EventArgs e)
+    {
+      if (openFileDialog.ShowDialog() == DialogResult.OK)
+        txtControlFile.Text = openFileDialog.FileName;
+    }
 
-		private void btnBrowseOutputFile_Click( object sender, EventArgs e )
-		{
-			if( openFileDialog.ShowDialog() == DialogResult.OK )
-				txtOutputFile.Text = openFileDialog.FileName;
-		}
+    private void btnBrowseOutputFile_Click(object sender, EventArgs e)
+    {
+      if (openFileDialog.ShowDialog() == DialogResult.OK)
+        txtOutputFile.Text = openFileDialog.FileName;
+    }
 
-		private void chkResume_CheckedChanged( object sender, EventArgs e )
-		{
-			txtOutputFile.Enabled = chkResume.Checked;
-			btnBrowseOutputFile.Enabled = chkResume.Checked;
-		}
+    private void chkResume_CheckedChanged(object sender, EventArgs e)
+    {
+      txtOutputFile.Enabled = chkResume.Checked;
+      btnBrowseOutputFile.Enabled = chkResume.Checked;
+    }
 
-		private void btnCancel_Click( object sender, EventArgs e )
-		{
-			DialogResult = DialogResult.Cancel;
-			Close();
-		}
+    private void btnCancel_Click(object sender, EventArgs e)
+    {
+      DialogResult = DialogResult.Cancel;
+      Close();
+    }
 
-		private void btnStart_Click( object sender, EventArgs e )
-		{
-			if( !File.Exists( txtControlFile.Text ) )
-			{
-				MessageBox.Show( "You must select a control file listing the matches" );
-				return;
-			}
-			ControlFile = txtControlFile.Text;
-			if( chkResume.Checked )
-			{
-				if( !File.Exists( txtOutputFile.Text ) )
-				{
-					MessageBox.Show( "To resume, you must select the output file for the previous run you wish to continue" );
-					return;
-				}
-				OutputFileToResume = txtOutputFile.Text;
-			}
-			DialogResult = DialogResult.OK;
-			Close();
-		}
+    private void btnStart_Click(object sender, EventArgs e)
+    {
+      if (!File.Exists(txtControlFile.Text))
+      {
+        MessageBox.Show("You must select a control file listing the matches");
+        return;
+      }
+      ControlFile = txtControlFile.Text;
+      if (chkResume.Checked)
+      {
+        if (!File.Exists(txtOutputFile.Text))
+        {
+          MessageBox.Show("To resume, you must select the output file for the previous run you wish to continue");
+          return;
+        }
+        OutputFileToResume = txtOutputFile.Text;
+      }
+      DialogResult = DialogResult.OK;
+      Close();
+    }
 
-		public string ControlFile { get; private set; }
-		public string OutputFileToResume { get; private set; }
-	}
+    public string ControlFile { get; private set; }
+    public string OutputFileToResume { get; private set; }
+  }
 }

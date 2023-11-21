@@ -19,65 +19,65 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 ****************************************************************************/
 
 using System;
-using System.IO;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 
 namespace ChessV.GUI
 {
-	public class Texture
-	{
-		public string Name { get; private set; }
-		public int NumberOfImages { get; private set; }
-		public Dictionary<int, Image> Images { get; private set; }
-		public Image LargeImage { get; private set; }
-		public Color SubstituteColor { get; set; }
+  public class Texture
+  {
+    public string Name { get; private set; }
+    public int NumberOfImages { get; private set; }
+    public Dictionary<int, Image> Images { get; private set; }
+    public Image LargeImage { get; private set; }
+    public Color SubstituteColor { get; set; }
 
-		public Texture( string name )
-		{
-			Name = name;
-			NumberOfImages = 0;
-			Images = new Dictionary<int, Image>();
-		}
+    public Texture(string name)
+    {
+      Name = name;
+      NumberOfImages = 0;
+      Images = new Dictionary<int, Image>();
+    }
 
-		public Texture( string name, string textureDir )
-		{ 
-			Name = name; 
-			NumberOfImages = 0;
-			Images = new Dictionary<int, Image>();
+    public Texture(string name, string textureDir)
+    {
+      Name = name;
+      NumberOfImages = 0;
+      Images = new Dictionary<int, Image>();
 
-			int imageNumber = 1;
-			while( File.Exists( textureDir + Path.DirectorySeparatorChar + "image" + imageNumber.ToString() + ".png" ) )
-			{
-				Image image = new Bitmap( textureDir + Path.DirectorySeparatorChar + "image" + imageNumber.ToString() + ".png" );
-				AddImage( image );
-				imageNumber++;
-			}
+      int imageNumber = 1;
+      while (File.Exists(textureDir + Path.DirectorySeparatorChar + "image" + imageNumber.ToString() + ".png"))
+      {
+        Image image = new Bitmap(textureDir + Path.DirectorySeparatorChar + "image" + imageNumber.ToString() + ".png");
+        AddImage(image);
+        imageNumber++;
+      }
 
-			//	Check for large image
-			if( File.Exists( textureDir + Path.DirectorySeparatorChar + "sample_image.png" ) )
-				LargeImage = new Bitmap( textureDir + Path.DirectorySeparatorChar + "sample_image.png" );
+      //	Check for large image
+      if (File.Exists(textureDir + Path.DirectorySeparatorChar + "sample_image.png"))
+        LargeImage = new Bitmap(textureDir + Path.DirectorySeparatorChar + "sample_image.png");
 
-			//	Read the properties.txt file to get teh substitute color
-			TextReader reader = new StreamReader( textureDir + Path.DirectorySeparatorChar + "properties.txt" );
-			PropertyMap properties = new PropertyMap( reader );
-			reader.Close();
-			if( !properties.Properties.ContainsKey( "COLOR" ) )
-				throw new Exception( "Could not load texture - Color not specified in properties.txt" );
-			object colorObject = properties.Properties["COLOR"];
-			if( !(colorObject is Color) )
-				throw new Exception( "Could not load texture - Color property specified in properties.txt not a valid color" );
-			SubstituteColor = (Color) colorObject;
-		}
+      //	Read the properties.txt file to get teh substitute color
+      TextReader reader = new StreamReader(textureDir + Path.DirectorySeparatorChar + "properties.txt");
+      PropertyMap properties = new PropertyMap(reader);
+      reader.Close();
+      if (!properties.Properties.ContainsKey("COLOR"))
+        throw new Exception("Could not load texture - Color not specified in properties.txt");
+      object colorObject = properties.Properties["COLOR"];
+      if (!(colorObject is Color))
+        throw new Exception("Could not load texture - Color property specified in properties.txt not a valid color");
+      SubstituteColor = (Color)colorObject;
+    }
 
-		public void AddImage( Image image )
-		{
-			Images.Add( NumberOfImages++, image ); 
-		}
+    public void AddImage(Image image)
+    {
+      Images.Add(NumberOfImages++, image);
+    }
 
-		public override string ToString()
-		{
-			return Name;
-		}
-	}
+    public override string ToString()
+    {
+      return Name;
+    }
+  }
 }

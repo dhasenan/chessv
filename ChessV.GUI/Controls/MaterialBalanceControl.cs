@@ -22,123 +22,121 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Drawing.Imaging;
-using ChessV;
 
 namespace ChessV.GUI
 {
-	public partial class MaterialBalanceControl: UserControl
-	{
-		// *** PROPERTIES *** //
+  public partial class MaterialBalanceControl : UserControl
+  {
+    // *** PROPERTIES *** //
 
-		public Theme Theme { get; set; }
-		public Game Game { get; private set; }
-
-
-		// *** CONSTRUCTION *** //
-
-		public MaterialBalanceControl()
-		{
-			InitializeComponent();
-		}
+    public Theme Theme { get; set; }
+    public Game Game { get; private set; }
 
 
-		// *** INITIALIZATION *** //
+    // *** CONSTRUCTION *** //
 
-		public void Initialize( Game game, Board board, Theme theme )
-		{
-			Game = game;
-			UpdateTheme( theme );
-			unmatchedPieces = new List<Piece>[game.NumPlayers];
-			UpdateUnmatchedPieceLists();
-			game.MovePlayed += MovePlayed;
-		}
+    public MaterialBalanceControl()
+    {
+      InitializeComponent();
+    }
 
 
-		// *** OPERATIONS *** //
+    // *** INITIALIZATION *** //
 
-		public void MovePlayed( MoveInfo moveInfo )
-		{
-			UpdateUnmatchedPieceLists();
-			Invalidate();
-		}
-
-		public void UpdateTheme( Theme theme )
-		{
-			Theme = theme;
-			squareWidth = 50;
-			squareHeight = 50;
-			if( Theme.PieceSet is PieceSet )
-			{
-				squareWidth = ((PieceSet) Theme.PieceSet).Width + 5;
-				squareHeight = ((PieceSet) Theme.PieceSet).Height + 5;
-				pieceSetPresentation = new BitmapPieceSetPresentation( Game, (PieceSet) Theme.PieceSet );
-				pieceSetPresentation.Initialize( Theme );
-			}
-			else
-				throw new Exception( "Non-Bitmap piece sets not implemented yet" );
-			Invalidate();
-		}
-
-		public void UpdateUnmatchedPieceLists()
-		{
-			for( int player = 0; player < Game.NumPlayers; player++ )
-				unmatchedPieces[player] = Game.GetPieceList( player );
-			for( int player = 0; player < Game.NumPlayers; player++ )
-			{
-				List<Piece> myPieces = unmatchedPieces[player];
-				List<Piece> hisPieces = new List<Piece>( Game.GetPieceList( player ^ 1 ) );
-				List<Piece> matchedPieces = new List<Piece>();
-				foreach( Piece piece in myPieces )
-				{
-					foreach( Piece match in hisPieces )
-						if( piece.PieceType == match.PieceType )
-						{
-							matchedPieces.Add( piece );
-							hisPieces.Remove( match );
-							break;
-						}
-				}
-				foreach( Piece match in matchedPieces )
-					unmatchedPieces[player].Remove( match );
-			}
-		}
+    public void Initialize(Game game, Board board, Theme theme)
+    {
+      Game = game;
+      UpdateTheme(theme);
+      unmatchedPieces = new List<Piece>[game.NumPlayers];
+      UpdateUnmatchedPieceLists();
+      game.MovePlayed += MovePlayed;
+    }
 
 
-		// *** EVENT HANDLERS *** //
+    // *** OPERATIONS *** //
 
-		//	control's paint event handler
-		private void MaterialBalanceControl_Paint( object sender, PaintEventArgs e )
-		{
-			SolidBrush br1 = new SolidBrush( BackColor );
-			e.Graphics.FillRectangle( br1, e.ClipRectangle );
+    public void MovePlayed(MoveInfo moveInfo)
+    {
+      UpdateUnmatchedPieceLists();
+      Invalidate();
+    }
 
-			//	If game is null it probably means we're in the Forms Designer
-			//	so none of the following would really work.
-			if( Game != null )
-			{
-				for( int player = 0; player < Game.NumPlayers; player++ )
-				{
-					int n = 0;
-					foreach( Piece piece in unmatchedPieces[player] )
-					{
-						int xoffset = pieceSetPresentation.PieceSet.Width / 2;
-						int yoffset = pieceSetPresentation.PieceSet.Height / 2;
+    public void UpdateTheme(Theme theme)
+    {
+      Theme = theme;
+      squareWidth = 50;
+      squareHeight = 50;
+      if (Theme.PieceSet is PieceSet)
+      {
+        squareWidth = ((PieceSet)Theme.PieceSet).Width + 5;
+        squareHeight = ((PieceSet)Theme.PieceSet).Height + 5;
+        pieceSetPresentation = new BitmapPieceSetPresentation(Game, (PieceSet)Theme.PieceSet);
+        pieceSetPresentation.Initialize(Theme);
+      }
+      else
+        throw new Exception("Non-Bitmap piece sets not implemented yet");
+      Invalidate();
+    }
 
-						pieceSetPresentation.RenderFloatingPiece( e.Graphics, new Point( (n * squareWidth) + xoffset,
-							((Game.NumPlayers - player - 1) * squareHeight) + yoffset ), piece );
-						n++;
-					}
-				}
-			}
-		}
+    public void UpdateUnmatchedPieceLists()
+    {
+      for (int player = 0; player < Game.NumPlayers; player++)
+        unmatchedPieces[player] = Game.GetPieceList(player);
+      for (int player = 0; player < Game.NumPlayers; player++)
+      {
+        List<Piece> myPieces = unmatchedPieces[player];
+        List<Piece> hisPieces = new List<Piece>(Game.GetPieceList(player ^ 1));
+        List<Piece> matchedPieces = new List<Piece>();
+        foreach (Piece piece in myPieces)
+        {
+          foreach (Piece match in hisPieces)
+            if (piece.PieceType == match.PieceType)
+            {
+              matchedPieces.Add(piece);
+              hisPieces.Remove(match);
+              break;
+            }
+        }
+        foreach (Piece match in matchedPieces)
+          unmatchedPieces[player].Remove(match);
+      }
+    }
 
 
-		// *** PROTECTED MEMBER DATA *** //
+    // *** EVENT HANDLERS *** //
 
-		protected List<Piece>[] unmatchedPieces;
-		protected BitmapPieceSetPresentation pieceSetPresentation;
-		protected int squareWidth;
-		protected int squareHeight;
-	}
+    //	control's paint event handler
+    private void MaterialBalanceControl_Paint(object sender, PaintEventArgs e)
+    {
+      SolidBrush br1 = new SolidBrush(BackColor);
+      e.Graphics.FillRectangle(br1, e.ClipRectangle);
+
+      //	If game is null it probably means we're in the Forms Designer
+      //	so none of the following would really work.
+      if (Game != null)
+      {
+        for (int player = 0; player < Game.NumPlayers; player++)
+        {
+          int n = 0;
+          foreach (Piece piece in unmatchedPieces[player])
+          {
+            int xoffset = pieceSetPresentation.PieceSet.Width / 2;
+            int yoffset = pieceSetPresentation.PieceSet.Height / 2;
+
+            pieceSetPresentation.RenderFloatingPiece(e.Graphics, new Point((n * squareWidth) + xoffset,
+              ((Game.NumPlayers - player - 1) * squareHeight) + yoffset), piece);
+            n++;
+          }
+        }
+      }
+    }
+
+
+    // *** PROTECTED MEMBER DATA *** //
+
+    protected List<Piece>[] unmatchedPieces;
+    protected BitmapPieceSetPresentation pieceSetPresentation;
+    protected int squareWidth;
+    protected int squareHeight;
+  }
 }

@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -18,30 +17,27 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
 namespace ChessV.EngineOptions
 {
-	public class EngineCheckOption: EngineOption
-	{
-		public EngineCheckOption
-			( string name, 
-			  object value = null,
-			  object defaultValue = null,
-			  string alias = null ):
-				base
-					( name, 
-					  typeof(bool),
-					  value,
-					  defaultValue,
-					  alias )
-		{
-		}
+  public class EngineCheckOption : EngineOption
+  {
+    public EngineCheckOption
+      (string name,
+        object value = null,
+        object defaultValue = null,
+        string alias = null) :
+        base
+          (name,
+            typeof(bool),
+            value,
+            defaultValue,
+            alias)
+    {
+    }
 
-		public override bool IsValid( object value )
-		{
-			return value.ToString() == "true" || value.ToString() == "false";
-		}
-	}
+    public override bool IsValid(object value)
+    {
+      return value.ToString() == "true" || value.ToString() == "false";
+    }
+  }
 }

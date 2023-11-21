@@ -20,47 +20,47 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 namespace ChessV.Games
 {
-	[Game("Ministers Chess", typeof(Geometry.Rectangular), 9, 9,
-		  XBoardName = "ministers",
-		  InventedBy = "Michael Corinthios",
-		  Invented = "1975",
-		  Tags = "Chess Variant")]
-	public class MinistersChess: Abstract.Generic9x9
-	{
-		// *** CONSTRUCTION *** //
+  [Game("Ministers Chess", typeof(Geometry.Rectangular), 9, 9,
+      XBoardName = "ministers",
+      InventedBy = "Michael Corinthios",
+      Invented = "1975",
+      Tags = "Chess Variant")]
+  public class MinistersChess : Abstract.Generic9x9
+  {
+    // *** CONSTRUCTION *** //
 
-		public MinistersChess():
-			base
-				( /* symmetry = */ new MirrorSymmetry() )
-		{
-		}
+    public MinistersChess() :
+      base
+        ( /* symmetry = */ new MirrorSymmetry())
+    {
+    }
 
 
-		// *** INITIALIZATION *** //
+    // *** INITIALIZATION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "rnbmkmbnr/ppppppppp/9/9/9/9/9/PPPPPPPPP/RNBMKMBNR";
-			PawnDoubleMove = true;
-			EnPassant = true;
-			Castling.Value = "Long";
-			PromotionRule.Value = "Standard";
-			PromotionTypes = "MRNB";
-		}
-		#endregion
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "rnbmkmbnr/ppppppppp/9/9/9/9/9/PPPPPPPPP/RNBMKMBNR";
+      PawnDoubleMove = true;
+      EnPassant = true;
+      Castling.Value = "Long";
+      PromotionRule.Value = "Standard";
+      PromotionTypes = "MRNB";
+    }
+    #endregion
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			AddChessPieceTypes();
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      AddChessPieceTypes();
 
-			//	Rename the Queen to the Minister
-			Queen.Name = "Minister";
-			Queen.SetNotation( "M" );
-		}
-		#endregion
-	}
+      //	Rename the Queen to the Minister
+      Queen.Name = "Minister";
+      Queen.SetNotation("M");
+    }
+    #endregion
+  }
 }

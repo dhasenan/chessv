@@ -19,61 +19,60 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 ****************************************************************************/
 
 using System;
-using System.Collections.Generic;
 
 namespace ChessV.Games.Rules.Pocket
 {
-	public class PocketDropRule: Rule
-	{
-		protected int[] pocketSquares;
+  public class PocketDropRule : Rule
+  {
+    protected int[] pocketSquares;
 
-		public PocketDropRule()
-		{
-		}
+    public PocketDropRule()
+    {
+    }
 
-		public override void Initialize( Game game )
-		{
-			base.Initialize( game );
-			pocketSquares = new int[game.NumPlayers];
-			for( int player = 0; player < game.NumPlayers; player++ )
-				pocketSquares[player] = Board.LocationToSquare( new Location( player, -1 ) );
-		}
+    public override void Initialize(Game game)
+    {
+      base.Initialize(game);
+      pocketSquares = new int[game.NumPlayers];
+      for (int player = 0; player < game.NumPlayers; player++)
+        pocketSquares[player] = Board.LocationToSquare(new Location(player, -1));
+    }
 
-		public override void PositionLoaded( FEN fen )
-		{
-			foreach( char c in fen["pieces in hand"] )
-			{
-				if( c != '-' && c != '@' )
-				{
-					PieceType type = Game.GetTypeByNotation( c.ToString() );
-					int player = Char.IsUpper( c ) ? 0 : 1;
-					Location loc = new Location( player, -1 );
-					Piece piece = new Piece( Game, player, type, loc );
-					Board.Game.AddPiece( piece );
-				}
-			}
-		}
+    public override void PositionLoaded(FEN fen)
+    {
+      foreach (char c in fen["pieces in hand"])
+      {
+        if (c != '-' && c != '@')
+        {
+          PieceType type = Game.GetTypeByNotation(c.ToString());
+          int player = Char.IsUpper(c) ? 0 : 1;
+          Location loc = new Location(player, -1);
+          Piece piece = new Piece(Game, player, type, loc);
+          Board.Game.AddPiece(piece);
+        }
+      }
+    }
 
-		public override void GenerateSpecialMoves( MoveList list, bool capturesOnly, int ply )
-		{
-			if( !capturesOnly )
-			{
-				int pocketSquare = pocketSquares[Game.CurrentSide];
-				Piece pieceInPocket = Board[pocketSquare];
-				if( pieceInPocket != null )
-				{
-					for( int square = 0; square < Board.NumSquares; square++ )
-					{
-						if( Board[square] == null )
-						{
-							list.BeginMoveAdd( MoveType.Drop, pocketSquare, square );
-							Piece piece = list.AddPickup( pocketSquare );
-							list.AddDrop( piece, square, pieceInPocket.PieceType );
-							list.EndMoveAdd( piece.PieceType.GetMidgamePST( square ) - 10 );
-						}
-					}
-				}
-			}
-		}
-	}
+    public override void GenerateSpecialMoves(MoveList list, bool capturesOnly, int ply)
+    {
+      if (!capturesOnly)
+      {
+        int pocketSquare = pocketSquares[Game.CurrentSide];
+        Piece pieceInPocket = Board[pocketSquare];
+        if (pieceInPocket != null)
+        {
+          for (int square = 0; square < Board.NumSquares; square++)
+          {
+            if (Board[square] == null)
+            {
+              list.BeginMoveAdd(MoveType.Drop, pocketSquare, square);
+              Piece piece = list.AddPickup(pocketSquare);
+              list.AddDrop(piece, square, pieceInPocket.PieceType);
+              list.EndMoveAdd(piece.PieceType.GetMidgamePST(square) - 10);
+            }
+          }
+        }
+      }
+    }
+  }
 }

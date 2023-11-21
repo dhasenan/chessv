@@ -20,55 +20,55 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 namespace ChessV.Games
 {
-	//**********************************************************************
-	//
-	//                              Chess
-	//
-	//    This class implements the classic game of Chess.  Most of the 
-	//    functionality, however, are in the generic game classes from 
-	//    which it is derived as they are intended to provide functionality
-	//    common to chess variants.
+  //**********************************************************************
+  //
+  //                              Chess
+  //
+  //    This class implements the classic game of Chess.  Most of the 
+  //    functionality, however, are in the generic game classes from 
+  //    which it is derived as they are intended to provide functionality
+  //    common to chess variants.
 
-	[Game("Chess", typeof(Geometry.Rectangular), 8, 8,
-		  XBoardName = "normal",
-		  InventedBy = "Unknown", 
-		  Invented = "circa 8th century", 
-		  Tags = "Chess Variant,Historic,Regional,Popular", 
-		  GameDescription1 = "Exact origins unknown", 
-		  GameDescription2 = "Generally believed to be from India around the 8th century AD")]
-	[Appearance(ColorScheme = "Luna Decorabat")]
-	public class Chess: Abstract.Generic8x8
-	{
-		// *** CONSTRUCTION *** //
+  [Game("Chess", typeof(Geometry.Rectangular), 8, 8,
+      XBoardName = "normal",
+      InventedBy = "Unknown",
+      Invented = "circa 8th century",
+      Tags = "Chess Variant,Historic,Regional,Popular",
+      GameDescription1 = "Exact origins unknown",
+      GameDescription2 = "Generally believed to be from India around the 8th century AD")]
+  [Appearance(ColorScheme = "Luna Decorabat")]
+  public class Chess : Abstract.Generic8x8
+  {
+    // *** CONSTRUCTION *** //
 
-		public Chess(): 
-			base
-				( /* symmetry = */ new MirrorSymmetry() )
-		{
-		}
-		
+    public Chess() :
+      base
+        ( /* symmetry = */ new MirrorSymmetry())
+    {
+    }
 
-		// *** INITIALIZATION *** //
-		
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
-			PawnDoubleMove = true;
-			EnPassant = true;
-			Castling.Value = "Standard";
-			PromotionRule.Value = "Standard";
-			PromotionTypes = "QRNB";
-		}
-		#endregion
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			AddChessPieceTypes();
-		}
-		#endregion
-	}
+    // *** INITIALIZATION *** //
+
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
+      PawnDoubleMove = true;
+      EnPassant = true;
+      Castling.Value = "Standard";
+      PromotionRule.Value = "Standard";
+      PromotionTypes = "QRNB";
+    }
+    #endregion
+
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      AddChessPieceTypes();
+    }
+    #endregion
+  }
 }

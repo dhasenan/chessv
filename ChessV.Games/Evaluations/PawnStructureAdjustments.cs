@@ -20,40 +20,40 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 namespace ChessV.Evaluations
 {
-    public class PawnStructureAdjustments
+  public class PawnStructureAdjustments
+  {
+    public int IsolatedMidgame { get; set; }
+    public int IsolatedEndgame { get; set; }
+
+    public int BackwardMidgame { get; set; }
+    public int BackwardEndgame { get; set; }
+
+    public int WeakExposedMidgame { get; set; }
+    public int WeakExposedEndgame { get; set; }
+
+    public int DoubledMidgame { get; set; }
+    public int DoubledEndgame { get; set; }
+
+    public int PassedMidgame { get; set; }
+    public int PassedEndgame { get; set; }
+
+    public int PassedNotIsolatedMidgame { get; set; }
+    public int PassedNotIsolatedEndgame { get; set; }
+
+    public PawnStructureAdjustments()
     {
-        public int IsolatedMidgame { get; set; }
-        public int IsolatedEndgame { get; set; }
-
-        public int BackwardMidgame { get; set; }
-        public int BackwardEndgame { get; set; }
-
-        public int WeakExposedMidgame { get; set; }
-        public int WeakExposedEndgame { get; set; }
-
-        public int DoubledMidgame { get; set; }
-        public int DoubledEndgame { get; set; }
-
-        public int PassedMidgame { get; set; }
-        public int PassedEndgame { get; set; }
-
-        public int PassedNotIsolatedMidgame { get; set; }
-        public int PassedNotIsolatedEndgame { get; set; }
-
-        public PawnStructureAdjustments()
-        {
-            IsolatedMidgame = 7;
-            IsolatedEndgame = 10;
-            BackwardMidgame = 12;
-            BackwardEndgame = 6;
-            WeakExposedMidgame = 4;
-            WeakExposedEndgame = 5;
-            DoubledMidgame = 8;
-            DoubledEndgame = 20;
-            PassedMidgame = 15;
-            PassedEndgame = 25;
-            PassedNotIsolatedMidgame = 4;
-            PassedNotIsolatedEndgame = 10;
-        }
+      IsolatedMidgame = 7;
+      IsolatedEndgame = 10;
+      BackwardMidgame = 12;
+      BackwardEndgame = 6;
+      WeakExposedMidgame = 4;
+      WeakExposedEndgame = 5;
+      DoubledMidgame = 8;
+      DoubledEndgame = 20;
+      PassedMidgame = 15;
+      PassedEndgame = 25;
+      PassedNotIsolatedMidgame = 4;
+      PassedNotIsolatedEndgame = 10;
     }
+  }
 }

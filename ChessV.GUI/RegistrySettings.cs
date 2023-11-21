@@ -22,89 +22,89 @@ using Microsoft.Win32;
 
 namespace ChessV.GUI
 {
-	public static class RegistrySettings
-	{
-		// *** PROPERTIES *** //
+  public static class RegistrySettings
+  {
+    // *** PROPERTIES *** //
 
-		//	RegistryKey of the root of all ChessV settings
-		public static RegistryKey RegistryKey { get; private set; }
+    //	RegistryKey of the root of all ChessV settings
+    public static RegistryKey RegistryKey { get; private set; }
 
-		//	The version of registry settings (this is different than 
-		//	the version of ChessV itself - it only changes when the 
-		//	way we store registry information changes)
-		public static int RegistryVersion { get; private set; }
+    //	The version of registry settings (this is different than 
+    //	the version of ChessV itself - it only changes when the 
+    //	way we store registry information changes)
+    public static int RegistryVersion { get; private set; }
 
-		//	Do we automatically detect new engines at startup?
-		static public bool AutodetectNewEngines
-		{
-			get
-			{ return autodetectNewEngines; }
+    //	Do we automatically detect new engines at startup?
+    static public bool AutodetectNewEngines
+    {
+      get
+      { return autodetectNewEngines; }
 
-			set
-			{
-				autodetectNewEngines = value;
-				RegistryKey.SetValue( "AutodetectEngines", value ? 1 : 0 );
-			}
-		}
-
-
-		// *** INITIALIZATION *** //
-
-		public static int Initialize()
-		{
-			//	Find the ChessV key in HKEY_CURRENT_USER\Software (create if necessary)
-			RegistryKey softwareKey = Registry.CurrentUser.OpenSubKey( "Software", true );
-			if( softwareKey == null )
-				softwareKey = Registry.CurrentUser.CreateSubKey( "Software" );
-			RegistryKey = softwareKey.OpenSubKey( "ChessV", true );
-			if( RegistryKey == null )
-			{
-				RegistryKey = softwareKey.CreateSubKey( "ChessV" );
-				RegistryKey.SetValue( "RegistryVersion", 2, RegistryValueKind.DWord );
-				AutodetectNewEngines = Program.RunningOnWindows;
-				return 2;
-			}
-			else
-			{
-				object version = RegistryKey.GetValue( "RegistryVersion" );
-				if( version == null )
-				{
-					if( RegistryKey.OpenSubKey( "Color Schemes" ) != null )
-						RegistryKey.DeleteSubKeyTree( "Color Schemes" );
-					if( RegistryKey.OpenSubKey( "Games" ) != null )
-						RegistryKey.DeleteSubKeyTree( "Games" );
-					RegistryKey.SetValue( "RegistryVersion", 2, RegistryValueKind.DWord );
-					RegistryVersion = 2;
-					return 2;
-				}
-				else if( (int) version == 1 )
-				{
-					//	upgrade to registry version 2
-					RegistryVersion = 2;
-					RegistryKey.SetValue( "RegistryVersion", 2, RegistryValueKind.DWord );
-					object autodetect = RegistryKey.GetValue( "AutodetectEngines" );
-					if( autodetect != null && (int) autodetect == 0 )
-						autodetectNewEngines = false;
-					else
-						autodetectNewEngines = true;
-					return 1;
-				}
-				else
-				{
-					RegistryVersion = (int) version;
-					object autodetect = RegistryKey.GetValue( "AutodetectEngines" );
-					if( autodetect != null && (int) autodetect == 0 )
-						autodetectNewEngines = false;
-					else
-						autodetectNewEngines = true;
-					return 2;
-				}
-			}
-		}
+      set
+      {
+        autodetectNewEngines = value;
+        RegistryKey.SetValue("AutodetectEngines", value ? 1 : 0);
+      }
+    }
 
 
-		// *** PRIVATE DATA *** //
+    // *** INITIALIZATION *** //
 
-		static private bool autodetectNewEngines;
-	}
+    public static int Initialize()
+    {
+      //	Find the ChessV key in HKEY_CURRENT_USER\Software (create if necessary)
+      RegistryKey softwareKey = Registry.CurrentUser.OpenSubKey("Software", true);
+      if (softwareKey == null)
+        softwareKey = Registry.CurrentUser.CreateSubKey("Software");
+      RegistryKey = softwareKey.OpenSubKey("ChessV", true);
+      if (RegistryKey == null)
+      {
+        RegistryKey = softwareKey.CreateSubKey("ChessV");
+        RegistryKey.SetValue("RegistryVersion", 2, RegistryValueKind.DWord);
+        AutodetectNewEngines = Program.RunningOnWindows;
+        return 2;
+      }
+      else
+      {
+        object version = RegistryKey.GetValue("RegistryVersion");
+        if (version == null)
+        {
+          if (RegistryKey.OpenSubKey("Color Schemes") != null)
+            RegistryKey.DeleteSubKeyTree("Color Schemes");
+          if (RegistryKey.OpenSubKey("Games") != null)
+            RegistryKey.DeleteSubKeyTree("Games");
+          RegistryKey.SetValue("RegistryVersion", 2, RegistryValueKind.DWord);
+          RegistryVersion = 2;
+          return 2;
+        }
+        else if ((int)version == 1)
+        {
+          //	upgrade to registry version 2
+          RegistryVersion = 2;
+          RegistryKey.SetValue("RegistryVersion", 2, RegistryValueKind.DWord);
+          object autodetect = RegistryKey.GetValue("AutodetectEngines");
+          if (autodetect != null && (int)autodetect == 0)
+            autodetectNewEngines = false;
+          else
+            autodetectNewEngines = true;
+          return 1;
+        }
+        else
+        {
+          RegistryVersion = (int)version;
+          object autodetect = RegistryKey.GetValue("AutodetectEngines");
+          if (autodetect != null && (int)autodetect == 0)
+            autodetectNewEngines = false;
+          else
+            autodetectNewEngines = true;
+          return 2;
+        }
+      }
+    }
+
+
+    // *** PRIVATE DATA *** //
+
+    static private bool autodetectNewEngines;
+  }
 }

@@ -22,50 +22,50 @@ using System.Collections.Generic;
 
 namespace ChessV
 {
-    public class Evaluation
-    {
-		// *** CONSTRUCTION *** //
+  public class Evaluation
+  {
+    // *** CONSTRUCTION *** //
 
-        public Evaluation()
-		{ }
-
-
-		// *** INITIALIZATION *** //
-
-		public virtual void Initialize( Game game )
-		{ this.game = game; this.board = game.Board; }
-
-        public virtual void PostInitialize()
-        { }
-
-		public virtual void SetVariation( int randomness )
-		{ }
+    public Evaluation()
+    { }
 
 
-		// *** OVERRIDEABLE VIRTUAL FUNCTIONS *** //
+    // *** INITIALIZATION *** //
 
-		public virtual void ReleaseMemoryAllocations()
-		{ }
+    public virtual void Initialize(Game game)
+    { this.game = game; this.board = game.Board; }
 
-		public virtual void AdjustEvaluation( ref int midgameEval, ref int endgameEval )
-        { }
+    public virtual void PostInitialize()
+    { }
 
-		public virtual void MoveBeingMade( MoveInfo move, int ply )
-		{ }
-
-		public virtual void MoveBeingUnmade( MoveInfo move, int ply )
-		{ }
-
-		public virtual MoveEventResponse TestForWinLossDraw( int currentPlayer, int ply )
-		{ return MoveEventResponse.NotHandled; }
-
-		public virtual void GetNotesForPieceType( PieceType type, List<string> notes )
-		{ }
+    public virtual void SetVariation(int randomness)
+    { }
 
 
-		// *** PROTECTED DATA MEMBERS *** //
+    // *** OVERRIDEABLE VIRTUAL FUNCTIONS *** //
 
-		protected Board board;
-        protected Game game;
-    }
+    public virtual void ReleaseMemoryAllocations()
+    { }
+
+    public virtual void AdjustEvaluation(ref int midgameEval, ref int endgameEval)
+    { }
+
+    public virtual void MoveBeingMade(MoveInfo move, int ply)
+    { }
+
+    public virtual void MoveBeingUnmade(MoveInfo move, int ply)
+    { }
+
+    public virtual MoveEventResponse TestForWinLossDraw(int currentPlayer, int ply)
+    { return MoveEventResponse.NotHandled; }
+
+    public virtual void GetNotesForPieceType(PieceType type, List<string> notes)
+    { }
+
+
+    // *** PROTECTED DATA MEMBERS *** //
+
+    protected Board board;
+    protected Game game;
+  }
 }

@@ -24,52 +24,52 @@ using System.IO;
 
 namespace ChessV
 {
-	public class OpeningBook
-	{
-		// *** CONSTRUCTION *** //
+  public class OpeningBook
+  {
+    // *** CONSTRUCTION *** //
 
-		public OpeningBook( BinaryReader instream )
-		{
-			book = new Dictionary<UInt64, List<Int32>>();
-			while( true )
-			{
-				//	each entry begins with the hashcode of a position
-				UInt64 positionHash = instream.ReadUInt64();
-				//	if this is null, that signals the end of the book
-				if( positionHash == 0 )
-					break;
-				//	create a list of move hashes to store the moves 
-				//	which are to be randonly chosen from for this position
-				List<Int32> movelist = new List<Int32>();
-				Int32 movehash = instream.ReadInt32();
-				while( movehash != 0 )
-				{
-					movelist.Add( movehash );
-					movehash = instream.ReadInt32();
-				}
-			}
-			random = new Random();
-		}
-
-
-		// *** OPERATIONS *** //
-
-		public bool Lookup( UInt64 positionHash, out Int32 moveHash )
-		{
-			moveHash = 0;
-			if( book.ContainsKey( positionHash ) )
-			{
-				int numberOfMoves = book[positionHash].Count;
-				moveHash = book[positionHash][random.Next( numberOfMoves )];
-				return true;
-			}
-			return false;
-		}
+    public OpeningBook(BinaryReader instream)
+    {
+      book = new Dictionary<UInt64, List<Int32>>();
+      while (true)
+      {
+        //	each entry begins with the hashcode of a position
+        UInt64 positionHash = instream.ReadUInt64();
+        //	if this is null, that signals the end of the book
+        if (positionHash == 0)
+          break;
+        //	create a list of move hashes to store the moves 
+        //	which are to be randonly chosen from for this position
+        List<Int32> movelist = new List<Int32>();
+        Int32 movehash = instream.ReadInt32();
+        while (movehash != 0)
+        {
+          movelist.Add(movehash);
+          movehash = instream.ReadInt32();
+        }
+      }
+      random = new Random();
+    }
 
 
-		// *** PROTECTED DATA *** //
+    // *** OPERATIONS *** //
 
-		protected Dictionary<UInt64, List<Int32>> book;
-		protected Random random;
-	}
+    public bool Lookup(UInt64 positionHash, out Int32 moveHash)
+    {
+      moveHash = 0;
+      if (book.ContainsKey(positionHash))
+      {
+        int numberOfMoves = book[positionHash].Count;
+        moveHash = book[positionHash][random.Next(numberOfMoves)];
+        return true;
+      }
+      return false;
+    }
+
+
+    // *** PROTECTED DATA *** //
+
+    protected Dictionary<UInt64, List<Int32>> book;
+    protected Random random;
+  }
 }

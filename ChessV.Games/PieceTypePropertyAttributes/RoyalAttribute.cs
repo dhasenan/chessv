@@ -20,11 +20,11 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 namespace ChessV.Games
 {
-	public class RoyalAttribute: PieceTypePropertyAttribute
-	{
-		public override void AddRules( PieceType pieceType, Game game )
-		{
-			game.AddRule( new Rules.CheckmateRule( pieceType ) );
-		}
-	}
+  public class RoyalAttribute : PieceTypePropertyAttribute
+  {
+    public override void AddRules(PieceType pieceType, Game game)
+    {
+      game.AddRule(new Rules.CheckmateRule(pieceType));
+    }
+  }
 }

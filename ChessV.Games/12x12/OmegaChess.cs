@@ -18,166 +18,166 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
 using ChessV.Evaluations;
+using System;
 
 namespace ChessV.Games
 {
-	[Game("Omega Chess", typeof(Geometry.Rectangular), 10, 10, 1, 4,
-		  XBoardName = "omega",
-		  Invented = "1992",
-		  InventedBy = "Daniel MacDonald",
-		  Tags = "Chess Variant,Popular")]
-	[Appearance(ColorScheme = "Buckingham Green")]
-	public class OmegaChess: Abstract.Generic12x12
-	{
-		// *** PIECE TYPES *** //
+  [Game("Omega Chess", typeof(Geometry.Rectangular), 10, 10, 1, 4,
+      XBoardName = "omega",
+      Invented = "1992",
+      InventedBy = "Daniel MacDonald",
+      Tags = "Chess Variant,Popular")]
+  [Appearance(ColorScheme = "Buckingham Green")]
+  public class OmegaChess : Abstract.Generic12x12
+  {
+    // *** PIECE TYPES *** //
 
-		public PieceType Wizard;
-		public PieceType Champion;
-
-
-		// *** CONSTRUCTION *** //
-
-		public OmegaChess():
-			base
-				( /* symmetry = */ new MirrorSymmetry() )
-		{
-		}
-
-		// *** INITIALIZATION *** //
-
-		#region CreateBoard
-		public override Board CreateBoard( int nPlayers, int nFiles, int nRanks, Symmetry symmetry )
-		{
-			Board board = new Board( 12, 12 );
-			board.SetFileNotation( new char[] { ' ', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', ' ' } );
-			board.SetRankNotation( new string[] { " ", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", " " } );
-			return board;
-		}
-		#endregion
-
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "w10w/1crnbqkbnrc1/1pppppppppp1/12/12/12/12/12/12/1PPPPPPPPPP1/1CRNBQKBNRC1/W10W";
-			PromotionRule.AddChoice( "Omega", "Standard promotion except that pawns promote on the 11th rank" );
-			PromotionRule.Value = "Omega";
-			PromotionTypes = "QRBNCW";
-			Castling.AddChoice( "Omega", "Omega Chess requires custom castling handling because the notations of the board squares is non-standard" );
-			Castling.Value = "Omega";
-			PawnMultipleMove.Value = "@3(2,3)";
-			EnPassant = true;
-		}
-		#endregion
-
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			//	we add these manually using the values for 10x10 instead of 
-			//	calling the AddChessPieceTypes() function in Generic12x12 
-			//	because it would value them as though the board was 12x12
-			AddPieceType( Queen = new Queen( "Queen", "Q", 1000, 1100 ) );
-			AddPieceType( Rook = new Rook( "Rook", "R", 550, 600 ) );
-			AddPieceType( Bishop = new Bishop( "Bishop", "B", 350, 400 ) );
-			AddPieceType( Knight = new Knight( "Knight", "N", 275, 275 ) );
-
-			AddPieceType( Wizard = new Wizard( "Wizard", "W", 360, 360 ) );
-			AddPieceType( Champion = new Champion( "Champion", "C", 375, 375 ) );
-		}
-		#endregion
-
-		#region AddRules
-		public override void AddRules()
-		{
-			base.AddRules();
-
-			// *** BORDER RULE *** //
-			AddRule( new Rules.Omega.OmegaChessBorderRule() );
-
-			//	add custom pawn promotion rule
-			if( PromotionRule.Value == "Omega" )
-			{
-				AddRule( new Rules.BasicPromotionRule( Pawn, ParseTypeListFromString( PromotionTypes ), loc => loc.Rank == 10 ) );
-			}
-
-			//	add custom castling rule
-			if( Castling.Value == "Omega" )
-			{
-				AddCastlingRule();
-				CastlingMove( 0, "f0", "h0", "i0", "g0", 'K' );
-				CastlingMove( 0, "f0", "d0", "b0", "e0", 'Q' );
-				CastlingMove( 1, "f9", "h9", "i9", "g9", 'k' );
-				CastlingMove( 1, "f9", "d9", "b9", "e9", 'q' );
-			}
-		}
-		#endregion
-
-		#region AddEvaluations
-		public override void AddEvaluations()
-		{
-			base.AddEvaluations();
-
-			//	King + Rook cannot force checkmate on a lone king 
-			//	because of the extra squares in the board corners
-			var eval = (LowMaterialEvaluation) FindEvaluation( typeof(LowMaterialEvaluation) );
-			eval.KRKIsDraw = true;
-		}
-		#endregion
+    public PieceType Wizard;
+    public PieceType Champion;
 
 
-		// *** CUSTOM APPEARANCE and NOTATION *** //
+    // *** CONSTRUCTION *** //
 
-		#region GetSquareNotation
-		public override string GetSquareNotation( int square )
-		{
-			if( square == 0 )
-				return "w1";
-			else if( square == 11 )
-				return "w4";
-			else if( square == 132 )
-				return "w2";
-			else if( square == 143 )
-				return "w3";
-			else
-				return Board.GetDefaultSquareNotation( square );
-		}
-		#endregion
+    public OmegaChess() :
+      base
+        ( /* symmetry = */ new MirrorSymmetry())
+    {
+    }
 
-		#region NotationToSquare
-		public override int NotationToSquare( string notation )
-		{
-			if( notation == "w1" )
-				return 0;
-			else if( notation == "w4" )
-				return 11;
-			else if( notation == "w2" )
-				return 132;
-			else if( notation == "w3" )
-				return 143;
-			else
-				return Board.DefaultNotationToSquare( notation );
-		}
-		#endregion
+    // *** INITIALIZATION *** //
 
-		#region GetSquareColor
-		public override int GetSquareColor( Location location, int nColors )
-		{
-			//	calculate standard coloring for two-color boards
-			int color = (Math.Max( location.Rank, 0 ) + Math.Max( location.File, 0 )) % 2;
-			//	now, ensure light color is on bottom right by inverting if even number of files
-			if( Board.NumFiles % 2 == 0 )
-				color = color ^ 1;
-			//	finally, turn unreachable border squares to the third color
-			if( (location.Rank == 0 && location.File != 0 && location.File != Board.NumFiles - 1) || 
-				(location.Rank == Board.NumRanks - 1 && location.File != 0 && location.File != Board.NumFiles - 1) || 
-				(location.File == 0 && location.Rank != 0 && location.Rank != Board.NumRanks - 1) || 
-				(location.File == Board.NumFiles - 1 && location.Rank != 0 && location.Rank != Board.NumRanks - 1) )
-				color = 2;
-			return color;
-		}
-		#endregion
-	}
+    #region CreateBoard
+    public override Board CreateBoard(int nPlayers, int nFiles, int nRanks, Symmetry symmetry)
+    {
+      Board board = new Board(12, 12);
+      board.SetFileNotation(new char[] { ' ', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', ' ' });
+      board.SetRankNotation(new string[] { " ", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", " " });
+      return board;
+    }
+    #endregion
+
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "w10w/1crnbqkbnrc1/1pppppppppp1/12/12/12/12/12/12/1PPPPPPPPPP1/1CRNBQKBNRC1/W10W";
+      PromotionRule.AddChoice("Omega", "Standard promotion except that pawns promote on the 11th rank");
+      PromotionRule.Value = "Omega";
+      PromotionTypes = "QRBNCW";
+      Castling.AddChoice("Omega", "Omega Chess requires custom castling handling because the notations of the board squares is non-standard");
+      Castling.Value = "Omega";
+      PawnMultipleMove.Value = "@3(2,3)";
+      EnPassant = true;
+    }
+    #endregion
+
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      //	we add these manually using the values for 10x10 instead of 
+      //	calling the AddChessPieceTypes() function in Generic12x12 
+      //	because it would value them as though the board was 12x12
+      AddPieceType(Queen = new Queen("Queen", "Q", 1000, 1100));
+      AddPieceType(Rook = new Rook("Rook", "R", 550, 600));
+      AddPieceType(Bishop = new Bishop("Bishop", "B", 350, 400));
+      AddPieceType(Knight = new Knight("Knight", "N", 275, 275));
+
+      AddPieceType(Wizard = new Wizard("Wizard", "W", 360, 360));
+      AddPieceType(Champion = new Champion("Champion", "C", 375, 375));
+    }
+    #endregion
+
+    #region AddRules
+    public override void AddRules()
+    {
+      base.AddRules();
+
+      // *** BORDER RULE *** //
+      AddRule(new Rules.Omega.OmegaChessBorderRule());
+
+      //	add custom pawn promotion rule
+      if (PromotionRule.Value == "Omega")
+      {
+        AddRule(new Rules.BasicPromotionRule(Pawn, ParseTypeListFromString(PromotionTypes), loc => loc.Rank == 10));
+      }
+
+      //	add custom castling rule
+      if (Castling.Value == "Omega")
+      {
+        AddCastlingRule();
+        CastlingMove(0, "f0", "h0", "i0", "g0", 'K');
+        CastlingMove(0, "f0", "d0", "b0", "e0", 'Q');
+        CastlingMove(1, "f9", "h9", "i9", "g9", 'k');
+        CastlingMove(1, "f9", "d9", "b9", "e9", 'q');
+      }
+    }
+    #endregion
+
+    #region AddEvaluations
+    public override void AddEvaluations()
+    {
+      base.AddEvaluations();
+
+      //	King + Rook cannot force checkmate on a lone king 
+      //	because of the extra squares in the board corners
+      var eval = (LowMaterialEvaluation)FindEvaluation(typeof(LowMaterialEvaluation));
+      eval.KRKIsDraw = true;
+    }
+    #endregion
+
+
+    // *** CUSTOM APPEARANCE and NOTATION *** //
+
+    #region GetSquareNotation
+    public override string GetSquareNotation(int square)
+    {
+      if (square == 0)
+        return "w1";
+      else if (square == 11)
+        return "w4";
+      else if (square == 132)
+        return "w2";
+      else if (square == 143)
+        return "w3";
+      else
+        return Board.GetDefaultSquareNotation(square);
+    }
+    #endregion
+
+    #region NotationToSquare
+    public override int NotationToSquare(string notation)
+    {
+      if (notation == "w1")
+        return 0;
+      else if (notation == "w4")
+        return 11;
+      else if (notation == "w2")
+        return 132;
+      else if (notation == "w3")
+        return 143;
+      else
+        return Board.DefaultNotationToSquare(notation);
+    }
+    #endregion
+
+    #region GetSquareColor
+    public override int GetSquareColor(Location location, int nColors)
+    {
+      //	calculate standard coloring for two-color boards
+      int color = (Math.Max(location.Rank, 0) + Math.Max(location.File, 0)) % 2;
+      //	now, ensure light color is on bottom right by inverting if even number of files
+      if (Board.NumFiles % 2 == 0)
+        color = color ^ 1;
+      //	finally, turn unreachable border squares to the third color
+      if ((location.Rank == 0 && location.File != 0 && location.File != Board.NumFiles - 1) ||
+        (location.Rank == Board.NumRanks - 1 && location.File != 0 && location.File != Board.NumFiles - 1) ||
+        (location.File == 0 && location.Rank != 0 && location.Rank != Board.NumRanks - 1) ||
+        (location.File == Board.NumFiles - 1 && location.Rank != 0 && location.Rank != Board.NumRanks - 1))
+        color = 2;
+      return color;
+    }
+    #endregion
+  }
 }

@@ -23,146 +23,146 @@ using System.Collections.Generic;
 
 namespace ChessV.Games.Rules
 {
-	public class KingsLeapRule: Rule
-	{
-		// *** CONSTRUCTION *** //
+  public class KingsLeapRule : Rule
+  {
+    // *** CONSTRUCTION *** //
 
-		public KingsLeapRule( int king1square, int king2square )
-		{
-			privChar = new char[] { 'K', 'k' };
-			kingSquare = new int[] { king1square, king2square };
-			directions = new List<int>();
-		}
+    public KingsLeapRule(int king1square, int king2square)
+    {
+      privChar = new char[] { 'K', 'k' };
+      kingSquare = new int[] { king1square, king2square };
+      directions = new List<int>();
+    }
 
-		public override void Initialize( Game game )
-		{
-			base.Initialize( game );
-			hashKeyIndex = Game.HashKeys.TakeKeys( 4 );
-			gameHistory = new int[Game.MAX_GAME_LENGTH];
-			privs = new int[Game.MAX_PLY];
-			game.MovePlayed += MovePlayedHandler;
-		}
+    public override void Initialize(Game game)
+    {
+      base.Initialize(game);
+      hashKeyIndex = Game.HashKeys.TakeKeys(4);
+      gameHistory = new int[Game.MAX_GAME_LENGTH];
+      privs = new int[Game.MAX_PLY];
+      game.MovePlayed += MovePlayedHandler;
+    }
 
-		public override void ClearGameState()
-		{
-			for( int x = 0; x < Game.MAX_PLY; x++ )
-				privs[x] = 0;
-			for( int x = 0; x < Game.MAX_GAME_LENGTH; x++ )
-				gameHistory[x] = 0;
-		}
-
-
-		// *** OVERRIDES *** //
-
-		public override void PostInitialize()
-		{
-			Direction[] allDirections = new Direction[Game.NDirections];
-			int ndirections = Game.GetDirections( out allDirections );
-			for( int x = 0; x < ndirections; x++ )
-			{
-				Direction dir = allDirections[x];
-				if( dir.FileOffset ==  0 && dir.RankOffset ==  2 || 
-					dir.FileOffset ==  0 && dir.RankOffset == -2 || 
-					dir.FileOffset ==  2 && dir.RankOffset ==  0 || 
-					dir.FileOffset == -2 && dir.RankOffset ==  0 )
- 					directions.Add( x );
-			}
-		}
-
-		public override ulong GetPositionHashCode( int ply )
-		{
-			int priv = ply == 1 ? gameHistory[Game.GameMoveNumber + 1] : privs[ply - 1];
-			return HashKeys.Keys[hashKeyIndex + priv];
-			
-		}
-
-		void MovePlayedHandler( MoveInfo move )
-		{
-			gameHistory[Game.GameMoveNumber] = privs[1];
-			privs[0] = privs[1];
-		}
-
-		public override void GenerateSpecialMoves( MoveList list, bool capturesOnly, int ply )
-		{
-			if( !capturesOnly )
-			{
-				int priv = ply == 1 ? gameHistory[Game.GameMoveNumber] : privs[ply - 1];
-				if( Game.CurrentSide == 0 && (priv & 1) == 1 )
-				{
-					foreach( int direction in directions )
-					{
-						int square = Board.NextSquare( direction, kingSquare[0] );
-						if( square >= 0 && Board[square] == null )
-						{
-							list.BeginMoveAdd( MoveType.StandardMove, kingSquare[0], square );
-							Piece king = list.AddPickup( kingSquare[0] );
-							list.AddDrop( king, square );
-							list.EndMoveAdd( 500 );
-						}
-					}
-				}
-				else if( Game.CurrentSide == 1 && (priv & 2) == 2 )
-				{
-					foreach( int direction in directions )
-					{
-						int square = Board.NextSquare( direction, kingSquare[1] );
-						if( square >= 0 && Board[square] == null )
-						{
-							list.BeginMoveAdd( MoveType.StandardMove, kingSquare[1], square );
-							Piece king = list.AddPickup( kingSquare[1] );
-							list.AddDrop( king, square );
-							list.EndMoveAdd( 500 );
-						}
-					}
-				}
-			}
-		}
-
-		public override void SetDefaultsInFEN( FEN fen )
-		{
-			if( fen["kings-leap"] == "#default" )
-				fen["kings-leap"] = "Kk";
-		}
-
-		public override void PositionLoaded( FEN fen )
-		{
-			privs[0] = 0;
-			foreach( char c in fen["kings-leap"] )
-				if( c == 'K' )
-					privs[0] |= 1;
-				else if( c == 'k' )
-					privs[0] |= 2;
-				else
-					throw new Exception( "Unrecognized character in FEN kings-leap section - " + c );
-			gameHistory[Game.GameMoveNumber] = privs[0];
-		}
-
-		public override MoveEventResponse MoveBeingMade( MoveInfo move, int ply )
-		{
-			privs[ply] = (ply == 1 ? gameHistory[Game.GameMoveNumber] : privs[ply - 1]);
-			if( ply == 1 )
-				gameHistory[Game.GameMoveNumber + 1] = privs[1];
-			if( move.FromSquare == kingSquare[0] )
-				privs[ply] = privs[ply] & 2;
-			else if( move.FromSquare == kingSquare[1] )
-				privs[ply] = privs[ply] & 1;
-			return MoveEventResponse.MoveOk;
-		}
-
-		public override void GetNotesForPieceType( PieceType type, List<string> notes )
-		{
-			if( Board[kingSquare[0]] != null && Board[kingSquare[0]].PieceType == type )
-				notes.Add( "king's leap" );
-		}
+    public override void ClearGameState()
+    {
+      for (int x = 0; x < Game.MAX_PLY; x++)
+        privs[x] = 0;
+      for (int x = 0; x < Game.MAX_GAME_LENGTH; x++)
+        gameHistory[x] = 0;
+    }
 
 
-		// *** PROTECTED DATA MEMBERS *** //
+    // *** OVERRIDES *** //
 
-		protected char[] privChar;
-		protected int[] kingSquare;
-		protected int[] privs;
-		protected int[] gameHistory;
-		protected List<int> directions;
-		protected int hashKeyIndex;
-	}
+    public override void PostInitialize()
+    {
+      Direction[] allDirections = new Direction[Game.NDirections];
+      int ndirections = Game.GetDirections(out allDirections);
+      for (int x = 0; x < ndirections; x++)
+      {
+        Direction dir = allDirections[x];
+        if (dir.FileOffset == 0 && dir.RankOffset == 2 ||
+          dir.FileOffset == 0 && dir.RankOffset == -2 ||
+          dir.FileOffset == 2 && dir.RankOffset == 0 ||
+          dir.FileOffset == -2 && dir.RankOffset == 0)
+          directions.Add(x);
+      }
+    }
+
+    public override ulong GetPositionHashCode(int ply)
+    {
+      int priv = ply == 1 ? gameHistory[Game.GameMoveNumber + 1] : privs[ply - 1];
+      return HashKeys.Keys[hashKeyIndex + priv];
+
+    }
+
+    void MovePlayedHandler(MoveInfo move)
+    {
+      gameHistory[Game.GameMoveNumber] = privs[1];
+      privs[0] = privs[1];
+    }
+
+    public override void GenerateSpecialMoves(MoveList list, bool capturesOnly, int ply)
+    {
+      if (!capturesOnly)
+      {
+        int priv = ply == 1 ? gameHistory[Game.GameMoveNumber] : privs[ply - 1];
+        if (Game.CurrentSide == 0 && (priv & 1) == 1)
+        {
+          foreach (int direction in directions)
+          {
+            int square = Board.NextSquare(direction, kingSquare[0]);
+            if (square >= 0 && Board[square] == null)
+            {
+              list.BeginMoveAdd(MoveType.StandardMove, kingSquare[0], square);
+              Piece king = list.AddPickup(kingSquare[0]);
+              list.AddDrop(king, square);
+              list.EndMoveAdd(500);
+            }
+          }
+        }
+        else if (Game.CurrentSide == 1 && (priv & 2) == 2)
+        {
+          foreach (int direction in directions)
+          {
+            int square = Board.NextSquare(direction, kingSquare[1]);
+            if (square >= 0 && Board[square] == null)
+            {
+              list.BeginMoveAdd(MoveType.StandardMove, kingSquare[1], square);
+              Piece king = list.AddPickup(kingSquare[1]);
+              list.AddDrop(king, square);
+              list.EndMoveAdd(500);
+            }
+          }
+        }
+      }
+    }
+
+    public override void SetDefaultsInFEN(FEN fen)
+    {
+      if (fen["kings-leap"] == "#default")
+        fen["kings-leap"] = "Kk";
+    }
+
+    public override void PositionLoaded(FEN fen)
+    {
+      privs[0] = 0;
+      foreach (char c in fen["kings-leap"])
+        if (c == 'K')
+          privs[0] |= 1;
+        else if (c == 'k')
+          privs[0] |= 2;
+        else
+          throw new Exception("Unrecognized character in FEN kings-leap section - " + c);
+      gameHistory[Game.GameMoveNumber] = privs[0];
+    }
+
+    public override MoveEventResponse MoveBeingMade(MoveInfo move, int ply)
+    {
+      privs[ply] = (ply == 1 ? gameHistory[Game.GameMoveNumber] : privs[ply - 1]);
+      if (ply == 1)
+        gameHistory[Game.GameMoveNumber + 1] = privs[1];
+      if (move.FromSquare == kingSquare[0])
+        privs[ply] = privs[ply] & 2;
+      else if (move.FromSquare == kingSquare[1])
+        privs[ply] = privs[ply] & 1;
+      return MoveEventResponse.MoveOk;
+    }
+
+    public override void GetNotesForPieceType(PieceType type, List<string> notes)
+    {
+      if (Board[kingSquare[0]] != null && Board[kingSquare[0]].PieceType == type)
+        notes.Add("king's leap");
+    }
+
+
+    // *** PROTECTED DATA MEMBERS *** //
+
+    protected char[] privChar;
+    protected int[] kingSquare;
+    protected int[] privs;
+    protected int[] gameHistory;
+    protected List<int> directions;
+    protected int hashKeyIndex;
+  }
 }

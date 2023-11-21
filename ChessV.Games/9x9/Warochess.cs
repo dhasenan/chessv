@@ -20,45 +20,45 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 namespace ChessV.Games
 {
-	[Game("Warochess", typeof(Geometry.Rectangular), 9, 9,
-		  InventedBy = "Eric Warolus",
-		  Invented = "2010",
-		  Tags = "Chess Variant",
-		  GameDescription1 = "Played on a 9x9 board, adding a queen with an extra pawn in front",
-		  GameDescription2 = "Totally symmetrical, all standard chess rules apply but without castling")]
-	[Appearance(ColorScheme = "Luna Decorabat")]
-	public class Warochess: Abstract.Generic9x9
-	{
-		// *** CONSTRUCTION *** //
+  [Game("Warochess", typeof(Geometry.Rectangular), 9, 9,
+      InventedBy = "Eric Warolus",
+      Invented = "2010",
+      Tags = "Chess Variant",
+      GameDescription1 = "Played on a 9x9 board, adding a queen with an extra pawn in front",
+      GameDescription2 = "Totally symmetrical, all standard chess rules apply but without castling")]
+  [Appearance(ColorScheme = "Luna Decorabat")]
+  public class Warochess : Abstract.Generic9x9
+  {
+    // *** CONSTRUCTION *** //
 
-		public Warochess() :
-			base
-				( /* symmetry = */ new RotationalSymmetry() )
-		{
-		}
+    public Warochess() :
+      base
+        ( /* symmetry = */ new RotationalSymmetry())
+    {
+    }
 
 
-		// *** INITIALIZATION *** //
+    // *** INITIALIZATION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "rbnqkqbnr/ppppppppp/9/9/9/9/9/PPPPPPPPP/RNBQKQNBR";
-			PawnDoubleMove = true;
-			EnPassant = true;
-			Castling.Value = "None";
-			PromotionRule.Value = "Standard";
-			PromotionTypes = "QRNB";
-		}
-		#endregion
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "rbnqkqbnr/ppppppppp/9/9/9/9/9/PPPPPPPPP/RNBQKQNBR";
+      PawnDoubleMove = true;
+      EnPassant = true;
+      Castling.Value = "None";
+      PromotionRule.Value = "Standard";
+      PromotionTypes = "QRNB";
+    }
+    #endregion
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			AddChessPieceTypes();
-		}
-		#endregion
-	}
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      AddChessPieceTypes();
+    }
+    #endregion
+  }
 }

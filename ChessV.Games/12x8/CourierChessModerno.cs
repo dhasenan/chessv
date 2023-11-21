@@ -22,89 +22,89 @@ using ChessV.Evaluations;
 
 namespace ChessV.Games
 {
-	[Game("Courier Chess Moderno", typeof(Geometry.Rectangular), 12, 8,
-		  Invented = "2008",
-		  InventedBy = "Jose Carrillo",
-		  Tags = "Chess Variant",
-		  GameDescription1 = "A modernized version of the classic game of Courier Chess",
-		  GameDescription2 = "created by Jose Carrillo in 2008")]
-	public class CourierChessModerno: Abstract.Generic12x8
-	{
-		// *** PIECE TYPES *** //
+  [Game("Courier Chess Moderno", typeof(Geometry.Rectangular), 12, 8,
+      Invented = "2008",
+      InventedBy = "Jose Carrillo",
+      Tags = "Chess Variant",
+      GameDescription1 = "A modernized version of the classic game of Courier Chess",
+      GameDescription2 = "created by Jose Carrillo in 2008")]
+  public class CourierChessModerno : Abstract.Generic12x8
+  {
+    // *** PIECE TYPES *** //
 
-		public PieceType Elephant;
-		public PieceType Man;
-		public PieceType Schleich;
-
-
-		// *** CONSTRUCTION *** //
-
-		public CourierChessModerno() :
-			base
-				 ( /* symmetry = */ new RotationalSymmetry() )
-		{
-		}
+    public PieceType Elephant;
+    public PieceType Man;
+    public PieceType Schleich;
 
 
-		// *** INITIALIZATION *** //
+    // *** CONSTRUCTION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			FENFormat = "{array} {current player} {castling} {elephants} {en-passant} {half-move clock} {turn number}";
-			FENStart = "#{Array} w #default #default #default 0 1";
-			Array = "rnebsqkmbenr/pppppppppppp/12/12/12/12/PPPPPPPPPPPP/RNEBMKQSBENR";
-			PromotionTypes = "QRBNMSE";
-			Castling.Value = "3-3";
-			PawnDoubleMove = true;
-			EnPassant = true;
-			BareKing = true;
-		}
-		#endregion
+    public CourierChessModerno() :
+      base
+         ( /* symmetry = */ new RotationalSymmetry())
+    {
+    }
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			AddChessPieceTypes();
-			AddPieceType( Man = new King( "Mann", "M", 325, 325, "General" ) );
-			AddPieceType( Schleich = new Wazir( "Schleich", "S", 145, 145 ) );
-			AddPieceType( Elephant = new SilverGeneral( "Elephant", "E", 200, 200 ) );
 
-			//	we need to add these pieces so that their moves will be available 
-			//	for the extra moves for unmoved elephant added in AddRules:
-			AddPieceType( new Dabbabah( null, null, 0, 0 ) );
-			AddPieceType( new Elephant( null, null, 0, 0 ) );
-		}
-		#endregion
+    // *** INITIALIZATION *** //
 
-		#region AddRules
-		public override void AddRules()
-		{
-			base.AddRules();
-			var elephantRule = new Rules.ExtraMovesForUnmovedPieceRule( Elephant, "elephants" );
-			elephantRule.AddMove( MoveCapability.Step( new Direction( 2, 0 ) ) );
-			elephantRule.AddMove( MoveCapability.Step( new Direction( 2, 2 ) ) );
-			elephantRule.AddMove( MoveCapability.Step( new Direction( 2, -2 ) ) );
-			AddRule( elephantRule );
-		}
-		#endregion
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      FENFormat = "{array} {current player} {castling} {elephants} {en-passant} {half-move clock} {turn number}";
+      FENStart = "#{Array} w #default #default #default 0 1";
+      Array = "rnebsqkmbenr/pppppppppppp/12/12/12/12/PPPPPPPPPPPP/RNEBMKQSBENR";
+      PromotionTypes = "QRBNMSE";
+      Castling.Value = "3-3";
+      PawnDoubleMove = true;
+      EnPassant = true;
+      BareKing = true;
+    }
+    #endregion
 
-		#region AddEvaluations
-		public override void AddEvaluations()
-		{
-			base.AddEvaluations();
-			RookTypeEvaluation eval = new RookTypeEvaluation();
-			eval.AddOpenFileBonus( Rook );
-			eval.AddRookOn7thBonus( Rook, King );
-			AddEvaluation( eval );
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      AddChessPieceTypes();
+      AddPieceType(Man = new King("Mann", "M", 325, 325, "General"));
+      AddPieceType(Schleich = new Wazir("Schleich", "S", 145, 145));
+      AddPieceType(Elephant = new SilverGeneral("Elephant", "E", 200, 200));
 
-			OutpostEvaluation outpost = new OutpostEvaluation();
-			outpost.AddOutpostBonus( Knight );
-			outpost.AddOutpostBonus( Bishop, 10, 2, 5, 5 );
-			AddEvaluation( outpost );
-		}
-		#endregion
-	}
+      //	we need to add these pieces so that their moves will be available 
+      //	for the extra moves for unmoved elephant added in AddRules:
+      AddPieceType(new Dabbabah(null, null, 0, 0));
+      AddPieceType(new Elephant(null, null, 0, 0));
+    }
+    #endregion
+
+    #region AddRules
+    public override void AddRules()
+    {
+      base.AddRules();
+      var elephantRule = new Rules.ExtraMovesForUnmovedPieceRule(Elephant, "elephants");
+      elephantRule.AddMove(MoveCapability.Step(new Direction(2, 0)));
+      elephantRule.AddMove(MoveCapability.Step(new Direction(2, 2)));
+      elephantRule.AddMove(MoveCapability.Step(new Direction(2, -2)));
+      AddRule(elephantRule);
+    }
+    #endregion
+
+    #region AddEvaluations
+    public override void AddEvaluations()
+    {
+      base.AddEvaluations();
+      RookTypeEvaluation eval = new RookTypeEvaluation();
+      eval.AddOpenFileBonus(Rook);
+      eval.AddRookOn7thBonus(Rook, King);
+      AddEvaluation(eval);
+
+      OutpostEvaluation outpost = new OutpostEvaluation();
+      outpost.AddOutpostBonus(Knight);
+      outpost.AddOutpostBonus(Bishop, 10, 2, 5, 5);
+      AddEvaluation(outpost);
+    }
+    #endregion
+  }
 }

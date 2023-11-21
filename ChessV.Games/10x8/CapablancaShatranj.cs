@@ -1,4 +1,3 @@
-
 /***************************************************************************
 
                                  ChessV
@@ -18,56 +17,54 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using ChessV.Evaluations;
-
 namespace ChessV.Games
 {
-	[Game("Capablanca Shatranj", typeof(Geometry.Rectangular), 10, 8,
-		  Invented = "2006",
-		  InventedBy = "Christine Bagley-Jones", 
-		  Tags = "Chess Variant, Capablanca Variant")]
-	public class CapablancaShatranj: CapablancaChess
-	{
-		// *** PIECE TYPES *** //
+  [Game("Capablanca Shatranj", typeof(Geometry.Rectangular), 10, 8,
+      Invented = "2006",
+      InventedBy = "Christine Bagley-Jones",
+      Tags = "Chess Variant, Capablanca Variant")]
+  public class CapablancaShatranj : CapablancaChess
+  {
+    // *** PIECE TYPES *** //
 
-		public PieceType Minister;
-		public PieceType HighPriestess;
-
-
-		// *** CONSTRUCTION *** //
-
-		public CapablancaShatranj()
-		{
-		}
+    public PieceType Minister;
+    public PieceType HighPriestess;
 
 
-		// *** INITIALIZATION *** //
+    // *** CONSTRUCTION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "rnbmqkhbnr/pppppppppp/10/10/10/10/PPPPPPPPPP/RNBMQKHBNR";
-			PromotionTypes = "MH";
-		}
-		#endregion
+    public CapablancaShatranj()
+    {
+    }
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			Archbishop.Enabled = false;
-			Chancellor.Enabled = false;
-			AddPieceType( Minister = new Minister( "Minister", "M", 600, 600, "Knight Wazir Dabbabah" ) );
-			AddPieceType( HighPriestess = new HighPriestess( "High Priestess", "H", 625, 625, "ElephantKnight" ) );
-		}
-		#endregion
 
-		#region AddRules
-		public override void AddRules()
-		{
-			base.AddRules();
-		}
-		#endregion
-	}
+    // *** INITIALIZATION *** //
+
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "rnbmqkhbnr/pppppppppp/10/10/10/10/PPPPPPPPPP/RNBMQKHBNR";
+      PromotionTypes = "MH";
+    }
+    #endregion
+
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      Archbishop.Enabled = false;
+      Chancellor.Enabled = false;
+      AddPieceType(Minister = new Minister("Minister", "M", 600, 600, "Knight Wazir Dabbabah"));
+      AddPieceType(HighPriestess = new HighPriestess("High Priestess", "H", 625, 625, "ElephantKnight"));
+    }
+    #endregion
+
+    #region AddRules
+    public override void AddRules()
+    {
+      base.AddRules();
+    }
+    #endregion
+  }
 }

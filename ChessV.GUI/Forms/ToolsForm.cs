@@ -18,76 +18,76 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Windows.Forms;
-using System.IO;
 using ChessV.Manager;
+using System;
+using System.IO;
+using System.Windows.Forms;
 
 namespace ChessV.GUI
 {
-	public partial class ToolsForm: Form
-	{
-		public ToolsForm()
-		{
-			InitializeComponent();
-		}
+  public partial class ToolsForm : Form
+  {
+    public ToolsForm()
+    {
+      InitializeComponent();
+    }
 
-		private void btnClose_Click( object sender, EventArgs e )
-		{
-			Close();
-		}
+    private void btnClose_Click(object sender, EventArgs e)
+    {
+      Close();
+    }
 
-		private void btnRunBatch_Click( object sender, EventArgs e )
-		{
-			string workingPath = null;
-			MatchSet matches = null;
-			AutomatedMatchesSettingsForm form = new AutomatedMatchesSettingsForm();
-			if( form.ShowDialog() == DialogResult.OK )
-			{
-				string controlFileName = form.ControlFile;
-				StreamReader reader = new StreamReader( controlFileName );
-				workingPath = Path.GetFullPath( controlFileName ).Substring( 0, Path.GetFullPath( controlFileName ).LastIndexOf( Path.DirectorySeparatorChar ) );
-				matches = Program.Manager.LoadMatches( reader, workingPath );
-				string outputFileName = workingPath + Path.DirectorySeparatorChar +
-					"results " + DateTime.Now.ToString( "yyyy-MM-dd HH_mm" ) + " " +
-					controlFileName.Substring( controlFileName.LastIndexOf( Path.DirectorySeparatorChar ) >= 0 ? 
-					controlFileName.LastIndexOf( Path.DirectorySeparatorChar ) + 1 : 0 );
-				if( form.OutputFileToResume != null )
-					outputFileName = form.OutputFileToResume;
-				if( matches != null )
-				{
-					AutomatedMatchesProgressForm form2 = new AutomatedMatchesProgressForm( matches, workingPath, outputFileName );
-					form2.Show();
-				}
-			}
-		}
+    private void btnRunBatch_Click(object sender, EventArgs e)
+    {
+      string workingPath = null;
+      MatchSet matches = null;
+      AutomatedMatchesSettingsForm form = new AutomatedMatchesSettingsForm();
+      if (form.ShowDialog() == DialogResult.OK)
+      {
+        string controlFileName = form.ControlFile;
+        StreamReader reader = new StreamReader(controlFileName);
+        workingPath = Path.GetFullPath(controlFileName).Substring(0, Path.GetFullPath(controlFileName).LastIndexOf(Path.DirectorySeparatorChar));
+        matches = Program.Manager.LoadMatches(reader, workingPath);
+        string outputFileName = workingPath + Path.DirectorySeparatorChar +
+          "results " + DateTime.Now.ToString("yyyy-MM-dd HH_mm") + " " +
+          controlFileName.Substring(controlFileName.LastIndexOf(Path.DirectorySeparatorChar) >= 0 ?
+          controlFileName.LastIndexOf(Path.DirectorySeparatorChar) + 1 : 0);
+        if (form.OutputFileToResume != null)
+          outputFileName = form.OutputFileToResume;
+        if (matches != null)
+        {
+          AutomatedMatchesProgressForm form2 = new AutomatedMatchesProgressForm(matches, workingPath, outputFileName);
+          form2.Show();
+        }
+      }
+    }
 
-		private void btnAddMoveToGames_Click( object sender, EventArgs e )
-		{
-			AddMoveToGamesForm form = new AddMoveToGamesForm();
-			if( form.ShowDialog() == DialogResult.OK )
-			{
-				AddMoveToGamesProgressForm f2 = new AddMoveToGamesProgressForm( form.GamePath, form.FixedDepth, form.FixedTimeMinutes, form.Variation );
-				f2.ShowDialog();
-			}
-		}
+    private void btnAddMoveToGames_Click(object sender, EventArgs e)
+    {
+      AddMoveToGamesForm form = new AddMoveToGamesForm();
+      if (form.ShowDialog() == DialogResult.OK)
+      {
+        AddMoveToGamesProgressForm f2 = new AddMoveToGamesProgressForm(form.GamePath, form.FixedDepth, form.FixedTimeMinutes, form.Variation);
+        f2.ShowDialog();
+      }
+    }
 
-		private void btnSaveGamesAsImages_Click( object sender, EventArgs e )
-		{
-			SaveGamesAsImagesForm form = new SaveGamesAsImagesForm();
-			form.ShowDialog();
-		}
+    private void btnSaveGamesAsImages_Click(object sender, EventArgs e)
+    {
+      SaveGamesAsImagesForm form = new SaveGamesAsImagesForm();
+      form.ShowDialog();
+    }
 
-		private void btnTranspositionDetector_Click( object sender, EventArgs e )
-		{
-			TranspositionDetectorForm form = new TranspositionDetectorForm();
-			form.ShowDialog();
-		}
+    private void btnTranspositionDetector_Click(object sender, EventArgs e)
+    {
+      TranspositionDetectorForm form = new TranspositionDetectorForm();
+      form.ShowDialog();
+    }
 
-		private void btnCreateGameReferenceDocs_Click( object sender, EventArgs e )
-		{
-			CreateReferenceDocsForm form = new CreateReferenceDocsForm();
-			form.ShowDialog();
-		}
-	}
+    private void btnCreateGameReferenceDocs_Click(object sender, EventArgs e)
+    {
+      CreateReferenceDocsForm form = new CreateReferenceDocsForm();
+      form.ShowDialog();
+    }
+  }
 }

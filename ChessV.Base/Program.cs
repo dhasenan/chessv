@@ -19,19 +19,13 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 ****************************************************************************/
 
 using System;
-using System.Windows.Forms;
-using System.Collections.Generic;
-using System.Reflection;
-using System.IO;
-using System.Text;
-using Microsoft.Win32;
 
 namespace ChessV
 {
-	public static class Program
-	{
-		//	A Random object used for generating pseudo-random numbers throughout the program
-		static public Random Random = new Random();
-	}
+  public static class Program
+  {
+    //	A Random object used for generating pseudo-random numbers throughout the program
+    static public Random Random = new Random();
+  }
 
 }

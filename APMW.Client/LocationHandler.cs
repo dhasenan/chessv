@@ -5,14 +5,10 @@ using Archipelago.MultiClient.Net.Helpers;
 using Archipelago.MultiClient.Net.Packets;
 using ChessV;
 using ChessV.Base;
-using ChessV.Games;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using static System.Collections.Specialized.BitVector32;
 
 namespace Archipelago.APChessV
 {
@@ -23,7 +19,7 @@ namespace Archipelago.APChessV
     public static LocationHandler GetInstance()
     {
       if (_instance == null)
-        lock(typeof(LocationHandler))
+        lock (typeof(LocationHandler))
           if (_instance == null)
             _instance = new LocationHandler();
       return _instance;

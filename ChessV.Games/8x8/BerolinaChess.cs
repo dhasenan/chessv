@@ -20,94 +20,94 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 namespace ChessV.Games
 {
-	//**********************************************************************
-	//
-	//                          BerolinaChess
-	//
-	//    This class implements the game of Berolina Chess.  It is like 
-	//    orthodox Chess except that the pawns move diagonally and capture 
-	//    forwards (the opposite of Chess.)  Since pawns are so fundamental 
-	//    to Chess, however, this requires some care.
+  //**********************************************************************
+  //
+  //                          BerolinaChess
+  //
+  //    This class implements the game of Berolina Chess.  It is like 
+  //    orthodox Chess except that the pawns move diagonally and capture 
+  //    forwards (the opposite of Chess.)  Since pawns are so fundamental 
+  //    to Chess, however, this requires some care.
 
-	[Game("Berolina Chess", typeof(Geometry.Rectangular), 8, 8,
-		  XBoardName = "berolina",
-		  InventedBy = "Edmund Hebermann",
-		  Invented = "1926",
-		  Tags = "Chess Variant,Historic,Popular",
-		  GameDescription1 = "Standard chess but with the pawn moves switched",
-		  GameDescription2 = "Pawns capture directly forward and move without capturing diagonally forward")]
-	public class BerolinaChess: Abstract.Generic8x8
-	{
-		// *** PIECE TYPES *** //
+  [Game("Berolina Chess", typeof(Geometry.Rectangular), 8, 8,
+      XBoardName = "berolina",
+      InventedBy = "Edmund Hebermann",
+      Invented = "1926",
+      Tags = "Chess Variant,Historic,Popular",
+      GameDescription1 = "Standard chess but with the pawn moves switched",
+      GameDescription2 = "Pawns capture directly forward and move without capturing diagonally forward")]
+  public class BerolinaChess : Abstract.Generic8x8
+  {
+    // *** PIECE TYPES *** //
 
-		public PieceType BerolinaPawn;
-
-
-		// *** CONSTRUCTION *** //
-
-		public BerolinaChess(): 
-			base
-				( /* symmetry = */ new MirrorSymmetry() )
-		{
-		}
+    public PieceType BerolinaPawn;
 
 
-		// *** INITIALIZATION *** //
+    // *** CONSTRUCTION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
-			PawnDoubleMove = true;
-			EnPassant = true;
-			Castling.Value = "Standard";
-			PromotionRule.Value = "Standard";
-			PromotionTypes = "QRNB";
-		}
-		#endregion
+    public BerolinaChess() :
+      base
+        ( /* symmetry = */ new MirrorSymmetry())
+    {
+    }
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			AddChessPieceTypes();
-			replacePieceType( Pawn, BerolinaPawn = new Pieces.Berolina.BerolinaPawn( "Pawn", "P", 100, 125 ) );
-			PromotingType = BerolinaPawn;
-		}
-		#endregion
 
-		#region AddRules
-		public override void AddRules()
-		{
-			base.AddRules();
+    // *** INITIALIZATION *** //
 
-			// *** PAWN DOUBLE MOVE *** //
-			if( PawnDoubleMove && BerolinaPawn.Enabled )
-			{
-				MoveCapability doubleMoveNE = new MoveCapability();
-				doubleMoveNE.MinSteps = 2;
-				doubleMoveNE.MaxSteps = 2;
-				doubleMoveNE.MustCapture = false;
-				doubleMoveNE.CanCapture = false;
-				doubleMoveNE.Direction = new Direction( 1, 1 );
-				doubleMoveNE.Condition = location => location.Rank == 1;
-				BerolinaPawn.AddMoveCapability( doubleMoveNE );
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
+      PawnDoubleMove = true;
+      EnPassant = true;
+      Castling.Value = "Standard";
+      PromotionRule.Value = "Standard";
+      PromotionTypes = "QRNB";
+    }
+    #endregion
 
-				MoveCapability doubleMoveNW = new MoveCapability();
-				doubleMoveNW.MinSteps = 2;
-				doubleMoveNW.MaxSteps = 2;
-				doubleMoveNW.MustCapture = false;
-				doubleMoveNW.CanCapture = false;
-				doubleMoveNW.Direction = new Direction( 1, -1 );
-				doubleMoveNW.Condition = location => location.Rank == 1;
-				BerolinaPawn.AddMoveCapability( doubleMoveNW );
-			}
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      AddChessPieceTypes();
+      replacePieceType(Pawn, BerolinaPawn = new Pieces.Berolina.BerolinaPawn("Pawn", "P", 100, 125));
+      PromotingType = BerolinaPawn;
+    }
+    #endregion
 
-			// *** EN-PASSANT *** //
-			if( EnPassant && BerolinaPawn.Enabled )
-				AddRule( new Rules.Berolina.BerolinaEnPassantRule( BerolinaPawn ) );
-		}
-		#endregion
-	}
+    #region AddRules
+    public override void AddRules()
+    {
+      base.AddRules();
+
+      // *** PAWN DOUBLE MOVE *** //
+      if (PawnDoubleMove && BerolinaPawn.Enabled)
+      {
+        MoveCapability doubleMoveNE = new MoveCapability();
+        doubleMoveNE.MinSteps = 2;
+        doubleMoveNE.MaxSteps = 2;
+        doubleMoveNE.MustCapture = false;
+        doubleMoveNE.CanCapture = false;
+        doubleMoveNE.Direction = new Direction(1, 1);
+        doubleMoveNE.Condition = location => location.Rank == 1;
+        BerolinaPawn.AddMoveCapability(doubleMoveNE);
+
+        MoveCapability doubleMoveNW = new MoveCapability();
+        doubleMoveNW.MinSteps = 2;
+        doubleMoveNW.MaxSteps = 2;
+        doubleMoveNW.MustCapture = false;
+        doubleMoveNW.CanCapture = false;
+        doubleMoveNW.Direction = new Direction(1, -1);
+        doubleMoveNW.Condition = location => location.Rank == 1;
+        BerolinaPawn.AddMoveCapability(doubleMoveNW);
+      }
+
+      // *** EN-PASSANT *** //
+      if (EnPassant && BerolinaPawn.Enabled)
+        AddRule(new Rules.Berolina.BerolinaEnPassantRule(BerolinaPawn));
+    }
+    #endregion
+  }
 }

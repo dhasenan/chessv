@@ -20,68 +20,68 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 namespace ChessV.Games
 {
-	//**********************************************************************
-	//
-	//                             Shako
-	//
-	//    This class implements Shako by Jean-Louis Cazaux.  This is an 
-	//    East-meets-West game that maintains the features of Chess while 
-	//    adding the Cannon from Chinese Chess (Xiangqi) and a slightly 
-	//    stronger Elephant.  The King can castle, but is on the second 
-	//    rank, so the castling rule in Shako is custom and cannot be 
-	//    altered by the Castling game variable.
+  //**********************************************************************
+  //
+  //                             Shako
+  //
+  //    This class implements Shako by Jean-Louis Cazaux.  This is an 
+  //    East-meets-West game that maintains the features of Chess while 
+  //    adding the Cannon from Chinese Chess (Xiangqi) and a slightly 
+  //    stronger Elephant.  The King can castle, but is on the second 
+  //    rank, so the castling rule in Shako is custom and cannot be 
+  //    altered by the Castling game variable.
 
-	[Game("Shako", typeof(Geometry.Rectangular), 10, 10,
-		  Invented = "1997",
-		  InventedBy = "Jean-Louis Cazaux",
-	      Tags = "Chess Variant",
-		  GameDescription1 = "East-meets-West game that maintains the features of Chess",
-		  GameDescription2 = "while adding the cannon from Xiangqi and a stronger elephant")]
-	public class Shako: Abstract.Generic10x10
-	{
-		// *** PIECE TYPES *** //
+  [Game("Shako", typeof(Geometry.Rectangular), 10, 10,
+      Invented = "1997",
+      InventedBy = "Jean-Louis Cazaux",
+        Tags = "Chess Variant",
+      GameDescription1 = "East-meets-West game that maintains the features of Chess",
+      GameDescription2 = "while adding the cannon from Xiangqi and a stronger elephant")]
+  public class Shako : Abstract.Generic10x10
+  {
+    // *** PIECE TYPES *** //
 
-		public PieceType Elephant;
-		public PieceType Cannon;
-
-
-		// *** CONSTRUCTION *** //
-
-		public Shako(): 
-			base
-				( /* symmetry = */ new MirrorSymmetry() )
-		{
-		}
+    public PieceType Elephant;
+    public PieceType Cannon;
 
 
-		// *** INITIALIZATION *** //
+    // *** CONSTRUCTION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "c8c/ernbqkbnre/pppppppppp/10/10/10/10/PPPPPPPPPP/ERNBQKBNRE/C8C";
-			PawnMultipleMove.Value = "Grand";
-			Castling.Value = "2R Close-Rook";
-			PromotionRule.Value = "Standard";
-			PromotionTypes = "QRBNEC";
-			EnPassant = true;
-		}
-		#endregion
+    public Shako() :
+      base
+        ( /* symmetry = */ new MirrorSymmetry())
+    {
+    }
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			AddChessPieceTypes();
-			AddPieceType( Cannon = new Cannon( "Cannon", "C", 400, 275 ) );
-			Elephant = new Elephant( "Elephant", "E", 225, 225 );
-			Elephant.Step( new Direction(  1,  1 ) );
-			Elephant.Step( new Direction( -1,  1 ) );
-			Elephant.Step( new Direction(  1, -1 ) );
-			Elephant.Step( new Direction( -1, -1 ) );
-			AddPieceType( Elephant );
-		}
-		#endregion
-	}
+
+    // *** INITIALIZATION *** //
+
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "c8c/ernbqkbnre/pppppppppp/10/10/10/10/PPPPPPPPPP/ERNBQKBNRE/C8C";
+      PawnMultipleMove.Value = "Grand";
+      Castling.Value = "2R Close-Rook";
+      PromotionRule.Value = "Standard";
+      PromotionTypes = "QRBNEC";
+      EnPassant = true;
+    }
+    #endregion
+
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      AddChessPieceTypes();
+      AddPieceType(Cannon = new Cannon("Cannon", "C", 400, 275));
+      Elephant = new Elephant("Elephant", "E", 225, 225);
+      Elephant.Step(new Direction(1, 1));
+      Elephant.Step(new Direction(-1, 1));
+      Elephant.Step(new Direction(1, -1));
+      Elephant.Step(new Direction(-1, -1));
+      AddPieceType(Elephant);
+    }
+    #endregion
+  }
 }

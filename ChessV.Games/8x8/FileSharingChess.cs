@@ -1,4 +1,3 @@
-
 /***************************************************************************
 
                                  ChessV
@@ -18,29 +17,26 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
 namespace ChessV.Games
 {
-	[Game("File Sharing Chess", typeof(Geometry.Rectangular), 8, 8,
-		  Invented = "2016",
-		  InventedBy = "Jeffrey T. Kubach",
-		  Tags = "Chess Variant",
-		  GameDescription1 = "To reduce draws and open up closed positions",
-		  GameDescription2 = "you can swap directly opposed pawns, subject to restrictions")]
-	public class FileSharingChess: Chess
-	{
-		// *** INITIALIZATION *** //
+  [Game("File Sharing Chess", typeof(Geometry.Rectangular), 8, 8,
+      Invented = "2016",
+      InventedBy = "Jeffrey T. Kubach",
+      Tags = "Chess Variant",
+      GameDescription1 = "To reduce draws and open up closed positions",
+      GameDescription2 = "you can swap directly opposed pawns, subject to restrictions")]
+  public class FileSharingChess : Chess
+  {
+    // *** INITIALIZATION *** //
 
-		#region AddRules
-		public override void AddRules()
-		{
-			base.AddRules();
+    #region AddRules
+    public override void AddRules()
+    {
+      base.AddRules();
 
-			//	add the PawnSwapRule
-			AddRule( new Rules.FileSharing.PawnSwapRule( Pawn ) );
-		}
-		#endregion
-	}
+      //	add the PawnSwapRule
+      AddRule(new Rules.FileSharing.PawnSwapRule(Pawn));
+    }
+    #endregion
+  }
 }

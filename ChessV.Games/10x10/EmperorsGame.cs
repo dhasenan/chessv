@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -18,57 +17,54 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
 namespace ChessV.Games
 {
-	[Game("Emperor's Game", typeof(Geometry.Rectangular), 10, 10,
-		  Invented = "1840",
-		  InventedBy = "L. Tressan",
-		  Tags = "Chess Variant,Historic",
-		  GameDescription1 = "Historic large-board variant from 19th century Germany",
-		  GameDescription2 = "Invented by L. Tressan in 1840")]
-	[Appearance(ColorScheme = "Brushed Steel")]
-	public class EmperorsGame: Abstract.Generic10x10
-	{
-		// *** PIECE TYPES *** //
+  [Game("Emperor's Game", typeof(Geometry.Rectangular), 10, 10,
+      Invented = "1840",
+      InventedBy = "L. Tressan",
+      Tags = "Chess Variant,Historic",
+      GameDescription1 = "Historic large-board variant from 19th century Germany",
+      GameDescription2 = "Invented by L. Tressan in 1840")]
+  [Appearance(ColorScheme = "Brushed Steel")]
+  public class EmperorsGame : Abstract.Generic10x10
+  {
+    // *** PIECE TYPES *** //
 
-		public PieceType General;
-		public PieceType Adjutant;
+    public PieceType General;
+    public PieceType Adjutant;
 
 
-		// *** CONSTRUCTION *** //
+    // *** CONSTRUCTION *** //
 
-		public EmperorsGame(): 
-			base
-				( /* symmetry = */ new MirrorSymmetry() )
-		{
-		}
-		
+    public EmperorsGame() :
+      base
+        ( /* symmetry = */ new MirrorSymmetry())
+    {
+    }
 
-		// *** INITIALIZATION *** //
-		
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "rnbgqkabnr/pppppppppp/10/10/10/10/10/10/PPPPPPPPPP/RNBGQKABNR";
-			EnPassant = true;
-			PawnMultipleMove.Value = "Triple";
-			PromotionRule.Value = "Replacement";
-			Castling.Value = "Long";
-		}
-		#endregion
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			AddChessPieceTypes();
-			AddPieceType( General = new Amazon( "General", "G", 1350, 1500 ) );
-			AddPieceType( Adjutant = new Archbishop( "Adjutant", "A", 725, 800 ) );
-		}
-		#endregion
-	}
+    // *** INITIALIZATION *** //
+
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "rnbgqkabnr/pppppppppp/10/10/10/10/10/10/PPPPPPPPPP/RNBGQKABNR";
+      EnPassant = true;
+      PawnMultipleMove.Value = "Triple";
+      PromotionRule.Value = "Replacement";
+      Castling.Value = "Long";
+    }
+    #endregion
+
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      AddChessPieceTypes();
+      AddPieceType(General = new Amazon("General", "G", 1350, 1500));
+      AddPieceType(Adjutant = new Archbishop("Adjutant", "A", 725, 800));
+    }
+    #endregion
+  }
 }

@@ -18,18 +18,14 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Drawing;
-using System.Windows.Forms;
-using ChessV;
 using Archipelago.APChessV;
 using Archipelago.MultiClient.Net.Helpers;
 using Archipelago.MultiClient.Net.MessageLog.Messages;
-using System.Threading.Tasks;
-using System.Security.Policy;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Windows.Forms;
 
 namespace ChessV.GUI
 {

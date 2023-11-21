@@ -19,46 +19,44 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 ****************************************************************************/
 
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using ChessV;
 
 namespace ChessV.GUI.BoardPresentations
 {
-	public class BoardWithHandsLocationToPresentationMapping: LocationToPresentationMapping
-	{
-		public BoardWithHandsLocationToPresentationMapping( Board board, Theme theme, int borderSize, int squareSize ):
-			base( board, theme, borderSize, squareSize )
-		{
-			TotalWidth += borderSize + squareSize;
-		}
+  public class BoardWithHandsLocationToPresentationMapping : LocationToPresentationMapping
+  {
+    public BoardWithHandsLocationToPresentationMapping(Board board, Theme theme, int borderSize, int squareSize) :
+      base(board, theme, borderSize, squareSize)
+    {
+      TotalWidth += borderSize + squareSize;
+    }
 
-		public override Rectangle MapLocation( Location location, bool rotateBoard = false )
-		{
-			if( location.File == -1 )
-			{
-				if( location.Rank == 0 )
-					return new Rectangle( BorderSize * 2 + Board.NumFiles * SquareSize,
-						BorderSize + (Board.NumRanks - 1) * SquareSize, SquareSize, SquareSize );
-				else if( location.Rank == 1 )
-					return new Rectangle( BorderSize * 2 + Board.NumFiles * SquareSize,
-						BorderSize, SquareSize, SquareSize );
-				else
-					throw new Exception( "not implemented" );
-			}
-			return new Rectangle( BorderSize + location.File * SquareSize,
-				BorderSize + (Board.NumRanks - location.Rank - 1) * SquareSize,
-				SquareSize, SquareSize );
-		}
-	}
+    public override Rectangle MapLocation(Location location, bool rotateBoard = false)
+    {
+      if (location.File == -1)
+      {
+        if (location.Rank == 0)
+          return new Rectangle(BorderSize * 2 + Board.NumFiles * SquareSize,
+            BorderSize + (Board.NumRanks - 1) * SquareSize, SquareSize, SquareSize);
+        else if (location.Rank == 1)
+          return new Rectangle(BorderSize * 2 + Board.NumFiles * SquareSize,
+            BorderSize, SquareSize, SquareSize);
+        else
+          throw new Exception("not implemented");
+      }
+      return new Rectangle(BorderSize + location.File * SquareSize,
+        BorderSize + (Board.NumRanks - location.Rank - 1) * SquareSize,
+        SquareSize, SquareSize);
+    }
+  }
 
-	public class BoardWithHandsPresetation : BoardPresentation
-	{
-		public BoardWithHandsPresetation( Board board, Theme theme )
-			: base( board, theme )
-		{ }
+  public class BoardWithHandsPresetation : BoardPresentation
+  {
+    public BoardWithHandsPresetation(Board board, Theme theme)
+      : base(board, theme)
+    { }
 
-		protected override LocationToPresentationMapping CreateMapping( int borderSize, int squareSize )
-		{ return new BoardWithHandsLocationToPresentationMapping( Board, Theme, borderSize, squareSize ); }
-	}
+    protected override LocationToPresentationMapping CreateMapping(int borderSize, int squareSize)
+    { return new BoardWithHandsLocationToPresentationMapping(Board, Theme, borderSize, squareSize); }
+  }
 }

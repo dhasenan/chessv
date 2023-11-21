@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -18,16 +17,13 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
 namespace ChessV.Games
 {
-	public class CaptureByAdvanceAttribute: PieceTypePropertyAttribute
-	{
-		public override void AddRules( PieceType pieceType, Game game )
-		{
-			game.AddRule( new Rules.CaptureByAdvanceRule( pieceType ) );
-		}
-	}
+  public class CaptureByAdvanceAttribute : PieceTypePropertyAttribute
+  {
+    public override void AddRules(PieceType pieceType, Game game)
+    {
+      game.AddRule(new Rules.CaptureByAdvanceRule(pieceType));
+    }
+  }
 }

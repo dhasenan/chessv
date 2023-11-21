@@ -20,106 +20,106 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 namespace ChessV.Games
 {
-	#region Gold General
-	[PieceType("Gold General", "Shogi")]
-	public class GoldGeneral: PieceType
-	{
-		public GoldGeneral( string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null ):
-			base( "Gold General", name, notation, midgameValue, endgameValue, preferredImageName )
-		{
-			AddMoves( this );
-		}
+  #region Gold General
+  [PieceType("Gold General", "Shogi")]
+  public class GoldGeneral : PieceType
+  {
+    public GoldGeneral(string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null) :
+      base("Gold General", name, notation, midgameValue, endgameValue, preferredImageName)
+    {
+      AddMoves(this);
+    }
 
-		public static new void AddMoves( PieceType type )
-		{
-			type.Step( new Direction( 1, 0 ) );
-			type.Step( new Direction( 1, 1 ) );
-			type.Step( new Direction( 1, -1 ) );
-			type.Step( new Direction( 0, 1 ) );
-			type.Step( new Direction( 0, -1 ) );
-			type.Step( new Direction( -1, 0 ) );
-		}
-	}
-	#endregion
+    public static new void AddMoves(PieceType type)
+    {
+      type.Step(new Direction(1, 0));
+      type.Step(new Direction(1, 1));
+      type.Step(new Direction(1, -1));
+      type.Step(new Direction(0, 1));
+      type.Step(new Direction(0, -1));
+      type.Step(new Direction(-1, 0));
+    }
+  }
+  #endregion
 
-	#region Silver General
-	[PieceType("Silver General", "Shogi")]
-	public class SilverGeneral: PieceType
-	{
-		public SilverGeneral( string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null ):
-			base( "Silver General", name, notation, midgameValue, endgameValue, preferredImageName )
-		{
-			AddMoves( this );
-		}
+  #region Silver General
+  [PieceType("Silver General", "Shogi")]
+  public class SilverGeneral : PieceType
+  {
+    public SilverGeneral(string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null) :
+      base("Silver General", name, notation, midgameValue, endgameValue, preferredImageName)
+    {
+      AddMoves(this);
+    }
 
-		public static new void AddMoves( PieceType type )
-		{
-			type.Step( new Direction( 1, 0 ) );
-			type.Step( new Direction( 1, 1 ) );
-			type.Step( new Direction( 1, -1 ) );
-			type.Step( new Direction( -1, 1 ) );
-			type.Step( new Direction( -1, -1 ) );
-		}
-	}
-	#endregion
+    public static new void AddMoves(PieceType type)
+    {
+      type.Step(new Direction(1, 0));
+      type.Step(new Direction(1, 1));
+      type.Step(new Direction(1, -1));
+      type.Step(new Direction(-1, 1));
+      type.Step(new Direction(-1, -1));
+    }
+  }
+  #endregion
 
-	#region Copper General
-	[PieceType("Copper General", "Shogi")]
-	public class CopperGeneral: PieceType
-	{
-		public CopperGeneral( string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null ):
-			base( "Copper General", name, notation, midgameValue, endgameValue, preferredImageName )
-		{
-			AddMoves( this );
-		}
+  #region Copper General
+  [PieceType("Copper General", "Shogi")]
+  public class CopperGeneral : PieceType
+  {
+    public CopperGeneral(string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null) :
+      base("Copper General", name, notation, midgameValue, endgameValue, preferredImageName)
+    {
+      AddMoves(this);
+    }
 
-		public static new void AddMoves( PieceType type )
-		{
-			type.Step( new Direction( 1, 0 ) );
-			type.Step( new Direction( 1, 1 ) );
-			type.Step( new Direction( 1, -1 ) );
-			type.Step( new Direction( -1, 0 ) );
-		}
-	}
-	#endregion
+    public static new void AddMoves(PieceType type)
+    {
+      type.Step(new Direction(1, 0));
+      type.Step(new Direction(1, 1));
+      type.Step(new Direction(1, -1));
+      type.Step(new Direction(-1, 0));
+    }
+  }
+  #endregion
 
-	#region Vertical Mover
-	[PieceType("Vertical Mover", "Shogi")]
-	public class VerticalMover: PieceType
-	{
-		public VerticalMover( string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null ):
-			base( "Vertical Mover", name, notation, midgameValue, endgameValue, preferredImageName )
-		{
-			AddMoves( this );
-		}
+  #region Vertical Mover
+  [PieceType("Vertical Mover", "Shogi")]
+  public class VerticalMover : PieceType
+  {
+    public VerticalMover(string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null) :
+      base("Vertical Mover", name, notation, midgameValue, endgameValue, preferredImageName)
+    {
+      AddMoves(this);
+    }
 
-		public static new void AddMoves( PieceType type )
-		{
-			type.Slide( new Direction( 1, 0 ) );
-			type.Slide( new Direction( -1, 0 ) );
-			type.Step( new Direction( 0, 1 ) );
-			type.Step( new Direction( 0, -1 ) );
-		}
-	}
-	#endregion
+    public static new void AddMoves(PieceType type)
+    {
+      type.Slide(new Direction(1, 0));
+      type.Slide(new Direction(-1, 0));
+      type.Step(new Direction(0, 1));
+      type.Step(new Direction(0, -1));
+    }
+  }
+  #endregion
 
-	#region Side Mover
-	[PieceType("Side Mover", "Shogi")]
-	public class SideMover: PieceType
-	{
-		public SideMover( string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null ):
-			base( "Side Mover", name, notation, midgameValue, endgameValue, preferredImageName )
-		{
-			AddMoves( this );
-		}
+  #region Side Mover
+  [PieceType("Side Mover", "Shogi")]
+  public class SideMover : PieceType
+  {
+    public SideMover(string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null) :
+      base("Side Mover", name, notation, midgameValue, endgameValue, preferredImageName)
+    {
+      AddMoves(this);
+    }
 
-		public static new void AddMoves( PieceType type )
-		{
-			type.Slide( new Direction( 0, 1 ) );
-			type.Slide( new Direction( 0, -1 ) );
-			type.Step( new Direction( 1, 0 ) );
-			type.Step( new Direction( -1, 0 ) );
-		}
-	}
-	#endregion
+    public static new void AddMoves(PieceType type)
+    {
+      type.Slide(new Direction(0, 1));
+      type.Slide(new Direction(0, -1));
+      type.Step(new Direction(1, 0));
+      type.Step(new Direction(-1, 0));
+    }
+  }
+  #endregion
 }

@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -18,113 +17,110 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
 namespace ChessV.Games.Pieces.OdinsRune
 {
-	public class OdinKing: PieceType
-	{
-		public OdinKing( string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null ):
-			base( "Odin King", name, notation, midgameValue, endgameValue, preferredImageName )
-		{
-			IsSliced = false;
-			AddMoves( this );
-		}
+  public class OdinKing : PieceType
+  {
+    public OdinKing(string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null) :
+      base("Odin King", name, notation, midgameValue, endgameValue, preferredImageName)
+    {
+      IsSliced = false;
+      AddMoves(this);
+    }
 
-		public static new void AddMoves( PieceType type )
-		{
-			type.CustomMoveGenerator = CustomMoveGenerationHandler;
-		}
+    public static new void AddMoves(PieceType type)
+    {
+      type.CustomMoveGenerator = CustomMoveGenerationHandler;
+    }
 
-		public static bool CustomMoveGenerationHandler( PieceType pieceType, Piece piece, MoveList moveList, bool capturesOnly )
-		{
-			OdinsRuneChess game = (OdinsRuneChess) piece.Game;
+    public static bool CustomMoveGenerationHandler(PieceType pieceType, Piece piece, MoveList moveList, bool capturesOnly)
+    {
+      OdinsRuneChess game = (OdinsRuneChess)piece.Game;
 
-			//	determine what pieces are adjacent
-			bool foundValkyrie = false;
-			bool foundForestOx = false;
-			bool foundRook = false;
-			bool foundBishop = false;
-			bool foundPawn = false;
-			for( int x = 0; x < 8; x++ )
-			{
-				int square = piece.Board.NextSquare( x, piece.Square );
-				if( square >= 0 && piece.Board[square] != null && piece.Board[square].Player == piece.Player )
-				{
-					PieceType adjacentPieceType = piece.Board[square].PieceType;
-					if( adjacentPieceType == game.Valkyrie )
-						foundValkyrie = true;
-					else if( adjacentPieceType == game.ForestOx )
-						foundForestOx = true;
-					else if( adjacentPieceType == game.Rook )
-						foundRook = true;
-					else if( adjacentPieceType == game.Bishop )
-						foundBishop = true;
-					else if( adjacentPieceType == game.Pawn )
-						foundPawn = true;
-				}
-			}
+      //	determine what pieces are adjacent
+      bool foundValkyrie = false;
+      bool foundForestOx = false;
+      bool foundRook = false;
+      bool foundBishop = false;
+      bool foundPawn = false;
+      for (int x = 0; x < 8; x++)
+      {
+        int square = piece.Board.NextSquare(x, piece.Square);
+        if (square >= 0 && piece.Board[square] != null && piece.Board[square].Player == piece.Player)
+        {
+          PieceType adjacentPieceType = piece.Board[square].PieceType;
+          if (adjacentPieceType == game.Valkyrie)
+            foundValkyrie = true;
+          else if (adjacentPieceType == game.ForestOx)
+            foundForestOx = true;
+          else if (adjacentPieceType == game.Rook)
+            foundRook = true;
+          else if (adjacentPieceType == game.Bishop)
+            foundBishop = true;
+          else if (adjacentPieceType == game.Pawn)
+            foundPawn = true;
+        }
+      }
 
-			//	generate moves of appropriate types
-			if( foundValkyrie )
-				piece.GenerateMoves( game.Valkyrie, moveList, capturesOnly );
-			else
-			{
-				//	don't generate rook or bishop if we have found valkyrie 
-				//	because all their moves would be redundant
-				if( foundRook )
-					piece.GenerateMoves( game.Rook, moveList, capturesOnly );
-				if( foundBishop )
-					piece.GenerateMoves( game.Bishop, moveList, capturesOnly );
-			}
-			if( foundForestOx )
-				piece.GenerateMoves( game.ForestOx, moveList, capturesOnly );
-			if( foundPawn )
-			{
-				if( !foundBishop && !foundValkyrie )
-					piece.GenerateMoves( game.Pawn, moveList, capturesOnly );
-				else
-				{
-					//	This gets tricky; we can't just generate all pawn moves 
-					//	because we'd generate duplicative moves.  So we need to 
-					//	manually generate just the one unique pawn move (the 
-					//	multi-path move.)
+      //	generate moves of appropriate types
+      if (foundValkyrie)
+        piece.GenerateMoves(game.Valkyrie, moveList, capturesOnly);
+      else
+      {
+        //	don't generate rook or bishop if we have found valkyrie 
+        //	because all their moves would be redundant
+        if (foundRook)
+          piece.GenerateMoves(game.Rook, moveList, capturesOnly);
+        if (foundBishop)
+          piece.GenerateMoves(game.Bishop, moveList, capturesOnly);
+      }
+      if (foundForestOx)
+        piece.GenerateMoves(game.ForestOx, moveList, capturesOnly);
+      if (foundPawn)
+      {
+        if (!foundBishop && !foundValkyrie)
+          piece.GenerateMoves(game.Pawn, moveList, capturesOnly);
+        else
+        {
+          //	This gets tricky; we can't just generate all pawn moves 
+          //	because we'd generate duplicative moves.  So we need to 
+          //	manually generate just the one unique pawn move (the 
+          //	multi-path move.)
 
-					//	First, check to make sure that this move wasn't 
-					//	already generated by a straight Valkyrie move
-					if( !foundValkyrie ||
-						(game.Board.NextSquare( PredefinedDirections.N + piece.Player, piece.Square ) >= 0 &&
-						 game.Board[game.Board.NextSquare( PredefinedDirections.N + piece.Player, piece.Square )] != null) )
-					{
-						//	Is the square two ahead both on the board and a square 
-						//	we can move to?
-						int targetSquare = game.Board.NextSquare( PredefinedDirections.N + piece.Player, piece.Square );
-						if( targetSquare >= 0 )
-							targetSquare = game.Board.NextSquare( PredefinedDirections.N + piece.Player, targetSquare );
-						if( targetSquare >= 0 &&
-							((game.Board[targetSquare] == null && !capturesOnly) ||
-							 (game.Board[targetSquare] != null && game.Board[targetSquare].Player != piece.Player)) )
-						{
-							//	This is a square we can move to, but first we 
-							//	must establish that there's a clear path
-							if( (game.Board.NextSquare( PredefinedDirections.NE + piece.Player, piece.Square ) >= 0 &&
-								 game.Board[game.Board.NextSquare( PredefinedDirections.NE + piece.Player, piece.Square )] == null) ||
-								(game.Board.NextSquare( PredefinedDirections.NW + piece.Player, piece.Square ) >= 0 &&
-								 game.Board[game.Board.NextSquare( PredefinedDirections.NW + piece.Player, piece.Square )] == null) )
-							{
-								//	Ok, we're clear to generate the move/capture
-								if( game.Board[targetSquare] == null )
-									moveList.AddMove( piece.Square, targetSquare );
-								else
-									moveList.AddCapture( piece.Square, targetSquare );
-							}
-						}
-					}
-				}
-			}
+          //	First, check to make sure that this move wasn't 
+          //	already generated by a straight Valkyrie move
+          if (!foundValkyrie ||
+            (game.Board.NextSquare(PredefinedDirections.N + piece.Player, piece.Square) >= 0 &&
+             game.Board[game.Board.NextSquare(PredefinedDirections.N + piece.Player, piece.Square)] != null))
+          {
+            //	Is the square two ahead both on the board and a square 
+            //	we can move to?
+            int targetSquare = game.Board.NextSquare(PredefinedDirections.N + piece.Player, piece.Square);
+            if (targetSquare >= 0)
+              targetSquare = game.Board.NextSquare(PredefinedDirections.N + piece.Player, targetSquare);
+            if (targetSquare >= 0 &&
+              ((game.Board[targetSquare] == null && !capturesOnly) ||
+               (game.Board[targetSquare] != null && game.Board[targetSquare].Player != piece.Player)))
+            {
+              //	This is a square we can move to, but first we 
+              //	must establish that there's a clear path
+              if ((game.Board.NextSquare(PredefinedDirections.NE + piece.Player, piece.Square) >= 0 &&
+                 game.Board[game.Board.NextSquare(PredefinedDirections.NE + piece.Player, piece.Square)] == null) ||
+                (game.Board.NextSquare(PredefinedDirections.NW + piece.Player, piece.Square) >= 0 &&
+                 game.Board[game.Board.NextSquare(PredefinedDirections.NW + piece.Player, piece.Square)] == null))
+              {
+                //	Ok, we're clear to generate the move/capture
+                if (game.Board[targetSquare] == null)
+                  moveList.AddMove(piece.Square, targetSquare);
+                else
+                  moveList.AddCapture(piece.Square, targetSquare);
+              }
+            }
+          }
+        }
+      }
 
-			return false;
-		}
-	}
+      return false;
+    }
+  }
 }

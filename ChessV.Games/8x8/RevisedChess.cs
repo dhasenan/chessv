@@ -20,30 +20,30 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 namespace ChessV.Games
 {
-	[Game("Revised Chess", typeof(Geometry.Rectangular), 8, 8,
-		  Invented = "2009",
-		  InventedBy = "Mats Winther",
-		  Tags = "Chess Variant",
-		  GameDescription1 = "Pawn gains the ability to capture forward on 7th rank",
-		  GameDescription2 = "This reduces the number of drawn endgames")]
-	public class RevisedChess: Chess
-	{
-		// *** INITIALIZATION *** //
+  [Game("Revised Chess", typeof(Geometry.Rectangular), 8, 8,
+      Invented = "2009",
+      InventedBy = "Mats Winther",
+      Tags = "Chess Variant",
+      GameDescription1 = "Pawn gains the ability to capture forward on 7th rank",
+      GameDescription2 = "This reduces the number of drawn endgames")]
+  public class RevisedChess : Chess
+  {
+    // *** INITIALIZATION *** //
 
-		#region AddRules
-		public override void AddRules()
-		{
-			base.AddRules();
+    #region AddRules
+    public override void AddRules()
+    {
+      base.AddRules();
 
-			//	pawn has a foward capturing move on 7th rank
-			MoveCapability move = new MoveCapability();
-			move.MaxSteps = 1;
-			move.MustCapture = true;
-			move.CanCapture = true;
-			move.Direction = new Direction( 1, 0 );
-			move.Condition = location => location.Rank == 6;
-			Pawn.AddMoveCapability( move );
-		}
-		#endregion
-	}
+      //	pawn has a foward capturing move on 7th rank
+      MoveCapability move = new MoveCapability();
+      move.MaxSteps = 1;
+      move.MustCapture = true;
+      move.CanCapture = true;
+      move.Direction = new Direction(1, 0);
+      move.Condition = location => location.Rank == 6;
+      Pawn.AddMoveCapability(move);
+    }
+    #endregion
+  }
 }

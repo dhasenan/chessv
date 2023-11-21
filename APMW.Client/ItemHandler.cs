@@ -1,14 +1,9 @@
-﻿using Archipelago.MultiClient.Net;
-using Archipelago.MultiClient.Net.Helpers;
+﻿using Archipelago.MultiClient.Net.Helpers;
 using ChessV;
 using ChessV.Base;
-using ChessV.Games;
 using System;
 using System.Collections.Generic;
-using System.IO.Ports;
 using System.Linq;
-using System.Reflection;
-using System.Threading;
 using static Archipelago.MultiClient.Net.Helpers.ReceivedItemsHelper;
 
 namespace Archipelago.APChessV
@@ -92,7 +87,7 @@ namespace Archipelago.APChessV
       for (int i = 0; i < 3; i++)
         for (int j = 0; j < 8; j++)
           if (withPawns[i * 8 + j] != null)
-            pieces.Add(new KeyValuePair<int, int>(2-i, j), withPawns[i*8 + j]);
+            pieces.Add(new KeyValuePair<int, int>(2 - i, j), withPawns[i * 8 + j]);
 
       return (pieces, String.Join("", promotions));
     }
@@ -231,7 +226,7 @@ namespace Archipelago.APChessV
         if (order[i] < kingIndex)
           majors[order[i]] = piece;
         else
-          majors[order[i]+numKings+1] = piece;
+          majors[order[i] + numKings + 1] = piece;
       }
       promotions.Add(string.Join("", promoPieces));
       return majors;
@@ -403,7 +398,8 @@ namespace Archipelago.APChessV
         return pieces;
       for (int i = 0; i < pieces.Count; i++)
       {
-        if (ApmwCore.getInstance().armies[army].Contains(pieces[i])) {
+        if (ApmwCore.getInstance().armies[army].Contains(pieces[i]))
+        {
           newPieces.Add(pieces[i]);
         }
       }

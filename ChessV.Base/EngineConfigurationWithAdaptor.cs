@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -18,22 +17,19 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
 namespace ChessV
 {
-	public class EngineConfigurationWithAdaptor
-	{
-		public EngineConfiguration Configuration { get; set; }
-		public EngineGameAdaptor Adaptor { get; set; }
+  public class EngineConfigurationWithAdaptor
+  {
+    public EngineConfiguration Configuration { get; set; }
+    public EngineGameAdaptor Adaptor { get; set; }
 
-		public EngineConfigurationWithAdaptor
-			( EngineConfiguration configuration,
-			  EngineGameAdaptor adaptor )	
-		{
-			Configuration = configuration;
-			Adaptor = adaptor;
-		}
-	}
+    public EngineConfigurationWithAdaptor
+      (EngineConfiguration configuration,
+        EngineGameAdaptor adaptor)
+    {
+      Configuration = configuration;
+      Adaptor = adaptor;
+    }
+  }
 }

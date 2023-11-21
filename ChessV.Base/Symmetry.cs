@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -18,63 +17,59 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace ChessV
 {
-	public abstract class Symmetry
-	{
-		public Board Board { get; set; }
+  public abstract class Symmetry
+  {
+    public Board Board { get; set; }
 
-		protected Symmetry() { }
+    protected Symmetry() { }
 
-		public abstract Direction Translate( int player, Direction direction );
+    public abstract Direction Translate(int player, Direction direction);
 
-		public abstract Location Translate( int player, Location location );
-	}
+    public abstract Location Translate(int player, Location location);
+  }
 
-	public class NoSymmetry: Symmetry
-	{
-		public NoSymmetry() : base() { }
+  public class NoSymmetry : Symmetry
+  {
+    public NoSymmetry() : base() { }
 
-		public override Direction Translate( int player, Direction direction )
-		{ return direction; }
+    public override Direction Translate(int player, Direction direction)
+    { return direction; }
 
-		public override Location Translate( int player, Location location )
-		{ return location; }
-	}
+    public override Location Translate(int player, Location location)
+    { return location; }
+  }
 
-	public class MirrorSymmetry: Symmetry
-	{
-		public MirrorSymmetry(): base() { }
+  public class MirrorSymmetry : Symmetry
+  {
+    public MirrorSymmetry() : base() { }
 
-		public override Direction Translate( int player, Direction direction )
-		{
-			return new Direction( player == 0 ? direction.RankOffset : -direction.RankOffset, direction.FileOffset );
-		}
+    public override Direction Translate(int player, Direction direction)
+    {
+      return new Direction(player == 0 ? direction.RankOffset : -direction.RankOffset, direction.FileOffset);
+    }
 
-		public override Location Translate( int player, Location location )
-		{
-			return new Location( player == 0 ? location.Rank : Board.NumRanks - location.Rank - 1, location.File );
-		}
-	}
+    public override Location Translate(int player, Location location)
+    {
+      return new Location(player == 0 ? location.Rank : Board.NumRanks - location.Rank - 1, location.File);
+    }
+  }
 
-	public class RotationalSymmetry: Symmetry
-	{
-		public RotationalSymmetry(): base() { }
+  public class RotationalSymmetry : Symmetry
+  {
+    public RotationalSymmetry() : base() { }
 
-		public override Direction Translate( int player, Direction direction )
-		{
-			return new Direction( player == 0 ? direction.RankOffset : -direction.RankOffset,
-								  player == 0 ? direction.FileOffset : -direction.FileOffset );
-		}
+    public override Direction Translate(int player, Direction direction)
+    {
+      return new Direction(player == 0 ? direction.RankOffset : -direction.RankOffset,
+                  player == 0 ? direction.FileOffset : -direction.FileOffset);
+    }
 
-		public override Location Translate( int player, Location location )
-		{
-			return new Location( player == 0 ? location.Rank : Board.NumRanks - location.Rank - 1,
-								 player == 0 ? location.File : Board.NumFiles - location.File - 1 );
-		}
-	}
+    public override Location Translate(int player, Location location)
+    {
+      return new Location(player == 0 ? location.Rank : Board.NumRanks - location.Rank - 1,
+                 player == 0 ? location.File : Board.NumFiles - location.File - 1);
+    }
+  }
 }

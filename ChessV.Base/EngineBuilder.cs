@@ -21,59 +21,58 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 ****************************************************************************/
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 
 namespace ChessV
 {
-	public class EngineBuilder
-	{
-		public EngineConfiguration EngineConfiguration { get; private set; }
-		public IDebugMessageLog MessageLog { get; private set; }
+  public class EngineBuilder
+  {
+    public EngineConfiguration EngineConfiguration { get; private set; }
+    public IDebugMessageLog MessageLog { get; private set; }
 
-		public EngineBuilder( IDebugMessageLog messageLog, EngineConfiguration config )
-		{
-			EngineConfiguration = config;
-			MessageLog = messageLog;
-		}
+    public EngineBuilder(IDebugMessageLog messageLog, EngineConfiguration config)
+    {
+      EngineConfiguration = config;
+      MessageLog = messageLog;
+    }
 
-		public virtual Engine Create( TimerFactory timerFactory, ReadyEventHandler readyHandler = null )
-		{
-			Engine engine = null;
+    public virtual Engine Create(TimerFactory timerFactory, ReadyEventHandler readyHandler = null)
+    {
+      Engine engine = null;
 
-			Process process = new Process();
-			StringBuilder args = new StringBuilder( 100 );
-			foreach( string arg in EngineConfiguration.Arguments )
-			{
-				if( args.Length > 0 )
-					args.Append( ' ' );
-				args.Append( arg );
-			}
-			ProcessStartInfo si = new ProcessStartInfo( EngineConfiguration.Command, args.ToString() );
-			si.UseShellExecute = false;
-			si.RedirectStandardInput = true;
-			si.RedirectStandardOutput = true;
-			si.WorkingDirectory = EngineConfiguration.WorkingDirectory;
-			si.WindowStyle = ProcessWindowStyle.Hidden;
-			si.CreateNoWindow = true;
-			process.StartInfo = si;
-			process.Start();
-			process.BeginOutputReadLine();
+      Process process = new Process();
+      StringBuilder args = new StringBuilder(100);
+      foreach (string arg in EngineConfiguration.Arguments)
+      {
+        if (args.Length > 0)
+          args.Append(' ');
+        args.Append(arg);
+      }
+      ProcessStartInfo si = new ProcessStartInfo(EngineConfiguration.Command, args.ToString());
+      si.UseShellExecute = false;
+      si.RedirectStandardInput = true;
+      si.RedirectStandardOutput = true;
+      si.WorkingDirectory = EngineConfiguration.WorkingDirectory;
+      si.WindowStyle = ProcessWindowStyle.Hidden;
+      si.CreateNoWindow = true;
+      process.StartInfo = si;
+      process.Start();
+      process.BeginOutputReadLine();
 
-			if( EngineConfiguration.Protocol == "xboard" )
-				engine = new XBoardEngine( MessageLog, timerFactory, process );
-			else
-				throw new Exception( "unsupported protocol" );
+      if (EngineConfiguration.Protocol == "xboard")
+        engine = new XBoardEngine(MessageLog, timerFactory, process);
+      else
+        throw new Exception("unsupported protocol");
 
-			if( readyHandler != null )
-				engine.Ready += readyHandler;
+      if (readyHandler != null)
+        engine.Ready += readyHandler;
 
-			engine.SetupProcess();
-			engine.ApplyConfiguration( EngineConfiguration );
-			engine.Start();
+      engine.SetupProcess();
+      engine.ApplyConfiguration(EngineConfiguration);
+      engine.Start();
 
-			return engine;
-		}
-	}
+      return engine;
+    }
+  }
 }

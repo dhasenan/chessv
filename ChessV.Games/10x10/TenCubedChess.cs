@@ -20,48 +20,48 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 namespace ChessV.Games
 {
-	[Game("TenCubed Chess", typeof(Geometry.Rectangular), 10, 10,
-		  Invented = "2005",
-		  InventedBy = "David Paolowich",
-		  Tags = "Chess Variant" )]
-	public class TenCubedChess: GrandChess
-	{
-		// *** PIECE TYPES *** //
+  [Game("TenCubed Chess", typeof(Geometry.Rectangular), 10, 10,
+      Invented = "2005",
+      InventedBy = "David Paolowich",
+      Tags = "Chess Variant")]
+  public class TenCubedChess : GrandChess
+  {
+    // *** PIECE TYPES *** //
 
-		public PieceType Wizard;
-		public PieceType Champion;
-
-
-		// *** CONSTRUCTION *** //
-
-		public TenCubedChess()
-		{
-		}
+    public PieceType Wizard;
+    public PieceType Champion;
 
 
-		// *** INITIALIZATION *** //
+    // *** CONSTRUCTION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "2cwamwc2/1rnbqkbnr1/pppppppppp/10/10/10/10/PPPPPPPPPP/1RNBQKBNR1/2CWAMWC2";
-			PawnMultipleMove.Value = "Grand";
-			PromotionRule.Value = "Standard";
-			PromotionTypes = "QMA";
-		}
-		#endregion
+    public TenCubedChess()
+    {
+    }
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			AddPieceType( Wizard = new Wizard( "Wizard", "W", 460, 460 ) );
-			AddPieceType( Champion = new Champion( "Champion", "C", 475, 475 ) );
-			//	Set the name for the Archbishop (called a Cardinal in Grand Chess)
-			Cardinal.Name = "Archbishop";
-			Cardinal.SetNotation( "A" );
-		}
-		#endregion
-	}
+
+    // *** INITIALIZATION *** //
+
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "2cwamwc2/1rnbqkbnr1/pppppppppp/10/10/10/10/PPPPPPPPPP/1RNBQKBNR1/2CWAMWC2";
+      PawnMultipleMove.Value = "Grand";
+      PromotionRule.Value = "Standard";
+      PromotionTypes = "QMA";
+    }
+    #endregion
+
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      AddPieceType(Wizard = new Wizard("Wizard", "W", 460, 460));
+      AddPieceType(Champion = new Champion("Champion", "C", 475, 475));
+      //	Set the name for the Archbishop (called a Cardinal in Grand Chess)
+      Cardinal.Name = "Archbishop";
+      Cardinal.SetNotation("A");
+    }
+    #endregion
+  }
 }

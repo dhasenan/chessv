@@ -22,54 +22,54 @@ using System;
 
 namespace ChessV.Games.Rules
 {
-	public class RepetitionDrawRule: Rule
-	{
-		protected UInt64[] gameHistoryHashes;
-		protected UInt64[] searchStackHashes;
+  public class RepetitionDrawRule : Rule
+  {
+    protected UInt64[] gameHistoryHashes;
+    protected UInt64[] searchStackHashes;
 
-		public RepetitionDrawRule()
-		{
-		}
+    public RepetitionDrawRule()
+    {
+    }
 
-		public override void Initialize( Game game )
-		{
-			base.Initialize( game );
-			gameHistoryHashes = new UInt64[Game.MAX_GAME_LENGTH];
-			searchStackHashes = new UInt64[Game.MAX_PLY];
-			Game.MoveBeingPlayed += MoveBeingPlayedHandler;
-		}
+    public override void Initialize(Game game)
+    {
+      base.Initialize(game);
+      gameHistoryHashes = new UInt64[Game.MAX_GAME_LENGTH];
+      searchStackHashes = new UInt64[Game.MAX_PLY];
+      Game.MoveBeingPlayed += MoveBeingPlayedHandler;
+    }
 
-		public override void PostInitialize()
-		{
-			base.PostInitialize();
-		}
+    public override void PostInitialize()
+    {
+      base.PostInitialize();
+    }
 
-		void MoveBeingPlayedHandler( MoveInfo move )
-		{
-			UInt64 hash = Game.GetPositionHashCode( 2 );
-			gameHistoryHashes[Game.GameMoveNumber] = hash;
-		}
+    void MoveBeingPlayedHandler(MoveInfo move)
+    {
+      UInt64 hash = Game.GetPositionHashCode(2);
+      gameHistoryHashes[Game.GameMoveNumber] = hash;
+    }
 
-		public override MoveEventResponse MoveMade( MoveInfo move, int ply )
-		{
-			UInt64 hash = Game.GetPositionHashCode( ply );
-			searchStackHashes[ply] = hash;
-			return MoveEventResponse.MoveOk;
-		}
+    public override MoveEventResponse MoveMade(MoveInfo move, int ply)
+    {
+      UInt64 hash = Game.GetPositionHashCode(ply);
+      searchStackHashes[ply] = hash;
+      return MoveEventResponse.MoveOk;
+    }
 
-		public override MoveEventResponse TestForWinLossDraw( int currentPlayer, int ply )
-		{
-			int count = 1;
-			UInt64 hash = Game.GetPositionHashCode( ply );
-			for( int x = ply - 1; x > 0; x-- )
-				if( searchStackHashes[x] == hash )
-					count++;
-			for( int y = Game.GameMoveNumber - 1; count < 3 && y > 0; y-- )
-				if( gameHistoryHashes[y] == hash )
-					count++;
-			if( count >= 3 )
-				return MoveEventResponse.GameDrawn;
-			return MoveEventResponse.NotHandled;
-		}
-	}
+    public override MoveEventResponse TestForWinLossDraw(int currentPlayer, int ply)
+    {
+      int count = 1;
+      UInt64 hash = Game.GetPositionHashCode(ply);
+      for (int x = ply - 1; x > 0; x--)
+        if (searchStackHashes[x] == hash)
+          count++;
+      for (int y = Game.GameMoveNumber - 1; count < 3 && y > 0; y--)
+        if (gameHistoryHashes[y] == hash)
+          count++;
+      if (count >= 3)
+        return MoveEventResponse.GameDrawn;
+      return MoveEventResponse.NotHandled;
+    }
+  }
 }

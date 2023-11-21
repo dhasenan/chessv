@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -18,12 +17,9 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
 namespace ChessV.Compiler
 {
-	/*public class TestPieceType: PieceType
+  /*public class TestPieceType: PieceType
 	{
 		public TestPieceType( string internalName, string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null ):
 			base( internalName, name, notation, midgameValue, endgameValue, preferredImageName )

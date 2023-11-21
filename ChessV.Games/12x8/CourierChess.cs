@@ -20,52 +20,52 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 namespace ChessV.Games
 {
-	[Game("Courier Chess", typeof(Geometry.Rectangular), 12, 8,
-		  Invented = "1200s",
-		  InventedBy = "Unknown",
-		  Tags = "Chess Variant,Historic,Popular",
-		  GameDescription1="Dating back to at least 1202, this very popular",
-		  GameDescription2="game was played for six hundred years")]
-	[Appearance(ColorScheme = "Sahara")]
-	public class CourierChess: Abstract.Generic12x8
-	{
-		// *** PIECE TYPES *** //
+  [Game("Courier Chess", typeof(Geometry.Rectangular), 12, 8,
+      Invented = "1200s",
+      InventedBy = "Unknown",
+      Tags = "Chess Variant,Historic,Popular",
+      GameDescription1 = "Dating back to at least 1202, this very popular",
+      GameDescription2 = "game was played for six hundred years")]
+  [Appearance(ColorScheme = "Sahara")]
+  public class CourierChess : Abstract.Generic12x8
+  {
+    // *** PIECE TYPES *** //
 
-		public PieceType Elephant;
-		public PieceType Mann;
-		public PieceType Schleich;
-
-
-		// *** CONSTRUCTION *** //
-
-		public CourierChess():
-			base
-				( /* symmetry = */ new MirrorSymmetry() )
-		{
-		}
+    public PieceType Elephant;
+    public PieceType Mann;
+    public PieceType Schleich;
 
 
-		// *** INITIALIZATION *** //
+    // *** CONSTRUCTION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "rnbcmk1scbnr/1ppppp1pppp1/6q5/p5p4p/P5P4P/6Q5/1PPPPP1PPPP1/RNBCMK1SCBNR";
-		}
-		#endregion
+    public CourierChess() :
+      base
+        ( /* symmetry = */ new MirrorSymmetry())
+    {
+    }
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			AddChessPieceTypes();
-			Bishop.Name = "Courier";
-			Bishop.SetNotation( "C" );
-			AddPieceType( Elephant = new Elephant( "Bischof", "B", 100, 100 ) );
-			AddPieceType( Mann = new King( "Mann", "M", 325, 325, "General" ) );
-			AddPieceType( Schleich = new Wazir( "Schleich", "S", 145, 145 ) );
-		}
-		#endregion
-	}
+
+    // *** INITIALIZATION *** //
+
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "rnbcmk1scbnr/1ppppp1pppp1/6q5/p5p4p/P5P4P/6Q5/1PPPPP1PPPP1/RNBCMK1SCBNR";
+    }
+    #endregion
+
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      AddChessPieceTypes();
+      Bishop.Name = "Courier";
+      Bishop.SetNotation("C");
+      AddPieceType(Elephant = new Elephant("Bischof", "B", 100, 100));
+      AddPieceType(Mann = new King("Mann", "M", 325, 325, "General"));
+      AddPieceType(Schleich = new Wazir("Schleich", "S", 145, 145));
+    }
+    #endregion
+  }
 }

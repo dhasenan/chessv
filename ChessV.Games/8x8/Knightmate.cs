@@ -22,88 +22,88 @@ using ChessV.Evaluations;
 
 namespace ChessV.Games
 {
-	//**********************************************************************
-	//
-	//                             Knightmate
-	//
+  //**********************************************************************
+  //
+  //                             Knightmate
+  //
 
-	[Game("Knightmate", typeof( Geometry.Rectangular ), 8, 8,
-		  XBoardName = "knightmate",
-		  InventedBy = "Bruce Zimov",
-		  Invented = "1972",
-		  Tags = "Chess Variant,Popular",
-		  GameDescription1 = "Player has two Kings where the Knights usually are",
-		  GameDescription2 = "and a royal Knight where the King usually is")]
-	[Appearance(ColorScheme = "Cinnamon")]
-	public class Knightmate: Chess
-	{
-		// *** INITIALIZATION *** //
+  [Game("Knightmate", typeof(Geometry.Rectangular), 8, 8,
+      XBoardName = "knightmate",
+      InventedBy = "Bruce Zimov",
+      Invented = "1972",
+      Tags = "Chess Variant,Popular",
+      GameDescription1 = "Player has two Kings where the Knights usually are",
+      GameDescription2 = "and a royal Knight where the King usually is")]
+  [Appearance(ColorScheme = "Cinnamon")]
+  public class Knightmate : Chess
+  {
+    // *** INITIALIZATION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "rkbqnbkr/pppppppp/8/8/8/8/PPPPPPPP/RKBQNBKR";
-		}
-		#endregion
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "rkbqnbkr/pppppppp/8/8/8/8/PPPPPPPP/RKBQNBKR";
+    }
+    #endregion
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			CastlingType = Knight;
-			Knight.MidgameValue = Knight.EndgameValue = 0;
-			King.MidgameValue = King.EndgameValue = 325;
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      CastlingType = Knight;
+      Knight.MidgameValue = Knight.EndgameValue = 0;
+      King.MidgameValue = King.EndgameValue = 325;
 
-			//	fix the King's piece-square-tables to more 
-			//	reasonable settings since it is not royal
-			King.PSTMidgameInSmallCenter = 4;
-			King.PSTMidgameInLargeCenter = 4;
-			King.PSTMidgameSmallCenterAttacks = 1;
-			King.PSTMidgameLargeCenterAttacks = 1;
-			King.PSTMidgameForwardness = 2;
-			King.PSTEndgameInSmallCenter = 3;
-			King.PSTEndgameInLargeCenter = 3;
-			King.PSTEndgameSmallCenterAttacks = 1;
-			King.PSTEndgameLargeCenterAttacks = 1;
-			King.PSTEndgameForwardness = 1;
-			//	keep the Knight out of the center in the 
-			//	midgame since it is royal
-			Knight.PSTMidgameInSmallCenter = 0;
-			Knight.PSTMidgameInLargeCenter = 0;
-			Knight.PSTMidgameSmallCenterAttacks = 0;
-			Knight.PSTMidgameLargeCenterAttacks = 0;
-			Knight.PSTMidgameForwardness = -15;
-		}
-		#endregion
+      //	fix the King's piece-square-tables to more 
+      //	reasonable settings since it is not royal
+      King.PSTMidgameInSmallCenter = 4;
+      King.PSTMidgameInLargeCenter = 4;
+      King.PSTMidgameSmallCenterAttacks = 1;
+      King.PSTMidgameLargeCenterAttacks = 1;
+      King.PSTMidgameForwardness = 2;
+      King.PSTEndgameInSmallCenter = 3;
+      King.PSTEndgameInLargeCenter = 3;
+      King.PSTEndgameSmallCenterAttacks = 1;
+      King.PSTEndgameLargeCenterAttacks = 1;
+      King.PSTEndgameForwardness = 1;
+      //	keep the Knight out of the center in the 
+      //	midgame since it is royal
+      Knight.PSTMidgameInSmallCenter = 0;
+      Knight.PSTMidgameInLargeCenter = 0;
+      Knight.PSTMidgameSmallCenterAttacks = 0;
+      Knight.PSTMidgameLargeCenterAttacks = 0;
+      Knight.PSTMidgameForwardness = -15;
+    }
+    #endregion
 
-		#region AddRules
-		public override void AddRules()
-		{
-			base.AddRules();
-			//	get rid of the Checkmate Rule
-			RemoveRule( typeof( Rules.CheckmateRule ) );
-			//	add the new Checkmate rule
-			AddRule( new Rules.CheckmateRule( Knight ) );
-		}
-		#endregion
+    #region AddRules
+    public override void AddRules()
+    {
+      base.AddRules();
+      //	get rid of the Checkmate Rule
+      RemoveRule(typeof(Rules.CheckmateRule));
+      //	add the new Checkmate rule
+      AddRule(new Rules.CheckmateRule(Knight));
+    }
+    #endregion
 
-		#region AddEvaluations
-		public override void AddEvaluations()
-		{
-			base.AddEvaluations();
+    #region AddEvaluations
+    public override void AddEvaluations()
+    {
+      base.AddEvaluations();
 
-			//	We need to remove the LowMaterialEvaluation for now. 
-			//	It doesn't expect a royal knight, so all the logic to 
-			//	detect draws by insufficient material, etc, won't do 
-			//	the right thing.
-			RemoveEvaluation( typeof(LowMaterialEvaluation) );
+      //	We need to remove the LowMaterialEvaluation for now. 
+      //	It doesn't expect a royal knight, so all the logic to 
+      //	detect draws by insufficient material, etc, won't do 
+      //	the right thing.
+      RemoveEvaluation(typeof(LowMaterialEvaluation));
 
-			//	We also want to remove the output bonus.  We 
-			//	don't want it to encourange the royal knight to 
-			//	hang out in the middle of the board.
-			RemoveEvaluation( typeof(OutpostEvaluation) );
-		}
-		#endregion
-	}
+      //	We also want to remove the output bonus.  We 
+      //	don't want it to encourange the royal knight to 
+      //	hang out in the middle of the board.
+      RemoveEvaluation(typeof(OutpostEvaluation));
+    }
+    #endregion
+  }
 }

@@ -19,47 +19,44 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 ****************************************************************************/
 
 using System;
-using System.Collections.Generic;
 using System.Text;
-using System.Drawing;
 using System.Windows.Forms;
-using ChessV;
 
 namespace ChessV.GUI
 {
-	public partial class DebugForm: Form
-	{
-		public DebugForm( IDebugMessageLog messageLog, GameForm gameForm )
-		{
-			MessageLog = messageLog;
-			GameForm = gameForm;
-			linesSeen = 0;
+  public partial class DebugForm : Form
+  {
+    public DebugForm(IDebugMessageLog messageLog, GameForm gameForm)
+    {
+      MessageLog = messageLog;
+      GameForm = gameForm;
+      linesSeen = 0;
 
-			InitializeComponent();
-		}
+      InitializeComponent();
+    }
 
-		public IDebugMessageLog MessageLog { get; private set; }
-		public GameForm GameForm { get; private set; }
+    public IDebugMessageLog MessageLog { get; private set; }
+    public GameForm GameForm { get; private set; }
 
-		private void DebugForm_Load( object sender, EventArgs e )
-		{
-			timer.Start();
-		}
+    private void DebugForm_Load(object sender, EventArgs e)
+    {
+      timer.Start();
+    }
 
-		private void timer_Tick( object sender, EventArgs e )
-		{
-			StringBuilder append = new StringBuilder( 10000 );
-			for( int x = linesSeen; x < MessageLog.MessageCount; x++ )
-				append.Append( MessageLog.Messages[linesSeen++] + "\r\n" );
-			txtDebugOutput.Text += append.ToString();
-		}
+    private void timer_Tick(object sender, EventArgs e)
+    {
+      StringBuilder append = new StringBuilder(10000);
+      for (int x = linesSeen; x < MessageLog.MessageCount; x++)
+        append.Append(MessageLog.Messages[linesSeen++] + "\r\n");
+      txtDebugOutput.Text += append.ToString();
+    }
 
-		private int linesSeen;
+    private int linesSeen;
 
-		private void DebugForm_FormClosing( object sender, FormClosingEventArgs e )
-		{
-			Visible = false;
-			e.Cancel = true;
-		}
-	}
+    private void DebugForm_FormClosing(object sender, FormClosingEventArgs e)
+    {
+      Visible = false;
+      e.Cancel = true;
+    }
+  }
 }

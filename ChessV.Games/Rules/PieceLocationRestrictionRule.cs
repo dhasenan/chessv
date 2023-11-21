@@ -22,34 +22,34 @@ using System.Collections.Generic;
 
 namespace ChessV.Games.Rules
 {
-	//**********************************************************************
-	//
-	//                   PieceLocationRestrictionRule
-	//
-	//    This rule can be used to prevent pieces from moving to areas 
-	//    of the boad.  For example, in Xiangqi, the king cannot leave 
-	//    the castle, or in Eurasian Chess, the king cannot cross the river.
+  //**********************************************************************
+  //
+  //                   PieceLocationRestrictionRule
+  //
+  //    This rule can be used to prevent pieces from moving to areas 
+  //    of the boad.  For example, in Xiangqi, the king cannot leave 
+  //    the castle, or in Eurasian Chess, the king cannot cross the river.
 
-	public class PieceLocationRestrictionRule: Rule
-	{
-		public PieceLocationRestrictionRule( PieceType pieceType, ConditionalLocationDelegate conditionDelegate )
-		{ this.pieceType = pieceType; pieceTypeNumber = pieceType.TypeNumber; condition = conditionDelegate; }
+  public class PieceLocationRestrictionRule : Rule
+  {
+    public PieceLocationRestrictionRule(PieceType pieceType, ConditionalLocationDelegate conditionDelegate)
+    { this.pieceType = pieceType; pieceTypeNumber = pieceType.TypeNumber; condition = conditionDelegate; }
 
-		public override MoveEventResponse MoveBeingGenerated( MoveList moves, int from, int to, MoveType type )
-		{
-			if( Board[from].PieceType == pieceType && condition( Board.SquareToLocation( Board.PlayerSquare( Board[from].Player, to ) ) ) )
-				return MoveEventResponse.IllegalMove;
-			return MoveEventResponse.NotHandled;
-		}
+    public override MoveEventResponse MoveBeingGenerated(MoveList moves, int from, int to, MoveType type)
+    {
+      if (Board[from].PieceType == pieceType && condition(Board.SquareToLocation(Board.PlayerSquare(Board[from].Player, to))))
+        return MoveEventResponse.IllegalMove;
+      return MoveEventResponse.NotHandled;
+    }
 
-		public override void GetNotesForPieceType( PieceType type, List<string> notes )
-		{
-			if( pieceType == type )
-				notes.Add( "movement restricted by location" );
-		}
+    public override void GetNotesForPieceType(PieceType type, List<string> notes)
+    {
+      if (pieceType == type)
+        notes.Add("movement restricted by location");
+    }
 
-		protected PieceType pieceType;
-		protected int pieceTypeNumber;
-		protected ConditionalLocationDelegate condition;
-	}
+    protected PieceType pieceType;
+    protected int pieceTypeNumber;
+    protected ConditionalLocationDelegate condition;
+  }
 }

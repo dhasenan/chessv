@@ -22,22 +22,22 @@ using System;
 
 namespace ChessV
 {
-	public enum MaterialHashType: Int32
-	{
-		NothingSpecial = 0,
-		InstantDraw = 1,
-		ZeroEvaluation = 2,
-		EvalDivideByFour = 3,
-		ValueFunctionKXK = 4,
-		ValueFunctionKRKP = 5,
-		ValueFunctionKRKB = 6,
-		ValueFunctionKRKN = 7
-	}
+  public enum MaterialHashType : Int32
+  {
+    NothingSpecial = 0,
+    InstantDraw = 1,
+    ZeroEvaluation = 2,
+    EvalDivideByFour = 3,
+    ValueFunctionKXK = 4,
+    ValueFunctionKRKP = 5,
+    ValueFunctionKRKB = 6,
+    ValueFunctionKRKN = 7
+  }
 
-	public struct MaterialHashEntry
-	{
-		public UInt64 HashCode;
-		public MaterialHashType Type;
-		public Int32 ScaleFactor;
-	}
+  public struct MaterialHashEntry
+  {
+    public UInt64 HashCode;
+    public MaterialHashType Type;
+    public Int32 ScaleFactor;
+  }
 }

@@ -22,61 +22,61 @@ using System.Collections.Generic;
 
 namespace ChessV.Games.Rules.Extinction
 {
-	//**********************************************************************
-	//
-	//                        ExtinctionRule
-	//
-	//    This rule adds the victory condition used in Extinction Chess 
-	//    as well as Kinglet.  Constructor takes a string of notations of 
-	//    all the types that will cause the player to lose if the last 
-	//    piece of the type is captured.
+  //**********************************************************************
+  //
+  //                        ExtinctionRule
+  //
+  //    This rule adds the victory condition used in Extinction Chess 
+  //    as well as Kinglet.  Constructor takes a string of notations of 
+  //    all the types that will cause the player to lose if the last 
+  //    piece of the type is captured.
 
-	public class ExtinctionRule: Rule
-	{
-		// *** CONSTRUCTION *** //
+  public class ExtinctionRule : Rule
+  {
+    // *** CONSTRUCTION *** //
 
-		public ExtinctionRule( string types )
-		{
-			extinctionTypesNotation = types;
-		}
-
-
-		// *** INITIALIZATION *** //
-
-		public override void PostInitialize()
-		{
-			base.PostInitialize();
-			List<PieceType> types = Game.ParseTypeListFromString( extinctionTypesNotation );
-			extinctionTypeNumbers = new List<int>();
-			foreach( PieceType type in types )
-				extinctionTypeNumbers.Add( type.TypeNumber );
-		}
+    public ExtinctionRule(string types)
+    {
+      extinctionTypesNotation = types;
+    }
 
 
-		// *** OVERRIDES *** //
+    // *** INITIALIZATION *** //
 
-		public override MoveEventResponse TestForWinLossDraw( int currentPlayer, int ply )
-		{
-			foreach( int typeNumber in extinctionTypeNumbers )
+    public override void PostInitialize()
+    {
+      base.PostInitialize();
+      List<PieceType> types = Game.ParseTypeListFromString(extinctionTypesNotation);
+      extinctionTypeNumbers = new List<int>();
+      foreach (PieceType type in types)
+        extinctionTypeNumbers.Add(type.TypeNumber);
+    }
+
+
+    // *** OVERRIDES *** //
+
+    public override MoveEventResponse TestForWinLossDraw(int currentPlayer, int ply)
+    {
+      foreach (int typeNumber in extinctionTypeNumbers)
       {
-        if ( Board.GetPieceTypeBitboard(currentPlayer ^ 1, typeNumber).BitCount == 0 )
+        if (Board.GetPieceTypeBitboard(currentPlayer ^ 1, typeNumber).BitCount == 0)
           return MoveEventResponse.GameWon;
-        if ( Board.GetPieceTypeBitboard( currentPlayer, typeNumber ).BitCount == 0 )
-					return MoveEventResponse.GameLost;
-			}
-			return MoveEventResponse.NotHandled;
-		}
+        if (Board.GetPieceTypeBitboard(currentPlayer, typeNumber).BitCount == 0)
+          return MoveEventResponse.GameLost;
+      }
+      return MoveEventResponse.NotHandled;
+    }
 
-		public override void GetNotesForPieceType( PieceType type, List<string> notes )
-		{
-			if( extinctionTypeNumbers.Contains( type.TypeNumber ) )
-				notes.Add( "extinction loses" );
-		}
+    public override void GetNotesForPieceType(PieceType type, List<string> notes)
+    {
+      if (extinctionTypeNumbers.Contains(type.TypeNumber))
+        notes.Add("extinction loses");
+    }
 
 
-		// *** PROTECTED DATA MEMBERS *** //
+    // *** PROTECTED DATA MEMBERS *** //
 
-		protected string extinctionTypesNotation;
-		protected List<int> extinctionTypeNumbers;
-	}
+    protected string extinctionTypesNotation;
+    protected List<int> extinctionTypeNumbers;
+  }
 }

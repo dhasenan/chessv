@@ -20,64 +20,64 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 namespace ChessV.Games
 {
-	[Game("Mainzer Schach", typeof(Geometry.Rectangular), 11, 8,
-		  Invented = "2004",
-		  InventedBy = "Jörg Knappen",
-		  Tags = "Chess Variant")]
-	public class MainzerSchach: Abstract.Generic11x8
-	{
-		// *** PIECE TYPES *** //
+  [Game("Mainzer Schach", typeof(Geometry.Rectangular), 11, 8,
+      Invented = "2004",
+      InventedBy = "Jörg Knappen",
+      Tags = "Chess Variant")]
+  public class MainzerSchach : Abstract.Generic11x8
+  {
+    // *** PIECE TYPES *** //
 
-		public PieceType Archbishop;
-		public PieceType Chancellor;
-		public PieceType Amazon;
-
-
-		// *** CONSTRUCTION *** //
-
-		public MainzerSchach(): 
-			base
-				( /* symmetry = */ new MirrorSymmetry() )
-		{
-		}
+    public PieceType Archbishop;
+    public PieceType Chancellor;
+    public PieceType Amazon;
 
 
-		// *** INITIALIZATION *** //
+    // *** CONSTRUCTION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "rjbbqkmnnjr/ppppppppppp/11/11/11/11/PPPPPPPPPPP/RJBBQKMNNJR";
-			PawnDoubleMove = true;
-			EnPassant = true;
-			Castling.Value = "Long";
-			PromotionRule.Value = "Standard";
-			PromotionTypes = "AQMJRNB";
-		}
-		#endregion
+    public MainzerSchach() :
+      base
+        ( /* symmetry = */ new MirrorSymmetry())
+    {
+    }
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			AddChessPieceTypes();
-			AddPieceType( Archbishop = new Archbishop( "Janus", "J", 900, 900 ) );
-			AddPieceType( Chancellor = new Chancellor( "Marshall", "M", 950, 950 ) );
-			AddPieceType( Amazon = new Amazon( "Amazon", "A", 1500, 1600 ) );
-		}
-		#endregion
 
-		#region AddEvaluations
-		public override void AddEvaluations()
-		{
-			base.AddEvaluations();
+    // *** INITIALIZATION *** //
 
-			if( Chancellor != null && Chancellor.Enabled )
-				RookTypeEval.AddRookOn7thBonus( Chancellor, King, 2, 8 );
-			if( Amazon != null && Amazon.Enabled )
-				RookTypeEval.AddRookOn7thBonus( Amazon, King );
-		}
-		#endregion
-	}
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "rjbbqkmnnjr/ppppppppppp/11/11/11/11/PPPPPPPPPPP/RJBBQKMNNJR";
+      PawnDoubleMove = true;
+      EnPassant = true;
+      Castling.Value = "Long";
+      PromotionRule.Value = "Standard";
+      PromotionTypes = "AQMJRNB";
+    }
+    #endregion
+
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      AddChessPieceTypes();
+      AddPieceType(Archbishop = new Archbishop("Janus", "J", 900, 900));
+      AddPieceType(Chancellor = new Chancellor("Marshall", "M", 950, 950));
+      AddPieceType(Amazon = new Amazon("Amazon", "A", 1500, 1600));
+    }
+    #endregion
+
+    #region AddEvaluations
+    public override void AddEvaluations()
+    {
+      base.AddEvaluations();
+
+      if (Chancellor != null && Chancellor.Enabled)
+        RookTypeEval.AddRookOn7thBonus(Chancellor, King, 2, 8);
+      if (Amazon != null && Amazon.Enabled)
+        RookTypeEval.AddRookOn7thBonus(Amazon, King);
+    }
+    #endregion
+  }
 }

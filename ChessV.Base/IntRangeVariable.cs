@@ -22,65 +22,65 @@ using System;
 
 namespace ChessV
 {
-	public class IntRangeVariable: ICloneable
-	{
-		private int? minValue;
-		private int? maxValue;
-		private int? value;
+  public class IntRangeVariable : ICloneable
+  {
+    private int? minValue;
+    private int? maxValue;
+    private int? value;
 
-		public int? Value
-		{
-			get
-			{ return value; }
+    public int? Value
+    {
+      get
+      { return value; }
 
-			set
-			{
-				if( value == null )
-					this.value = null;
-				else
-				{
-					if( minValue == null || maxValue == null )
-						throw new Exception( "IntRangeVariable: Cannot set value - valid range not set" );
-					if( value < minValue || value > maxValue )
-						throw new Exception( "IntRangeVariable: Cannot set value - out of valid range" );
-					this.value = value;
-				}
-			}
-		}
+      set
+      {
+        if (value == null)
+          this.value = null;
+        else
+        {
+          if (minValue == null || maxValue == null)
+            throw new Exception("IntRangeVariable: Cannot set value - valid range not set");
+          if (value < minValue || value > maxValue)
+            throw new Exception("IntRangeVariable: Cannot set value - out of valid range");
+          this.value = value;
+        }
+      }
+    }
 
-		public int? MinValue
-		{ get { return minValue; } }
+    public int? MinValue
+    { get { return minValue; } }
 
-		public int? MaxValue
-		{ get { return maxValue; } }
+    public int? MaxValue
+    { get { return maxValue; } }
 
-		public IntRangeVariable()
-		{
-		}
+    public IntRangeVariable()
+    {
+    }
 
-		public IntRangeVariable( IntRangeVariable original )
-		{
-			//	Copy constructor
-			minValue = original.minValue;
-			maxValue = original.maxValue;
-			value = original.value;
+    public IntRangeVariable(IntRangeVariable original)
+    {
+      //	Copy constructor
+      minValue = original.minValue;
+      maxValue = original.maxValue;
+      value = original.value;
 
-		}
+    }
 
-		public IntRangeVariable( int min, int max )
-		{
-			SetRange( min, max );
-		}
+    public IntRangeVariable(int min, int max)
+    {
+      SetRange(min, max);
+    }
 
-		public void SetRange( int min, int max )
-		{
-			minValue = min;
-			maxValue = max;
-		}
+    public void SetRange(int min, int max)
+    {
+      minValue = min;
+      maxValue = max;
+    }
 
-		public object Clone()
-		{
-			return new IntRangeVariable( this );
-		}
-	}
+    public object Clone()
+    {
+      return new IntRangeVariable(this);
+    }
+  }
 }

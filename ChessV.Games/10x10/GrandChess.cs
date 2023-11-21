@@ -22,88 +22,88 @@ using ChessV.Evaluations;
 
 namespace ChessV.Games
 {
-	//**********************************************************************
-	//
-	//                           GrandChess
-	//
-	//    This class implements Chritian Freeling's Grand Chess, which 
-	//    has the two missing compounds from Chess (similar to Capablanca 
-	//    Chess) but on a 10x10 board.  The game is notable for the pawn 
-	//    promotion rule (optional promotion at the 8th and 9th rank, 
-	//    mandatory at the 10th, but promotion only to a captured piece 
-	//    with which it is replaced,) and the lack of castling (argued 
-	//    unnecessary because the rooks are already connected.)
+  //**********************************************************************
+  //
+  //                           GrandChess
+  //
+  //    This class implements Chritian Freeling's Grand Chess, which 
+  //    has the two missing compounds from Chess (similar to Capablanca 
+  //    Chess) but on a 10x10 board.  The game is notable for the pawn 
+  //    promotion rule (optional promotion at the 8th and 9th rank, 
+  //    mandatory at the 10th, but promotion only to a captured piece 
+  //    with which it is replaced,) and the lack of castling (argued 
+  //    unnecessary because the rooks are already connected.)
 
-	[Game("Grand Chess", typeof(Geometry.Rectangular), 10, 10, 
-		  XBoardName="grand",
-		  Invented = "1984",
-		  InventedBy = "Christian Freeling", 
-		  Tags = "Chess Variant,Popular",
-		  GameDescription1 = "Christian Freeling's popular 10 x 10 chess variant",
-		  GameDescription2 = "with the missing compound pieces added as in Capablanca Chess")]
-	[Appearance(ColorScheme = "Marmoor Quadraut")]
-	public class GrandChess: Abstract.Generic10x10
-	{
-		// *** PIECE TYPES *** //
+  [Game("Grand Chess", typeof(Geometry.Rectangular), 10, 10,
+      XBoardName = "grand",
+      Invented = "1984",
+      InventedBy = "Christian Freeling",
+      Tags = "Chess Variant,Popular",
+      GameDescription1 = "Christian Freeling's popular 10 x 10 chess variant",
+      GameDescription2 = "with the missing compound pieces added as in Capablanca Chess")]
+  [Appearance(ColorScheme = "Marmoor Quadraut")]
+  public class GrandChess : Abstract.Generic10x10
+  {
+    // *** PIECE TYPES *** //
 
-		public PieceType Cardinal;
-		public PieceType Marshall;
-
-
-		// *** CONSTRUCTION *** //
-
-		public GrandChess(): 
-			base
-				( /* symmetry = */ new MirrorSymmetry() )
-		{
-		}
+    public PieceType Cardinal;
+    public PieceType Marshall;
 
 
-		// *** INITIALIZATION *** //
+    // *** CONSTRUCTION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "r8r/1nbqkmcbn1/pppppppppp/10/10/10/10/PPPPPPPPPP/1NBQKMCBN1/R8R";
-			PawnMultipleMove.Value = "Grand";
-			PromotionRule.Value = "Grand";
-			EnPassant = true;
-		}                    
-		#endregion
+    public GrandChess() :
+      base
+        ( /* symmetry = */ new MirrorSymmetry())
+    {
+    }
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			AddChessPieceTypes();
-			Knight.MidgameValue = Knight.EndgameValue = 300;
-			AddPieceType( Cardinal = new Archbishop( "Cardinal", "C", 750, 800 ) );
-			AddPieceType( Marshall = new Chancellor( "Marshall", "M", 925, 975 ) );
-			King.PSTMidgameForwardness = 0;
-		}
-		#endregion
 
-		#region AddEvaluations
-		public override void AddEvaluations()
-		{
-			base.AddEvaluations();
+    // *** INITIALIZATION *** //
 
-			//	Replace the development evaluation function with an updated one that 
-			//	understands that there is no castling and the rooks are already connected
-			Evaluations.Grand.GrandChessDevelopmentEvaluation newDevelopentEval = new Evaluations.Grand.GrandChessDevelopmentEvaluation();
-			ReplaceEvaluation( FindEvaluation( typeof(DevelopmentEvaluation) ), newDevelopentEval );
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "r8r/1nbqkmcbn1/pppppppppp/10/10/10/10/PPPPPPPPPP/1NBQKMCBN1/R8R";
+      PawnMultipleMove.Value = "Grand";
+      PromotionRule.Value = "Grand";
+      EnPassant = true;
+    }
+    #endregion
 
-			//	We also need to update the pawn structure evaluation to inform it 
-			//	that pawns promote on the 5th rank.  This is important for 
-			//	proper evaluation of passed pawns.
-			PawnStructureEvaluation eval = (PawnStructureEvaluation) FindEvaluation( typeof(PawnStructureEvaluation) );
-			eval.PassedPawnEvaluation = true;
-			eval.PawnPromotionRank = 5;
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      AddChessPieceTypes();
+      Knight.MidgameValue = Knight.EndgameValue = 300;
+      AddPieceType(Cardinal = new Archbishop("Cardinal", "C", 750, 800));
+      AddPieceType(Marshall = new Chancellor("Marshall", "M", 925, 975));
+      King.PSTMidgameForwardness = 0;
+    }
+    #endregion
 
-			if( Marshall != null && Marshall.Enabled )
-				RookTypeEval.AddRookOn7thBonus( Marshall, King, 2, 8 );
-		}
-		#endregion
-	}
+    #region AddEvaluations
+    public override void AddEvaluations()
+    {
+      base.AddEvaluations();
+
+      //	Replace the development evaluation function with an updated one that 
+      //	understands that there is no castling and the rooks are already connected
+      Evaluations.Grand.GrandChessDevelopmentEvaluation newDevelopentEval = new Evaluations.Grand.GrandChessDevelopmentEvaluation();
+      ReplaceEvaluation(FindEvaluation(typeof(DevelopmentEvaluation)), newDevelopentEval);
+
+      //	We also need to update the pawn structure evaluation to inform it 
+      //	that pawns promote on the 5th rank.  This is important for 
+      //	proper evaluation of passed pawns.
+      PawnStructureEvaluation eval = (PawnStructureEvaluation)FindEvaluation(typeof(PawnStructureEvaluation));
+      eval.PassedPawnEvaluation = true;
+      eval.PawnPromotionRank = 5;
+
+      if (Marshall != null && Marshall.Enabled)
+        RookTypeEval.AddRookOn7thBonus(Marshall, King, 2, 8);
+    }
+    #endregion
+  }
 }

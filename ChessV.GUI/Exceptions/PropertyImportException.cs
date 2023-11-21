@@ -19,18 +19,16 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 ****************************************************************************/
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ChessV.GUI.Exceptions
 {
-	public class PropertyImportException: Exception
-	{
-		public PropertyImportException
-			( string message,
-			  Exception innerException = null ):
-				base( message, innerException )
-		{
-		}
-	}
+  public class PropertyImportException : Exception
+  {
+    public PropertyImportException
+      (string message,
+        Exception innerException = null) :
+        base(message, innerException)
+    {
+    }
+  }
 }

@@ -24,106 +24,106 @@ using System.Collections.Generic;
 
 namespace ChessV.Manager
 {
-	public class MatchSet: IEnumerable<MatchRecord>
-	{
-		// *** CONSTRUCTION *** //
+  public class MatchSet : IEnumerable<MatchRecord>
+  {
+    // *** CONSTRUCTION *** //
 
-		public MatchSet()
-		{
-			matches = new Dictionary<string, MatchRecord>();
-		}
-
-
-		// *** IENUMERABLE IMPLEMENETATION *** //
-
-		#region IEnumerable Implementation
-		public IEnumerator<MatchRecord> GetEnumerator()
-		{
-			return new Enumerator( matches.GetEnumerator() );
-		}
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			throw new NotImplementedException();
-		}
-		#endregion
+    public MatchSet()
+    {
+      matches = new Dictionary<string, MatchRecord>();
+    }
 
 
-		// *** OPERATIONS *** //
+    // *** IENUMERABLE IMPLEMENETATION *** //
 
-		public MatchRecord GetRecordByID( string id )
-		{
-			if( matches.ContainsKey( id ) )
-				return matches[id];
-			return null;
-		}
+    #region IEnumerable Implementation
+    public IEnumerator<MatchRecord> GetEnumerator()
+    {
+      return new Enumerator(matches.GetEnumerator());
+    }
 
-		public void Add( MatchRecord match )
-		{
-			matches.Add( match.ID, match );
-		}
-
-
-		// *** ENUMERATOR *** //
-
-		#region Enumerator
-		struct Enumerator: IEnumerator<MatchRecord>
-		{
-			public Enumerator( Dictionary<string, MatchRecord>.Enumerator setEnumerator )
-			{
-				internalEnumerator = setEnumerator;
-			}
-
-			public MatchRecord Current
-			{
-				get
-				{ return internalEnumerator.Current.Value; }
-			}
-
-			object IEnumerator.Current
-			{
-				get
-				{ return internalEnumerator.Current.Value; }
-			}
-
-			MatchRecord IEnumerator<MatchRecord>.Current
-			{
-				get
-				{ return internalEnumerator.Current.Value; }
-			}
-
-			public void Dispose()
-			{
-				internalEnumerator.Dispose();
-			}
-
-			public bool MoveNext()
-			{
-				return internalEnumerator.MoveNext();
-			}
-
-			void IDisposable.Dispose()
-			{
-				internalEnumerator.Dispose();
-			}
-
-			bool IEnumerator.MoveNext()
-			{
-				return internalEnumerator.MoveNext();
-			}
-
-			void IEnumerator.Reset()
-			{
-				throw new NotImplementedException();
-			}
-
-			private Dictionary<string, MatchRecord>.Enumerator internalEnumerator;
-		}
-		#endregion
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+      throw new NotImplementedException();
+    }
+    #endregion
 
 
-		// *** DATA MEMEBERS *** //
+    // *** OPERATIONS *** //
 
-		protected Dictionary<string, MatchRecord> matches;
-	}
+    public MatchRecord GetRecordByID(string id)
+    {
+      if (matches.ContainsKey(id))
+        return matches[id];
+      return null;
+    }
+
+    public void Add(MatchRecord match)
+    {
+      matches.Add(match.ID, match);
+    }
+
+
+    // *** ENUMERATOR *** //
+
+    #region Enumerator
+    struct Enumerator : IEnumerator<MatchRecord>
+    {
+      public Enumerator(Dictionary<string, MatchRecord>.Enumerator setEnumerator)
+      {
+        internalEnumerator = setEnumerator;
+      }
+
+      public MatchRecord Current
+      {
+        get
+        { return internalEnumerator.Current.Value; }
+      }
+
+      object IEnumerator.Current
+      {
+        get
+        { return internalEnumerator.Current.Value; }
+      }
+
+      MatchRecord IEnumerator<MatchRecord>.Current
+      {
+        get
+        { return internalEnumerator.Current.Value; }
+      }
+
+      public void Dispose()
+      {
+        internalEnumerator.Dispose();
+      }
+
+      public bool MoveNext()
+      {
+        return internalEnumerator.MoveNext();
+      }
+
+      void IDisposable.Dispose()
+      {
+        internalEnumerator.Dispose();
+      }
+
+      bool IEnumerator.MoveNext()
+      {
+        return internalEnumerator.MoveNext();
+      }
+
+      void IEnumerator.Reset()
+      {
+        throw new NotImplementedException();
+      }
+
+      private Dictionary<string, MatchRecord>.Enumerator internalEnumerator;
+    }
+    #endregion
+
+
+    // *** DATA MEMEBERS *** //
+
+    protected Dictionary<string, MatchRecord> matches;
+  }
 }

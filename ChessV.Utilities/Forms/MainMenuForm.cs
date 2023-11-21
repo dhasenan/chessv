@@ -19,27 +19,21 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 ****************************************************************************/
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace ChessV.Utilities
 {
-	public partial class MainMenuForm: Form
-	{
-		public MainMenuForm()
-		{
-			InitializeComponent();
-		}
+  public partial class MainMenuForm : Form
+  {
+    public MainMenuForm()
+    {
+      InitializeComponent();
+    }
 
-		private void btnCalculateMobility_Click( object sender, EventArgs e )
-		{
-			GenerateMobilityStatisticsForm form = new GenerateMobilityStatisticsForm();
-			form.ShowDialog();
-		}
-	}
+    private void btnCalculateMobility_Click(object sender, EventArgs e)
+    {
+      GenerateMobilityStatisticsForm form = new GenerateMobilityStatisticsForm();
+      form.ShowDialog();
+    }
+  }
 }

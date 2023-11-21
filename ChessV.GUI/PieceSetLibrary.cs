@@ -23,55 +23,55 @@ using System.IO;
 
 namespace ChessV.GUI
 {
-public static class PieceSetLibrary
-{
+  public static class PieceSetLibrary
+  {
     public static void Initialize()
     {
-        //	Piece sets aren't stored in the Registry - we just check the Graphics\Piece Sets
-        //	subdirectory on each run of the program to see what's available.
-        //	Search for the directory - we allow some flexibility for where it is located
-        var currPath = Directory.GetCurrentDirectory();
-        var pieceSetRootDir = Path.Combine( currPath, "Graphics", "Piece Sets" );
-        while (!Directory.Exists(pieceSetRootDir))
+      //	Piece sets aren't stored in the Registry - we just check the Graphics\Piece Sets
+      //	subdirectory on each run of the program to see what's available.
+      //	Search for the directory - we allow some flexibility for where it is located
+      var currPath = Directory.GetCurrentDirectory();
+      var pieceSetRootDir = Path.Combine(currPath, "Graphics", "Piece Sets");
+      while (!Directory.Exists(pieceSetRootDir))
+      {
+        var i = currPath.LastIndexOf(Path.DirectorySeparatorChar);
+        if (i < 0)
         {
-            var i = currPath.LastIndexOf(Path.DirectorySeparatorChar);
-            if (i < 0) 
-            {
-                // give up :(
-                return;
-            }
-            currPath = currPath.Remove(i);
-            pieceSetRootDir = Path.Combine( currPath, "Graphics", "Piece Sets" );
+          // give up :(
+          return;
         }
-        //	Create the look-up table for PieceSets by name
-        PieceSets = new Dictionary<string, PieceSet>();
-        var pieceSetDirs = Directory.GetDirectories(pieceSetRootDir);
-        foreach (var pieceSetDirectory in pieceSetDirs)
-        {
-            //	The directory must have either a King.bmp or both a WKing.bmp and BKing.bmp to be considered a
-            //	piece set.  The size of this image determines the size of the piece set
-            if (!File.Exists(pieceSetDirectory + Path.DirectorySeparatorChar + "King.bmp") &&
-                (!File.Exists(pieceSetDirectory + Path.DirectorySeparatorChar + "WKing.bmp") ||
-                 !File.Exists(pieceSetDirectory + Path.DirectorySeparatorChar + "BKing.bmp"))) continue;
-            var pieceSetName = pieceSetDirectory.Substring(pieceSetDirectory.LastIndexOf(Path.DirectorySeparatorChar) + 1);
-            PieceSets.Add(pieceSetName, new PieceSet(pieceSetName, pieceSetDirectory));
-        }
+        currPath = currPath.Remove(i);
+        pieceSetRootDir = Path.Combine(currPath, "Graphics", "Piece Sets");
+      }
+      //	Create the look-up table for PieceSets by name
+      PieceSets = new Dictionary<string, PieceSet>();
+      var pieceSetDirs = Directory.GetDirectories(pieceSetRootDir);
+      foreach (var pieceSetDirectory in pieceSetDirs)
+      {
+        //	The directory must have either a King.bmp or both a WKing.bmp and BKing.bmp to be considered a
+        //	piece set.  The size of this image determines the size of the piece set
+        if (!File.Exists(pieceSetDirectory + Path.DirectorySeparatorChar + "King.bmp") &&
+            (!File.Exists(pieceSetDirectory + Path.DirectorySeparatorChar + "WKing.bmp") ||
+             !File.Exists(pieceSetDirectory + Path.DirectorySeparatorChar + "BKing.bmp"))) continue;
+        var pieceSetName = pieceSetDirectory.Substring(pieceSetDirectory.LastIndexOf(Path.DirectorySeparatorChar) + 1);
+        PieceSets.Add(pieceSetName, new PieceSet(pieceSetName, pieceSetDirectory));
+      }
     }
 
     public static PieceSet Default => PieceSets["Standard"];
 
-    public static PieceSet Lookup( string name )
+    public static PieceSet Lookup(string name)
     {
-        return PieceSets.ContainsKey( name ) ? PieceSets[name] : null;
+      return PieceSets.ContainsKey(name) ? PieceSets[name] : null;
     }
 
-    public static bool Contains( string name )
+    public static bool Contains(string name)
     {
-        return PieceSets.ContainsKey( name );
+      return PieceSets.ContainsKey(name);
     }
 
     public static Dictionary<string, PieceSet> PieceSets { get; private set; }
 
     //	lookup table of all the graphics piece sets discovered in the Graphics directory
-}
+  }
 }

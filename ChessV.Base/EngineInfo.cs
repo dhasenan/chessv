@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -18,30 +17,26 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace ChessV
 {
-	public enum Protocol
-	{
-		XBoard2,
-		VBoard
-	}
+  public enum Protocol
+  {
+    XBoard2,
+    VBoard
+  }
 
-	public class EngineInfo
-	{
-		public bool Internal { get; private set; }
-		public string Name { get; private set; }
-		public string Path { get; private set; }
-		public string Exe { get; private set; }
-		public Protocol Protocol { get; private set; }
+  public class EngineInfo
+  {
+    public bool Internal { get; private set; }
+    public string Name { get; private set; }
+    public string Path { get; private set; }
+    public string Exe { get; private set; }
+    public Protocol Protocol { get; private set; }
 
-		public EngineInfo( string name, string path, string exe, Protocol protocol )
-		{ Internal = false;  Name = name; Path = path; Exe = exe; Protocol = protocol; }
+    public EngineInfo(string name, string path, string exe, Protocol protocol)
+    { Internal = false; Name = name; Path = path; Exe = exe; Protocol = protocol; }
 
-		public EngineInfo()
-		{ Internal = true; }
-	}
+    public EngineInfo()
+    { Internal = true; }
+  }
 }

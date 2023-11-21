@@ -1,11 +1,6 @@
-﻿
-using System;
-using System.Collections.Generic;
-using Archipelago.MultiClient.Net;
-using Archipelago.MultiClient.Net.Helpers;
+﻿using Archipelago.MultiClient.Net.Helpers;
 using ChessV;
 using ChessV.Base;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace Archipelago.APChessV
@@ -127,7 +122,8 @@ namespace Archipelago.APChessV
       locations.Verify(locs => locs.GetLocationIdFromName("ChecksMate", "Capture Piece B"));
     }
 
-    private MoveInfo GetMoveInfo() {
+    private MoveInfo GetMoveInfo()
+    {
       MoveInfo info = new MoveInfo();
 
       info.Player = 0;

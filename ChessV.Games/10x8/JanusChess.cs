@@ -20,48 +20,48 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 namespace ChessV.Games
 {
-	//********************************************************************
-	//
-	//                         JanusChess
-	//
-	[Game("Janus Chess", typeof(Geometry.Rectangular), 10, 8,
-		  XBoardName = "janus",
-		  Invented = "1978",
-		  InventedBy = "Werner Schöndorf",
-		  Tags = "Chess Variant,Popular")]
-	public class JanusChess: CapablancaChess
-	{
-		// *** CONSTRUCTION *** //
+  //********************************************************************
+  //
+  //                         JanusChess
+  //
+  [Game("Janus Chess", typeof(Geometry.Rectangular), 10, 8,
+      XBoardName = "janus",
+      Invented = "1978",
+      InventedBy = "Werner Schöndorf",
+      Tags = "Chess Variant,Popular")]
+  public class JanusChess : CapablancaChess
+  {
+    // *** CONSTRUCTION *** //
 
-		public JanusChess()
-		{
-		}
+    public JanusChess()
+    {
+    }
 
 
-		// *** INITIALIZATION *** //
+    // *** INITIALIZATION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "rjnbkqbnjr/pppppppppp/10/10/10/10/PPPPPPPPPP/RJNBKQBNJR";
-			PawnDoubleMove = true;
-			EnPassant = true;
-			PromotionTypes = "QJRBN";
-			Castling.Value = "Long";
-		}
-		#endregion
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "rjnbkqbnjr/pppppppppp/10/10/10/10/PPPPPPPPPP/RJNBKQBNJR";
+      PawnDoubleMove = true;
+      EnPassant = true;
+      PromotionTypes = "QJRBN";
+      Castling.Value = "Long";
+    }
+    #endregion
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			//	The Chancellor is not used in this game
-			Chancellor.Enabled = false;
-			//	The Archbishop is called the Janus
-			Archbishop.Name = "Janus";
-			Archbishop.SetNotation( "J" );
-		}
-		#endregion
-	}
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      //	The Chancellor is not used in this game
+      Chancellor.Enabled = false;
+      //	The Archbishop is called the Janus
+      Archbishop.Name = "Janus";
+      Archbishop.SetNotation("J");
+    }
+    #endregion
+  }
 }

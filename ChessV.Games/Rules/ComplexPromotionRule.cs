@@ -22,164 +22,164 @@ using System.Collections.Generic;
 
 namespace ChessV.Games.Rules
 {
-	public class PromotionCapability
-	{
-		public int PromotingTypeNumber;
-		public PieceType PromotingType;
-		public List<PieceType> PromotionTypes;
-		public List<PieceType> ReplacementPromotionTypes;
-		public OptionalPromotionLocationDelegate ConditionDelegate;
-		public OptionalPromotionFromAndToLocationDelegate FromAndToConditionDelegate;
-	}
+  public class PromotionCapability
+  {
+    public int PromotingTypeNumber;
+    public PieceType PromotingType;
+    public List<PieceType> PromotionTypes;
+    public List<PieceType> ReplacementPromotionTypes;
+    public OptionalPromotionLocationDelegate ConditionDelegate;
+    public OptionalPromotionFromAndToLocationDelegate FromAndToConditionDelegate;
+  }
 
-	public class ComplexPromotionRule: PromotionRule
-	{
-		public ComplexPromotionRule()
-		{
-			promotionCapabilities = new List<PromotionCapability>();
-			typesUsed = new bool[Game.MAX_PIECE_TYPES];
-		}
+  public class ComplexPromotionRule : PromotionRule
+  {
+    public ComplexPromotionRule()
+    {
+      promotionCapabilities = new List<PromotionCapability>();
+      typesUsed = new bool[Game.MAX_PIECE_TYPES];
+    }
 
-		public void AddPromotionCapability
-			( PieceType promotingType,
-			  List<PieceType> promotionTypes,
-			  List<PieceType> replacementPromotionTypes,
-			  OptionalPromotionLocationDelegate conditionDeletage )
-		{
-			PromotionCapability newCapability = new PromotionCapability();
-			newCapability.PromotingType = promotingType;
-			newCapability.PromotionTypes = promotionTypes;
-			newCapability.ReplacementPromotionTypes = replacementPromotionTypes;
-			newCapability.ConditionDelegate = conditionDeletage;
-			newCapability.FromAndToConditionDelegate = null;
-			promotionCapabilities.Add( newCapability );
-		}
+    public void AddPromotionCapability
+      (PieceType promotingType,
+        List<PieceType> promotionTypes,
+        List<PieceType> replacementPromotionTypes,
+        OptionalPromotionLocationDelegate conditionDeletage)
+    {
+      PromotionCapability newCapability = new PromotionCapability();
+      newCapability.PromotingType = promotingType;
+      newCapability.PromotionTypes = promotionTypes;
+      newCapability.ReplacementPromotionTypes = replacementPromotionTypes;
+      newCapability.ConditionDelegate = conditionDeletage;
+      newCapability.FromAndToConditionDelegate = null;
+      promotionCapabilities.Add(newCapability);
+    }
 
-		public void AddPromotionCapability
-			( PieceType promotingType,
-			  List<PieceType> promotionTypes,
-			  List<PieceType> replacementPromotionTypes,
-			  OptionalPromotionFromAndToLocationDelegate conditionDeletage )
-		{
-			PromotionCapability newCapability = new PromotionCapability();
-			newCapability.PromotingType = promotingType;
-			newCapability.PromotionTypes = promotionTypes;
-			newCapability.ReplacementPromotionTypes = replacementPromotionTypes;
-			newCapability.ConditionDelegate = null;
-			newCapability.FromAndToConditionDelegate = conditionDeletage;
-			promotionCapabilities.Add( newCapability );
-		}
+    public void AddPromotionCapability
+      (PieceType promotingType,
+        List<PieceType> promotionTypes,
+        List<PieceType> replacementPromotionTypes,
+        OptionalPromotionFromAndToLocationDelegate conditionDeletage)
+    {
+      PromotionCapability newCapability = new PromotionCapability();
+      newCapability.PromotingType = promotingType;
+      newCapability.PromotionTypes = promotionTypes;
+      newCapability.ReplacementPromotionTypes = replacementPromotionTypes;
+      newCapability.ConditionDelegate = null;
+      newCapability.FromAndToConditionDelegate = conditionDeletage;
+      promotionCapabilities.Add(newCapability);
+    }
 
-		public override void Initialize( Game game )
-		{
-			base.Initialize( game );
-			foreach( PromotionCapability promotion in promotionCapabilities )
-				promotion.PromotingTypeNumber = game.GetPieceTypeNumber( promotion.PromotingType );
-		}
+    public override void Initialize(Game game)
+    {
+      base.Initialize(game);
+      foreach (PromotionCapability promotion in promotionCapabilities)
+        promotion.PromotingTypeNumber = game.GetPieceTypeNumber(promotion.PromotingType);
+    }
 
-		public override MoveEventResponse MoveBeingGenerated( MoveList moves, int from, int to, MoveType type )
-		{
-			Piece movingPiece = Board[from];
-			foreach( PromotionCapability promotion in promotionCapabilities )
-			{
-				if( movingPiece.TypeNumber == promotion.PromotingTypeNumber )
-				{
-					Location toLocation = Board.SquareToLocation( Board.PlayerSquare( movingPiece.Player, to ) );
-					PromotionOption option = promotion.FromAndToConditionDelegate != null 
-						? promotion.FromAndToConditionDelegate( Board.SquareToLocation( Board.PlayerSquare( movingPiece.Player, from ) ), toLocation )
-						: promotion.ConditionDelegate( toLocation );
-					if( option != PromotionOption.CannotPromote )
-					{
-						for( int x = 0; x < Game.MAX_PIECE_TYPES; x++ )
-							typesUsed[x] = false;
+    public override MoveEventResponse MoveBeingGenerated(MoveList moves, int from, int to, MoveType type)
+    {
+      Piece movingPiece = Board[from];
+      foreach (PromotionCapability promotion in promotionCapabilities)
+      {
+        if (movingPiece.TypeNumber == promotion.PromotingTypeNumber)
+        {
+          Location toLocation = Board.SquareToLocation(Board.PlayerSquare(movingPiece.Player, to));
+          PromotionOption option = promotion.FromAndToConditionDelegate != null
+            ? promotion.FromAndToConditionDelegate(Board.SquareToLocation(Board.PlayerSquare(movingPiece.Player, from)), toLocation)
+            : promotion.ConditionDelegate(toLocation);
+          if (option != PromotionOption.CannotPromote)
+          {
+            for (int x = 0; x < Game.MAX_PIECE_TYPES; x++)
+              typesUsed[x] = false;
 
-						//	enemy piece being captured (if any)
-						Piece capturedPiece = Board[to];
+            //	enemy piece being captured (if any)
+            Piece capturedPiece = Board[to];
 
-						//	if promotion is optional, add move without promotion
-						if( option == PromotionOption.CanPromote )
-						{
-							if( capturedPiece == null )
-								moves.AddMove( from, to, true );
-							else
-								moves.AddCapture( from, to, true );
-						}
+            //	if promotion is optional, add move without promotion
+            if (option == PromotionOption.CanPromote)
+            {
+              if (capturedPiece == null)
+                moves.AddMove(from, to, true);
+              else
+                moves.AddCapture(from, to, true);
+            }
 
-						//	handle traditional promotion
-						if( promotion.PromotionTypes != null )
-						{
-							if( capturedPiece == null )
-							{
-								foreach( PieceType promoteTo in promotion.PromotionTypes )
-								{
-									moves.BeginMoveAdd( MoveType.MoveWithPromotion, from, to );
-									moves.AddPickup( from );
-									moves.AddDrop( movingPiece, to, promoteTo );
-									moves.EndMoveAdd( 5000 + promoteTo.MidgameValue );
-									typesUsed[promoteTo.TypeNumber] = true;
-								}
-							}
-							else
-							{
-								foreach( PieceType promoteTo in promotion.PromotionTypes )
-								{
-									moves.BeginMoveAdd( MoveType.CaptureWithPromotion, from, to );
-									moves.AddPickup( from );
-									moves.AddPickup( to );
-									moves.AddDrop( movingPiece, to, promoteTo );
-									moves.EndMoveAdd( 5000 + promoteTo.MidgameValue + capturedPiece.PieceType.MidgameValue );
-									typesUsed[promoteTo.TypeNumber] = true;
-								}
-							}
-						}
+            //	handle traditional promotion
+            if (promotion.PromotionTypes != null)
+            {
+              if (capturedPiece == null)
+              {
+                foreach (PieceType promoteTo in promotion.PromotionTypes)
+                {
+                  moves.BeginMoveAdd(MoveType.MoveWithPromotion, from, to);
+                  moves.AddPickup(from);
+                  moves.AddDrop(movingPiece, to, promoteTo);
+                  moves.EndMoveAdd(5000 + promoteTo.MidgameValue);
+                  typesUsed[promoteTo.TypeNumber] = true;
+                }
+              }
+              else
+              {
+                foreach (PieceType promoteTo in promotion.PromotionTypes)
+                {
+                  moves.BeginMoveAdd(MoveType.CaptureWithPromotion, from, to);
+                  moves.AddPickup(from);
+                  moves.AddPickup(to);
+                  moves.AddDrop(movingPiece, to, promoteTo);
+                  moves.EndMoveAdd(5000 + promoteTo.MidgameValue + capturedPiece.PieceType.MidgameValue);
+                  typesUsed[promoteTo.TypeNumber] = true;
+                }
+              }
+            }
 
-						//	handle promotion by replacement
-						if( promotion.ReplacementPromotionTypes != null )
-						{
-							List<Piece> capturedPieces = Game.GetCapturedPieceList( movingPiece.Player );
-							foreach( Piece capturedFriendlyPiece in capturedPieces )
-							{
-								if( capturedFriendlyPiece.TypeNumber != movingPiece.TypeNumber &&
-									!typesUsed[capturedFriendlyPiece.TypeNumber] && 
-									promotion.ReplacementPromotionTypes.Contains( capturedFriendlyPiece.PieceType ) )
-								{
-									if( capturedPiece == null )
-									{
-										moves.BeginMoveAdd( MoveType.MoveReplace, from, to, capturedFriendlyPiece.TypeNumber );
-										moves.AddPickup( from );
-										moves.AddDrop( capturedFriendlyPiece, to );
-										moves.EndMoveAdd( 5000 + capturedFriendlyPiece.PieceType.MidgameValue );
-									}
-									else
-									{
-										moves.BeginMoveAdd( MoveType.CaptureReplace, from, to, capturedFriendlyPiece.TypeNumber );
-										moves.AddPickup( from );
-										moves.AddPickup( to );
-										moves.AddDrop( capturedFriendlyPiece, to );
-										moves.EndMoveAdd( 5000 + capturedFriendlyPiece.PieceType.MidgameValue + capturedPiece.PieceType.MidgameValue );
-									}
-									typesUsed[capturedFriendlyPiece.TypeNumber] = true;
-								}
-							}
-						}
-						return MoveEventResponse.Handled;
-					}
-				}
-			}
-			return MoveEventResponse.NotHandled;
-		}
+            //	handle promotion by replacement
+            if (promotion.ReplacementPromotionTypes != null)
+            {
+              List<Piece> capturedPieces = Game.GetCapturedPieceList(movingPiece.Player);
+              foreach (Piece capturedFriendlyPiece in capturedPieces)
+              {
+                if (capturedFriendlyPiece.TypeNumber != movingPiece.TypeNumber &&
+                  !typesUsed[capturedFriendlyPiece.TypeNumber] &&
+                  promotion.ReplacementPromotionTypes.Contains(capturedFriendlyPiece.PieceType))
+                {
+                  if (capturedPiece == null)
+                  {
+                    moves.BeginMoveAdd(MoveType.MoveReplace, from, to, capturedFriendlyPiece.TypeNumber);
+                    moves.AddPickup(from);
+                    moves.AddDrop(capturedFriendlyPiece, to);
+                    moves.EndMoveAdd(5000 + capturedFriendlyPiece.PieceType.MidgameValue);
+                  }
+                  else
+                  {
+                    moves.BeginMoveAdd(MoveType.CaptureReplace, from, to, capturedFriendlyPiece.TypeNumber);
+                    moves.AddPickup(from);
+                    moves.AddPickup(to);
+                    moves.AddDrop(capturedFriendlyPiece, to);
+                    moves.EndMoveAdd(5000 + capturedFriendlyPiece.PieceType.MidgameValue + capturedPiece.PieceType.MidgameValue);
+                  }
+                  typesUsed[capturedFriendlyPiece.TypeNumber] = true;
+                }
+              }
+            }
+            return MoveEventResponse.Handled;
+          }
+        }
+      }
+      return MoveEventResponse.NotHandled;
+    }
 
-		public override void GetNotesForPieceType( PieceType type, List<string> notes )
-		{
-			foreach( PromotionCapability pc in promotionCapabilities )
-				if( pc.PromotingType == type )
-				{
-					notes.Add( "can promote" );
-					return;
-				}
-		}
+    public override void GetNotesForPieceType(PieceType type, List<string> notes)
+    {
+      foreach (PromotionCapability pc in promotionCapabilities)
+        if (pc.PromotingType == type)
+        {
+          notes.Add("can promote");
+          return;
+        }
+    }
 
-		private List<PromotionCapability> promotionCapabilities;
-		private bool[] typesUsed;
-	}
+    private List<PromotionCapability> promotionCapabilities;
+    private bool[] typesUsed;
+  }
 }

@@ -24,49 +24,49 @@ using System.Windows.Forms;
 
 namespace ChessV.GUI
 {
-	public partial class AddMoveToGamesForm: Form
-	{
-		public string GamePath { get; private set; }
-		public int? FixedDepth { get; private set; }
-		public int? FixedTimeMinutes { get; private set; }
-		public int Variation { get; private set; }
+  public partial class AddMoveToGamesForm : Form
+  {
+    public string GamePath { get; private set; }
+    public int? FixedDepth { get; private set; }
+    public int? FixedTimeMinutes { get; private set; }
+    public int Variation { get; private set; }
 
-		public AddMoveToGamesForm()
-		{
-			InitializeComponent();
-		}
+    public AddMoveToGamesForm()
+    {
+      InitializeComponent();
+    }
 
-		private void btnBrowseFolder_Click( object sender, EventArgs e )
-		{
-			if( folderBrowserDialog.ShowDialog() == DialogResult.OK )
-			{
-				txtFolder.Text = folderBrowserDialog.SelectedPath;
-			}
-		}
+    private void btnBrowseFolder_Click(object sender, EventArgs e)
+    {
+      if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+      {
+        txtFolder.Text = folderBrowserDialog.SelectedPath;
+      }
+    }
 
-		private void btnStart_Click( object sender, EventArgs e )
-		{
-			if( !Directory.Exists( txtFolder.Text ) )
-			{
-				MessageBox.Show( "You must select a folder of ChessV saved game files (*.sgf)" );
-				return;
-			}
-			else
-			{
-				if( optFixedDepth.Checked )
-					FixedDepth = Convert.ToInt32( txtDepth.Text );
-				else
-					FixedTimeMinutes = Convert.ToInt32( txtTimeMinutes.Text );
-				GamePath = txtFolder.Text;
-				Variation = pickVariation.SelectedIndex;
-				DialogResult = DialogResult.OK;
-				Close();
-			}
-		}
+    private void btnStart_Click(object sender, EventArgs e)
+    {
+      if (!Directory.Exists(txtFolder.Text))
+      {
+        MessageBox.Show("You must select a folder of ChessV saved game files (*.sgf)");
+        return;
+      }
+      else
+      {
+        if (optFixedDepth.Checked)
+          FixedDepth = Convert.ToInt32(txtDepth.Text);
+        else
+          FixedTimeMinutes = Convert.ToInt32(txtTimeMinutes.Text);
+        GamePath = txtFolder.Text;
+        Variation = pickVariation.SelectedIndex;
+        DialogResult = DialogResult.OK;
+        Close();
+      }
+    }
 
-		private void AddMoveToGamesForm_Load( object sender, EventArgs e )
-		{
-			pickVariation.SelectedIndex = 0;
-		}
-	}
+    private void AddMoveToGamesForm_Load(object sender, EventArgs e)
+    {
+      pickVariation.SelectedIndex = 0;
+    }
+  }
 }

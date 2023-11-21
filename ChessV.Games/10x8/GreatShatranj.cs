@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -18,100 +17,98 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using ChessV.Evaluations;
-
 namespace ChessV.Games
 {
-	[Game("Great Shatranj", typeof(Geometry.Rectangular), 10, 8,
-		  XBoardName = "great",
-		  Invented = "2006",
-		  InventedBy = "Joe Joyce",
-		  Tags = "Chess Variant" )]
-	public class GreatShatranj: Abstract.Generic10x8
-	{
-		// *** GAME VARIABLES *** //
+  [Game("Great Shatranj", typeof(Geometry.Rectangular), 10, 8,
+      XBoardName = "great",
+      Invented = "2006",
+      InventedBy = "Joe Joyce",
+      Tags = "Chess Variant")]
+  public class GreatShatranj : Abstract.Generic10x8
+  {
+    // *** GAME VARIABLES *** //
 
-		[GameVariable] public ChoiceVariable Variant { get; set; }
-
-
-		// *** PIECE TYPES *** //
-
-		public PieceType General;
-		public PieceType Minister;
-		public PieceType HighPriestess;
-		public PieceType Elephant;
-		public PieceType Tower;
+    [GameVariable] public ChoiceVariable Variant { get; set; }
 
 
-		// *** CONSTRUCTION *** //
+    // *** PIECE TYPES *** //
 
-		public GreatShatranj():
-			base
-				( /* symmetry = */ new MirrorSymmetry() )
-		{
-		}
+    public PieceType General;
+    public PieceType Minister;
+    public PieceType HighPriestess;
+    public PieceType Elephant;
+    public PieceType Tower;
 
-		// *** INITIALIZATION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Variant = new ChoiceVariable( new string[] { "Great Shatranj D", "Great Shatranj R" } );
-			PromotionTypes = "G";
-			BareKing = true;
-		}
-		#endregion
+    // *** CONSTRUCTION *** //
 
-		#region LookupGameVariable
-		public override object LookupGameVariable( string variableName )
-		{
-			if( variableName.ToUpper() == "ARRAY" )
-			{
-				if( Variant.Value == null )
-					return "1negkmhen1/pppppppppp/10/10/10/10/PPPPPPPPPP/1NEGKMHEN1";
-				if( Variant.Value == "Great Shatranj D" )
-					return "dnegkmhend/pppppppppp/10/10/10/10/PPPPPPPPPP/DNEGKMHEND";
-				if( Variant.Value == "Great Shatranj R" )
-					return "rnegkmhenr/pppppppppp/10/10/10/10/PPPPPPPPPP/RNEGKMHENR";
-			}
-			return base.LookupGameVariable( variableName );
-		}
-		#endregion
+    public GreatShatranj() :
+      base
+        ( /* symmetry = */ new MirrorSymmetry())
+    {
+    }
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			AddPieceType( General = new King( "General", "G", 300, 300, "Guard" ) );
-			AddPieceType( Knight = new Knight( "Knight", "N", 285, 285 ) );
-			AddPieceType( Minister = new Minister( "Minister", "M", 600, 600, "KnightWazirDabbabah" ) );
-			AddPieceType( HighPriestess = new HighPriestess( "High Priestess", "H", 625, 625, "ElephantKnight" ) );
-			AddPieceType( Elephant = new Elephant( "Elephant", "E", 250, 250 ) );
-			Ferz.AddMoves( Elephant );
-			if( Variant.Value == "Great Shatranj D" )
-				AddPieceType( Tower = new Tower( "Dabbabah", "D", 270, 270 ) );
-			if( Variant.Value == "Great Shatranj R" )
-				AddPieceType( Rook = new Rook( "Rook", "R", 600, 600 ) );
-		}
-		#endregion
+    // *** INITIALIZATION *** //
 
-		#region AddRules
-		public override void AddRules()
-		{
-			base.AddRules();
-		}
-		#endregion
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Variant = new ChoiceVariable(new string[] { "Great Shatranj D", "Great Shatranj R" });
+      PromotionTypes = "G";
+      BareKing = true;
+    }
+    #endregion
 
-		#region AddEvaluations
-		public override void AddEvaluations()
-		{
-			base.AddEvaluations();
-			if( Elephant != null && Elephant.Enabled )
-				OutpostEval.AddOutpostBonus( Elephant );
-			if( General != null && General.Enabled )
-				OutpostEval.AddOutpostBonus( General, 10, 2, 5, 5 );
-		}
-		#endregion
-	}
+    #region LookupGameVariable
+    public override object LookupGameVariable(string variableName)
+    {
+      if (variableName.ToUpper() == "ARRAY")
+      {
+        if (Variant.Value == null)
+          return "1negkmhen1/pppppppppp/10/10/10/10/PPPPPPPPPP/1NEGKMHEN1";
+        if (Variant.Value == "Great Shatranj D")
+          return "dnegkmhend/pppppppppp/10/10/10/10/PPPPPPPPPP/DNEGKMHEND";
+        if (Variant.Value == "Great Shatranj R")
+          return "rnegkmhenr/pppppppppp/10/10/10/10/PPPPPPPPPP/RNEGKMHENR";
+      }
+      return base.LookupGameVariable(variableName);
+    }
+    #endregion
+
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      AddPieceType(General = new King("General", "G", 300, 300, "Guard"));
+      AddPieceType(Knight = new Knight("Knight", "N", 285, 285));
+      AddPieceType(Minister = new Minister("Minister", "M", 600, 600, "KnightWazirDabbabah"));
+      AddPieceType(HighPriestess = new HighPriestess("High Priestess", "H", 625, 625, "ElephantKnight"));
+      AddPieceType(Elephant = new Elephant("Elephant", "E", 250, 250));
+      Ferz.AddMoves(Elephant);
+      if (Variant.Value == "Great Shatranj D")
+        AddPieceType(Tower = new Tower("Dabbabah", "D", 270, 270));
+      if (Variant.Value == "Great Shatranj R")
+        AddPieceType(Rook = new Rook("Rook", "R", 600, 600));
+    }
+    #endregion
+
+    #region AddRules
+    public override void AddRules()
+    {
+      base.AddRules();
+    }
+    #endregion
+
+    #region AddEvaluations
+    public override void AddEvaluations()
+    {
+      base.AddEvaluations();
+      if (Elephant != null && Elephant.Enabled)
+        OutpostEval.AddOutpostBonus(Elephant);
+      if (General != null && General.Enabled)
+        OutpostEval.AddOutpostBonus(General, 10, 2, 5, 5);
+    }
+    #endregion
+  }
 }

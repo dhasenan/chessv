@@ -20,59 +20,59 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 namespace ChessV.Games
 {
-	[Game("Chancellor Chess", typeof(Geometry.Rectangular), 9, 9,
-		  XBoardName = "chancellor",
-		  InventedBy = "Ben Foster",
-		  Invented = "1889",
-		  Tags = "Chess Variant,Historic")]
-	public class ChancellorChess: Abstract.Generic9x9
-	{
-		// *** PIECE TYPES *** //
+  [Game("Chancellor Chess", typeof(Geometry.Rectangular), 9, 9,
+      XBoardName = "chancellor",
+      InventedBy = "Ben Foster",
+      Invented = "1889",
+      Tags = "Chess Variant,Historic")]
+  public class ChancellorChess : Abstract.Generic9x9
+  {
+    // *** PIECE TYPES *** //
 
-		public PieceType Chancellor;
-
-
-		// *** CONSTRUCTION *** //
-
-		public ChancellorChess(): 
-			base
-				( /* symmetry = */ new MirrorSymmetry() )
-		{
-		}
+    public PieceType Chancellor;
 
 
-		// *** INITIALIZATION *** //
+    // *** CONSTRUCTION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "rnbqkcnbr/ppppppppp/9/9/9/9/9/PPPPPPPPP/RNBQKCNBR";
-			PawnDoubleMove = true;
-			EnPassant = true;
-			Castling.Value = "Standard";
-			PromotionRule.Value = "Standard";
-			PromotionTypes = "QCRNB";
-		}
-		#endregion
+    public ChancellorChess() :
+      base
+        ( /* symmetry = */ new MirrorSymmetry())
+    {
+    }
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			AddChessPieceTypes();
 
-			AddPieceType( Chancellor = new Chancellor( "Chancellor", "C", 950, 900 ) );
-		}
-		#endregion
+    // *** INITIALIZATION *** //
 
-		#region AddEvaluations
-		public override void AddEvaluations()
-		{
-			base.AddEvaluations();
-			if( Chancellor != null && Chancellor.Enabled )
-				RookTypeEval.AddRookOn7thBonus( Chancellor, King, 2, 8 );
-		}
-		#endregion
-	}
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "rnbqkcnbr/ppppppppp/9/9/9/9/9/PPPPPPPPP/RNBQKCNBR";
+      PawnDoubleMove = true;
+      EnPassant = true;
+      Castling.Value = "Standard";
+      PromotionRule.Value = "Standard";
+      PromotionTypes = "QCRNB";
+    }
+    #endregion
+
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      AddChessPieceTypes();
+
+      AddPieceType(Chancellor = new Chancellor("Chancellor", "C", 950, 900));
+    }
+    #endregion
+
+    #region AddEvaluations
+    public override void AddEvaluations()
+    {
+      base.AddEvaluations();
+      if (Chancellor != null && Chancellor.Enabled)
+        RookTypeEval.AddRookOn7thBonus(Chancellor, King, 2, 8);
+    }
+    #endregion
+  }
 }

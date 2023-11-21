@@ -22,49 +22,49 @@ using System.Collections.Generic;
 
 namespace ChessV.Games.Rules
 {
-	public class LimitPieceTypeQuantityRule: Rule
-	{
-		public LimitPieceTypeQuantityRule()
-		{
-			pieceTypeLimits = new List<KeyValuePair<PieceType, int>>();
-			limits = new Dictionary<int, int>();
-		}
+  public class LimitPieceTypeQuantityRule : Rule
+  {
+    public LimitPieceTypeQuantityRule()
+    {
+      pieceTypeLimits = new List<KeyValuePair<PieceType, int>>();
+      limits = new Dictionary<int, int>();
+    }
 
-		public LimitPieceTypeQuantityRule( PieceType type, int limit )
-		{
-			pieceTypeLimits = new List<KeyValuePair<PieceType, int>>();
-			pieceTypeLimits.Add( new KeyValuePair<PieceType, int>( type, limit ) );
-			limits = new Dictionary<int, int>();
-		}
+    public LimitPieceTypeQuantityRule(PieceType type, int limit)
+    {
+      pieceTypeLimits = new List<KeyValuePair<PieceType, int>>();
+      pieceTypeLimits.Add(new KeyValuePair<PieceType, int>(type, limit));
+      limits = new Dictionary<int, int>();
+    }
 
-		public override void Initialize( Game game )
-		{
-			base.Initialize( game );
-			foreach( var pair in pieceTypeLimits )
-				limits.Add( game.GetPieceTypeNumber( pair.Key ), pair.Value );
-		}
+    public override void Initialize(Game game)
+    {
+      base.Initialize(game);
+      foreach (var pair in pieceTypeLimits)
+        limits.Add(game.GetPieceTypeNumber(pair.Key), pair.Value);
+    }
 
-		public override MoveEventResponse MoveBeingMade( MoveInfo move, int ply )
-		{
-			int currentType = Board[move.ToSquare].TypeNumber;
-			if( move.OriginalType != currentType )
-			{
-				int limit;
-				if( limits.TryGetValue( currentType, out limit ) &&
-					Board.GetPieceTypeBitboard( move.Player, currentType ).BitCount > limit )
-					//	This would exceed the limit for this piece so the move is illegal
-					return MoveEventResponse.IllegalMove;
-			}
-			return MoveEventResponse.NotHandled;
-		}
+    public override MoveEventResponse MoveBeingMade(MoveInfo move, int ply)
+    {
+      int currentType = Board[move.ToSquare].TypeNumber;
+      if (move.OriginalType != currentType)
+      {
+        int limit;
+        if (limits.TryGetValue(currentType, out limit) &&
+          Board.GetPieceTypeBitboard(move.Player, currentType).BitCount > limit)
+          //	This would exceed the limit for this piece so the move is illegal
+          return MoveEventResponse.IllegalMove;
+      }
+      return MoveEventResponse.NotHandled;
+    }
 
-		public override void GetNotesForPieceType( PieceType type, List<string> notes )
-		{
-			if( limits.ContainsKey( type.TypeNumber ) )
-				notes.Add( "limited quantity: " + limits[type.TypeNumber].ToString() );
-		}
+    public override void GetNotesForPieceType(PieceType type, List<string> notes)
+    {
+      if (limits.ContainsKey(type.TypeNumber))
+        notes.Add("limited quantity: " + limits[type.TypeNumber].ToString());
+    }
 
-		protected Dictionary<int, int> limits;
-		protected List<KeyValuePair<PieceType, int>> pieceTypeLimits;
-	}
+    protected Dictionary<int, int> limits;
+    protected List<KeyValuePair<PieceType, int>> pieceTypeLimits;
+  }
 }

@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -18,41 +17,38 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
 namespace ChessV.EngineOptions
 {
-	public class EngineTextOption: EngineOption
-	{
-		public enum EditorType
-		{
-			LineEdit,
-			FileDialog,
-			FolderDialog
-		}
+  public class EngineTextOption : EngineOption
+  {
+    public enum EditorType
+    {
+      LineEdit,
+      FileDialog,
+      FolderDialog
+    }
 
-		public EngineTextOption
-			( string name,
-			  object value = null,
-			  object defaultValue = null,
-			  string alias = null,
-			  EditorType editorType = EditorType.LineEdit ):
-				base
-					( name, 
-					  typeof(string),
-					  value, 
-					  defaultValue,
-					  alias )
-		{
-			this.editorType = editorType;
-		}
+    public EngineTextOption
+      (string name,
+        object value = null,
+        object defaultValue = null,
+        string alias = null,
+        EditorType editorType = EditorType.LineEdit) :
+        base
+          (name,
+            typeof(string),
+            value,
+            defaultValue,
+            alias)
+    {
+      this.editorType = editorType;
+    }
 
-		public override bool IsValid( object value )
-		{
-			return value is string;
-		}
+    public override bool IsValid(object value)
+    {
+      return value is string;
+    }
 
-		private EditorType editorType { get; set; }
-	}
+    private EditorType editorType { get; set; }
+  }
 }

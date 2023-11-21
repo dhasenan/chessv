@@ -1,4 +1,3 @@
-
 /***************************************************************************
 
                                  ChessV
@@ -18,63 +17,60 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
 namespace ChessV.Games
 {
-	[Game("Viking Chess", typeof(Geometry.Rectangular), 12, 7,
-		  Invented = "2002",
-		  InventedBy = "Tomas Forsman",
-		  Tags = "Chess Variant")]
-	public class VikingChess: Abstract.GenericChess
-	{
-		// *** PIECE TYPES *** //
+  [Game("Viking Chess", typeof(Geometry.Rectangular), 12, 7,
+      Invented = "2002",
+      InventedBy = "Tomas Forsman",
+      Tags = "Chess Variant")]
+  public class VikingChess : Abstract.GenericChess
+  {
+    // *** PIECE TYPES *** //
 
-		public PieceType Queen;
-		public PieceType Rook;
-		public PieceType Bishop;
-		public PieceType Knight;
+    public PieceType Queen;
+    public PieceType Rook;
+    public PieceType Bishop;
+    public PieceType Knight;
 
 
-		// *** CONSTRUCTION *** //
+    // *** CONSTRUCTION *** //
 
-		public VikingChess() :
-			base
-				( /* num files = */ 12,
-				  /* num ranks = */ 7,
-				  /* symmetry = */ new NoSymmetry() )
-		{
-		}
+    public VikingChess() :
+      base
+        ( /* num files = */ 12,
+          /* num ranks = */ 7,
+          /* symmetry = */ new NoSymmetry())
+    {
+    }
 
-		// *** INITIALIZATION *** //
+    // *** INITIALIZATION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "12/12/12/12/1PPPP2pppp1/RPNNPPppnnpr/RBKQBPpbqkbr";
-			PromotionRule.Value = "Standard";
-			PromotionTypes = "QRNB";
-		}
-		#endregion
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "12/12/12/12/1PPPP2pppp1/RPNNPPppnnpr/RBKQBPpbqkbr";
+      PromotionRule.Value = "Standard";
+      PromotionTypes = "QRNB";
+    }
+    #endregion
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			AddPieceType( Rook = new Rook( "Rook", "R", 500, 550 ) );
-			AddPieceType( Bishop = new Bishop( "Bishop", "B", 325, 350 ) );
-			AddPieceType( Knight = new Knight( "Knight", "N", 325, 325 ) );
-			AddPieceType( Queen = new Queen( "Queen", "Q", 900, 1000 ) );
-		}
-		#endregion
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      AddPieceType(Rook = new Rook("Rook", "R", 500, 550));
+      AddPieceType(Bishop = new Bishop("Bishop", "B", 325, 350));
+      AddPieceType(Knight = new Knight("Knight", "N", 325, 325));
+      AddPieceType(Queen = new Queen("Queen", "Q", 900, 1000));
+    }
+    #endregion
 
-		#region AddRules
-		public override void AddRules()
-		{
-			base.AddRules();
-		}
-		#endregion
-	}
+    #region AddRules
+    public override void AddRules()
+    {
+      base.AddRules();
+    }
+    #endregion
+  }
 }

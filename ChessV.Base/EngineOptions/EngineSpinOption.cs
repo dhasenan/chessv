@@ -19,43 +19,42 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 ****************************************************************************/
 
 using System;
-using System.Collections.Generic;
 
 namespace ChessV.EngineOptions
 {
-	public class EngineSpinOption: EngineOption
-	{
-		public EngineSpinOption
-			( string name,
-			  object value = null,
-			  object defaultValue = null,
-			  int min = 0,
-			  int max = 0,
-			  string alias = null ):
-				base
-					( name, 
-					  typeof(int), 
-					  value, 
-					  defaultValue, 
-					  alias )
-		{
-		}
+  public class EngineSpinOption : EngineOption
+  {
+    public EngineSpinOption
+      (string name,
+        object value = null,
+        object defaultValue = null,
+        int min = 0,
+        int max = 0,
+        string alias = null) :
+        base
+          (name,
+            typeof(int),
+            value,
+            defaultValue,
+            alias)
+    {
+    }
 
-		public override bool IsValid( object value )
-		{
-			if( Min > Max )
-				return false;
-			
-			int intValue;
-			if( Int32.TryParse( value.ToString(), out intValue ) )
-			{
-				if( (intValue >= Min && intValue <= Max) || (Min == 0 && Max == 0) )
-					return true;
-			}
-			return false;
-		}
+    public override bool IsValid(object value)
+    {
+      if (Min > Max)
+        return false;
 
-		public int Min { get; set; }
-		public int Max { get; set; }
-	}
+      int intValue;
+      if (Int32.TryParse(value.ToString(), out intValue))
+      {
+        if ((intValue >= Min && intValue <= Max) || (Min == 0 && Max == 0))
+          return true;
+      }
+      return false;
+    }
+
+    public int Min { get; set; }
+    public int Max { get; set; }
+  }
 }

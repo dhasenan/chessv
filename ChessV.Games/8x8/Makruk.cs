@@ -22,64 +22,64 @@ using System.Collections.Generic;
 
 namespace ChessV.Games
 {
-	[Game("Makruk", typeof(Geometry.Rectangular), 8, 8,
-		  XBoardName = "makruk",
-		  Invented = "Unknown",
-		  InventedBy = "Unknown",
-		  Tags = "Chess Variant,Regional,Historic")]
-	public class Makruk: Abstract.Generic8x8
-	{
-		// *** PIECE TYPES *** //
+  [Game("Makruk", typeof(Geometry.Rectangular), 8, 8,
+      XBoardName = "makruk",
+      Invented = "Unknown",
+      InventedBy = "Unknown",
+      Tags = "Chess Variant,Regional,Historic")]
+  public class Makruk : Abstract.Generic8x8
+  {
+    // *** PIECE TYPES *** //
 
-		public PieceType Ferz;
-		public PieceType SilverGeneral;
+    public PieceType Ferz;
+    public PieceType SilverGeneral;
 
 
-		// *** CONSTRUCTION *** //
+    // *** CONSTRUCTION *** //
 
-		public Makruk():
-			base
-				 ( /* symmetry = */ new MirrorSymmetry() )
-		{
-		}
+    public Makruk() :
+      base
+         ( /* symmetry = */ new MirrorSymmetry())
+    {
+    }
 
-		// *** INITIALIZATION *** //
+    // *** INITIALIZATION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "rnsmksnr/8/pppppppp/8/8/PPPPPPPP/8/RNSKMSNR";
-			PromotionRule.Value = "Custom";
-			PromotionTypes = "M";
-			Castling.Value = "None";
-			PawnDoubleMove = false;
-			EnPassant = false;
-		}
-		#endregion
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "rnsmksnr/8/pppppppp/8/8/PPPPPPPP/8/RNSKMSNR";
+      PromotionRule.Value = "Custom";
+      PromotionTypes = "M";
+      Castling.Value = "None";
+      PawnDoubleMove = false;
+      EnPassant = false;
+    }
+    #endregion
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			AddPieceType( Rook = new Rook( "Rook", "R", 500, 550 ) );
-			AddPieceType( Knight = new Knight( "Knight", "N", 325, 325 ) );
-			AddPieceType( Ferz = new Ferz( "Met", "M", 150, 150 ) );
-			AddPieceType( SilverGeneral = new SilverGeneral( "Khon", "S", 260, 260 ) );
-		}
-		#endregion
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      AddPieceType(Rook = new Rook("Rook", "R", 500, 550));
+      AddPieceType(Knight = new Knight("Knight", "N", 325, 325));
+      AddPieceType(Ferz = new Ferz("Met", "M", 150, 150));
+      AddPieceType(SilverGeneral = new SilverGeneral("Khon", "S", 260, 260));
+    }
+    #endregion
 
-		#region AddRules
-		public override void AddRules()
-		{
-			base.AddRules();
+    #region AddRules
+    public override void AddRules()
+    {
+      base.AddRules();
 
-			if( PromotionRule.Value == "Custom" )
-			{
-				List<PieceType> availablePromotionTypes = ParseTypeListFromString( PromotionTypes );
-				AddBasicPromotionRule( Pawn, availablePromotionTypes, loc => loc.Rank == 5 );
-			}
-		}
-		#endregion
-	}
+      if (PromotionRule.Value == "Custom")
+      {
+        List<PieceType> availablePromotionTypes = ParseTypeListFromString(PromotionTypes);
+        AddBasicPromotionRule(Pawn, availablePromotionTypes, loc => loc.Rank == 5);
+      }
+    }
+    #endregion
+  }
 }

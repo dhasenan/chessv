@@ -1,4 +1,3 @@
-
 /***************************************************************************
 
                                  ChessV
@@ -18,26 +17,23 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
 namespace ChessV.Games
 {
-	[Game("Marseillais Chess", typeof(Geometry.Rectangular), 8, 8,
-		  Invented = "circa 1920",
-		  InventedBy = "unknown",
-		  Tags = "Chess Variant,Popular,Historic,Multi-Move" )]
-	public class MarseillaisChess: Chess
-	{
-		#region AddRules
-		public override void AddRules()
-		{
-			base.AddRules();
-			//	Add MarseillaisMoveCompletionRule (which will automatically 
-			//	replace MoveCompletionDefaultRule since there can be 
-			//	only one MoveCompletionRule)
-			AddRule( new Rules.MultiMove.MarseillaisMoveCompletionRule() );
-		}
-		#endregion
-	}
+  [Game("Marseillais Chess", typeof(Geometry.Rectangular), 8, 8,
+      Invented = "circa 1920",
+      InventedBy = "unknown",
+      Tags = "Chess Variant,Popular,Historic,Multi-Move")]
+  public class MarseillaisChess : Chess
+  {
+    #region AddRules
+    public override void AddRules()
+    {
+      base.AddRules();
+      //	Add MarseillaisMoveCompletionRule (which will automatically 
+      //	replace MoveCompletionDefaultRule since there can be 
+      //	only one MoveCompletionRule)
+      AddRule(new Rules.MultiMove.MarseillaisMoveCompletionRule());
+    }
+    #endregion
+  }
 }

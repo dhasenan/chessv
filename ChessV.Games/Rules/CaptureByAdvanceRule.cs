@@ -22,95 +22,95 @@ using System.Collections.Generic;
 
 namespace ChessV.Games.Rules
 {
-	public class CaptureByAdvanceRule: Rule
-	{
-		// *** PROPERTIES *** //
+  public class CaptureByAdvanceRule : Rule
+  {
+    // *** PROPERTIES *** //
 
-		public PieceType PieceType { get; private set; }
-
-
-		// *** CONSTRUCTION *** //
-
-		public CaptureByAdvanceRule( PieceType pieceType )
-		{
-			PieceType = pieceType;
-		}
+    public PieceType PieceType { get; private set; }
 
 
-		// *** EVENT HANDLERS *** //
+    // *** CONSTRUCTION *** //
 
-		public override MoveEventResponse MoveBeingGenerated( MoveList moves, int from, int to, MoveType type )
-		{
-			if( Board[from].PieceType == PieceType )
-			{
-				int direction = Board.DirectionLookup( from, to );
-				if( direction >= 0 )
-				{
-					int nextStep = Board.NextSquare( direction, to );
-					if( nextStep >= 0 && nextStep < Board.NumSquares )
-					{
-						Piece pieceOnNextSquare = Board[nextStep];
-						Piece pieceOnLandingSquare = Board[to];
-						if( pieceOnNextSquare != null && pieceOnNextSquare.Player != Board[from].Player )
-						{
-							//	we can capture by advance
-							moves.BeginMoveAdd( pieceOnLandingSquare == null ? MoveType.BaroqueCapture : MoveType.ExtraCapture, from, to, nextStep );
-							Piece pieceBeingMoved = moves.AddPickup( from );
-							Piece pieceBeingCaptured = moves.AddPickup( nextStep );
-							if( pieceOnLandingSquare != null )
-								moves.AddPickup( to );
-							moves.AddDrop( pieceBeingMoved, to );
-							moves.EndMoveAdd( pieceOnLandingSquare == null 
-								? (3000 + pieceBeingCaptured.PieceType.MidgameValue - (pieceBeingMoved.PieceType.MidgameValue / 16))
-								: (4000 + pieceBeingCaptured.PieceType.MidgameValue + pieceOnLandingSquare.PieceType.MidgameValue - (pieceBeingMoved.PieceType.MidgameValue / 16)) );
-							return MoveEventResponse.Handled;
-						}
-					}
-				}
-			}
-			return base.MoveBeingGenerated( moves, from, to, type );
-		}
+    public CaptureByAdvanceRule(PieceType pieceType)
+    {
+      PieceType = pieceType;
+    }
 
-		public override bool IsSquareAttacked( int square, int side )
-		{
-			//	Find all directions that our capture-by-advancing piece travels
-			MoveCapability[] moveCapabilities;
-			int nMoves = PieceType.GetMoveCapabilities( out moveCapabilities );
-			//	Find all pieces that might pose this threat, then check them all
-			BitBoard attackers = Board.GetPieceTypeBitboard( side, PieceType.TypeNumber );
-			while( attackers )
-			{
-				int pieceSquare = attackers.ExtractLSB();
-				for( int x = 0; x < nMoves; x++ )
-				{
-					int dir = moveCapabilities[x].NDirection;
-					int nextSquare = Board.NextSquare( side, dir, pieceSquare );
-					int step = 1;
-					while( nextSquare >= 0 && step <= moveCapabilities[x].MaxSteps )
-					{
-						if( nextSquare == square )
-						{
-							if( step > 1 )
-								return true;
-							nextSquare = -1;
-						}
-						else if( Board[nextSquare] != null )
-							nextSquare = -1;
-						else
-						{
-							nextSquare = Game.Board.NextSquare( side, dir, nextSquare );
-							step++;
-						}
-					}
-				}
-			}
-			return false;
-		}
 
-		public override void GetNotesForPieceType( PieceType type, List<string> notes )
-		{
-			if( type == PieceType )
-				notes.Add( "captures by advance" );
-		}
-	}
+    // *** EVENT HANDLERS *** //
+
+    public override MoveEventResponse MoveBeingGenerated(MoveList moves, int from, int to, MoveType type)
+    {
+      if (Board[from].PieceType == PieceType)
+      {
+        int direction = Board.DirectionLookup(from, to);
+        if (direction >= 0)
+        {
+          int nextStep = Board.NextSquare(direction, to);
+          if (nextStep >= 0 && nextStep < Board.NumSquares)
+          {
+            Piece pieceOnNextSquare = Board[nextStep];
+            Piece pieceOnLandingSquare = Board[to];
+            if (pieceOnNextSquare != null && pieceOnNextSquare.Player != Board[from].Player)
+            {
+              //	we can capture by advance
+              moves.BeginMoveAdd(pieceOnLandingSquare == null ? MoveType.BaroqueCapture : MoveType.ExtraCapture, from, to, nextStep);
+              Piece pieceBeingMoved = moves.AddPickup(from);
+              Piece pieceBeingCaptured = moves.AddPickup(nextStep);
+              if (pieceOnLandingSquare != null)
+                moves.AddPickup(to);
+              moves.AddDrop(pieceBeingMoved, to);
+              moves.EndMoveAdd(pieceOnLandingSquare == null
+                ? (3000 + pieceBeingCaptured.PieceType.MidgameValue - (pieceBeingMoved.PieceType.MidgameValue / 16))
+                : (4000 + pieceBeingCaptured.PieceType.MidgameValue + pieceOnLandingSquare.PieceType.MidgameValue - (pieceBeingMoved.PieceType.MidgameValue / 16)));
+              return MoveEventResponse.Handled;
+            }
+          }
+        }
+      }
+      return base.MoveBeingGenerated(moves, from, to, type);
+    }
+
+    public override bool IsSquareAttacked(int square, int side)
+    {
+      //	Find all directions that our capture-by-advancing piece travels
+      MoveCapability[] moveCapabilities;
+      int nMoves = PieceType.GetMoveCapabilities(out moveCapabilities);
+      //	Find all pieces that might pose this threat, then check them all
+      BitBoard attackers = Board.GetPieceTypeBitboard(side, PieceType.TypeNumber);
+      while (attackers)
+      {
+        int pieceSquare = attackers.ExtractLSB();
+        for (int x = 0; x < nMoves; x++)
+        {
+          int dir = moveCapabilities[x].NDirection;
+          int nextSquare = Board.NextSquare(side, dir, pieceSquare);
+          int step = 1;
+          while (nextSquare >= 0 && step <= moveCapabilities[x].MaxSteps)
+          {
+            if (nextSquare == square)
+            {
+              if (step > 1)
+                return true;
+              nextSquare = -1;
+            }
+            else if (Board[nextSquare] != null)
+              nextSquare = -1;
+            else
+            {
+              nextSquare = Game.Board.NextSquare(side, dir, nextSquare);
+              step++;
+            }
+          }
+        }
+      }
+      return false;
+    }
+
+    public override void GetNotesForPieceType(PieceType type, List<string> notes)
+    {
+      if (type == PieceType)
+        notes.Add("captures by advance");
+    }
+  }
 }

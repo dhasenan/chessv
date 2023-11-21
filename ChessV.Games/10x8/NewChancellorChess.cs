@@ -1,5 +1,4 @@
-﻿
-/***************************************************************************
+﻿/***************************************************************************
 
                                  ChessV
 
@@ -18,49 +17,46 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
 namespace ChessV.Games
 {
-	//********************************************************************
-	//
-	//                        NewChancellorChess
-	//
-	[Game("New Chancellor Chess", typeof(Geometry.Rectangular), 10, 8,
-		  Invented = "1997",
-		  InventedBy = "David Paulowich",
-		  Tags = "Chess Variant")]
-	public class NewChancellorChess: CapablancaChess
-	{
-		// *** CONSTRUCTION *** //
+  //********************************************************************
+  //
+  //                        NewChancellorChess
+  //
+  [Game("New Chancellor Chess", typeof(Geometry.Rectangular), 10, 8,
+      Invented = "1997",
+      InventedBy = "David Paulowich",
+      Tags = "Chess Variant")]
+  public class NewChancellorChess : CapablancaChess
+  {
+    // *** CONSTRUCTION *** //
 
-		public NewChancellorChess()
-		{
-		}
+    public NewChancellorChess()
+    {
+    }
 
 
-		// *** INITIALIZATION *** //
+    // *** INITIALIZATION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "crnbqkbnrc/pppppppppp/10/10/10/10/PPPPPPPPPP/CRNBQKBNRC";
-			PawnDoubleMove = true;
-			EnPassant = true;
-			Castling.Value = "Close-Rook";
-			PromotionTypes = "QCRBN";
-		}
-		#endregion
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "crnbqkbnrc/pppppppppp/10/10/10/10/PPPPPPPPPP/CRNBQKBNRC";
+      PawnDoubleMove = true;
+      EnPassant = true;
+      Castling.Value = "Close-Rook";
+      PromotionTypes = "QCRBN";
+    }
+    #endregion
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			//	The Archbishop is not used in this game
-			Archbishop.Enabled = false;
-		}
-		#endregion
-	}
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      //	The Archbishop is not used in this game
+      Archbishop.Enabled = false;
+    }
+    #endregion
+  }
 }

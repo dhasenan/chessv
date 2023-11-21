@@ -20,32 +20,31 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 using System;
 using System.Windows.Forms;
-using ChessV;
 
 namespace ChessV.GUI
 {
-	public partial class PerftForm: Form
-	{
-		public Game Game { get; private set; }
+  public partial class PerftForm : Form
+  {
+    public Game Game { get; private set; }
 
-		public PerftForm( Game game )
-		{
-			Game = game;
+    public PerftForm(Game game)
+    {
+      Game = game;
 
-			InitializeComponent();
-		}
+      InitializeComponent();
+    }
 
-		private void btnOK_Click( object sender, EventArgs e )
-		{
-			int depth;
-			if( !Int32.TryParse( txtDepth.Text, out depth ) )
-			{
-				MessageBox.Show( "Depth must be a valid integer" );
-				return;
-			}
-			PerftResults results = Game.Perft( depth );
-			MessageBox.Show( "Nodes: " + results.Nodes.ToString() );
-			Close();
-		}
-	}
+    private void btnOK_Click(object sender, EventArgs e)
+    {
+      int depth;
+      if (!Int32.TryParse(txtDepth.Text, out depth))
+      {
+        MessageBox.Show("Depth must be a valid integer");
+        return;
+      }
+      PerftResults results = Game.Perft(depth);
+      MessageBox.Show("Nodes: " + results.Nodes.ToString());
+      Close();
+    }
+  }
 }

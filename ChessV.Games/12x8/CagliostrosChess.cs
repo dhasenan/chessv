@@ -20,51 +20,51 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 namespace ChessV.Games
 {
-	[Game("Cagliostro's Chess", typeof(Geometry.Rectangular), 12, 8,
-		  Invented = "1970s",
-		  InventedBy = "Savio Cagliostro",
-		  Tags = "Chess Variant")]
-	public class CagliostrosChess: Abstract.Generic12x8
-	{
-		// *** PIECE TYPES *** //
+  [Game("Cagliostro's Chess", typeof(Geometry.Rectangular), 12, 8,
+      Invented = "1970s",
+      InventedBy = "Savio Cagliostro",
+      Tags = "Chess Variant")]
+  public class CagliostrosChess : Abstract.Generic12x8
+  {
+    // *** PIECE TYPES *** //
 
-		public PieceType Archbishop;
-		public PieceType Chancellor;
-		public PieceType Amazon;
+    public PieceType Archbishop;
+    public PieceType Chancellor;
+    public PieceType Amazon;
 
 
-		// *** CONSTRUCTION *** //
+    // *** CONSTRUCTION *** //
 
-		public CagliostrosChess():
-			base
-				( /* symmetry = */ new MirrorSymmetry() )
-		{
-		}
+    public CagliostrosChess() :
+      base
+        ( /* symmetry = */ new MirrorSymmetry())
+    {
+    }
 
-		// *** INITIALIZATION *** //
+    // *** INITIALIZATION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "rnbacqkgabnr/pppppppppppp/12/12/12/12/PPPPPPPPPPPP/RNBACQKGABNR";
-			PromotionRule.Value = "Standard";
-			PromotionTypes = "QCAGRNB";
-			Castling.Value = "4-4";
-			PawnDoubleMove = true;
-			EnPassant = true;
-		}
-		#endregion
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "rnbacqkgabnr/pppppppppppp/12/12/12/12/PPPPPPPPPPPP/RNBACQKGABNR";
+      PromotionRule.Value = "Standard";
+      PromotionTypes = "QCAGRNB";
+      Castling.Value = "4-4";
+      PawnDoubleMove = true;
+      EnPassant = true;
+    }
+    #endregion
 
-		#region AddPieceTypes
-		public override void AddPieceTypes()
-		{
-			base.AddPieceTypes();
-			AddChessPieceTypes();
-			AddPieceType( Archbishop = new Archbishop( "Archbishop", "A", 900, 900 ) );
-			AddPieceType( Chancellor = new Chancellor( "Chancellor", "C", 950, 975 ) );
-			AddPieceType( Amazon = new Amazon( "General", "G", 1250, 1250 ) );
-		}
-		#endregion
-	}
+    #region AddPieceTypes
+    public override void AddPieceTypes()
+    {
+      base.AddPieceTypes();
+      AddChessPieceTypes();
+      AddPieceType(Archbishop = new Archbishop("Archbishop", "A", 900, 900));
+      AddPieceType(Chancellor = new Chancellor("Chancellor", "C", 950, 975));
+      AddPieceType(Amazon = new Amazon("General", "G", 1250, 1250));
+    }
+    #endregion
+  }
 }

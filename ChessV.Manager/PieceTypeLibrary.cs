@@ -23,10 +23,10 @@ using System.Collections.Generic;
 
 namespace ChessV.Manager
 {
-	public class PieceTypeLibrary: Dictionary<string, Type> 
-	{
-		public PieceTypeLibrary()
-		{
-		}
-	}
+  public class PieceTypeLibrary : Dictionary<string, Type>
+  {
+    public PieceTypeLibrary()
+    {
+    }
+  }
 }

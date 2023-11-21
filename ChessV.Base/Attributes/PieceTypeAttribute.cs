@@ -19,21 +19,19 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 ****************************************************************************/
 
 using System;
-using System.Collections.Generic;
-using System.Reflection;
 
 namespace ChessV
 {
-	[AttributeUsage(AttributeTargets.Class)]
-	public class PieceTypeAttribute: System.Attribute
-	{
-		public string Name { get; set; }
-		public string Category { get; set; }
+  [AttributeUsage(AttributeTargets.Class)]
+  public class PieceTypeAttribute : System.Attribute
+  {
+    public string Name { get; set; }
+    public string Category { get; set; }
 
-		public PieceTypeAttribute( string internalName, string category )
-		{
-			Name = internalName;
-			Category = category;
-		}
-	}
+    public PieceTypeAttribute(string internalName, string category)
+    {
+      Name = internalName;
+      Category = category;
+    }
+  }
 }

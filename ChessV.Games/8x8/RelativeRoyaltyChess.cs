@@ -22,41 +22,41 @@ using ChessV.Evaluations;
 
 namespace ChessV.Games
 {
-	[Game("Relative Royalty Chess", typeof(Geometry.Rectangular), 8, 8,
-		  Invented = "2017",
-		  InventedBy = "various",
-		  Tags = "Chess Variant")]
-	public class RelativeRoyaltyChess: Chess
-	{
-		// *** INITIALIZATION *** //
+  [Game("Relative Royalty Chess", typeof(Geometry.Rectangular), 8, 8,
+      Invented = "2017",
+      InventedBy = "various",
+      Tags = "Chess Variant")]
+  public class RelativeRoyaltyChess : Chess
+  {
+    // *** INITIALIZATION *** //
 
-		#region SetGameVariables
-		public override void SetGameVariables()
-		{
-			base.SetGameVariables();
-			Array = "rnbqkknr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKKNR";
-		}
-		#endregion
+    #region SetGameVariables
+    public override void SetGameVariables()
+    {
+      base.SetGameVariables();
+      Array = "rnbqkknr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKKNR";
+    }
+    #endregion
 
-		#region AddRules
-		public override void AddRules()
-		{
-			base.AddRules();
-			ReplaceRule( FindRule( typeof(Rules.CheckmateRule) ), new Rules.MultiKing.RelativeRoyaltyCheckmateRule( King ) );
-		}
-		#endregion
+    #region AddRules
+    public override void AddRules()
+    {
+      base.AddRules();
+      ReplaceRule(FindRule(typeof(Rules.CheckmateRule)), new Rules.MultiKing.RelativeRoyaltyCheckmateRule(King));
+    }
+    #endregion
 
-		#region AddEvaluations
-		public override void AddEvaluations()
-		{
-			base.AddEvaluations();
+    #region AddEvaluations
+    public override void AddEvaluations()
+    {
+      base.AddEvaluations();
 
-			//	We need to remove the LowMaterialEvaluation for now. 
-			//	It doesn't understand multiple kings, so all the logic to 
-			//	detect draws by insufficient material, etc, won't do 
-			//	the right thing.
-			RemoveEvaluation( typeof( LowMaterialEvaluation ) );
-		}
-		#endregion
-	}
+      //	We need to remove the LowMaterialEvaluation for now. 
+      //	It doesn't understand multiple kings, so all the logic to 
+      //	detect draws by insufficient material, etc, won't do 
+      //	the right thing.
+      RemoveEvaluation(typeof(LowMaterialEvaluation));
+    }
+    #endregion
+  }
 }

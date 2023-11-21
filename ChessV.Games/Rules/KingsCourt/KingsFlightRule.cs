@@ -20,59 +20,59 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 namespace ChessV.Games.Rules.KingsCourt
 {
-	public class KingsFlightRule: Rule
-	{
-		public KingsFlightRule( PieceType kingType, PieceType chasingType )
-		{
-			this.kingType = kingType;
-			this.chasingType = chasingType;
-		}
+  public class KingsFlightRule : Rule
+  {
+    public KingsFlightRule(PieceType kingType, PieceType chasingType)
+    {
+      this.kingType = kingType;
+      this.chasingType = chasingType;
+    }
 
 
-		public override void GenerateSpecialMoves( MoveList list, bool capturesOnly, int ply )
-		{
-			int kingSquare = Board.GetPieceTypeBitboard( Game.CurrentSide, kingType.TypeNumber ).LSB;
-			BitBoard potentialAttackers = Board.GetPieceTypeBitboard( Game.CurrentSide ^ 1, chasingType.TypeNumber );
-			while( potentialAttackers )
-			{
-				int sq = potentialAttackers.ExtractLSB();
-				int direction = Board.DirectionLookup( sq, kingSquare );
-				if( direction >= 0 && chasingType.AttackRangePerDirection[direction] >= Board.GetDistance( sq, kingSquare ) )
-				{
-					//	King is attacked by appropriate chasing type.
-					//	Allow him to flee two squares in any direction.
-					for( int nDir = 0; nDir < 8; nDir++ )
-					{
-						int nextSquare = Board.NextSquare( nDir, kingSquare );
-						if( nextSquare >= 0 && Board[nextSquare] == null )
-						{
-							nextSquare = Board.NextSquare( nDir, nextSquare );
-							if( nextSquare >= 0 )
-							{
-								Piece pieceOnSquare = Board[nextSquare];
-								if( pieceOnSquare == null )
-								{
-									list.BeginMoveAdd( MoveType.StandardMove, kingSquare, nextSquare );
-									Piece king = list.AddPickup( kingSquare );
-									list.AddDrop( king, nextSquare );
-									list.EndMoveAdd( 150 );
-								}
-								else if( pieceOnSquare.Player != Game.CurrentSide )
-								{
-									list.BeginMoveAdd( MoveType.StandardCapture, kingSquare, nextSquare );
-									Piece king = list.AddPickup( kingSquare );
-									list.AddPickup( nextSquare );
-									list.AddDrop( king, nextSquare );
-									list.EndMoveAdd( 3000 + pieceOnSquare.PieceType.MidgameValue );
-								}
-							}
-						}
-					}
-				}
-			}
-		}
+    public override void GenerateSpecialMoves(MoveList list, bool capturesOnly, int ply)
+    {
+      int kingSquare = Board.GetPieceTypeBitboard(Game.CurrentSide, kingType.TypeNumber).LSB;
+      BitBoard potentialAttackers = Board.GetPieceTypeBitboard(Game.CurrentSide ^ 1, chasingType.TypeNumber);
+      while (potentialAttackers)
+      {
+        int sq = potentialAttackers.ExtractLSB();
+        int direction = Board.DirectionLookup(sq, kingSquare);
+        if (direction >= 0 && chasingType.AttackRangePerDirection[direction] >= Board.GetDistance(sq, kingSquare))
+        {
+          //	King is attacked by appropriate chasing type.
+          //	Allow him to flee two squares in any direction.
+          for (int nDir = 0; nDir < 8; nDir++)
+          {
+            int nextSquare = Board.NextSquare(nDir, kingSquare);
+            if (nextSquare >= 0 && Board[nextSquare] == null)
+            {
+              nextSquare = Board.NextSquare(nDir, nextSquare);
+              if (nextSquare >= 0)
+              {
+                Piece pieceOnSquare = Board[nextSquare];
+                if (pieceOnSquare == null)
+                {
+                  list.BeginMoveAdd(MoveType.StandardMove, kingSquare, nextSquare);
+                  Piece king = list.AddPickup(kingSquare);
+                  list.AddDrop(king, nextSquare);
+                  list.EndMoveAdd(150);
+                }
+                else if (pieceOnSquare.Player != Game.CurrentSide)
+                {
+                  list.BeginMoveAdd(MoveType.StandardCapture, kingSquare, nextSquare);
+                  Piece king = list.AddPickup(kingSquare);
+                  list.AddPickup(nextSquare);
+                  list.AddDrop(king, nextSquare);
+                  list.EndMoveAdd(3000 + pieceOnSquare.PieceType.MidgameValue);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
 
-		protected PieceType kingType;
-		protected PieceType chasingType;
-	}
+    protected PieceType kingType;
+    protected PieceType chasingType;
+  }
 }

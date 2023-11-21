@@ -18,92 +18,92 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 
 namespace ChessV.GUI
 {
-	public static class TextureLibrary
-	{
-		public static void Initialize()
-		{
-			textures = new Dictionary<string, Texture>();
-			//	Textures sets aren't stored in the Registry - we just check the Graphics\Textures 
-			//	subdirectiry on each run of the program to see what's available.
-			//	Search for the directory.  We allow some flexiblity regarding where it is located.
-			string currPath = Directory.GetCurrentDirectory();
-			string rootTextureDir = Path.Combine( currPath, "Graphics", "Textures" );
-			if( !Directory.Exists( rootTextureDir ) )
-			{
-				int iIndex = currPath.LastIndexOf( "ChessV" );
-				if( iIndex >= 0 )
-				{
-					iIndex = currPath.IndexOf( Path.DirectorySeparatorChar, iIndex );
-					if( iIndex > 0 )
-					{
-						currPath = currPath.Remove( iIndex );
-						rootTextureDir = Path.Combine( currPath, "Graphics", "Textures" );
-						if( !Directory.Exists( rootTextureDir ) )
-						{
-							currPath = Directory.GetCurrentDirectory();
-							iIndex = currPath.IndexOf( "ChessV" );
-							if( iIndex >= 0 )
-							{
-								iIndex = currPath.IndexOf( Path.DirectorySeparatorChar, iIndex );
-								if( iIndex > 0 )
-								{
-									currPath = currPath.Remove( iIndex );
-									rootTextureDir = Path.Combine( currPath, "Graphics", "Textures" );
-								}
-							}
-						}
-					}
-				}
-			}
-			
-			if( Directory.Exists( rootTextureDir ) )
-			{
-				string[] textureDirs = Directory.GetDirectories( rootTextureDir );
-				foreach( string textureDir in textureDirs )
-				{
-					//	The directory must have at least an image1.png, a sample_image.png,
-					//	and a properties.txt  to be considered a valid texture.
-					if( File.Exists( textureDir + Path.DirectorySeparatorChar + "image1.png" ) &&
-						File.Exists( textureDir + Path.DirectorySeparatorChar + "sample_image.png" ) &&
-						File.Exists( textureDir + Path.DirectorySeparatorChar + "properties.txt" ) )
-					{
-						string textureName = textureDir.Substring( textureDir.LastIndexOf( '\\' ) + 1 );
-						textures.Add( textureName, new Texture( textureName, textureDir ) );
-					}
-				}
-			}
-		}
+  public static class TextureLibrary
+  {
+    public static void Initialize()
+    {
+      textures = new Dictionary<string, Texture>();
+      //	Textures sets aren't stored in the Registry - we just check the Graphics\Textures 
+      //	subdirectiry on each run of the program to see what's available.
+      //	Search for the directory.  We allow some flexiblity regarding where it is located.
+      string currPath = Directory.GetCurrentDirectory();
+      string rootTextureDir = Path.Combine(currPath, "Graphics", "Textures");
+      if (!Directory.Exists(rootTextureDir))
+      {
+        int iIndex = currPath.LastIndexOf("ChessV");
+        if (iIndex >= 0)
+        {
+          iIndex = currPath.IndexOf(Path.DirectorySeparatorChar, iIndex);
+          if (iIndex > 0)
+          {
+            currPath = currPath.Remove(iIndex);
+            rootTextureDir = Path.Combine(currPath, "Graphics", "Textures");
+            if (!Directory.Exists(rootTextureDir))
+            {
+              currPath = Directory.GetCurrentDirectory();
+              iIndex = currPath.IndexOf("ChessV");
+              if (iIndex >= 0)
+              {
+                iIndex = currPath.IndexOf(Path.DirectorySeparatorChar, iIndex);
+                if (iIndex > 0)
+                {
+                  currPath = currPath.Remove(iIndex);
+                  rootTextureDir = Path.Combine(currPath, "Graphics", "Textures");
+                }
+              }
+            }
+          }
+        }
+      }
 
-		public static Texture Lookup( string name )
-		{
-			if( textures.ContainsKey( name ) )
-				return textures[name];
-			return null;
-		}
+      if (Directory.Exists(rootTextureDir))
+      {
+        string[] textureDirs = Directory.GetDirectories(rootTextureDir);
+        foreach (string textureDir in textureDirs)
+        {
+          //	The directory must have at least an image1.png, a sample_image.png,
+          //	and a properties.txt  to be considered a valid texture.
+          if (File.Exists(textureDir + Path.DirectorySeparatorChar + "image1.png") &&
+            File.Exists(textureDir + Path.DirectorySeparatorChar + "sample_image.png") &&
+            File.Exists(textureDir + Path.DirectorySeparatorChar + "properties.txt"))
+          {
+            string textureName = textureDir.Substring(textureDir.LastIndexOf('\\') + 1);
+            textures.Add(textureName, new Texture(textureName, textureDir));
+          }
+        }
+      }
+    }
 
-		public static bool Contains( string name )
-		{
-			return textures.ContainsKey( name );
-		}
+    public static Texture Lookup(string name)
+    {
+      if (textures.ContainsKey(name))
+        return textures[name];
+      return null;
+    }
 
-		public static void AddTexture( string name, Texture texture )
-		{
-			textures.Add( name, texture );
-		}
+    public static bool Contains(string name)
+    {
+      return textures.ContainsKey(name);
+    }
 
-		public static Dictionary<string, Texture> Textures
-		{
-			get
-			{ return textures; }
-		}
+    public static void AddTexture(string name, Texture texture)
+    {
+      textures.Add(name, texture);
+    }
+
+    public static Dictionary<string, Texture> Textures
+    {
+      get
+      { return textures; }
+    }
 
 
-		//	A lookup table of all the different textures discovered in the Graphics\Textures folder
-		private static Dictionary<string, Texture> textures;
-	}
+    //	A lookup table of all the different textures discovered in the Graphics\Textures folder
+    private static Dictionary<string, Texture> textures;
+  }
 }

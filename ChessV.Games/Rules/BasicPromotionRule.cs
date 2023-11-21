@@ -22,91 +22,91 @@ using System.Collections.Generic;
 
 namespace ChessV.Games.Rules
 {
-	public class BasicPromotionRule: PromotionRule
-	{
-		public BasicPromotionRule
-			( PieceType promotingType, 
-			  List<PieceType> availablePromotionTypes, 
-			  ConditionalLocationDelegate destLocationConditionDelegate,
-			  ConditionalLocationDelegate origLocationConditionDelegate = null )
-		{ 
-			this.promotingType = promotingType; 
-			promotionTypes = availablePromotionTypes; 
-			destLocationCondition = destLocationConditionDelegate;
-			origLocationCondition = origLocationConditionDelegate;
-		}
+  public class BasicPromotionRule : PromotionRule
+  {
+    public BasicPromotionRule
+      (PieceType promotingType,
+        List<PieceType> availablePromotionTypes,
+        ConditionalLocationDelegate destLocationConditionDelegate,
+        ConditionalLocationDelegate origLocationConditionDelegate = null)
+    {
+      this.promotingType = promotingType;
+      promotionTypes = availablePromotionTypes;
+      destLocationCondition = destLocationConditionDelegate;
+      origLocationCondition = origLocationConditionDelegate;
+    }
 
-		public override void Initialize( Game game )
-		{
-			base.Initialize( game );
-			promotingTypeNumber = game.GetPieceTypeNumber( promotingType );
-		}
+    public override void Initialize(Game game)
+    {
+      base.Initialize(game);
+      promotingTypeNumber = game.GetPieceTypeNumber(promotingType);
+    }
 
-		public void SetPromotionRank( int rank )
-		{
-			destLocationCondition = loc => loc.Rank == rank;
-		}
+    public void SetPromotionRank(int rank)
+    {
+      destLocationCondition = loc => loc.Rank == rank;
+    }
 
-		public override MoveEventResponse MoveBeingGenerated( MoveList moves, int from, int to, MoveType type )
-		{
-			Piece movingPiece = Board[from];
-			if( movingPiece == null )
-			{
-				throw new System.Exception( "ex" );
-			}
-			if( movingPiece.TypeNumber == promotingTypeNumber )
-			{
-				//	check the from-square condition (if any, usually there isn't)
-				if( origLocationCondition != null )
-				{
-					Location fromLocation = Board.SquareToLocation( Board.PlayerSquare( movingPiece.Player, from ) );
-					if( !origLocationCondition( fromLocation ) )
-						return MoveEventResponse.NotHandled;
-				}
+    public override MoveEventResponse MoveBeingGenerated(MoveList moves, int from, int to, MoveType type)
+    {
+      Piece movingPiece = Board[from];
+      if (movingPiece == null)
+      {
+        throw new System.Exception("ex");
+      }
+      if (movingPiece.TypeNumber == promotingTypeNumber)
+      {
+        //	check the from-square condition (if any, usually there isn't)
+        if (origLocationCondition != null)
+        {
+          Location fromLocation = Board.SquareToLocation(Board.PlayerSquare(movingPiece.Player, from));
+          if (!origLocationCondition(fromLocation))
+            return MoveEventResponse.NotHandled;
+        }
 
-				//	check the to-square condition
-				Location toLocation = Board.SquareToLocation( Board.PlayerSquare( movingPiece.Player, to ) );
-				if( destLocationCondition( toLocation ) )
-				{
-					//	this is a promotion; add one move for each promotion type
-					Piece capturedPiece = Board[to];
-					if( capturedPiece == null )
-					{
-						foreach( PieceType promoteTo in promotionTypes )
-						{
-							moves.BeginMoveAdd( MoveType.MoveWithPromotion, from, to );
-							moves.AddPickup( from );
-							moves.AddDrop( movingPiece, to, promoteTo );
-							moves.EndMoveAdd( 5000 + promoteTo.MidgameValue );
-						}
-					}
-					else
-					{
-						foreach( PieceType promoteTo in promotionTypes )
-						{
-							moves.BeginMoveAdd( MoveType.CaptureWithPromotion, from, to );
-							moves.AddPickup( from );
-							moves.AddPickup( to );
-							moves.AddDrop( movingPiece, to, promoteTo );
-							moves.EndMoveAdd( 5000 + promoteTo.MidgameValue + capturedPiece.PieceType.MidgameValue );
-						}
-					}
-					return MoveEventResponse.Handled;
-				}
-			}
-			return MoveEventResponse.NotHandled;
-		}
+        //	check the to-square condition
+        Location toLocation = Board.SquareToLocation(Board.PlayerSquare(movingPiece.Player, to));
+        if (destLocationCondition(toLocation))
+        {
+          //	this is a promotion; add one move for each promotion type
+          Piece capturedPiece = Board[to];
+          if (capturedPiece == null)
+          {
+            foreach (PieceType promoteTo in promotionTypes)
+            {
+              moves.BeginMoveAdd(MoveType.MoveWithPromotion, from, to);
+              moves.AddPickup(from);
+              moves.AddDrop(movingPiece, to, promoteTo);
+              moves.EndMoveAdd(5000 + promoteTo.MidgameValue);
+            }
+          }
+          else
+          {
+            foreach (PieceType promoteTo in promotionTypes)
+            {
+              moves.BeginMoveAdd(MoveType.CaptureWithPromotion, from, to);
+              moves.AddPickup(from);
+              moves.AddPickup(to);
+              moves.AddDrop(movingPiece, to, promoteTo);
+              moves.EndMoveAdd(5000 + promoteTo.MidgameValue + capturedPiece.PieceType.MidgameValue);
+            }
+          }
+          return MoveEventResponse.Handled;
+        }
+      }
+      return MoveEventResponse.NotHandled;
+    }
 
-		public override void GetNotesForPieceType( PieceType type, List<string> notes )
-		{
-			if( type == promotingType )
-				notes.Add( "can promote" );
-		}
+    public override void GetNotesForPieceType(PieceType type, List<string> notes)
+    {
+      if (type == promotingType)
+        notes.Add("can promote");
+    }
 
-		protected PieceType promotingType;
-		protected int promotingTypeNumber;
-		protected List<PieceType> promotionTypes;
-		protected ConditionalLocationDelegate origLocationCondition;
-		protected ConditionalLocationDelegate destLocationCondition;
-	}
+    protected PieceType promotingType;
+    protected int promotingTypeNumber;
+    protected List<PieceType> promotionTypes;
+    protected ConditionalLocationDelegate origLocationCondition;
+    protected ConditionalLocationDelegate destLocationCondition;
+  }
 }
