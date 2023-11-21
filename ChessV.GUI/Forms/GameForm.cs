@@ -263,11 +263,14 @@ namespace ChessV.GUI
     private void GameForm_Load(object sender, EventArgs e)
     {
       Text = Game.GameAttribute.GameName;
-      Width = boardControl.Presentation.NativeSize().Width + 440;
+      // 569 == listMoves.Width;
+      // 477 == panelClocks.Width;
+      // 5 == splitterPanel.SplitterWidth
+      Width = boardControl.Presentation.NativeSize().Width + splitContainer1.SplitterWidth + 474 + 5 + 24;
       boardControl.Size = boardControl.Presentation.NativeSize();
       splitContainer1.SplitterDistance = boardControl.Presentation.NativeSize().Width + 4;
       splitContainer2.SplitterDistance = boardControl.Presentation.NativeSize().Height + 4;
-      Height = boardControl.Presentation.NativeSize().Height + 300;
+      Height = boardControl.Presentation.NativeSize().Height + 24 + 224 + 10; // menustrip + thinking + 2 borders
       if (Game.GetCustomThemes() == null)
         menuitem_EnableCustomTheme.Visible = false;
       else
@@ -283,6 +286,10 @@ namespace ChessV.GUI
         labelPlayer1.Text = Game.Match.GetPlayer(1).Name;
       else
         labelPlayer1.Text = "Player";
+      if (Game.GetType() == typeof(ApmwChessGame))
+      {
+        evaluationTabControl.SelectedIndex = 1;
+      }
       Game.MoveTakenBack += moveTakenBack;
       timer.Start();
     }
@@ -956,8 +963,8 @@ namespace ChessV.GUI
       listThinking1.BackColor = WindowBackgroundColor;
       //splitContainer3.Panel1.BackColor = WindowBackgroundColor;
       splitContainer3.Panel2.BackColor = WindowBackgroundColor;
-      tabControl1.TabPages[0].BackColor = WindowBackgroundColor;
-      tabControl1.TabPages[1].BackColor = WindowBackgroundColor;
+      evaluationTabControl.TabPages[0].BackColor = WindowBackgroundColor;
+      evaluationTabControl.TabPages[1].BackColor = WindowBackgroundColor;
       lblReviewMode.BackColor = Theme.ColorScheme.BorderColor;
       lblReviewMode.ForeColor = Theme.ColorScheme.TextColor;
       //	Recalculate the size of the window, the size of the 

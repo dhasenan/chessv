@@ -74,7 +74,7 @@ namespace ChessV.GUI
     {
       this.game = game;
       this.board = board;
-      this.Theme = theme;
+      Theme = theme;
       this.owningForm = owningForm;
       HighlightMove = true;
       RotateBoard = false;
