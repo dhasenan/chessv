@@ -434,6 +434,7 @@ namespace Archipelago.APChessV
         var deathLinkService = session.CreateDeathLinkService();
         var deathLink = new DeathLink(session.Players.GetPlayerName(session.ConnectionInfo.Slot), reason);
         deathLinkService.SendDeathLink(deathLink);
+        ArchipelagoClient.getInstance().nonSessionMessages.Add(string.Join(" ", "DeathLink sent:", reason));
       }
     }
   }

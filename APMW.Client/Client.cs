@@ -14,7 +14,23 @@ namespace Archipelago.APChessV
 {
   public class ArchipelagoClient
   {
-    public ArchipelagoClient()
+    public static ArchipelagoClient _instance;
+    public static ArchipelagoClient getInstance()
+    {
+      if (_instance == null)
+      {
+        lock (typeof(ArchipelagoClient))
+        {
+          if (_instance == null)
+          {
+            _instance = new ArchipelagoClient();
+          }
+        }
+      }
+      return _instance;
+    }
+
+    private ArchipelagoClient()
     {
       nonSessionMessages = new List<string>();
 
@@ -180,14 +196,14 @@ namespace Archipelago.APChessV
               deathLinkService.EnableDeathLink();
               deathLinkService.OnDeathLinkReceived += (DeathLink deathLink) =>
               {
-                string reason = string.Join(" ", deathLink.Source, deathLink.Cause);
-                nonSessionMessages.Add(string.Join(" ", "DeathLink received:", reason));
                 lock (LocationHandler.DeathlinkedMatches)
                 {
                   if (LocationHandler.DeathlinkedMatches.Contains(match))
                     return;
                   LocationHandler.DeathlinkedMatches.Add(match);
                 }
+                string reason = string.Join(" due to ", deathLink.Source, deathLink.Cause);
+                nonSessionMessages.Add(string.Join(" ", "DeathLink received:", reason));
                 match.Death(reason);
               };
             }).Start();

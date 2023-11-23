@@ -36,7 +36,7 @@ namespace ChessV.GUI
       linesSeen = 0;
 
       InitializeComponent();
-      archipelagoClient = new ArchipelagoClient();
+      archipelagoClient = ArchipelagoClient.getInstance();
       this.mainForm = mainForm;
     }
 
