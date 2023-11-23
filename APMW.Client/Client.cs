@@ -180,14 +180,15 @@ namespace Archipelago.APChessV
               deathLinkService.EnableDeathLink();
               deathLinkService.OnDeathLinkReceived += (DeathLink deathLink) =>
               {
-                nonSessionMessages.Add(deathLink.Cause);
+                string reason = string.Join(" ", deathLink.Source, deathLink.Cause);
+                nonSessionMessages.Add(string.Join(" ", "DeathLink received:", reason));
                 lock (LocationHandler.DeathlinkedMatches)
                 {
                   if (LocationHandler.DeathlinkedMatches.Contains(match))
                     return;
                   LocationHandler.DeathlinkedMatches.Add(match);
                 }
-                match.Stop();
+                match.Death(reason);
               };
             }).Start();
           }

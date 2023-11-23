@@ -32,6 +32,7 @@ namespace ChessV
   public delegate void FENChangedEventHandler(string fen);
   public delegate void MatchMoveEventHandler(Movement move, string sanString, string comment);
   public delegate void StartedEventHandler(Match match = null);
+  public delegate void DeathedEventHandler(Match match = null, string reason = "Unknown DeathLink");
   public delegate void FinishedEventHandler(Match match = null);
   public delegate void StartFailedEventHandler(Match match = null);
   public delegate void PlayersReadyEventHandler();
@@ -78,6 +79,7 @@ namespace ChessV
       FENChanged = delegate { };
       MoveMade = delegate { };
       Finished = delegate { };
+      Deathed = delegate { };
     }
 
     public string ErrorString { get; set; }
@@ -360,6 +362,28 @@ namespace ChessV
       Stop();
     }
 
+    public void Death(string reason)
+    {
+      IsFinished = true;
+      Result = new Result(ResultType.Resignation, m_player[0] is HumanPlayer ? 0 : 1, "Killed by a distant ally: " + reason);
+
+      m_gameInProgress = false;
+      PGN.SetTag("PlyCount", PGN.Moves.Count.ToString());
+      PGN.Result = Result;
+      PGN.SetResultDescription(Result.Description);
+
+      m_player[0].EndGame(Result);
+      m_player[1].EndGame(Result);
+      for (int i = 0; i < 2; i++)
+      {
+        if (m_player[i] != null)
+          m_player[i].Kill();
+      }
+      Deathed(this, Result.Description);
+      Finished(this);
+      HumanEnabled(false);
+    }
+
     public void EmitStartFailed()
     {
       //	raise the StartFailed event
@@ -420,6 +444,7 @@ namespace ChessV
     public MatchMoveEventHandler MoveMade;
     public StartedEventHandler Started;
     public FinishedEventHandler Finished;
+    public DeathedEventHandler Deathed;
     public StartFailedEventHandler StartFailed;
     public PlayersReadyEventHandler PlayersReady;
 

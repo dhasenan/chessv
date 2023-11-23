@@ -43,7 +43,7 @@ namespace Archipelago.APChessV
       LocationCheckHelper = locationCheckHelper;
       Initialized = true;
       victory = () => new Task(() => Victory(session)).Start();
-      deathlink = () => new Task(() => Deathlink(session)).Start();
+      deathlink = (reason) => new Task(() => Deathlink(session, reason)).Start();
     }
 
     public ILocationCheckHelper LocationCheckHelper { get; private set; }
@@ -53,7 +53,7 @@ namespace Archipelago.APChessV
     private Action<Match> feHandler;
     private Action<MoveInfo> mpHandler;
     private Action victory;
-    private Action deathlink;
+    private Action<string> deathlink;
     private Match match;
     public HashSet<Match> DeathlinkedMatches = new HashSet<Match>();
     private int humanPlayer;
@@ -86,6 +86,8 @@ namespace Archipelago.APChessV
         // TODO(chesslogic): mention "no match to end" in logger
         return;
       }
+      if (match.Result.Winner != this.humanPlayer)
+        deathlink(" resigned from their board.");
 
       //ApmwCore.getInstance().NewMovePlayed.Remove(mpHandler);
       //mpHandler = null;
@@ -127,10 +129,13 @@ namespace Archipelago.APChessV
       // I could join all of these with a &&, but this is more dramatic.
       if (match.Result != null && !match.Result.IsNone)
         if (match.Result.Type == ResultType.Win)
+        {
           if (match.Result.Winner == this.humanPlayer)
             victory();
           else
-            deathlink();
+            deathlink(" was checkmated.");
+        }
+            
 
       //
       // END victory ...
@@ -416,7 +421,7 @@ namespace Archipelago.APChessV
       session.Socket.SendPacket(statusUpdatePacket);
     }
 
-    public void Deathlink(ArchipelagoSession session)
+    public void Deathlink(ArchipelagoSession session, string reason = null)
     {
       lock (DeathlinkedMatches)
       {
@@ -427,7 +432,7 @@ namespace Archipelago.APChessV
       if (session.ConnectionInfo.Tags.Contains("DeathLink"))
       {
         var deathLinkService = session.CreateDeathLinkService();
-        var deathLink = new DeathLink(session.Players.GetPlayerName(session.ConnectionInfo.Slot));
+        var deathLink = new DeathLink(session.Players.GetPlayerName(session.ConnectionInfo.Slot), reason);
         deathLinkService.SendDeathLink(deathLink);
       }
     }

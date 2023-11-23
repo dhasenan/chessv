@@ -94,6 +94,8 @@ namespace ChessV.GUI
       debugForm = new DebugForm(Game.MessageLog, this);
 
       debugForm.Visible = false;
+
+      game.Match.Deathed += (match, reason) => GameEnded(reason);
     }
     #endregion
 
@@ -140,7 +142,7 @@ namespace ChessV.GUI
     #endregion
 
     #region GameEnded
-    public void GameEnded(int eval, string message)
+    public void GameEnded(string message)
     {
       MessageBox.Show(message);
     }
