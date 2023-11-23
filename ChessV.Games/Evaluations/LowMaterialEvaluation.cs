@@ -101,7 +101,7 @@ namespace ChessV.Evaluations
 
       //	find the royal piece type
       Games.Rules.CheckmateRule rule =
-        (Games.Rules.CheckmateRule)game.FindRule(typeof(Games.Rules.CheckmateRule));
+        (Games.Rules.CheckmateRule)game.FindRule(typeof(Games.Rules.CheckmateRule), true);
       if (rule != null)
         royalTypeNumbers = new HashSet<int>(rule.RoyalPieceTypes.Select((type) => type.TypeNumber));
       //	find the promoting type

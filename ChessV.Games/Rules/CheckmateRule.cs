@@ -32,7 +32,7 @@ namespace ChessV.Games.Rules
 
     public PieceType[] RoyalPieceTypes { get; private set; }
 
-    public PieceType RoyalPieceType { get { return RoyalPieceTypes[0]; } }
+    public PieceType RoyalPieceType { get { return RoyalPieceTypes.First(); } }
 
 
     // *** CONSTRUCTION ** //

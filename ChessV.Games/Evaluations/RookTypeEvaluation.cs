@@ -101,7 +101,7 @@ namespace ChessV.Evaluations
     {
       #region Open File Bonuses
       if (openFileList != null)
-        foreach (var bonus in openFileList)
+        foreach (OpenFileBonuses bonus in openFileList)
         {
           #region Player 0
           //	handle pieces of player 0

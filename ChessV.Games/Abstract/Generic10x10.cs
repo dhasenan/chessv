@@ -385,7 +385,7 @@ namespace ChessV.Games.Abstract
       //	and rook-mover on 9th ranks with enemy king on 10th)
 
       //	Do we have a royal king?
-      CheckmateRule rule = (CheckmateRule)FindRule(typeof(CheckmateRule));
+      CheckmateRule rule = (CheckmateRule)FindRule(typeof(CheckmateRule), true);
       bool royalKing = rule != null && King != null && King.Enabled && rule.RoyalPieceType == King;
 
       if ((Rook != null && Rook.Enabled) ||

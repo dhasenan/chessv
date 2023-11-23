@@ -18,6 +18,8 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
+using ChessV.Games.Rules.Apmw;
+using ChessV.Games.Rules.Extinction;
 using System;
 using System.Collections.Generic;
 
@@ -89,7 +91,7 @@ namespace ChessV.Games.Rules
     public override void PostInitialize()
     {
       hashKeyIndex = Game.HashKeys.TakeKeys(nextPriv - 1);
-      hasCheckmateRule = Game.FindRule(typeof(CheckmateRule)) != null;
+      hasCheckmateRule = Game.FindRule(typeof(CheckmateRule), true) != null;
       for (int square = 0; square < Game.Board.NumSquares; square++)
       {
         int flagvalue = -1;

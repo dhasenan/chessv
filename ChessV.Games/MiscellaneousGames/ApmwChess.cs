@@ -19,6 +19,7 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 ****************************************************************************/
 
 using ChessV.Base;
+using ChessV.Evaluations;
 using ChessV.Games.Pieces.Apmw;
 using ChessV.Games.Pieces.Berolina;
 using ChessV.Games.Rules.Apmw;
@@ -242,9 +243,9 @@ namespace ChessV.Games
     }
     #endregion
 
-    // *** INITIALIZATION *** //
+      // *** INITIALIZATION *** //
 
-    #region SetGameVariables
+      #region SetGameVariables
     public override void SetGameVariables()
     {
       base.SetGameVariables();
@@ -350,6 +351,7 @@ namespace ChessV.Games
         CastleRooks.Append("KQ");
       }
 
+      // Set castling pieces
       for (int rank = 0; rank < this.NumRanks; rank++)
       {
         notations[rank] = "";

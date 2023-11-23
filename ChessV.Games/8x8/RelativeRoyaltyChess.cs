@@ -42,7 +42,7 @@ namespace ChessV.Games
     public override void AddRules()
     {
       base.AddRules();
-      ReplaceRule(FindRule(typeof(Rules.CheckmateRule)), new Rules.MultiKing.RelativeRoyaltyCheckmateRule(King));
+      ReplaceRule(FindRule(typeof(Rules.CheckmateRule), true), new Rules.MultiKing.RelativeRoyaltyCheckmateRule(King));
     }
     #endregion
 

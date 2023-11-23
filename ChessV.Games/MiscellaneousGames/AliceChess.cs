@@ -81,11 +81,11 @@ namespace ChessV.Games
       // *** CASTLING *** //
 
       //	Swap out any CastlingRule with an AliceCastlingRule
-      Rule castlingRule = FindRule(typeof(Rules.CastlingRule));
+      Rule castlingRule = FindRule(typeof(Rules.CastlingRule), true);
       if (castlingRule != null)
         ReplaceRule(castlingRule, new AliceCastlingRule((Rules.CastlingRule)castlingRule));
       //	Swap out any FlexibleCastlingRule with an AliceFlexibleCastlingRule
-      Rule flexibleCastlingRule = FindRule(typeof(Rules.FlexibleCastlingRule));
+      Rule flexibleCastlingRule = FindRule(typeof(Rules.FlexibleCastlingRule), true);
       if (flexibleCastlingRule != null)
         ReplaceRule(flexibleCastlingRule, new AliceFlexibleCastlingRule((Rules.FlexibleCastlingRule)flexibleCastlingRule));
 

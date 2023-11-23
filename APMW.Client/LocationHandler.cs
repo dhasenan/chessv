@@ -87,7 +87,7 @@ namespace Archipelago.APChessV
         return;
       }
       if (match.Result.Winner != this.humanPlayer)
-        deathlink(" resigned from their board.");
+        deathlink("resigned.");
 
       //ApmwCore.getInstance().NewMovePlayed.Remove(mpHandler);
       //mpHandler = null;
@@ -133,9 +133,8 @@ namespace Archipelago.APChessV
           if (match.Result.Winner == this.humanPlayer)
             victory();
           else
-            deathlink(" was checkmated.");
+            deathlink("was checkmated.");
         }
-            
 
       //
       // END victory ...
@@ -434,7 +433,8 @@ namespace Archipelago.APChessV
         var deathLinkService = session.CreateDeathLinkService();
         var deathLink = new DeathLink(session.Players.GetPlayerName(session.ConnectionInfo.Slot), reason);
         deathLinkService.SendDeathLink(deathLink);
-        ArchipelagoClient.getInstance().nonSessionMessages.Add(string.Join(" ", "DeathLink sent:", reason));
+        var message = string.Join(" ", session.Players.GetPlayerName(session.ConnectionInfo.Slot), reason);
+        ArchipelagoClient.getInstance().nonSessionMessages.Add(string.Join(" ", "DeathLink sent:", message));
       }
     }
   }
