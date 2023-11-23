@@ -151,7 +151,7 @@ namespace ChessV.Evaluations
 
       #region Rook On 7th Bonuses
       if (rookOn7thList != null)
-        foreach (var bonus in rookOn7thList)
+        foreach (RookOn7thBonuses bonus in rookOn7thList)
         {
           #region Player 0
           //	handle pieces of player 0
