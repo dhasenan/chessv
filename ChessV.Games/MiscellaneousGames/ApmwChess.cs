@@ -240,52 +240,52 @@ namespace ChessV.Games
     {
       // TODO(chesslogic): I need to modify RookTypeEvaluation#158; it tries to call board.GetRank with -1 when black has a fairy king
 
-      //base.AddEvaluations();
+      base.AddEvaluations();
 
-      //string loadableTypes = "KQRBNP" + promotions;
-      //if (HumanPlayer == 0)
-      //  loadableTypes = loadableTypes.ToUpper();
-      //else
-      //  loadableTypes = loadableTypes.ToLower();
+      string loadableTypes = "KQRBNP" + promotions;
+      if (HumanPlayer == 0)
+        loadableTypes = loadableTypes.ToUpper();
+      else
+        loadableTypes = loadableTypes.ToLower();
 
-      //if (RookTypeEval == null)
-      //{
-      //  RookTypeEval = new RookTypeEvaluation();
-      //  AddEvaluation(RookTypeEval);
-      //}
-      //if (loadableTypes.Contains(ChargingRook.Notation[HumanPlayer]))
-      //  RookTypeEval.AddRookOn7thBonus(ChargingRook, King);
-      //if (loadableTypes.Contains(ShortRook.Notation[HumanPlayer]))
-      //{
-      //  RookTypeEval.AddOpenFileBonus(ShortRook);
-      //  RookTypeEval.AddRookOn7thBonus(ShortRook, King);
-      //}
-      //if (loadableTypes.Contains(Colonel.Notation[HumanPlayer]))
-      //  RookTypeEval.AddRookOn7thBonus(Colonel, King, 2, 8);
-      //if (loadableTypes.Contains(Chancellor.Notation[HumanPlayer]))
-      //  RookTypeEval.AddRookOn7thBonus(Chancellor, King, 2, 8);
+      if (RookTypeEval == null)
+      {
+        RookTypeEval = new RookTypeEvaluation();
+        AddEvaluation(RookTypeEval);
+      }
+      if (loadableTypes.Contains(ChargingRook.Notation[HumanPlayer]))
+        RookTypeEval.AddRookOn7thBonus(ChargingRook, King);
+      if (loadableTypes.Contains(ShortRook.Notation[HumanPlayer]))
+      {
+        RookTypeEval.AddOpenFileBonus(ShortRook);
+        RookTypeEval.AddRookOn7thBonus(ShortRook, King);
+      }
+      if (loadableTypes.Contains(Colonel.Notation[HumanPlayer]))
+        RookTypeEval.AddRookOn7thBonus(Colonel, King, 2, 8);
+      if (loadableTypes.Contains(Chancellor.Notation[HumanPlayer]))
+        RookTypeEval.AddRookOn7thBonus(Chancellor, King, 2, 8);
 
-      //if (OutpostEval == null)
-      //{
-      //  OutpostEval = new OutpostEvaluation();
-      //  AddEvaluation(OutpostEval);
-      //}
-      //if (loadableTypes.Contains(ChargingKnight.Notation[HumanPlayer]))
-      //  OutpostEval.AddOutpostBonus(ChargingKnight);
-      //if (loadableTypes.Contains(NarrowKnight.Notation[HumanPlayer]))
-      //  OutpostEval.AddOutpostBonus(NarrowKnight);
-      //if (loadableTypes.Contains(Phoenix.Notation[HumanPlayer]))
-      //  OutpostEval.AddOutpostBonus(Phoenix);
-      //if (loadableTypes.Contains(WarElephant.Notation[HumanPlayer]))
-      //  OutpostEval.AddOutpostBonus(WarElephant, 10, 2, 5, 5);
-      //if (loadableTypes.Contains(Cleric.Notation[HumanPlayer]))
-      //  OutpostEval.AddOutpostBonus(Cleric, 10, 2, 5, 5);
-      //if (loadableTypes.Contains(Lion.Notation[HumanPlayer]))
-      //  OutpostEval.AddOutpostBonus(Lion, 10, 2, 5, 5);
-      //if (loadableTypes.Contains(Bishop.Notation[HumanPlayer]))
-      //  OutpostEval.AddOutpostBonus(Bishop, 10, 2, 5, 5);
-      //if (loadableTypes.Contains(Tower.Notation[HumanPlayer]))
-      //  OutpostEval.AddOutpostBonus(Tower, 10, 2, 5, 5);
+      if (OutpostEval == null)
+      {
+        OutpostEval = new OutpostEvaluation();
+        AddEvaluation(OutpostEval);
+      }
+      if (loadableTypes.Contains(ChargingKnight.Notation[HumanPlayer]))
+        OutpostEval.AddOutpostBonus(ChargingKnight);
+      if (loadableTypes.Contains(NarrowKnight.Notation[HumanPlayer]))
+        OutpostEval.AddOutpostBonus(NarrowKnight);
+      if (loadableTypes.Contains(Phoenix.Notation[HumanPlayer]))
+        OutpostEval.AddOutpostBonus(Phoenix);
+      if (loadableTypes.Contains(WarElephant.Notation[HumanPlayer]))
+        OutpostEval.AddOutpostBonus(WarElephant, 10, 2, 5, 5);
+      if (loadableTypes.Contains(Cleric.Notation[HumanPlayer]))
+        OutpostEval.AddOutpostBonus(Cleric, 10, 2, 5, 5);
+      if (loadableTypes.Contains(Lion.Notation[HumanPlayer]))
+        OutpostEval.AddOutpostBonus(Lion, 10, 2, 5, 5);
+      if (loadableTypes.Contains(Bishop.Notation[HumanPlayer]))
+        OutpostEval.AddOutpostBonus(Bishop, 10, 2, 5, 5);
+      if (loadableTypes.Contains(Tower.Notation[HumanPlayer]))
+        OutpostEval.AddOutpostBonus(Tower, 10, 2, 5, 5);
     }
     #endregion
 

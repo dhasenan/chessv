@@ -153,45 +153,37 @@ namespace ChessV.Evaluations
       if (rookOn7thList != null)
         foreach (RookOn7thBonuses bonus in rookOn7thList)
         {
-          #region Player 0
           //	handle pieces of player 0
-          int kingRank = board.GetRank(board.GetPieceTypeBitboard(1, bonus.KingType.TypeNumber).LSB);
-          if (kingRank == board.NumRanks - 1)
-          {
-            BitBoard p0 = board.GetPieceTypeBitboard(0, bonus.RookType.TypeNumber);
-            while (p0)
-            {
-              int square = p0.ExtractLSB();
-              int rank = board.GetRank(square);
-              if (rank == board.NumRanks - 2)
-              {
-                midgameEval += bonus.MidgameBonus;
-                endgameEval += bonus.EndgameBonus;
-              }
-            }
-          }
-          #endregion
-
-          #region Player 1
+          adjustRookOn7th(ref midgameEval, ref endgameEval, side: 0, bonus);
           //	handle pieces of player 1
-          kingRank = board.GetRank(board.GetPieceTypeBitboard(0, bonus.KingType.TypeNumber).LSB);
-          if (kingRank == 0)
-          {
-            BitBoard p1 = board.GetPieceTypeBitboard(1, bonus.RookType.TypeNumber);
-            while (p1)
-            {
-              int square = p1.ExtractLSB();
-              int rank = board.GetRank(square);
-              if (rank == 1)
-              {
-                midgameEval -= bonus.MidgameBonus;
-                endgameEval -= bonus.EndgameBonus;
-              }
-            }
-          }
-          #endregion
+          adjustRookOn7th(ref midgameEval, ref endgameEval, side: 1, bonus);
         }
       #endregion
+    }
+
+    private void adjustRookOn7th(ref int midgameEval, ref int endgameEval, int side, RookOn7thBonuses bonus)
+    {
+      // we only care about non-mounted kings - mounted kings can escape the 8th rank
+      BitBoard kingBitBoard = board.GetPieceTypeBitboard(side ^ 1, bonus.KingType.TypeNumber);
+      while (kingBitBoard)
+      {
+        int kingSquare = kingBitBoard.ExtractLSB();
+        int kingRank = board.GetRank(kingSquare);
+        if (kingRank == (side ^ 1) * (board.NumRanks - 1))
+        {
+          BitBoard p0 = board.GetPieceTypeBitboard(side, bonus.RookType.TypeNumber);
+          while (p0)
+          {
+            int square = p0.ExtractLSB();
+            int rank = board.GetRank(square);
+            if (rank == (side * (board.NumRanks - 3)) + 1)
+            {
+              midgameEval += bonus.MidgameBonus;
+              endgameEval += bonus.EndgameBonus;
+            }
+          }
+        }
+      }
     }
     #endregion
 
