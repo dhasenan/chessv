@@ -17,6 +17,8 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
+using System.Text;
+
 namespace ChessV.Boards
 {
   public class BoardWithCards : Board
@@ -37,11 +39,19 @@ namespace ChessV.Boards
       }
     }
 
-    public override string GetRankNotation(int nRank)
+    //	Lookup for the notaiton of a square
+    public override string GetDefaultSquareNotation(int square)
     {
-      if (nRank < NumFiles)
-        base.GetRankNotation(nRank);
-      return "pkt";
+      if (square < NumRanks * NumFiles)
+        return GetFileNotation(GetFile(square)) + GetRankNotation(GetRank(square));
+      else
+      {
+        Location location = SquareToLocation(square);
+        StringBuilder result = new StringBuilder();
+        result.Append("PKT");
+        result.Append(-location.File);
+        return result.ToString();
+      }
     }
 
     public override Location SquareToLocation(int square)

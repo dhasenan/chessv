@@ -241,7 +241,7 @@ namespace ChessV.Games
       // Do NOT add pawn structure evaluation - berolina pawns are confusing and line 444 crashes the game
       // AddEvaluation(new PawnStructureEvaluation());
 
-      // Do NOT add development evaluation - the AI becomes extremely upset when player gets Pawn Forwardness
+      // Do NOT add development evaluation - the AI persists unknown misleading information between undos
       // AddEvaluation(new DevelopmentEvaluation());
 
       // Do NOT add low material evaluation - instant draw does not account for fairy pieces

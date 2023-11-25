@@ -151,7 +151,7 @@ namespace ChessV
     { return rankNotations[nRank].ToString(); }
 
     //	Lookup for the notaiton of a square
-    public string GetDefaultSquareNotation(int square)
+    public virtual string GetDefaultSquareNotation(int square)
     { return GetFileNotation(GetFile(square)) + GetRankNotation(GetRank(square)); }
 
     //	Find the Rank for a given square

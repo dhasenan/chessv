@@ -161,5 +161,17 @@ namespace ChessV.Games.Rules.Cards
         }
       }
     }
+
+    public override MoveEventResponse DescribeMove(MoveInfo move, MoveNotation format, ref string description)
+    {
+      if (move.FromSquare < Board.NumSquares)
+        return MoveEventResponse.NotHandled;
+
+      description = String.Join(" ",
+        Board.GetDefaultSquareNotation(move.FromSquare),
+        Board.GetDefaultSquareNotation(move.ToSquare),
+        move.PieceMoved.PieceType.Notation[move.Player]);
+      return MoveEventResponse.Handled;
+    }
   }
 }

@@ -192,11 +192,11 @@ namespace Archipelago.APChessV
         {
           if (info.FromSquare > info.ToSquare)
           {
-            locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "O-O Castle"));
+            locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "O-O-O Castle"));
           }
           else
           {
-            locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "O-O-O Castle"));
+            locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "O-O Castle"));
           }
         }
       }
