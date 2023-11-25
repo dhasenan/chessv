@@ -238,19 +238,37 @@ namespace ChessV.Games
     #region AddEvaluations
     public override void AddEvaluations()
     {
-      // TODO(chesslogic): I need to modify RookTypeEvaluation#158; it tries to call board.GetRank with -1 when black has a fairy king
+      // Do NOT add pawn structure evaluation - berolina pawns are confusing and line 444 crashes the game
+      // AddEvaluation(new PawnStructureEvaluation());
 
-      base.AddEvaluations();
+      // Do NOT add development evaluation - the AI becomes extremely upset when player gets Pawn Forwardness
+      // AddEvaluation(new DevelopmentEvaluation());
 
+      // Do NOT add low material evaluation - instant draw does not account for fairy pieces
+      // AddEvaluation(new LowMaterialEvaluation());
+
+      //	Check for colorbound pieces
+      bool colorboundPieces = false;
+      for (int x = 0; x < nPieceTypes; x++)
+        if (pieceTypes[x].NumSlices == 2)
+          colorboundPieces = true;
+      if (colorboundPieces)
+        AddEvaluation(new ColorbindingEvaluation());
+      
+      // Prepare for other specific types
       string loadableTypes = "KQRBNP" + promotions;
       if (HumanPlayer == 0)
         loadableTypes = loadableTypes.ToUpper();
       else
         loadableTypes = loadableTypes.ToLower();
 
+      // Update strategies of rook types
       if (RookTypeEval == null)
       {
         RookTypeEval = new RookTypeEvaluation();
+        RookTypeEval.AddOpenFileBonus(Rook);
+        RookTypeEval.AddRookOn7thBonus(Rook, King);
+        RookTypeEval.AddRookOn7thBonus(Queen, King, 2, 8);
         AddEvaluation(RookTypeEval);
       }
       if (loadableTypes.Contains(ChargingRook.Notation[HumanPlayer]))
@@ -265,9 +283,12 @@ namespace ChessV.Games
       if (loadableTypes.Contains(Chancellor.Notation[HumanPlayer]))
         RookTypeEval.AddRookOn7thBonus(Chancellor, King, 2, 8);
 
+      // Update strategies of leapers
       if (OutpostEval == null)
       {
         OutpostEval = new OutpostEvaluation();
+        OutpostEval.AddOutpostBonus(Knight);
+        OutpostEval.AddOutpostBonus(Bishop, 10, 2, 5, 5);
         AddEvaluation(OutpostEval);
       }
       if (loadableTypes.Contains(ChargingKnight.Notation[HumanPlayer]))

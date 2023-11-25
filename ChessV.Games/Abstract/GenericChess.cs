@@ -200,7 +200,10 @@ namespace ChessV.Games.Abstract
       bool colorboundPieces = false;
       for (int x = 0; x < nPieceTypes; x++)
         if (pieceTypes[x].NumSlices == 2)
+        {
           colorboundPieces = true;
+          break;
+        }
       if (colorboundPieces)
         AddEvaluation(new ColorbindingEvaluation());
     }
