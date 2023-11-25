@@ -181,7 +181,7 @@ namespace Archipelago.APChessV
         promoPieces.Add(piece.Notation[player]);
         parity = placeInArray(new List<int>(), left, right, randomLocations, parity, i, piece);
       }
-      for (int i = 7; i < Math.Min(15, totalPieces); i++)
+      for (int i = Math.Max(7, startingPieces); i < Math.Min(15, totalPieces); i++)
       {
         var piece = choosePiece(ref minors, randomPieces, chosenPieces, limit);
         promoPieces.Add(piece.Notation[player]);
@@ -264,7 +264,7 @@ namespace Archipelago.APChessV
       }
 
       // this ends at 7 instead of 8 because the King always occupies 1 space, thus 0..6 not 0..7
-      for (int i = 0; i < Math.Min(7 - numKings, ApmwCore.getInstance().foundMajors); i++)
+      for (int i = numKings; i < Math.Min(7 - numKings, ApmwCore.getInstance().foundMajors); i++)
       {
         PieceType piece = null;
         if (i < ApmwCore.getInstance().foundMajors - queensToBe)
@@ -325,7 +325,7 @@ namespace Archipelago.APChessV
       // there are 4 spaces on the left (queenside) vs 3 on right (kingside)
       if (i >= right.Count * 2 || i >= left.Count * 2)
       {
-        side = right.Count - left.Count; // 3 - 4 = -1
+        side = right.Count(item => item == null) - left.Count(item => item == null); // 3 - 4 = -1
         parity = 0;
       }
       // if we need to choose a side, it should be random
