@@ -155,7 +155,7 @@ namespace ChessV.Games
         doubleMoveNE.MustCapture = false;
         doubleMoveNE.CanCapture = false;
         doubleMoveNE.Direction = new Direction(1, 1);
-        doubleMoveNE.Condition = location => location.Rank <= 1; // TODO(chesslogic): why does this use PlayerSquare?
+        doubleMoveNE.Condition = location => location.Rank <= 1;
         BerolinaPawn.AddMoveCapability(doubleMoveNE);
 
         MoveCapability doubleMoveNW = new MoveCapability();

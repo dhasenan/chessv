@@ -37,6 +37,13 @@ namespace ChessV.Boards
       }
     }
 
+    public override string GetRankNotation(int nRank)
+    {
+      if (nRank < NumFiles)
+        base.GetRankNotation(nRank);
+      return "pkt";
+    }
+
     public override Location SquareToLocation(int square)
     {
       if (square < NumSquares)

@@ -1,9 +1,12 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace ChessV.Games.Rules.Apmw
 {
   public class ApmwStalemateRule : CheckmateRule
   {
+    private HashSet<Piece>[] startingRoyalPieces;
+
     public ApmwStalemateRule(PieceType[] royalPieceTypes) : base(royalPieceTypes)
     {
       StalemateResult = MoveEventResponse.GameDrawn;
@@ -14,6 +17,15 @@ namespace ChessV.Games.Rules.Apmw
       base.Initialize(game);
     }
 
+
+    public override void PositionLoaded(FEN fen)
+    {
+      base.PositionLoaded(fen);
+      startingRoyalPieces = new HashSet<Piece>[2];
+      startingRoyalPieces[0] = new HashSet<Piece>(royalPieces[0]);
+      startingRoyalPieces[1] = new HashSet<Piece>(royalPieces[1]);
+    }
+
     public override MoveEventResponse MoveBeingMade(MoveInfo move, int ply)
     {
       if (Game == null || Game.Match == null)
@@ -22,8 +34,9 @@ namespace ChessV.Games.Rules.Apmw
       if (player is HumanPlayer)
         return MoveEventResponse.NotHandled;
       if (move.MoveType.HasFlag(MoveType.CaptureProperty))
-        if (royalPieces[player.Opponent.Side].Remove(move.PieceCaptured))
-          return MoveEventResponse.NotHandled;
+        if (royalPieces[player.Side ^ 1].Contains(move.PieceCaptured))
+            if (royalPieces[player.Side ^ 1].Remove(move.PieceCaptured))
+              return MoveEventResponse.NotHandled;
       if (royalPieces[move.Player ^ 1].Count > 1 ||
           !move.MoveType.HasFlag(MoveType.CaptureProperty) || move.PieceCaptured != royalPieces[move.Player ^ 1].First())
         return base.IllegalCheckMoves(move);
@@ -36,8 +49,8 @@ namespace ChessV.Games.Rules.Apmw
         return base.IllegalCheckMoves(move);
       Player player = Game.Match.GetPlayer(move.Player);
       if (player is not HumanPlayer)
-        if (move.MoveType.HasFlag(MoveType.CaptureProperty))
-          royalPieces[player.Opponent.Side].Add(move.PieceCaptured);
+        if (move.MoveType.HasFlag(MoveType.CaptureProperty) && startingRoyalPieces[player.Side ^ 1].Contains(move.PieceCaptured))
+          royalPieces[player.Side ^ 1].Add(move.PieceCaptured);
       return MoveEventResponse.NotHandled;
     }
 

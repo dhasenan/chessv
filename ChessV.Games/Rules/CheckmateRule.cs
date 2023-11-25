@@ -94,8 +94,8 @@ namespace ChessV.Games.Rules
 
     protected MoveEventResponse IllegalCheckMoves(MoveInfo move)
     {
-      //	Make sure that as a result of this move, the moving player's
-      //	royal piece isn't attacked.  If it is, this move is illegal.
+      //	Make sure that as a result of this move, no moving player's
+      //	royal piece is attacked.  If it is, this move is illegal.
       foreach (Piece royalPiece in royalPieces[move.Player])
         if (royalPiece != null && Game.IsSquareAttacked(royalPiece.Square, move.Player ^ 1))
           return MoveEventResponse.IllegalMove;
