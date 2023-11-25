@@ -1898,7 +1898,7 @@ namespace ChessV
       {
         if (Movement.GetMoveTypeFromHash(movehash) == MoveType.Drop)
         {
-          string description = GetPieceType(Movement.GetTagFromHash(movehash)).Notation + "*" +
+          string description = GetPieceType(Movement.GetTagFromHash(movehash)).Notation[Movement.GetPlayerFromHash(movehash)] + "*" +
             GetSquareNotation(Movement.GetToSquareFromHash(movehash));
           return description;
         }
@@ -1923,11 +1923,12 @@ namespace ChessV
       {
         if (Movement.GetMoveTypeFromHash(movehash) == MoveType.Drop)
         {
-          string description = GetPieceType(Movement.GetTagFromHash(movehash)).Notation + "@" +
-            Convert.ToChar('a' + Board.GetFile(Movement.GetToSquareFromHash(movehash))) +
+          int square = Movement.GetToSquareFromHash(movehash);
+          string description = GetPieceType(Movement.GetTagFromHash(movehash)).Notation[Movement.GetPlayerFromHash(movehash)] + "@" +
+            Convert.ToChar('a' + Board.GetFile(square)) +
               (Board.NumRanks == 10 ?
-               Board.GetRank(Movement.GetToSquareFromHash(movehash)).ToString() :
-               (Board.GetRank(Movement.GetToSquareFromHash(movehash)) + 1).ToString());
+               Board.GetRank(square).ToString() :
+               (Board.GetRank(square) + 1).ToString());
           return description;
         }
         else
