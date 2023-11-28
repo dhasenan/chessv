@@ -414,13 +414,13 @@ namespace ChessV
         playerEndgameMaterial[player] = 0;
         midgameMaterialEval[player] = 0;
         endgameMaterialEval[player] = 0;
-        playerPieceBitboards[player] = new BitBoard(NumSquares);
+        playerPieceBitboards[player] = new BitBoard(NumSquaresExtended);
         for (int x = 0; x < Game.NPieceTypes; x++)
         {
           pieceCountByType[player, x] = 0;
-          pieceTypeBitboards[player, x] = new BitBoard(NumSquares);
+          pieceTypeBitboards[player, x] = new BitBoard(NumSquaresExtended);
           for (int y = 0; y < 8; y++)
-            pieceTypeBitboardsSliced[player, x, y] = new BitBoard(NumSquares);
+            pieceTypeBitboardsSliced[player, x, y] = new BitBoard(NumSquaresExtended);
         }
       }
     }
