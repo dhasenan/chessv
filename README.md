@@ -64,3 +64,7 @@ Randomizer options:
 
  - Progressive Goal. Your enemy's pieces are also scattered across the multiworld! (The current design can make progression too easy.)
  - Non-Progressive Material. Pieces will not be selected progressively from a set, but instead placed with specific names in your world. This means you would find a Bishop or Cleric rather than a Progressive Minor Piece or Progressive Major Piece. (They are unlikely to come with pre-determined locations.)
+
+Features:
+
+ - Reconnect or warn user of disconnect when the computer goes to sleep.
