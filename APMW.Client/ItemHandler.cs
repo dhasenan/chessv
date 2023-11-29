@@ -179,7 +179,7 @@ namespace Archipelago.APChessV
       {
         var piece = choosePiece(ref minors, randomPieces, chosenPieces, limit);
         promoPieces.Add(piece.Notation[player]);
-        parity = placeInArray(new List<int>(), left, right, randomLocations, parity, i, piece);
+        parity = placeOnBackRank(new List<int>(), left, right, randomLocations, parity, i, piece);
       }
       for (int i = Math.Max(7, startingPieces); i < Math.Min(15, totalPieces); i++)
       {
@@ -259,27 +259,29 @@ namespace Archipelago.APChessV
         if (numKings > 1)
         {
           right[0] = kings[0];
-          parity = -1; // pick left side first!
+          // TODO(chesslogic): I think this was fixed when I started counting null spaces
+          // parity = -1; // pick left side first!
         }
       }
 
       // this ends at 7 instead of 8 because the King always occupies 1 space, thus 0..6 not 0..7
-      for (int i = numKings; i < Math.Min(7 - numKings, ApmwCore.getInstance().foundMajors + numKings); i++)
+      int numNonMinorPieces = ApmwCore.getInstance().foundMajors + numKings;
+      for (int i = numKings; i < Math.Min(7 - numKings, numNonMinorPieces); i++)
       {
         PieceType piece = null;
-        if (i < ApmwCore.getInstance().foundMajors - queensToBe)
+        if (i < numNonMinorPieces - queensToBe)
         {
           piece = choosePiece(ref majors, randomPieces, chosenPieces, limit);
           promoPieces.Add(piece.Notation[player]);
         }
         else
           randomPieces.Next();
-        parity = placeInArray(order, left, right, randomLocations, parity, i, piece);
+        parity = placeOnBackRank(order, left, right, randomLocations, parity, i, piece);
       }
-      for (int i = 7; i < ApmwCore.getInstance().foundMajors + numKings; i++)
+      for (int i = 7; i < numNonMinorPieces; i++)
       {
         PieceType piece = null;
-        if (i < ApmwCore.getInstance().foundMajors - queensToBe)
+        if (i < numNonMinorPieces - queensToBe)
         {
           piece = choosePiece(ref majors, randomPieces, chosenPieces, limit);
           promoPieces.Add(piece.Notation[player]);
@@ -312,7 +314,7 @@ namespace Archipelago.APChessV
       return piece;
     }
 
-    private static int placeInArray(
+    private static int placeOnBackRank(
       List<int> order,
       List<PieceType> left,
       List<PieceType> right,
