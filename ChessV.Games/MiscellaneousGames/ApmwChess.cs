@@ -565,7 +565,6 @@ namespace ChessV.Games
         // new HashSet<PieceType>() { Bishop, Cannon, Rook, Colonel });
         // new HashSet<PieceType>() { Vao, Cannon, Rook, Colonel });
         new HashSet<PieceType>() { Bishop, Knight, Rook, Queen },
-        new HashSet<PieceType>() { Bishop, Knight, Rook, Queen },
         new HashSet<PieceType>() { NarrowKnight, Nightrider, Scout, Herald },
       });
     }

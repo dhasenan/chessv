@@ -401,7 +401,7 @@ namespace Archipelago.APChessV
       HashSet<PieceType> armiesPieces = new HashSet<PieceType>();
       for (int i = 0; i < army.Count; i++)
       {
-        armiesPieces = armiesPieces.Concat(ApmwCore.getInstance().armies[i]).ToHashSet();
+        armiesPieces = armiesPieces.Concat(ApmwCore.getInstance().armies[army[i]]).ToHashSet();
       }
       for (int i = 0; i < pieces.Count; i++)
       {

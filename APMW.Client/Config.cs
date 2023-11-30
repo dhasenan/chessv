@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -150,8 +151,8 @@ namespace Archipelago.APChessV
       // Army-Constrained Material
       FairyArmyInt = Convert.ToInt32(SlotData.GetValueOrDefault(
         "fairy_chess_army", FairyArmy.Chaos));
-      Army = ((List<int>)SlotData.GetValueOrDefault(
-        "army", new List<int>()));
+      Army = ((JArray)SlotData.GetValueOrDefault(
+        "army", new JArray())).ToObject<int[]>().ToList();
 
       // Non-Fairy Chess
       PawnsInt = Convert.ToInt32(SlotData.GetValueOrDefault(
