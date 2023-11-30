@@ -305,6 +305,8 @@ namespace ChessV.Games
         OutpostEval.AddOutpostBonus(Phoenix);
       if (loadableTypes.Contains(MountedKing.Notation[HumanPlayer]))
         OutpostEval.AddOutpostBonus(MountedKing);
+      if (loadableTypes.Contains(Nightrider.Notation[HumanPlayer]))
+        OutpostEval.AddOutpostBonus(Nightrider);
       if (loadableTypes.Contains(WarElephant.Notation[HumanPlayer]))
         OutpostEval.AddOutpostBonus(WarElephant, 10, 2, 5, 5);
       if (loadableTypes.Contains(Cleric.Notation[HumanPlayer]))
@@ -315,8 +317,6 @@ namespace ChessV.Games
         OutpostEval.AddOutpostBonus(Bishop, 10, 2, 5, 5);
       if (loadableTypes.Contains(Tower.Notation[HumanPlayer]))
         OutpostEval.AddOutpostBonus(Tower, 10, 2, 5, 5);
-      if (loadableTypes.Contains(MountedKing.Notation[HumanPlayer]))
-        OutpostEval.AddOutpostBonus(MountedKing);
     }
     #endregion
 
