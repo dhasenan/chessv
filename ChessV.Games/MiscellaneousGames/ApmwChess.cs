@@ -73,6 +73,11 @@ namespace ChessV.Games
     public PieceType Cannon;
     public PieceType Vao;
 
+    //  Misc
+    public Herald Herald;
+    public Nightrider Nightrider;
+    public Scout Scout;
+
     //  Fairy Kings
     public PieceType MountedKing;
     public PieceType HyperKing;
@@ -297,6 +302,8 @@ namespace ChessV.Games
         OutpostEval.AddOutpostBonus(NarrowKnight);
       if (loadableTypes.Contains(Phoenix.Notation[HumanPlayer]))
         OutpostEval.AddOutpostBonus(Phoenix);
+      if (loadableTypes.Contains(MountedKing.Notation[HumanPlayer]))
+        OutpostEval.AddOutpostBonus(MountedKing);
       if (loadableTypes.Contains(WarElephant.Notation[HumanPlayer]))
         OutpostEval.AddOutpostBonus(WarElephant, 10, 2, 5, 5);
       if (loadableTypes.Contains(Cleric.Notation[HumanPlayer]))
@@ -307,6 +314,8 @@ namespace ChessV.Games
         OutpostEval.AddOutpostBonus(Bishop, 10, 2, 5, 5);
       if (loadableTypes.Contains(Tower.Notation[HumanPlayer]))
         OutpostEval.AddOutpostBonus(Tower, 10, 2, 5, 5);
+      if (loadableTypes.Contains(MountedKing.Notation[HumanPlayer]))
+        OutpostEval.AddOutpostBonus(MountedKing);
     }
     #endregion
 
@@ -475,7 +484,7 @@ namespace ChessV.Games
 
     public void earlyPopulatePieceTypes()
     {
-      // Unused: udfj
+      // Unused: fj
 
       King = new King("King", "K", 0, 0);
       MountedKing = new MountedKing("Mounted King", "W", 0, 0, preferredImageName: "Champion");
@@ -507,6 +516,10 @@ namespace ChessV.Games
       // Eurasian
       Cannon = new Cannon("Cannon", "O", 400, 275);
       Vao = new Vao("Vao", "V", 300, 175);
+      // Misc
+      Herald = new Herald("Herald", "D", 890, 890);
+      Nightrider = new Nightrider("Nightrider", "J", 550, 550, "Knightrider");
+      Scout = new Scout("Scout", "U", 300, 300);
 
       Kings.Add(King);
       Kings.Add(MountedKing);
@@ -524,17 +537,20 @@ namespace ChessV.Games
       Minors.Add(ChargingKnight);
       Minors.Add(Vao);
       Minors.Add(Cannon); // unusually powerful
+      Minors.Add(Scout);
 
       Majors.Add(Rook);
       Majors.Add(WarElephant);
       Majors.Add(Cleric);
       Majors.Add(Lion);
       Majors.Add(ChargingRook);
+      Majors.Add(Nightrider);
 
       Queens.Add(Queen);
       Queens.Add(Archbishop);
       Queens.Add(Chancellor);
       Queens.Add(Colonel);
+      Queens.Add(Herald);
 
       Colorbounds.Add(Bishop);
       Colorbounds.Add(WarElephant);
@@ -550,6 +566,7 @@ namespace ChessV.Games
         // new HashSet<PieceType>() { Vao, Cannon, Rook, Colonel });
         new HashSet<PieceType>() { Bishop, Knight, Rook, Queen },
         new HashSet<PieceType>() { Bishop, Knight, Rook, Queen },
+        new HashSet<PieceType>() { NarrowKnight, Nightrider, Scout, Herald },
       });
     }
   }

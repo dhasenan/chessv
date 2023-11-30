@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Archipelago.APChessV
 {
@@ -64,7 +65,7 @@ namespace Archipelago.APChessV
     public int majorTypeLimit = -1;
     public int queenTypeLimit = -1;
     public int pocketLimit = -1;
-    public int Army = -1;
+    public List<int> Army = new List<int>();
 
     private Goal goal;
     public Goal Goal { get { return goal; } }
@@ -102,15 +103,6 @@ namespace Archipelago.APChessV
         enemyTypes = (PieceTypes)value;
       }
     }
-    private FairyTypes fairy;
-    public FairyTypes Fairy { get { return fairy; } }
-    public int FairyInt
-    {
-      set
-      {
-        fairy = (FairyTypes)value;
-      }
-    }
     private FairyArmy fairyArmy;
     public FairyArmy FairyArmy { get { return fairyArmy; } }
     public int FairyArmyInt
@@ -140,6 +132,7 @@ namespace Archipelago.APChessV
       //SlotData["early_material"]
       //SlotData["queen_piece_limit"]
       //SlotData["max_pocket"]
+      //SlotData["fairy_chess_pieces"]
 
       // Progressive Goal
       GoalInt = Convert.ToInt32(SlotData.GetValueOrDefault(
@@ -157,12 +150,10 @@ namespace Archipelago.APChessV
       // Army-Constrained Material
       FairyArmyInt = Convert.ToInt32(SlotData.GetValueOrDefault(
         "fairy_chess_army", FairyArmy.Chaos));
-      Army = Convert.ToInt32(SlotData.GetValueOrDefault(
-        "army", -1));
+      Army = ((List<int>)SlotData.GetValueOrDefault(
+        "army", new List<int>()));
 
       // Non-Fairy Chess
-      FairyInt = Convert.ToInt32(SlotData.GetValueOrDefault(
-        "fairy_chess_pieces", FairyTypes.Full));
       PawnsInt = Convert.ToInt32(SlotData.GetValueOrDefault(
         "fairy_chess_pawns", FairyPawns.Mixed));
 
