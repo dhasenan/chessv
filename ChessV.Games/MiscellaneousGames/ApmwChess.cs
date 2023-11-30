@@ -72,6 +72,7 @@ namespace ChessV.Games
     //  Eurasian
     public PieceType Cannon;
     public PieceType Vao;
+    public Queennon Queennon;
 
     //  Misc
     public Herald Herald;
@@ -484,8 +485,6 @@ namespace ChessV.Games
 
     public void earlyPopulatePieceTypes()
     {
-      // Unused: fj
-
       King = new King("King", "K", 0, 0);
       MountedKing = new MountedKing("Mounted King", "W", 0, 0, preferredImageName: "Champion");
       HyperKing = new HyperKing("Hyper King", "W", 0, 0, preferredImageName: "Frog");
@@ -517,9 +516,10 @@ namespace ChessV.Games
       Cannon = new Cannon("Cannon", "O", 400, 275);
       Vao = new Vao("Vao", "V", 300, 175);
       // Misc
-      Herald = new Herald("Herald", "D", 890, 890);
+      Herald = new Herald("Herald", "D", 930, 950);
       Nightrider = new Nightrider("Nightrider", "J", 550, 550, "Knightrider");
       Scout = new Scout("Scout", "U", 300, 300);
+      Queennon = new Queennon("Queennon", "F", 1025, 720);
 
       Kings.Add(King);
       Kings.Add(MountedKing);
@@ -530,14 +530,14 @@ namespace ChessV.Games
 
       Minors.Add(Bishop);
       Minors.Add(Knight);
-      Minors.Add(Phoenix);
+      Minors.Add(Phoenix); // awkward
       Minors.Add(ShortRook); // unusually powerful
       Minors.Add(Tower);
       Minors.Add(NarrowKnight);
       Minors.Add(ChargingKnight);
-      Minors.Add(Vao);
+      Minors.Add(Vao); // very weak
       Minors.Add(Cannon); // unusually powerful
-      Minors.Add(Scout);
+      Minors.Add(Scout); // slightly weak
 
       Majors.Add(Rook);
       Majors.Add(WarElephant);
@@ -550,7 +550,8 @@ namespace ChessV.Games
       Queens.Add(Archbishop);
       Queens.Add(Chancellor);
       Queens.Add(Colonel);
-      Queens.Add(Herald);
+      Queens.Add(Queennon); // hilarious comedy option
+      Queens.Add(Herald); // hilarious comedy option
 
       Colorbounds.Add(Bishop);
       Colorbounds.Add(WarElephant);
@@ -564,7 +565,7 @@ namespace ChessV.Games
         // TODO(chesslogic): Decide breadth of Eurasian army
         // new HashSet<PieceType>() { Bishop, Cannon, Rook, Colonel });
         // new HashSet<PieceType>() { Vao, Cannon, Rook, Colonel });
-        new HashSet<PieceType>() { Bishop, Knight, Rook, Queen },
+        new HashSet<PieceType>() { Vao, Cannon, Rook, Queennon },
         new HashSet<PieceType>() { NarrowKnight, Nightrider, Scout, Herald },
       });
     }

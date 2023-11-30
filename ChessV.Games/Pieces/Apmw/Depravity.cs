@@ -28,4 +28,31 @@ namespace ChessV.Games.Pieces.Apmw
       type.Slide(new Direction(-3, 0));
     }
   }
+
+  [PieceType("Queennon", "APMW Custom Pieces")]
+  public class Queennon : PieceType
+  {
+    public Queennon(string name, string notation, int midgameValue, int endgameValue, string preferredImageName = null) :
+      base("Queennon", name, notation, midgameValue, endgameValue, preferredImageName == null ? "Queennon" : preferredImageName)
+    {
+      AddMoves(this);
+    }
+
+    public static new void AddMoves(PieceType type)
+    {
+      Ferz.AddMoves(type);
+      Wazir.AddMoves(type);
+      Cannon.AddMoves(type);
+      Vao.AddMoves(type);
+      // knight cannon moves
+      type.CannonMove(new Direction(1, 2));
+      type.CannonMove(new Direction(2, 1));
+      type.CannonMove(new Direction(2, -1));
+      type.CannonMove(new Direction(1, -2));
+      type.CannonMove(new Direction(-1, -2));
+      type.CannonMove(new Direction(-2, -1));
+      type.CannonMove(new Direction(-2, 1));
+      type.CannonMove(new Direction(-1, 2));
+    }
+  }
 }
