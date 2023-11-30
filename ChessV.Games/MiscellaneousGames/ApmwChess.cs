@@ -485,9 +485,9 @@ namespace ChessV.Games
 
     public void earlyPopulatePieceTypes()
     {
-      King = new King("King", "K", 0, 0);
-      MountedKing = new MountedKing("Mounted King", "W", 0, 0, preferredImageName: "Champion");
-      HyperKing = new HyperKing("Hyper King", "W", 0, 0, preferredImageName: "Frog");
+      King = new King("King", "K", 325, 325);
+      MountedKing = new MountedKing("Mounted King", "W", 700, 700, preferredImageName: "Champion");
+      HyperKing = new HyperKing("Hyper King", "W", 1175, 1175, preferredImageName: "Frog");
       Pawn = new Pawn("Pawn", "P", 100, 125);
       Rook = new Rook("Rook", "R", 500, 550);
       Bishop = new Bishop("Bishop", "B", 325, 350);
