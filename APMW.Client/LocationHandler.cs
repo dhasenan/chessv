@@ -323,10 +323,15 @@ namespace Archipelago.APChessV
           // For each piece attacking {square}, note it found a target, and check if it's attacking elsewhere
           for (int i = 0; i < attackers.Count; i++)
           {
-            bool isTrueFork = !match.Game.IsSquareAttacked(attackers[i].Square, humanPlayer ^ 1) &&
-              (attackedPiece.PieceType.MidgameValue > attackers[i].MidgameValue ||
-              attackedPieceIsKing ||
-              !match.Game.IsSquareAttacked(square, humanPlayer ^ 1));
+            // This doesn't calculate whether a single move could defend both pieces.
+            // Imagine a rook, blocked by a pawn offensively, sliding to a defensive location between two pieces
+            // - or a "discovered defend" where two different pieces are used to defend the forked pieces.
+            bool isTrueFork =
+              !match.Game.IsSquareAttacked(attackers[i].Square, humanPlayer ^ 1) && // will live to attack
+                (attackedPiece.PieceType.MidgameValue >= (attackers[i].MidgameValue + 100) || // recapture still loses material
+                attackedPieceIsKing || // no king can be defended
+                match.Game.IsSquareAttacked(square, humanPlayer ^ 1)); // not defended
+            // This is used to determine if a fork is royal.
             if (attackedPieceIsKing)
               kingAttacked[attackers[i]] = (true, isTrueFork);
             if (attackedPieceIsQueen)
