@@ -324,7 +324,9 @@ namespace Archipelago.APChessV
           for (int i = 0; i < attackers.Count; i++)
           {
             bool isTrueFork = !match.Game.IsSquareAttacked(attackers[i].Square, humanPlayer ^ 1) &&
-              !(attackedPieceIsKing || match.Game.IsSquareAttacked(square, humanPlayer ^ 1));
+              (attackedPiece.PieceType.MidgameValue > attackers[i].MidgameValue ||
+              attackedPieceIsKing ||
+              !match.Game.IsSquareAttacked(square, humanPlayer ^ 1));
             if (attackedPieceIsKing)
               kingAttacked[attackers[i]] = (true, isTrueFork);
             if (attackedPieceIsQueen)
@@ -346,7 +348,7 @@ namespace Archipelago.APChessV
                   trueForkers[attackers[i]] = 0;
                 trueForkers[attackers[i]]++;
               }
-              if (trueForkers.ContainsKey(attackers[i]) && trueForkers[attackers[i]] > 2)
+              if (trueForkers.ContainsKey(attackers[i]) && trueForkers[attackers[i]] > 1)
                 locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Fork, True"));
               if (forkers[attackers[i]] > 2)
               {
