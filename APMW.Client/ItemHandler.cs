@@ -122,7 +122,14 @@ namespace Archipelago.APChessV
       }
       for (int i = 8; i < Math.Min(16, totalChessmen); i++)
       {
-        var piece = pawns[randomPieces.Next(pawns.Count)];
+        PieceType piece;
+        if (ApmwConfig.getInstance().Pawns == FairyPawns.Vanilla)
+          piece = pawns.Find(item => item.Notation[0].Equals("P"));
+        else if (ApmwConfig.getInstance().Pawns == FairyPawns.Berolina)
+          piece = pawns.Find(item => !item.Notation[0].Equals("P"));
+        else
+          piece = pawns[randomPieces.Next(pawns.Count)];
+
         chooseIndexAndPlace(thirdRank, randomLocations, piece);
       }
 
