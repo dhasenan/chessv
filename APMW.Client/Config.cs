@@ -24,7 +24,7 @@ namespace Archipelago.APChessV
   }
   internal enum FairyArmy
   {
-    Chaos = 0, Limited = 1,
+    Chaos = 0, Stable = 1, Limited = 2,
   }
   internal enum FairyPawns
   {
@@ -105,6 +105,9 @@ namespace Archipelago.APChessV
       }
     }
     private FairyArmy fairyArmy;
+    /// <summary>
+    /// Will be used to implement Stable vs Limited - Limited will randomize the Army value and ignore slotdata
+    /// </summary>
     public FairyArmy FairyArmy { get { return fairyArmy; } }
     public int FairyArmyInt
     {
