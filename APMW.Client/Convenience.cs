@@ -22,7 +22,7 @@ namespace Archipelago.APChessV
       return _instance;
     }
 
-    string DEFAULT_HOST = "archipelago.gg";
+    static string DEFAULT_HOST = "archipelago.gg";
 
     string port;
     string slotName;
@@ -61,25 +61,34 @@ namespace Archipelago.APChessV
     {
       if (port == null)
       {
-        try
+        lock (DEFAULT_HOST)
         {
-          using (StreamReader readtext = new StreamReader("apmw.txt"))
+          if (port == null)
           {
-            if (!readtext.EndOfStream)
+            try
             {
-              port = readtext.ReadLine();
-              slotName = readtext.ReadLine();
-              if (readtext.EndOfStream)
-                host = DEFAULT_HOST;
-              else
-                host = readtext.ReadLine();
+              using (StreamReader readtext = new StreamReader("apmw.txt"))
+              {
+                if (!readtext.EndOfStream)
+                {
+                  port = readtext.ReadLine();
+                  slotName = readtext.ReadLine();
+                  if (readtext.EndOfStream)
+                    host = DEFAULT_HOST;
+                  else
+                    host = readtext.ReadLine();
+                }
+                return Url;
+              }
             }
-            return Url;
+            catch (FileNotFoundException ex)
+            {
+              File.Create("apmw.txt");
+              port = "";
+              slotName = "";
+              host = DEFAULT_HOST;
+            }
           }
-        }
-        catch (FileNotFoundException ex)
-        {
-          File.Create("apmw.txt");
         }
       }
       return Url;
@@ -89,26 +98,32 @@ namespace Archipelago.APChessV
     {
       if (slotName == null)
       {
-        try
+        lock (DEFAULT_HOST)
         {
-          using (StreamReader readtext = new StreamReader("apmw.txt"))
+          if (slotName == null)
           {
-            if (!readtext.EndOfStream)
+            try
             {
-              port = readtext.ReadLine();
-              slotName = readtext.ReadLine();
-              if (!readtext.EndOfStream)
-                host = readtext.ReadLine();
+              using (StreamReader readtext = new StreamReader("apmw.txt"))
+              {
+                if (!readtext.EndOfStream)
+                {
+                  port = readtext.ReadLine();
+                  slotName = readtext.ReadLine();
+                  if (!readtext.EndOfStream)
+                    host = readtext.ReadLine();
+                }
+                return slotName ?? "";
+              }
             }
-            return slotName ?? "";
+            catch (FileNotFoundException ex)
+            {
+              File.Create("apmw.txt");
+              port = "";
+              slotName = "";
+              host = DEFAULT_HOST;
+            }
           }
-        }
-        catch (FileNotFoundException ex)
-        {
-          File.Create("apmw.txt");
-          port = "";
-          slotName = "";
-          host = DEFAULT_HOST;
         }
       }
       return slotName ?? "";
