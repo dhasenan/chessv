@@ -381,42 +381,46 @@ namespace Archipelago.APChessV
       int foundPockets = ApmwCore.getInstance().foundPockets;
       var pockets = ApmwConfig.getInstance().generatePocketValues(foundPockets);
       List<PieceType> pocketPieces = new List<PieceType>();
-      List<string> pocketItems = new List<string>(); // TODO(chesslogic): for promotions??
-      int empty = 0;
       for (int i = 0; i < 3; i++)
       {
         if (pockets[i] == 0)
         {
-          empty++;
           pocketPieces.Add(null);
           continue;
         }
         HashSet<PieceType> setOfPieceType = ApmwCore.getInstance().pocketSets[pockets[i] - 1];
+        List<PieceType> listOfPieceType;
+        if (pockets[i] == 1)
+        {
+          listOfPieceType = new List<PieceType>();
+          List<PieceType> pawns = ApmwCore.getInstance().pawns.ToList();
+          if (ApmwConfig.getInstance().Pawns != FairyPawns.Berolina)
+            listOfPieceType.Add(pawns.Find(item => item.Notation[0].Equals("P")));
+          if (ApmwConfig.getInstance().Pawns != FairyPawns.Vanilla)
+            listOfPieceType.Add(pawns.Find(item => !item.Notation[0].Equals("P")));
+        }
+        else
+          listOfPieceType = filterPiecesByArmy(setOfPieceType);
+
         Random random = new Random(ApmwConfig.getInstance().pocketChoiceSeed[i]);
-        int index = random.Next(setOfPieceType.Count);
-        pocketPieces.Add(setOfPieceType.ToList()[index]);
+        int index = random.Next(listOfPieceType.Count);
+        pocketPieces.Add(listOfPieceType[index]);
       }
       return pocketPieces;
     }
 
-    private List<PieceType> filterPiecesByArmy(List<PieceType> pieces)
+    private List<PieceType> filterPiecesByArmy(IEnumerable<PieceType> pieces)
     {
       List<PieceType> newPieces = new List<PieceType>();
       List<int> army = ApmwConfig.getInstance().Army;
       if (army.Count == 0)
-        return pieces;
+        return pieces.ToList();
       HashSet<PieceType> armiesPieces = new HashSet<PieceType>();
       for (int i = 0; i < army.Count; i++)
-      {
         armiesPieces = armiesPieces.Concat(ApmwCore.getInstance().armies[army[i]]).ToHashSet();
-      }
-      for (int i = 0; i < pieces.Count; i++)
-      {
-        if (armiesPieces.Contains(pieces[i]))
-        {
-          newPieces.Add(pieces[i]);
-        }
-      }
+      foreach (var piece in pieces)
+        if (armiesPieces.Contains(piece))
+          newPieces.Add(piece);
       return newPieces;
     }
   }
