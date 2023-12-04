@@ -279,7 +279,8 @@ namespace Archipelago.APChessV
         if (i < numNonMinorPieces - queensToBe)
         {
           piece = choosePiece(ref majors, randomPieces, chosenPieces, limit);
-          promoPieces.Add(piece.Notation[player]);
+          if (piece != null)
+            promoPieces.Add(piece.Notation[player]);
         }
         else
           randomPieces.Next();
@@ -291,7 +292,8 @@ namespace Archipelago.APChessV
         if (i < numNonMinorPieces - queensToBe)
         {
           piece = choosePiece(ref majors, randomPieces, chosenPieces, limit);
-          promoPieces.Add(piece.Notation[player]);
+          if (piece != null)
+            promoPieces.Add(piece.Notation[player]);
         }
         else
           randomPieces.Next();
@@ -310,6 +312,8 @@ namespace Archipelago.APChessV
 
     private PieceType choosePiece(ref List<PieceType> pieces, Random randomPieces, Dictionary<PieceType, int> chosenPieces, int limit)
     {
+      if (pieces.Count == 0)
+        return null;
       if (limit <= 0)
         return pieces[randomPieces.Next(pieces.Count)];
       int index = randomPieces.Next(pieces.Count);
