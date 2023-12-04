@@ -5,6 +5,7 @@ using Archipelago.MultiClient.Net.Helpers;
 using Archipelago.MultiClient.Net.Packets;
 using ChessV;
 using ChessV.Base;
+using ChessV.Games;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace Archipelago.APChessV
 {
   public class LocationHandler
   {
+    private const string NAME_OF_ARCHIPELAGO_GAME_ATTRIBUTE = "Archipelago Multiworld";
     public static LocationHandler _instance;
 
     public static LocationHandler GetInstance()
@@ -64,7 +66,7 @@ namespace Archipelago.APChessV
 
     public void StartMatch(Match match)
     {
-      if (!Initialized)
+      if (!Initialized && match.Game.GameAttribute.GameName == NAME_OF_ARCHIPELAGO_GAME_ATTRIBUTE)
         throw new InvalidOperationException("LocationHandler has not been initialized");
       this.match = match;
       //match.Game.MovePlayed += (move) => this.HandleMove(move);
@@ -75,12 +77,14 @@ namespace Archipelago.APChessV
       currentSquaresToOriginalSquares = new Dictionary<int, int>();
 
       this.match.Finished += HandleMatch;
+      TryValidatePlayingArchipelago();
     }
 
     public void EndMatch()
     {
-      if (!Initialized)
+      if (!Initialized && match.Game.GameAttribute.GameName == NAME_OF_ARCHIPELAGO_GAME_ATTRIBUTE)
         throw new InvalidOperationException("LocationHandler has not been initialized");
+      TryValidatePlayingArchipelago();
       if (this.match == null)
       {
         // TODO(chesslogic): mention "no match to end" in logger
@@ -116,8 +120,10 @@ namespace Archipelago.APChessV
 
     public void HandleMove(MoveInfo info)
     {
-      if (!Initialized)
+      if (!Initialized && match.Game.GameAttribute.GameName == NAME_OF_ARCHIPELAGO_GAME_ATTRIBUTE)
         throw new InvalidOperationException("LocationHandler has not been initialized");
+      if (!TryValidatePlayingArchipelago())
+        return;
       List<long> locations = new List<long>();
       if (info == null)
         return; // probably never happens
@@ -403,6 +409,8 @@ namespace Archipelago.APChessV
 
     protected void UpdateMoveState(MoveInfo info)
     {
+      if (!TryValidatePlayingArchipelago())
+        return;
       // update original positions
       if (currentSquaresToOriginalSquares.ContainsKey(info.FromSquare))
         currentSquaresToOriginalSquares[info.ToSquare] = currentSquaresToOriginalSquares[info.FromSquare];
@@ -412,6 +420,8 @@ namespace Archipelago.APChessV
 
     public void HandleMatch(Match match)
     {
+      if (!TryValidatePlayingArchipelago())
+        return;
       List<long> locations = new List<long>();
       if (match == null) return;
       if (match.Result == null) return;
@@ -423,6 +433,8 @@ namespace Archipelago.APChessV
 
     public void Victory(ArchipelagoSession session)
     {
+      if (!TryValidatePlayingArchipelago())
+        return;
       LocationCheckHelper.CompleteLocationChecks(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Checkmate Maxima"));
       var statusUpdatePacket = new StatusUpdatePacket();
       statusUpdatePacket.Status = ArchipelagoClientState.ClientGoal;
@@ -431,6 +443,8 @@ namespace Archipelago.APChessV
 
     public void Deathlink(ArchipelagoSession session, string reason = null)
     {
+      if (!TryValidatePlayingArchipelago())
+        return;
       lock (DeathlinkedMatches)
       {
         if (DeathlinkedMatches.Contains(match))
@@ -445,6 +459,22 @@ namespace Archipelago.APChessV
         var message = string.Join(" ", session.Players.GetPlayerName(session.ConnectionInfo.Slot), reason);
         ArchipelagoClient.getInstance().nonSessionMessages.Add(string.Join(" ", "DeathLink sent:", message));
       }
+    }
+
+    /// <summary>
+    /// Throws an exception if the player has ever connected to AP but is playing a non-Archipelago game.
+    /// </summary>
+    /// <returns>
+    /// True if the player has ever connected during this client's lifetime, and is playing Archipelago.
+    /// False if the user is not connected (and, hopefully, not playing ApmwChessGame).
+    /// </returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    public bool TryValidatePlayingArchipelago()
+    {
+      // TODO(chesslogic): Player can't "disconnect" without restarting.
+      if (Initialized && match.Game.GameAttribute.GameName != NAME_OF_ARCHIPELAGO_GAME_ATTRIBUTE)
+        throw new InvalidOperationException("Please disconnect from Archipelago when using other ChessV features");
+      return Initialized;
     }
   }
 }
