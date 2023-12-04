@@ -25,6 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Reactive.Concurrency;
 using System.Text;
 using System.Windows.Forms;
 
@@ -353,14 +354,20 @@ namespace ChessV.GUI
     #region Archipelago Multiworld Button Click Event
     private void btnApmw_Click(object sender, EventArgs e)
     {
-      btnApmw.Enabled = false;
+      // btnApmw.Enabled = false;
       if (apmwForm == null || apmwForm.IsDisposed)
       {
         apmwForm = new ApmwForm(this);
+        apmwForm.Show();
         apmwForm.FormClosing +=
-          (object _s, FormClosingEventArgs _e) => btnApmw.Enabled = true;
+          (object _s, FormClosingEventArgs _e) =>
+          {
+            apmwForm.Dispose();
+            //btnApmw.Enabled = true;
+          };
       }
-      apmwForm.Show();
+      apmwForm.BringToFront();
+      //Scheduler.Default.Schedule(TimeSpan.FromMilliseconds(200), apmwForm.BringToFront);
 
       //if (typeof(Game) == typeof(ChessV.Games.ApmwChessGame))
     }
