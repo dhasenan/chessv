@@ -40,10 +40,17 @@ namespace ChessV.Games.Pieces.Apmw
 
     public static new void AddMoves(PieceType type)
     {
-      Ferz.AddMoves(type);
-      Wazir.AddMoves(type);
       Cannon.AddMoves(type);
       Vao.AddMoves(type);
+      // king capture moves
+      type.StepCaptureOnly(new Direction(0, 1));
+      type.StepCaptureOnly(new Direction(0, -1));
+      type.StepCaptureOnly(new Direction(1, 1));
+      type.StepCaptureOnly(new Direction(1, 0));
+      type.StepCaptureOnly(new Direction(1, -1));
+      type.StepCaptureOnly(new Direction(-1, 1));
+      type.StepCaptureOnly(new Direction(-1, 0));
+      type.StepCaptureOnly(new Direction(-1, -1));
       // knight cannon moves
       type.CannonMove(new Direction(1, 2));
       type.CannonMove(new Direction(2, 1));
