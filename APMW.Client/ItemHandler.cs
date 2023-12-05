@@ -312,15 +312,13 @@ namespace Archipelago.APChessV
 
     private PieceType choosePiece(ref List<PieceType> pieces, Random randomPieces, Dictionary<PieceType, int> chosenPieces, int limit)
     {
-      if (pieces.Count == 0)
-        return null;
       if (limit <= 0)
         return pieces[randomPieces.Next(pieces.Count)];
       int index = randomPieces.Next(pieces.Count);
       PieceType piece = pieces[index];
       if (!chosenPieces.ContainsKey(pieces[index]))
         chosenPieces[pieces[index]] = 0;
-      if (++chosenPieces[pieces[index]] >= limit)
+      if (++chosenPieces[pieces[index]] >= limit && pieces.Count > 1)
         pieces.RemoveAt(index);
       return piece;
     }
