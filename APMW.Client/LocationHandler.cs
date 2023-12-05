@@ -168,16 +168,16 @@ namespace Archipelago.APChessV
       if (ApmwCore.getInstance().kings.Contains(piece.PieceType))
       {
         // TODO(chesslogic): Math.min(match.Game.Board pieces count, 4) 
-        if (match.Game.GameTurnNumber <= 4 &&
+        if (match.Game.GameTurnNumber <= 10 &&
           match.Game.Board.GetFile(info.ToSquare) == 4 &&
           (match.Game.Board.GetRank(info.ToSquare) == 1 || match.Game.Board.GetRank(info.ToSquare) == 6))
         {
-          locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud Once"));
+          locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "King to E2/E7 Early"));
         }
         // check if move is to A file
         if (match.Game.Board.GetFile(info.ToSquare) == 0)
         {
-          locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud A File"));
+          locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "King to A File"));
         }
         // check if move is to distant rank
         if ((info.Player == 1 && match.Game.Board.GetRank(info.ToSquare) == 0) ||
@@ -185,13 +185,13 @@ namespace Archipelago.APChessV
         {
           // TODO(chesslogic): info.ToSquare probably isn't based on Board.PlayerSquare (used for PST eval)
           // TODO(chesslogic): ... but if it is, just check info.GetRank==7, ignore info.Player
-          locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud Promotion"));
+          locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "King to Back Rank"));
         }
         // check if move is to center
         if ((match.Game.Board.GetFile(info.ToSquare) == 3 || match.Game.Board.GetFile(info.ToSquare) == 4) &&
           (match.Game.Board.GetRank(info.ToSquare) == 3 || match.Game.Board.GetRank(info.ToSquare) == 4))
         {
-          locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud Center"));
+          locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "King to Center"));
         }
 
         if (info.MoveType.HasFlag(MoveType.Castling))
@@ -221,7 +221,7 @@ namespace Archipelago.APChessV
         // handle king captures
         if (ApmwCore.getInstance().kings.Contains(piece.PieceType))
         {
-          locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "Bongcloud Capture"));
+          locations.Add(LocationCheckHelper.GetLocationIdFromName("ChecksMate", "King Captures Anything"));
         }
         /*
         if (info.PieceCaptured.PieceType.Name.Equals("King"))
