@@ -11,7 +11,8 @@ As you complete the following objectives, you will gain access to additional mat
  - Capture individual enemy pieces and pawns (e.g. capture pawn E, the pawn that begins on the E file)
  - Capture multiple enemy pieces and pawns in 1 match (e.g. capture any 2 pawns), including sequences of pairs (e.g. both 2 pieces and 2 pawns)
  - Attack any opposing pawn, minor piece, major piece, or queen
- - Attack multiple opposing pieces with a single piece (Sacrificial if it is itself attacked, True otherwise): two pieces, three pieces, and the King and Queen
+ - Attack multiple opposing pieces with a single piece: two pieces, three pieces, and the King and Queen
+   - Sacrificial forks merely require such an attack, but a True fork additionally requires that the piece will live to attack, and that each target is: not defended, worth more, or is the king.
  - Move your King each of: forward one space; to the A file; to the center 4 squares; to the opposing home rank; and to capture a piece
  - Short/Long "Castle" where you castle.
  - Perform the French move
@@ -22,11 +23,16 @@ This client implements the ChecksMate protocol for ArchipelagoMW by modifying th
 
 ### Supported Options
 
+ - Pocket Pieces. Inspired by Bughouse and Pocket Knights, you may drop a piece from outside the board onto an open square on your home row instead of making a normal move.
+   - Players have 3 pockets, which can be empty, or hold a pawn, minor piece, major piece, or queen. Collected pocket items are distributed randomly to the 3 pockets, improving them in the above order.
+   - You may only drop a piece by spending Gems equal to its material value. Gems are collected at a rate of 1/turn, and you start a match with your collected Pocket Gems. The Black player starts with 1 extra Gem.
+   - Pocket Range allows the player to deploy pocket items one rank further from the home row, but not the opponent's home row
  - Non-Fairy Chess. Your major pieces will always be Rooks, your minor pieces will always be Bishops and Knights, and your queens will always slay. Also, no more dumb Berolina Pawns. Who even thought mixing those was a good idea?
  - Chaotic Material Randomization. Every game, you get new pieces in new places! Who needs an opening book?
  - Army-Constrained Material. The material you get will always be related to each other (in that they belong in the same army): If you find a Bishop you won't find a Cannon; if you find a Cleric you won't find a Lion.
    - It may be inconvenient to exclude certain pieces under this mode...
  - Piece Limits. Under some mindsets, it can be taxing to find 6 minor pieces and no Queen. By adding certain rails to the experience, one can have a more personalized approach to a Chess randomizer, where one's army bears some resemblance to a traditional game.
+ - Extra Kings. The player loses when their King is extinct, and the AI loses by checkmate. But what if you had a backup King?
 
 ## ChessV
 
