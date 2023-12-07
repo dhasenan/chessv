@@ -17,15 +17,15 @@ namespace ChessV.Games.Pieces.Apmw
 
     public static new void AddMoves(PieceType type)
     {
-      Bishop.AddMoves(type);
       Camel.AddMoves(type);
+      Tribbabah.AddMoves(type);
+      //Bishop max 3
+      type.Slide(new Direction(1, 1), 3);
+      type.Slide(new Direction(1, -1), 3);
+      type.Slide(new Direction(-1, 1), 3);
+      type.Slide(new Direction(-1, -1), 3);
       //Pawn move
       type.Step(new Direction(1, 0));
-      //Tribbabah slide
-      type.Slide(new Direction(0, 3));
-      type.Slide(new Direction(0, -3));
-      type.Slide(new Direction(3, 0));
-      type.Slide(new Direction(-3, 0));
     }
   }
 

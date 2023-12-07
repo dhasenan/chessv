@@ -516,8 +516,8 @@ namespace ChessV.Games
       Cannon = new Cannon("Cannon", "O", 400, 275);
       Vao = new Vao("Vao", "V", 300, 175);
       // Misc
-      Herald = new Herald("Herald", "D", 930, 950);
-      Nightrider = new Nightrider("Nightrider", "J", 550, 550, "Knightrider");
+      Herald = new Herald("Herald", "D", 890, 900);
+      Nightrider = new Nightrider("Nightrider", "J", 550, 550, "Knightsrider");
       Scout = new Scout("Scout", "U", 300, 300);
       Queennon = new Queennon("Queennon", "F", 1025, 720);
 
