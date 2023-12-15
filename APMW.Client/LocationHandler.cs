@@ -5,7 +5,6 @@ using Archipelago.MultiClient.Net.Helpers;
 using Archipelago.MultiClient.Net.Packets;
 using ChessV;
 using ChessV.Base;
-using ChessV.Games;
 using System;
 using System.Collections.Generic;
 using System.Linq;
