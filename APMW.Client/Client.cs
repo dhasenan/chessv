@@ -109,6 +109,7 @@ namespace Archipelago.APChessV
     private Match match;
 
     private (string, int) lastServerUrl;
+    private string lastSlotName;
     private static Task connectionTask;
 
     private bool IsInGame
@@ -128,7 +129,7 @@ namespace Archipelago.APChessV
           nonSessionMessages.Add("Connection task currently processing");
           return;
         }
-        if ((hostName, port) == lastServerUrl)
+        if ((hostName, port) == lastServerUrl && slotName == lastSlotName)
         {
           nonSessionMessages.Add("Reconnect attempt prevented. If you don't successfully connect, try restarting this client");
           return;
@@ -137,8 +138,8 @@ namespace Archipelago.APChessV
         //ChatMessage.SendColored($"Attempting to connect to Archipelago at ${url}.", Color.green);
         Dispose();
 
-
         lastServerUrl = (hostName, port);
+        lastSlotName = slotName;
         Session = ArchipelagoSessionFactory.CreateSession(hostName, port);
         ArchipelagoSession session = Session;
         //ItemLogic = new ArchipelagoItemLogicController(session);
