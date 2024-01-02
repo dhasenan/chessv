@@ -334,6 +334,7 @@ namespace Archipelago.APChessV
             bool isTrueFork =
               !match.Game.IsSquareAttacked(attackers[i].Square, humanPlayer ^ 1) && // will live to attack
               (
+                // TODO: attacker has less value than a queen
                 attackedPiece.PieceType.MidgameValue >= (attackers[i].MidgameValue + 100) || // recapture still loses material
                 attackedPieceIsKing || // no king can be defended
                 !match.Game.IsSquareAttacked(square, humanPlayer ^ 1) // not defended
