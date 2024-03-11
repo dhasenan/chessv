@@ -84,10 +84,10 @@ namespace Archipelago.APChessV
       List<PieceType> withPawns = GeneratePawns(withMinors);
 
       Dictionary<KeyValuePair<int, int>, PieceType> pieces = new Dictionary<KeyValuePair<int, int>, PieceType>();
-      for (int i = 0; i < 3; i++)
+      for (int i = 0; i < 5; i++)
         for (int j = 0; j < 8; j++)
           if (withPawns[i * 8 + j] != null)
-            pieces.Add(new KeyValuePair<int, int>(2 - i, j), withPawns[i * 8 + j]);
+            pieces.Add(new KeyValuePair<int, int>(4 - i, j), withPawns[i * 8 + j]);
 
       return (pieces, String.Join("", promotions));
     }
@@ -100,6 +100,8 @@ namespace Archipelago.APChessV
     {
       List<PieceType> pawns = ApmwCore.getInstance().pawns.ToList();
       List<PieceType> thirdRank = new List<PieceType>() { null, null, null, null, null, null, null, null };
+      List<PieceType> fourthRank = new List<PieceType>() { null, null, null, null, null, null, null, null };
+      List<PieceType> finalRank = new List<PieceType>() { null, null, null, null, null, null, null, null };
       List<PieceType> pawnRank = minors.Skip(8).ToList();
 
       Random randomPieces = new Random(ApmwConfig.getInstance().pawnSeed);
@@ -132,28 +134,61 @@ namespace Archipelago.APChessV
 
         chooseIndexAndPlace(thirdRank, randomLocations, piece);
       }
+      for (int i = 16; i < Math.Min(24, totalChessmen); i++)
+      {
+        PieceType piece;
+        if (ApmwConfig.getInstance().Pawns == FairyPawns.Vanilla)
+          piece = pawns.Find(item => item.Notation[0].Equals("P"));
+        else if (ApmwConfig.getInstance().Pawns == FairyPawns.Berolina)
+          piece = pawns.Find(item => !item.Notation[0].Equals("P"));
+        else
+          piece = pawns[randomPieces.Next(pawns.Count)];
+
+        chooseIndexAndPlace(fourthRank, randomLocations, piece);
+      }
+      for (int i = 24; i < Math.Min(32, totalChessmen); i++)
+      {
+        PieceType piece;
+        if (ApmwConfig.getInstance().Pawns == FairyPawns.Vanilla)
+          piece = pawns.Find(item => item.Notation[0].Equals("P"));
+        else if (ApmwConfig.getInstance().Pawns == FairyPawns.Berolina)
+          piece = pawns.Find(item => !item.Notation[0].Equals("P"));
+        else
+          piece = pawns[randomPieces.Next(pawns.Count)];
+
+        chooseIndexAndPlace(finalRank, randomLocations, piece);
+      }
 
       int remainingForwardness = ApmwCore.getInstance().foundPawnForwardness;
-      List<int> possibleForwardPawnPositions = new List<int>();
-      for (int i = 0; i < thirdRank.Count; i++)
-        if (thirdRank[i] == null && pawnRank[i] != null && pawnRank[i].Name.Contains("Pawn"))
-          possibleForwardPawnPositions.Add(i);
-      for (
-        int i = randomLocations.Next(possibleForwardPawnPositions.Count);
-        remainingForwardness-- > 0 && possibleForwardPawnPositions.Count > 0;
-        i = randomLocations.Next(possibleForwardPawnPositions.Count))
+      foreach ((List<PieceType>, List<PieceType>) ranks in new List<(List<PieceType>, List<PieceType>)> {
+        (pawnRank, thirdRank), (thirdRank, fourthRank), (fourthRank, finalRank),
+        (pawnRank, thirdRank), (thirdRank, fourthRank),
+        (pawnRank, thirdRank)
+      })
       {
-        // swap backward with forward
-        thirdRank[possibleForwardPawnPositions[i]] = pawnRank[possibleForwardPawnPositions[i]];
-        pawnRank[possibleForwardPawnPositions[i]] = null;
-        // setup for next iteration (TODO(chesslogic): could move this into the for loop syntax)
-        possibleForwardPawnPositions.RemoveAt(i);
+        List<int> possibleForwardPawnPositions = new List<int>();
+        for (int i = 0; i < ranks.Item2.Count; i++)
+          if (ranks.Item2[i] == null && ranks.Item1[i] != null && ranks.Item1[i].Name.Contains("Pawn"))
+            possibleForwardPawnPositions.Add(i);
+        for (
+          int i = randomLocations.Next(possibleForwardPawnPositions.Count);
+          remainingForwardness-- > 0 && possibleForwardPawnPositions.Count > 0;
+          i = randomLocations.Next(possibleForwardPawnPositions.Count))
+        {
+          // swap backward with forward
+          ranks.Item2[possibleForwardPawnPositions[i]] = ranks.Item1[possibleForwardPawnPositions[i]];
+          ranks.Item1[possibleForwardPawnPositions[i]] = null;
+          // setup for next iteration (TODO(chesslogic): could move this into the for loop syntax)
+          possibleForwardPawnPositions.RemoveAt(i);
+        }
       }
 
       List<PieceType> output = new List<PieceType>();
       output.AddRange(minors.Take(8));
       output.AddRange(pawnRank);
       output.AddRange(thirdRank);
+      output.AddRange(fourthRank);
+      output.AddRange(finalRank);
 
       return output;
     }

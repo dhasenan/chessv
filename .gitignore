@@ -2,6 +2,7 @@
 .ionide/
 .vs/
 packages/
+SGF/
 
 
 **/bin/

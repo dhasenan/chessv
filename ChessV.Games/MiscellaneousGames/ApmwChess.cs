@@ -187,8 +187,8 @@ namespace ChessV.Games
       Dictionary<string, string> majorsFromAndTo = new Dictionary<string, string>();
       int humanPlayer = ApmwCore.getInstance().GeriProvider();
       int rank = humanPlayer * 7;
-      // TODO(chesslogic): the starting position dict chesslogic made uses rank=2 for back line. why? u ever heard front to back?
-      int positionRank = 2;
+      // TODO(chesslogic): the starting position dict chesslogic made uses rank=4 for back line. why? u ever heard front to back?
+      int positionRank = 4;
       Location kingFrom = new Location(rank, 4);
       for (int i = 0; i < 8; i++)
       {
@@ -328,7 +328,7 @@ namespace ChessV.Games
       base.SetGameVariables();
       FENFormat = "{array} {current player} {pieces in hand} {castling} {en-passant} {half-move clock} {turn number}";
       FENStart = "#{Array} w #{PocketPieces} #{CastleRooks} - 0 1";
-      Array = "#{BlackPieces}/#{BlackPawns}/#{BlackOuter}/8/8/#{WhiteOuter}/#{WhitePawns}/#{WhitePieces}";
+      Array = "#{BlackPieces}/#{BlackPawns}/#{BlackOuter}/#{BlackFourth}/#{WhiteFourth}/#{WhiteOuter}/#{WhitePawns}/#{WhitePieces}";
       Castling.RemoveChoice("Flexible");
       PawnDoubleMove = true;
       EnPassant = true;
@@ -446,7 +446,7 @@ namespace ChessV.Games
 
             PieceType pieceType = startingPosition[place];
             notations[rank] += pieceType.Notation[humanPlayer];
-            if (rank == 2 && Majors.Contains(pieceType))
+            if (rank == 4 && Majors.Contains(pieceType))
             {
               var newCastlingRook = (char)('a' + file);
               if (humanPlayer == 0)
@@ -476,10 +476,20 @@ namespace ChessV.Games
           .Select((PieceType piece) => piece == null ? "1" : piece.Notation[humanPlayer])
           .Aggregate("", (string piece, string notation) => notation + piece)
           + (humanPlayer == 0 ? "3" : ""));
-
-      SetCustomProperty(humanPrefix + "Outer", notations[0]);
-      SetCustomProperty(humanPrefix + "Pawns", notations[1]);
-      SetCustomProperty(humanPrefix + "Pieces", notations[2]);
+     
+      if (humanPlayer == 0)
+      {
+        SetCustomProperty("BlackFourth", notations[0]);
+        SetCustomProperty("WhiteFourth", notations[1]);
+      }
+      else
+      {
+        SetCustomProperty("WhiteFourth", notations[0]);
+        SetCustomProperty("BlackFourth", notations[1]);
+      }
+      SetCustomProperty(humanPrefix + "Outer", notations[2]);
+      SetCustomProperty(humanPrefix + "Pawns", notations[3]);
+      SetCustomProperty(humanPrefix + "Pieces", notations[4]);
     }
     #endregion
 
