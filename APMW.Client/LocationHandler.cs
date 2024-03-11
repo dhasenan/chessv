@@ -167,7 +167,7 @@ namespace Archipelago.APChessV
       if (ApmwCore.getInstance().kings.Contains(piece.PieceType))
       {
         // TODO(chesslogic): Math.min(match.Game.Board pieces count, 4) 
-        if (match.Game.GameTurnNumber <= 10 &&
+        if (match.Game.GameTurnNumber <= 16 &&
           match.Game.Board.GetFile(info.ToSquare) == 4 &&
           (match.Game.Board.GetRank(info.ToSquare) == 1 || match.Game.Board.GetRank(info.ToSquare) == 6))
         {
