@@ -809,7 +809,7 @@ namespace ChessV.GUI
 
     private System.Windows.Forms.SplitContainer splitContainer1;
 		private System.Windows.Forms.SplitContainer splitContainer2;
-		private BoardControl boardControl;
+		public BoardControl boardControl;
 		private MaterialBalanceControl mbControl;
 		private System.Windows.Forms.MenuStrip menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem menu_File;
@@ -847,8 +847,8 @@ namespace ChessV.GUI
 		private System.Windows.Forms.ToolStripMenuItem menuitem_ComputerPlays0;
 		private System.Windows.Forms.ToolStripMenuItem menuitem_ComputerPlays1;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
-        private System.Windows.Forms.ToolStripMenuItem menuitem_HighlightComputerMove;
+    private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+    private System.Windows.Forms.ToolStripMenuItem menuitem_HighlightComputerMove;
 		private System.Windows.Forms.Panel panelClocks;
 		private System.Windows.Forms.Label labelTime1;
 		private System.Windows.Forms.Label labelTime0;
