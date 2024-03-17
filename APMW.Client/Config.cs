@@ -241,12 +241,20 @@ namespace Archipelago.APChessV
 
       // probably not uniform... but it's within range so it works for now. will break FEN later
       Random random = new Random(pocketSeed);
-      var x = random.Next(Math.Max(0, foundPockets - pocketLimit * 2), Math.Min(foundPockets, pocketLimit + 1));
+      var x = random.Next(
+        Math.Max(0, foundPockets - pocketLimit * 2),
+        Math.Min(foundPockets, pocketLimit + 1));
       if (x == foundPockets)
       {
         return new List<int>() { x, 0, 0 };
       }
-      var y = random.Next(Math.Max(0, foundPockets - pocketLimit - x), Math.Min(foundPockets, pocketLimit + 1));
+      if (x == foundPockets - 1)
+      {
+        return new List<int>() { x, 1, 0 };
+      }
+      var y = random.Next(
+        Math.Max(0, foundPockets - pocketLimit - x),
+        Math.Min(foundPockets - x, pocketLimit + 1));
       var z = foundPockets - (y + x);
       if (z < 0)
       {
