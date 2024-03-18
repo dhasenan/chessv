@@ -416,6 +416,10 @@ namespace Archipelago.APChessV
         currentSquaresToOriginalSquares[info.ToSquare] = currentSquaresToOriginalSquares[info.FromSquare];
       else
         currentSquaresToOriginalSquares[info.ToSquare] = info.FromSquare;
+      if (info.MoveType.HasFlag(MoveType.Castling))
+      {
+        // TODO: figure out where the rook moved from
+      }
     }
 
     public void HandleMatch(Match match)
