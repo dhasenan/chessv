@@ -418,6 +418,11 @@ namespace Archipelago.APChessV
         currentSquaresToOriginalSquares[info.ToSquare] = info.FromSquare;
       if (info.MoveType.HasFlag(MoveType.Castling))
       {
+        var flipBoard = 7 * (1 - humanPlayer);
+        if (info.ToSquare > info.FromSquare)
+          currentSquaresToOriginalSquares[56 + flipBoard] = info.ToSquare - 8;
+        else
+          currentSquaresToOriginalSquares[0 + flipBoard] = info.ToSquare + 8;
         // TODO: figure out where the rook moved from
       }
     }
