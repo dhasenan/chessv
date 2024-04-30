@@ -33,8 +33,14 @@ namespace Archipelago.APChessV
 
       var core = ApmwCore.getInstance();
 
-      core.foundPockets = items.Count(
-        (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Pocket");
+      try
+      {
+        core.foundPockets = items.Count(
+          (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Pocket");
+      } catch (Exception e)
+      {
+        ArchipelagoClient.getInstance().nonSessionMessages.Add(e.ToString());
+      }
       core.foundPocketRange = items.Count(
         (item) => ReceivedItemsHelper.GetItemName(item.Item) == "Progressive Pocket Range");
       core.foundPocketGems = items.Count(
