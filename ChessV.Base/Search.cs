@@ -22,7 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Windows.Forms;
+using Avalonia.Threading;
 
 namespace ChessV
 {
@@ -1333,7 +1333,10 @@ namespace ChessV
     protected void doBookkeeping()
     {
       //	handle Windows events so the GUI doesn't stall
-      Application.DoEvents();
+      if (Dispatcher.UIThread.CheckAccess())
+      {
+        Dispatcher.UIThread.RunJobs();
+      }
 
       //	perform time check
       if (timeControl != null && !timeControl.Infinite)

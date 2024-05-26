@@ -18,15 +18,15 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using System.Windows.Forms;
+using Avalonia.Threading;
 
 namespace ChessV
 {
   public class TimerFactory
   {
-    public Timer NewTimer()
+    public DispatcherTimer NewTimer()
     {
-      return new System.Windows.Forms.Timer();
+      return new DispatcherTimer();
     }
   }
 }

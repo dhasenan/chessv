@@ -23,7 +23,7 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Windows.Forms;
+using Avalonia.Threading;
 
 namespace ChessV
 {
@@ -52,25 +52,25 @@ namespace ChessV
 
       //	set up ping timer
       pingTimer = timerFactory.NewTimer();
-      pingTimer.Interval = 10000;
+      pingTimer.Interval = TimeSpan.FromSeconds(10);
       pingTimer.Tick += onPingTimeout;
       pingTimer.Tick += onSingleShotTimerTick;
 
       //	set up quit timer
       quitTimer = timerFactory.NewTimer();
-      quitTimer.Interval = 2000;
+      quitTimer.Interval = TimeSpan.FromSeconds(10);
       quitTimer.Tick += onQuitTimeout;
       quitTimer.Tick += onSingleShotTimerTick;
 
       //	set up idle timer
       idleTimer = timerFactory.NewTimer();
-      idleTimer.Interval = 10000;
+      idleTimer.Interval = TimeSpan.FromSeconds(10);
       idleTimer.Tick += onIdleTimeout;
       idleTimer.Tick += onSingleShotTimerTick;
 
       //	set up read timer
       readTimer = timerFactory.NewTimer();
-      readTimer.Interval = 55;
+      readTimer.Interval = TimeSpan.FromMilliseconds(55);
       readTimer.Tick += onReadTimer;
     }
 
@@ -394,7 +394,7 @@ namespace ChessV
         /*				debugMessage( string.Format( "<{0}({1}): {2}", Name, id, line ) );
                 parseLine( line );
 
-                if( idleTimer.Enabled )
+                if( idleTimer.IsEnabled )
                 {
                   if( State == PlayerState.Thinking && !isPinging )
                     idleTimer.Start();
@@ -423,7 +423,7 @@ namespace ChessV
         debugMessage(string.Format("<{0}({1}): {2}", Name, id, line));
         parseLine(line);
 
-        if (idleTimer.Enabled)
+        if (idleTimer.IsEnabled)
         {
           if (State == PlayerState.Thinking && !isPinging)
             idleTimer.Start();
@@ -520,7 +520,7 @@ namespace ChessV
 
       process.Exited -= onQuitTimeout; //disconnect(m_ioDevice, SIGNAL(readChannelFinished()), this, SLOT(onQuitTimeout()));
 
-      if (!quitTimer.Enabled)
+      if (!quitTimer.IsEnabled)
         Kill();
       else
         quitTimer.Stop();
@@ -536,12 +536,12 @@ namespace ChessV
     protected List<EngineOption> options { get; set; }
     protected Dictionary<string, object> optionBuffer { get; set; }
     protected PlayerState pingState;
-    protected Timer idleTimer;
-    protected Timer pingTimer;
-    protected Timer quitTimer;
+    protected DispatcherTimer idleTimer;
+    protected DispatcherTimer pingTimer;
+    protected DispatcherTimer quitTimer;
     protected static int s_count = 0;
 
-    protected Timer readTimer;
+    protected DispatcherTimer readTimer;
     protected List<string> readBuffer;
   }
 }

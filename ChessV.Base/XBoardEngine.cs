@@ -26,7 +26,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
+using Avalonia.Threading;
 
 namespace ChessV
 {
@@ -55,13 +55,13 @@ namespace ChessV
 
       //	set up the init timer
       initTimer = factory.NewTimer();
-      initTimer.Interval = 8000;
+      initTimer.Interval = TimeSpan.FromSeconds(8);
       initTimer.Tick += initialize; // connect(m_initTimer, SIGNAL(timeout()), this, SLOT(initialize()));
       initTimer.Tick += onSingleShotTimerTick;
 
       //	set up the finish game timer
       finishGameTimer = factory.NewTimer();
-      finishGameTimer.Interval = 200;
+      finishGameTimer.Interval = TimeSpan.FromMilliseconds(200);
       finishGameTimer.Tick += pong;
       finishGameTimer.Tick += onSingleShotTimerTick;
 
@@ -1065,7 +1065,7 @@ namespace ChessV
     MoveNotation notation;
     const int infiniteSec = 86400;
 
-    protected Timer initTimer;
-    protected Timer finishGameTimer;
+    protected DispatcherTimer initTimer;
+    protected DispatcherTimer finishGameTimer;
   }
 }

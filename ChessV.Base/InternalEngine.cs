@@ -18,8 +18,9 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
+using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
+using Avalonia.Threading;
 
 namespace ChessV
 {
@@ -31,7 +32,7 @@ namespace ChessV
       Name = "ChessV";
       State = PlayerState.Idle;
       moveDelayTimer = timerFactory.NewTimer();
-      moveDelayTimer.Interval = 50;
+      moveDelayTimer.Interval = TimeSpan.FromMilliseconds(50);
       moveDelayTimer.Tick += onTimerTick;
     }
 
@@ -64,7 +65,7 @@ namespace ChessV
       emitMove(moves);
     }
 
-    protected Timer moveDelayTimer;
+    protected DispatcherTimer moveDelayTimer;
     protected List<Movement> moves;
   }
 }

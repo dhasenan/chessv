@@ -96,24 +96,9 @@ namespace ChessV.GUI
       return theme;
     }
 
-    private static RegistryKey getKeyForGame(Game game, bool create)
+    private static string getKeyForGame(Game game, bool create)
     {
-      RegistryKey currentuser = Registry.CurrentUser;
-      RegistryKey software = currentuser.OpenSubKey("Software", true);
-      if (software == null)
-        software = currentuser.CreateSubKey("Software");
-      RegistryKey chessv = software.OpenSubKey("ChessV", true);
-      if (chessv == null)
-        chessv = software.CreateSubKey("ChessV");
-      RegistryKey games = chessv.OpenSubKey("Games", true);
-      if (games == null)
-        games = chessv.CreateSubKey("Games");
-      GameAttribute attr = game.GameAttribute;
-      string baseGameName = attr.GameName;
-      RegistryKey key = games.OpenSubKey(attr.GameName, true);
-      if (key != null || !create)
-        return key;
-      return games.CreateSubKey(attr.GameName);
+      return attr.game.GameAttribute.GameName;
     }
 
     private static Theme loadThemeFromRegistry(Game game, RegistryKey gameKey)

@@ -20,9 +20,15 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 
 ****************************************************************************/
 
-using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+
+#if Windows
+using Microsoft.Win32;
+#else
+using System.IO;
+using System.Text.Json;
+#endif
 
 namespace ChessV
 {
@@ -86,7 +92,7 @@ namespace ChessV
     public bool ClaimsValidated { get; set; }
 
     //	The RegistryKey that stores these settings
-    public RegistryKey RegistryKey { get; set; }
+    public string RegistryKey { get; set; }
     #endregion
 
 
@@ -126,13 +132,32 @@ namespace ChessV
     }
 
     //	Loads the engine config from the specified registry key
-    public EngineConfiguration
-      (string name,
-        RegistryKey regkey)
+    public EngineConfiguration(string name, string regKey)
     {
-      RegistryKey = regkey;
+      RegistryKey = regKey;
       FolderName = name;
       LoadFromRegistry();
+    }
+
+#if Windows
+    private RegistryKey OpenRegistryKey()
+    {
+      RegistryKey currentuser = Registry.CurrentUser;
+      RegistryKey software = currentuser.OpenSubKey("Software", true);
+      if (software == null)
+        software = currentuser.CreateSubKey("Software");
+      RegistryKey chessv = software.OpenSubKey("ChessV", true);
+      if (chessv == null)
+        chessv = software.CreateSubKey("ChessV");
+      RegistryKey games = chessv.OpenSubKey("Games", true);
+      if (games == null)
+        games = chessv.CreateSubKey("Games");
+      GameAttribute attr = game.GameAttribute;
+      string baseGameName = attr.GameName;
+      RegistryKey key = games.OpenSubKey(attr.GameName, true);
+      if (key != null || !create)
+        return key;
+      return games.CreateSubKey(attr.GameName);
     }
 
     //	Loads or reloads from the registry
@@ -143,25 +168,26 @@ namespace ChessV
       Arguments = new List<string>();
       InitStrings = new List<string>();
       EngineOptions = new List<EngineOption>();
+      var regKey = OpenRegistryKey();
 
-      InternalName = (string)RegistryKey.GetValue("InternalName");
-      FriendlyName = (string)RegistryKey.GetValue("FriendlyName");
-      Command = (string)RegistryKey.GetValue("Command");
-      WorkingDirectory = (string)RegistryKey.GetValue("WorkingDir");
-      Protocol = (string)RegistryKey.GetValue("Protocol");
-      string allVariants = (string)RegistryKey.GetValue("Variants");
+      InternalName = (string)regKey.GetValue("InternalName");
+      FriendlyName = (string)regKey.GetValue("FriendlyName");
+      Command = (string)regKey.GetValue("Command");
+      WorkingDirectory = (string)regKey.GetValue("WorkingDir");
+      Protocol = (string)regKey.GetValue("Protocol");
+      string allVariants = (string)regKey.GetValue("Variants");
       if (allVariants != null)
         SupportedVariants = split(allVariants, ',');
-      string allFeatures = (string)RegistryKey.GetValue("Features");
+      string allFeatures = (string)regKey.GetValue("Features");
       if (allFeatures != null)
         SupportedFeatures = split(allFeatures, ',');
-      string allArguments = (string)RegistryKey.GetValue("Arguments");
+      string allArguments = (string)regKey.GetValue("Arguments");
       if (allArguments != null)
         Arguments = split(allArguments, ',');
-      string allInitStrings = (string)RegistryKey.GetValue("InitStrings");
+      string allInitStrings = (string)regKey.GetValue("InitStrings");
       if (allInitStrings != null)
         InitStrings = split(allInitStrings, ',');
-      string restart = (string)RegistryKey.GetValue("RestartMode");
+      string restart = (string)regKey.GetValue("RestartMode");
       if (restart == "On")
         Restart = RestartMode.On;
       else if (restart == "Off")
@@ -186,6 +212,73 @@ namespace ChessV
       RegistryKey.SetValue("InitStrings", concatenate(InitStrings, ','));
       RegistryKey.SetValue("RestartMode", Restart == RestartMode.Auto ? "Auto" : (Restart == RestartMode.Off ? "Off" : "On"));
     }
+
+#else
+    private string ConfigDir
+    {
+      get
+      {
+#if OSX
+        return $"{Environment.GetEnvironmentVariable("HOME")}/Library/Preferences/{FriendlyName}";
+#else
+        return $"{Environment.GetEnvironmentVariable("HOME")}/.config/{FriendlyName}";
+#endif
+      }
+    }
+
+    private string ConfigFile
+    {
+      get => $"{ConfigDir}/config.json";
+    }
+
+    private class SerializedOptions
+    {
+      public string InternalName, FriendlyName, Command, WorkingDirectory, Protocol, RestartMode;
+      public List<String> Variants, Features, Arguments, InitStrings;
+    }
+
+    public void LoadFromRegistry()
+    {
+      try
+      {
+        var text = File.ReadAllText(ConfigFile);
+        var options = JsonSerializer.Deserialize<SerializedOptions>(text);
+        InternalName = options.InternalName;
+        FriendlyName = options.FriendlyName;
+        Command = options.Command;
+        WorkingDirectory = options.WorkingDirectory;
+        Protocol = options.Protocol;
+        Restart = Enum.Parse<RestartMode>(options.RestartMode);
+        SupportedVariants = options.Variants;
+        SupportedFeatures = options.Features;
+        Arguments = options.Arguments;
+        InitStrings = options.InitStrings;
+      }
+      catch (FileNotFoundException)
+      {
+        // do nothing
+      }
+    }
+
+    public void SaveToRegistry()
+    {
+      var options = new SerializedOptions
+      {
+        InternalName = this.InternalName,
+        FriendlyName = this.FriendlyName,
+        Command = this.Command,
+        WorkingDirectory = this.WorkingDirectory,
+        Protocol = this.Protocol,
+        RestartMode = this.Restart.ToString(),
+        Variants = this.SupportedVariants,
+        Features = this.SupportedFeatures,
+        Arguments = this.Arguments,
+        InitStrings = this.InitStrings,
+      };
+      string serialized = JsonSerializer.Serialize(options);
+      File.WriteAllText(ConfigFile, serialized, System.Text.Encoding.UTF8);
+    }
+#endif
 
     //	Adds new command line argument
     public void AddArgument(string argument)

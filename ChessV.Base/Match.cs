@@ -23,7 +23,7 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 using ChessV.Base;
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
+using Avalonia.Threading;
 
 namespace ChessV
 {
@@ -283,7 +283,7 @@ namespace ChessV
     {
       if (StartDelay > 0)
       {
-        m_startTimer.Interval = StartDelay; // QTimer::singleShot( StartDelay, this, SLOT(start()) );
+        m_startTimer.Interval = TimeSpan.FromMilliseconds(StartDelay); // QTimer::singleShot( StartDelay, this, SLOT(start()) );
         m_startTimer.Tick += onStart;
         m_startTimer.Start();
         StartDelay = 0;
@@ -767,7 +767,7 @@ namespace ChessV
     private bool m_gameInProgress;
     private bool m_paused;
     private string m_startingFen;
-    private Timer m_startTimer;
+    private DispatcherTimer m_startTimer;
     private TimerFactory m_timerFactory;
     //		private QSemaphore m_pauseSem;
     //		private QSemaphore m_resumeSem;

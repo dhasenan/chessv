@@ -23,7 +23,7 @@ some reason you need a copy, please visit <http://www.gnu.org/licenses/>.
 using ChessV.Base;
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
+using Avalonia.Threading;
 
 namespace ChessV
 {
@@ -338,7 +338,7 @@ namespace ChessV
     // function will be called and will deactivate the timer
     protected void onSingleShotTimerTick(object sender, System.EventArgs e)
     {
-      ((Timer)sender).Stop();
+      ((DispatcherTimer)sender).IsEnabled = false;
     }
 
     //	Called when the player's process or connection
@@ -432,7 +432,7 @@ namespace ChessV
       if (!TimeControl.Infinite)
       {
         long t = TimeControl.TimeLeft + TimeControl.ExpiryMargin;
-        timer.Interval = (int)((t >= 0 ? t : 0) + 200); /* Warning - unsafe cast */
+        timer.Interval = TimeSpan.FromMilliseconds((int)((t >= 0 ? t : 0) + 200)); /* Warning - unsafe cast */
         timer.Start();
       }
     }
@@ -442,7 +442,7 @@ namespace ChessV
 
     protected object eval;
     protected PlayerState state;
-    protected Timer timer;
+    protected DispatcherTimer timer;
     protected bool claimedResult;
   }
 }
